@@ -1,0 +1,338 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1781762510812,
+  "projectRoot": "/Users/almazamanzholuly/Documents/qadam/learning-model",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {},
+  "hotPaths": [
+    {
+      "path": "conf/settings.py",
+      "accessCount": 15,
+      "lastAccessed": 1781765670949,
+      "type": "file"
+    },
+    {
+      "path": "apps/accounts/views.py",
+      "accessCount": 10,
+      "lastAccessed": 1781767852245,
+      "type": "file"
+    },
+    {
+      "path": "conf/urls.py",
+      "accessCount": 9,
+      "lastAccessed": 1781765671502,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/views.py",
+      "accessCount": 8,
+      "lastAccessed": 1781765471667,
+      "type": "file"
+    },
+    {
+      "path": "plan/02_Data_Model_Spec.md",
+      "accessCount": 8,
+      "lastAccessed": 1781765659007,
+      "type": "file"
+    },
+    {
+      "path": "plan/openapi.yaml",
+      "accessCount": 8,
+      "lastAccessed": 1781765662948,
+      "type": "file"
+    },
+    {
+      "path": "apps/content/models.py",
+      "accessCount": 8,
+      "lastAccessed": 1781765671450,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/models.py",
+      "accessCount": 8,
+      "lastAccessed": 1781765671949,
+      "type": "file"
+    },
+    {
+      "path": "apps/accounts/models.py",
+      "accessCount": 7,
+      "lastAccessed": 1781765673085,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/serializers.py",
+      "accessCount": 6,
+      "lastAccessed": 1781767824698,
+      "type": "file"
+    },
+    {
+      "path": "apps/accounts/serializers.py",
+      "accessCount": 6,
+      "lastAccessed": 1781767916050,
+      "type": "file"
+    },
+    {
+      "path": "apps/analytics/services.py",
+      "accessCount": 5,
+      "lastAccessed": 1781765237052,
+      "type": "file"
+    },
+    {
+      "path": "apps/content/views.py",
+      "accessCount": 5,
+      "lastAccessed": 1781765303541,
+      "type": "file"
+    },
+    {
+      "path": "plan/03_Ticket_Breakdown.md",
+      "accessCount": 5,
+      "lastAccessed": 1781765665937,
+      "type": "file"
+    },
+    {
+      "path": "apps/content/serializers.py",
+      "accessCount": 4,
+      "lastAccessed": 1781765219389,
+      "type": "file"
+    },
+    {
+      "path": "apps/content/urls_lessons.py",
+      "accessCount": 4,
+      "lastAccessed": 1781765260516,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/admin.py",
+      "accessCount": 4,
+      "lastAccessed": 1781765289144,
+      "type": "file"
+    },
+    {
+      "path": "apps/accounts/services.py",
+      "accessCount": 4,
+      "lastAccessed": 1781765669422,
+      "type": "file"
+    },
+    {
+      "path": "apps/accounts/urls.py",
+      "accessCount": 4,
+      "lastAccessed": 1781765694939,
+      "type": "file"
+    },
+    {
+      "path": "pyproject.toml",
+      "accessCount": 4,
+      "lastAccessed": 1781765696350,
+      "type": "file"
+    },
+    {
+      "path": "apps/accounts/auth_urls.py",
+      "accessCount": 4,
+      "lastAccessed": 1781765743422,
+      "type": "file"
+    },
+    {
+      "path": "apps/analytics/models.py",
+      "accessCount": 3,
+      "lastAccessed": 1781764944971,
+      "type": "file"
+    },
+    {
+      "path": "apps/content/services.py",
+      "accessCount": 3,
+      "lastAccessed": 1781765205966,
+      "type": "file"
+    },
+    {
+      "path": "apps/content/urls_modules.py",
+      "accessCount": 3,
+      "lastAccessed": 1781765238390,
+      "type": "file"
+    },
+    {
+      "path": "apps/analytics/serializers.py",
+      "accessCount": 3,
+      "lastAccessed": 1781765244231,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/services.py",
+      "accessCount": 3,
+      "lastAccessed": 1781765247480,
+      "type": "file"
+    },
+    {
+      "path": "apps/accounts/admin.py",
+      "accessCount": 3,
+      "lastAccessed": 1781765248840,
+      "type": "file"
+    },
+    {
+      "path": "apps/content/admin.py",
+      "accessCount": 3,
+      "lastAccessed": 1781765249453,
+      "type": "file"
+    },
+    {
+      "path": "apps/analytics/views.py",
+      "accessCount": 3,
+      "lastAccessed": 1781765250766,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/urls_tests.py",
+      "accessCount": 3,
+      "lastAccessed": 1781765267945,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/urls_attempts.py",
+      "accessCount": 3,
+      "lastAccessed": 1781765270178,
+      "type": "file"
+    },
+    {
+      "path": "plan/05_Seed_Data_Spec.md",
+      "accessCount": 3,
+      "lastAccessed": 1781765658645,
+      "type": "file"
+    },
+    {
+      "path": ".env.example",
+      "accessCount": 2,
+      "lastAccessed": 1781764705100,
+      "type": "file"
+    },
+    {
+      "path": "apps/content/apps.py",
+      "accessCount": 2,
+      "lastAccessed": 1781765172179,
+      "type": "file"
+    },
+    {
+      "path": "plan/04_Environment_And_Scaffold.md",
+      "accessCount": 2,
+      "lastAccessed": 1781765666697,
+      "type": "file"
+    },
+    {
+      "path": "plan/00_README_Build_Harness.md",
+      "accessCount": 1,
+      "lastAccessed": 1781763720969,
+      "type": "file"
+    },
+    {
+      "path": "apps/accounts/__init__.py",
+      "accessCount": 1,
+      "lastAccessed": 1781764725910,
+      "type": "file"
+    },
+    {
+      "path": "apps/accounts/apps.py",
+      "accessCount": 1,
+      "lastAccessed": 1781764726443,
+      "type": "file"
+    },
+    {
+      "path": "apps/accounts/migrations/__init__.py",
+      "accessCount": 1,
+      "lastAccessed": 1781764731922,
+      "type": "file"
+    },
+    {
+      "path": "apps/accounts/tests/__init__.py",
+      "accessCount": 1,
+      "lastAccessed": 1781764732332,
+      "type": "file"
+    },
+    {
+      "path": "apps/content/__init__.py",
+      "accessCount": 1,
+      "lastAccessed": 1781764735434,
+      "type": "file"
+    },
+    {
+      "path": "apps/content/migrations/__init__.py",
+      "accessCount": 1,
+      "lastAccessed": 1781764741982,
+      "type": "file"
+    },
+    {
+      "path": "apps/content/tests/__init__.py",
+      "accessCount": 1,
+      "lastAccessed": 1781764742394,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/__init__.py",
+      "accessCount": 1,
+      "lastAccessed": 1781764745390,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/apps.py",
+      "accessCount": 1,
+      "lastAccessed": 1781764746397,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/migrations/__init__.py",
+      "accessCount": 1,
+      "lastAccessed": 1781764751948,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/tests/__init__.py",
+      "accessCount": 1,
+      "lastAccessed": 1781764752942,
+      "type": "file"
+    },
+    {
+      "path": "apps/analytics/__init__.py",
+      "accessCount": 1,
+      "lastAccessed": 1781764755436,
+      "type": "file"
+    },
+    {
+      "path": "apps/analytics/apps.py",
+      "accessCount": 1,
+      "lastAccessed": 1781764756947,
+      "type": "file"
+    },
+    {
+      "path": "apps/analytics/admin.py",
+      "accessCount": 1,
+      "lastAccessed": 1781764758947,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

@@ -1,0 +1,53 @@
+[
+  {
+    "model": "content.module",
+    "pk": 1,
+    "fields": {
+      "title": "Алгебра",
+      "slug": "algebra",
+      "order": 1,
+      "subject": "profile_math"
+    }
+  },
+  {
+    "model": "content.module",
+    "pk": 2,
+    "fields": {
+      "title": "Геометрия",
+      "slug": "geometry",
+      "order": 2,
+      "subject": "profile_math"
+    }
+  },
+
+  {
+    "model": "content.tag",
+    "pk": 1,
+    "fields": {"name": "Логарифмы", "slug": "logarithms"}
+  },
+  {
+    "model": "content.tag",
+    "pk": 2,
+    "fields": {"name": "Дроби", "slug": "fractions"}
+  },
+  {
+    "model": "content.tag",
+    "pk": 3,
+    "fields": {"name": "Тригонометрия", "slug": "trigonometry"}
+  },
+  {
+    "model": "content.tag",
+    "pk": 4,
+    "fields": {"name": "Уравнения", "slug": "equations"}
+  },
+  {
+    "model": "content.tag",
+    "pk": 5,
+    "fields": {"name": "Производные", "slug": "derivatives"}
+  },
+  {
+    "model": "content.tag",
+    "pk": 6,
+    "fields": {"name": "Степени", "slug": "powers"}
+  }
+]

@@ -1,0 +1,753 @@
+[
+  {
+    "model": "content.lesson",
+    "pk": 1,
+    "fields": {
+      "module": 1,
+      "title": "Свойства логарифмов",
+      "description": "Основные свойства логарифмов и их применение в задачах ЕНТ.",
+      "video_url": "https://youtu.be/dQw4w9WgXcQ",
+      "video_provider": "youtube",
+      "duration_sec": 540,
+      "order": 1
+    }
+  },
+  {
+    "model": "content.lesson",
+    "pk": 2,
+    "fields": {
+      "module": 1,
+      "title": "Действия с дробями",
+      "description": "Сложение, вычитание, умножение и деление обыкновенных дробей.",
+      "video_url": "https://youtu.be/dQw4w9WgXcQ",
+      "video_provider": "youtube",
+      "duration_sec": 600,
+      "order": 2
+    }
+  },
+  {
+    "model": "content.lesson",
+    "pk": 3,
+    "fields": {
+      "module": 1,
+      "title": "Степени и их свойства",
+      "description": "Степени с натуральным, целым и рациональным показателем.",
+      "video_url": "https://youtu.be/dQw4w9WgXcQ",
+      "video_provider": "youtube",
+      "duration_sec": 480,
+      "order": 3
+    }
+  },
+
+  {
+    "model": "content.lesson",
+    "pk": 4,
+    "fields": {
+      "module": 2,
+      "title": "Основы тригонометрии",
+      "description": "Тригонометрические функции на единичной окружности.",
+      "video_url": "https://youtu.be/dQw4w9WgXcQ",
+      "video_provider": "youtube",
+      "duration_sec": 720,
+      "order": 1
+    }
+  },
+  {
+    "model": "content.lesson",
+    "pk": 5,
+    "fields": {
+      "module": 2,
+      "title": "Линейные и квадратные уравнения",
+      "description": "Решение линейных и квадратных уравнений в задачах ЕНТ.",
+      "video_url": "https://youtu.be/dQw4w9WgXcQ",
+      "video_provider": "youtube",
+      "duration_sec": 660,
+      "order": 2
+    }
+  },
+  {
+    "model": "content.lesson",
+    "pk": 6,
+    "fields": {
+      "module": 2,
+      "title": "Введение в производную",
+      "description": "Понятие производной и правила дифференцирования.",
+      "video_url": "https://youtu.be/dQw4w9WgXcQ",
+      "video_provider": "youtube",
+      "duration_sec": 780,
+      "order": 3
+    }
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 1,
+    "fields": {
+      "text": "Вычислите log2(8).",
+      "explanation": "log2(8) = 3, потому что 2^3 = 8.",
+      "difficulty": 1,
+      "lesson": 1,
+      "tags": [1]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 1,
+    "fields": {"question": 1, "text": "3", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 2,
+    "fields": {"question": 1, "text": "2", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 3,
+    "fields": {"question": 1, "text": "4", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 4,
+    "fields": {"question": 1, "text": "8", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 2,
+    "fields": {
+      "text": "Найдите значение log3(27).",
+      "explanation": "log3(27) = 3, так как 3^3 = 27.",
+      "difficulty": 1,
+      "lesson": 1,
+      "tags": [1]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 5,
+    "fields": {"question": 2, "text": "3", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 6,
+    "fields": {"question": 2, "text": "9", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 7,
+    "fields": {"question": 2, "text": "27", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 8,
+    "fields": {"question": 2, "text": "1", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 3,
+    "fields": {
+      "text": "Упростите: log2(16) + log2(4).",
+      "explanation": "log2(16) = 4, log2(4) = 2, сумма равна 6.",
+      "difficulty": 2,
+      "lesson": 1,
+      "tags": [1]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 9,
+    "fields": {"question": 3, "text": "6", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 10,
+    "fields": {"question": 3, "text": "8", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 11,
+    "fields": {"question": 3, "text": "4", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 12,
+    "fields": {"question": 3, "text": "64", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 4,
+    "fields": {
+      "text": "Вычислите 1/2 + 1/3.",
+      "explanation": "Приводим к общему знаменателю: 3/6 + 2/6 = 5/6.",
+      "difficulty": 1,
+      "lesson": 2,
+      "tags": [2]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 13,
+    "fields": {"question": 4, "text": "5/6", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 14,
+    "fields": {"question": 4, "text": "2/5", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 15,
+    "fields": {"question": 4, "text": "1/5", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 16,
+    "fields": {"question": 4, "text": "2/6", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 5,
+    "fields": {
+      "text": "Вычислите 3/4 - 1/2.",
+      "explanation": "Приводим к общему знаменателю: 3/4 - 2/4 = 1/4.",
+      "difficulty": 1,
+      "lesson": 2,
+      "tags": [2]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 17,
+    "fields": {"question": 5, "text": "1/4", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 18,
+    "fields": {"question": 5, "text": "2/2", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 19,
+    "fields": {"question": 5, "text": "1/2", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 20,
+    "fields": {"question": 5, "text": "2/6", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 6,
+    "fields": {
+      "text": "Найдите произведение 2/3 × 3/4.",
+      "explanation": "(2*3)/(3*4) = 6/12 = 1/2.",
+      "difficulty": 2,
+      "lesson": 2,
+      "tags": [2]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 21,
+    "fields": {"question": 6, "text": "1/2", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 22,
+    "fields": {"question": 6, "text": "5/7", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 23,
+    "fields": {"question": 6, "text": "6/7", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 24,
+    "fields": {"question": 6, "text": "1/3", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 7,
+    "fields": {
+      "text": "Вычислите 2^3 × 2^4.",
+      "explanation": "При умножении степеней с одинаковым основанием показатели складываются: 2^(3+4) = 2^7 = 128.",
+      "difficulty": 1,
+      "lesson": 3,
+      "tags": [6]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 25,
+    "fields": {"question": 7, "text": "128", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 26,
+    "fields": {"question": 7, "text": "64", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 27,
+    "fields": {"question": 7, "text": "256", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 28,
+    "fields": {"question": 7, "text": "12", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 8,
+    "fields": {
+      "text": "Найдите значение (3^2)^3.",
+      "explanation": "(3^2)^3 = 3^(2*3) = 3^6 = 729.",
+      "difficulty": 2,
+      "lesson": 3,
+      "tags": [6]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 29,
+    "fields": {"question": 8, "text": "729", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 30,
+    "fields": {"question": 8, "text": "27", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 31,
+    "fields": {"question": 8, "text": "81", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 32,
+    "fields": {"question": 8, "text": "243", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 9,
+    "fields": {
+      "text": "Вычислите 5^0.",
+      "explanation": "Любое число (кроме 0) в нулевой степени равно 1.",
+      "difficulty": 1,
+      "lesson": 3,
+      "tags": [6]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 33,
+    "fields": {"question": 9, "text": "1", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 34,
+    "fields": {"question": 9, "text": "0", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 35,
+    "fields": {"question": 9, "text": "5", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 36,
+    "fields": {"question": 9, "text": "не существует", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 10,
+    "fields": {
+      "text": "Чему равен sin(0)?",
+      "explanation": "На единичной окружности sin(0) = 0.",
+      "difficulty": 1,
+      "lesson": 4,
+      "tags": [3]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 37,
+    "fields": {"question": 10, "text": "0", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 38,
+    "fields": {"question": 10, "text": "1", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 39,
+    "fields": {"question": 10, "text": "-1", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 40,
+    "fields": {"question": 10, "text": "π", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 11,
+    "fields": {
+      "text": "Чему равен cos(π)?",
+      "explanation": "cos(π) = -1 (на единичной окружности точка (-1, 0)).",
+      "difficulty": 1,
+      "lesson": 4,
+      "tags": [3]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 41,
+    "fields": {"question": 11, "text": "-1", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 42,
+    "fields": {"question": 11, "text": "0", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 43,
+    "fields": {"question": 11, "text": "1", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 44,
+    "fields": {"question": 11, "text": "π", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 12,
+    "fields": {
+      "text": "Упростите: sin^2(x) + cos^2(x).",
+      "explanation": "Основное тригонометрическое тождество: sin^2(x) + cos^2(x) = 1.",
+      "difficulty": 2,
+      "lesson": 4,
+      "tags": [3]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 45,
+    "fields": {"question": 12, "text": "1", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 46,
+    "fields": {"question": 12, "text": "0", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 47,
+    "fields": {"question": 12, "text": "2", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 48,
+    "fields": {"question": 12, "text": "sin(2x)", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 13,
+    "fields": {
+      "text": "Решите уравнение 2x + 4 = 10.",
+      "explanation": "2x = 6, значит x = 3.",
+      "difficulty": 1,
+      "lesson": 5,
+      "tags": [4]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 49,
+    "fields": {"question": 13, "text": "3", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 50,
+    "fields": {"question": 13, "text": "2", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 51,
+    "fields": {"question": 13, "text": "5", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 52,
+    "fields": {"question": 13, "text": "6", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 14,
+    "fields": {
+      "text": "Найдите корни уравнения x^2 - 5x + 6 = 0.",
+      "explanation": "По теореме Виета: x1 + x2 = 5, x1*x2 = 6. Корни: 2 и 3.",
+      "difficulty": 2,
+      "lesson": 5,
+      "tags": [4]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 53,
+    "fields": {"question": 14, "text": "2 и 3", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 54,
+    "fields": {"question": 14, "text": "1 и 6", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 55,
+    "fields": {"question": 14, "text": "-2 и -3", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 56,
+    "fields": {"question": 14, "text": "5 и 6", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 15,
+    "fields": {
+      "text": "Решите уравнение 3x - 7 = 2x + 1.",
+      "explanation": "3x - 2x = 1 + 7, x = 8.",
+      "difficulty": 1,
+      "lesson": 5,
+      "tags": [4]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 57,
+    "fields": {"question": 15, "text": "8", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 58,
+    "fields": {"question": 15, "text": "-8", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 59,
+    "fields": {"question": 15, "text": "6", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 60,
+    "fields": {"question": 15, "text": "4", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 16,
+    "fields": {
+      "text": "Найдите производную функции f(x) = x^2.",
+      "explanation": "По правилу степенной функции: f'(x) = 2x.",
+      "difficulty": 1,
+      "lesson": 6,
+      "tags": [5]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 61,
+    "fields": {"question": 16, "text": "2x", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 62,
+    "fields": {"question": 16, "text": "x", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 63,
+    "fields": {"question": 16, "text": "x^3/3", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 64,
+    "fields": {"question": 16, "text": "2", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 17,
+    "fields": {
+      "text": "Найдите производную функции f(x) = 3x + 5.",
+      "explanation": "Производная линейной функции равна её угловому коэффициенту: f'(x) = 3.",
+      "difficulty": 1,
+      "lesson": 6,
+      "tags": [5]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 65,
+    "fields": {"question": 17, "text": "3", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 66,
+    "fields": {"question": 17, "text": "5", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 67,
+    "fields": {"question": 17, "text": "3x", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 68,
+    "fields": {"question": 17, "text": "8", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 18,
+    "fields": {
+      "text": "Найдите производную функции f(x) = x^3 - 2x.",
+      "explanation": "f'(x) = 3x^2 - 2.",
+      "difficulty": 2,
+      "lesson": 6,
+      "tags": [5]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 69,
+    "fields": {"question": 18, "text": "3x^2 - 2", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 70,
+    "fields": {"question": 18, "text": "3x - 2", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 71,
+    "fields": {"question": 18, "text": "x^2 - 2", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 72,
+    "fields": {"question": 18, "text": "3x^2", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 19,
+    "fields": {
+      "text": "Решите уравнение x/2 = 7.",
+      "explanation": "Умножаем обе части на 2: x = 14.",
+      "difficulty": 1,
+      "lesson": 5,
+      "tags": [4]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 73,
+    "fields": {"question": 19, "text": "14", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 74,
+    "fields": {"question": 19, "text": "3.5", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 75,
+    "fields": {"question": 19, "text": "7", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 76,
+    "fields": {"question": 19, "text": "9", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.question",
+    "pk": 20,
+    "fields": {
+      "text": "Вычислите 4^(1/2).",
+      "explanation": "4^(1/2) = √4 = 2.",
+      "difficulty": 2,
+      "lesson": 3,
+      "tags": [6]
+    }
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 77,
+    "fields": {"question": 20, "text": "2", "is_correct": true}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 78,
+    "fields": {"question": 20, "text": "0.5", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 79,
+    "fields": {"question": 20, "text": "4", "is_correct": false}
+  },
+  {
+    "model": "assessments.answeroption",
+    "pk": 80,
+    "fields": {"question": 20, "text": "16", "is_correct": false}
+  },
+
+  {
+    "model": "assessments.test",
+    "pk": 1,
+    "fields": {
+      "type": "mock",
+      "title": "Пробный ЕНТ по профильной математике",
+      "lesson": null,
+      "time_limit_sec": 3600
+    }
+  },
+
+  {"model": "assessments.testquestion", "pk": 1,  "fields": {"test": 1, "question": 1,  "order": 1}},
+  {"model": "assessments.testquestion", "pk": 2,  "fields": {"test": 1, "question": 2,  "order": 2}},
+  {"model": "assessments.testquestion", "pk": 3,  "fields": {"test": 1, "question": 3,  "order": 3}},
+  {"model": "assessments.testquestion", "pk": 4,  "fields": {"test": 1, "question": 4,  "order": 4}},
+  {"model": "assessments.testquestion", "pk": 5,  "fields": {"test": 1, "question": 5,  "order": 5}},
+  {"model": "assessments.testquestion", "pk": 6,  "fields": {"test": 1, "question": 6,  "order": 6}},
+  {"model": "assessments.testquestion", "pk": 7,  "fields": {"test": 1, "question": 7,  "order": 7}},
+  {"model": "assessments.testquestion", "pk": 8,  "fields": {"test": 1, "question": 8,  "order": 8}},
+  {"model": "assessments.testquestion", "pk": 9,  "fields": {"test": 1, "question": 9,  "order": 9}},
+  {"model": "assessments.testquestion", "pk": 10, "fields": {"test": 1, "question": 10, "order": 10}},
+  {"model": "assessments.testquestion", "pk": 11, "fields": {"test": 1, "question": 11, "order": 11}},
+  {"model": "assessments.testquestion", "pk": 12, "fields": {"test": 1, "question": 12, "order": 12}},
+  {"model": "assessments.testquestion", "pk": 13, "fields": {"test": 1, "question": 13, "order": 13}},
+  {"model": "assessments.testquestion", "pk": 14, "fields": {"test": 1, "question": 14, "order": 14}},
+  {"model": "assessments.testquestion", "pk": 15, "fields": {"test": 1, "question": 15, "order": 15}},
+  {"model": "assessments.testquestion", "pk": 16, "fields": {"test": 1, "question": 16, "order": 16}},
+  {"model": "assessments.testquestion", "pk": 17, "fields": {"test": 1, "question": 17, "order": 17}},
+  {"model": "assessments.testquestion", "pk": 18, "fields": {"test": 1, "question": 18, "order": 18}},
+  {"model": "assessments.testquestion", "pk": 19, "fields": {"test": 1, "question": 19, "order": 19}},
+  {"model": "assessments.testquestion", "pk": 20, "fields": {"test": 1, "question": 20, "order": 20}}
+]

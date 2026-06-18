@@ -1,0 +1,203 @@
+[
+  {
+    "model": "careers.university",
+    "pk": 1,
+    "fields": {
+      "name": "ЕНУ им. Гумилёва",
+      "city": "Астана",
+      "code": "ENU"
+    }
+  },
+  {
+    "model": "careers.university",
+    "pk": 2,
+    "fields": {
+      "name": "Казахстанско-Британский технический университет",
+      "city": "Алматы",
+      "code": "KBTU"
+    }
+  },
+  {
+    "model": "careers.university",
+    "pk": 3,
+    "fields": {
+      "name": "Назарбаев Университет",
+      "city": "Астана",
+      "code": "NU"
+    }
+  },
+  {
+    "model": "careers.university",
+    "pk": 4,
+    "fields": {
+      "name": "КазНУ им. аль-Фараби",
+      "city": "Алматы",
+      "code": "KAZNU"
+    }
+  },
+  {
+    "model": "careers.university",
+    "pk": 5,
+    "fields": {
+      "name": "Международный университет информационных технологий",
+      "city": "Алматы",
+      "code": "IITU"
+    }
+  },
+
+  {
+    "model": "careers.specialty",
+    "pk": 1,
+    "fields": {
+      "university": 1,
+      "name": "Software Engineering",
+      "code": "6B061",
+      "required_subjects": ["profile_math", "Математическая грамотность"]
+    }
+  },
+  {
+    "model": "careers.specialty",
+    "pk": 2,
+    "fields": {
+      "university": 1,
+      "name": "Прикладная математика",
+      "code": "6B054",
+      "required_subjects": ["profile_math", "Математическая грамотность"]
+    }
+  },
+
+  {
+    "model": "careers.specialty",
+    "pk": 3,
+    "fields": {
+      "university": 2,
+      "name": "Information Systems",
+      "code": "6B06",
+      "required_subjects": ["profile_math", "Математическая грамотность"]
+    }
+  },
+  {
+    "model": "careers.specialty",
+    "pk": 4,
+    "fields": {
+      "university": 2,
+      "name": "Big Data Analysis",
+      "code": "6B062",
+      "required_subjects": ["profile_math", "Математическая грамотность"]
+    }
+  },
+
+  {
+    "model": "careers.specialty",
+    "pk": 5,
+    "fields": {
+      "university": 3,
+      "name": "Computer Science",
+      "code": "6B063",
+      "required_subjects": ["profile_math", "Математическая грамотность"]
+    }
+  },
+  {
+    "model": "careers.specialty",
+    "pk": 6,
+    "fields": {
+      "university": 3,
+      "name": "Mathematics",
+      "code": "6B055",
+      "required_subjects": ["profile_math", "Математическая грамотность"]
+    }
+  },
+
+  {
+    "model": "careers.specialty",
+    "pk": 7,
+    "fields": {
+      "university": 4,
+      "name": "Информатика",
+      "code": "6B064",
+      "required_subjects": ["profile_math", "Математическая грамотность"]
+    }
+  },
+  {
+    "model": "careers.specialty",
+    "pk": 8,
+    "fields": {
+      "university": 4,
+      "name": "Математика и информатика",
+      "code": "6B056",
+      "required_subjects": ["profile_math", "Математическая грамотность"]
+    }
+  },
+
+  {
+    "model": "careers.specialty",
+    "pk": 9,
+    "fields": {
+      "university": 5,
+      "name": "IT-менеджмент",
+      "code": "6B07",
+      "required_subjects": ["profile_math", "Математическая грамотность"]
+    }
+  },
+  {
+    "model": "careers.specialty",
+    "pk": 10,
+    "fields": {
+      "university": 5,
+      "name": "Кибербезопасность",
+      "code": "6B068",
+      "required_subjects": ["profile_math", "Математическая грамотность"]
+    }
+  },
+
+  {
+    "model": "careers.grantthreshold",
+    "pk": 1,
+    "fields": {"specialty": 1, "year": 2024, "min_score": 115}
+  },
+  {
+    "model": "careers.grantthreshold",
+    "pk": 2,
+    "fields": {"specialty": 2, "year": 2024, "min_score": 110}
+  },
+  {
+    "model": "careers.grantthreshold",
+    "pk": 3,
+    "fields": {"specialty": 3, "year": 2024, "min_score": 118}
+  },
+  {
+    "model": "careers.grantthreshold",
+    "pk": 4,
+    "fields": {"specialty": 4, "year": 2024, "min_score": 112}
+  },
+  {
+    "model": "careers.grantthreshold",
+    "pk": 5,
+    "fields": {"specialty": 5, "year": 2024, "min_score": 130}
+  },
+  {
+    "model": "careers.grantthreshold",
+    "pk": 6,
+    "fields": {"specialty": 6, "year": 2024, "min_score": 125}
+  },
+  {
+    "model": "careers.grantthreshold",
+    "pk": 7,
+    "fields": {"specialty": 7, "year": 2024, "min_score": 108}
+  },
+  {
+    "model": "careers.grantthreshold",
+    "pk": 8,
+    "fields": {"specialty": 8, "year": 2024, "min_score": 105}
+  },
+  {
+    "model": "careers.grantthreshold",
+    "pk": 9,
+    "fields": {"specialty": 9, "year": 2024, "min_score": 100}
+  },
+  {
+    "model": "careers.grantthreshold",
+    "pk": 10,
+    "fields": {"specialty": 10, "year": 2024, "min_score": 113}
+  }
+]

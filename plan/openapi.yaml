@@ -1,0 +1,595 @@
+openapi: 3.1.0
+info:
+  title: ENT Prep Platform API
+  version: 1.0.0-mvp
+  description: >
+    Single source of truth for the ENT prep MVP. Backend implements this; frontend consumes it.
+    All endpoints are under /api/v1. Auth is JWT Bearer except where noted. JSON is snake_case.
+servers:
+  - url: https://api.staging.example.com/api/v1
+    description: Staging
+  - url: http://localhost:8000/api/v1
+    description: Local
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Auth
+  - name: Profile
+  - name: Content
+  - name: Assessments
+  - name: Analytics
+  - name: Careers
+  - name: Gamification
+
+paths:
+  /auth/google/:
+    post:
+      tags: [Auth]
+      summary: Exchange a Google id_token for app JWTs
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id_token]
+              properties:
+                id_token: { type: string }
+      responses:
+        "200":
+          description: Authenticated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AuthTokens" }
+        "400": { $ref: "#/components/responses/Error" }
+
+  /auth/refresh/:
+    post:
+      tags: [Auth]
+      summary: Refresh access token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh]
+              properties:
+                refresh: { type: string }
+      responses:
+        "200":
+          description: New access token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access: { type: string }
+        "401": { $ref: "#/components/responses/Error" }
+
+  /auth/me/:
+    get:
+      tags: [Auth]
+      summary: Current user
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/User" }
+        "401": { $ref: "#/components/responses/Error" }
+
+  /profile/:
+    get:
+      tags: [Profile]
+      summary: Get current student's profile
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StudentProfile" }
+    patch:
+      tags: [Profile]
+      summary: Update profile / complete onboarding
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/StudentProfileUpdate" }
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/StudentProfile" }
+        "400": { $ref: "#/components/responses/Error" }
+
+  /profile/onboarding-options/:
+    get:
+      tags: [Profile]
+      summary: Options for the onboarding wizard
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  universities:
+                    type: array
+                    items: { $ref: "#/components/schemas/University" }
+                  specialties:
+                    type: array
+                    items: { $ref: "#/components/schemas/Specialty" }
+                  subjects:
+                    type: array
+                    description: Other ENT subjects the student estimates
+                    items: { type: string }
+
+  /modules/:
+    get:
+      tags: [Content]
+      summary: List modules
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Module" }
+
+  /modules/{id}/:
+    get:
+      tags: [Content]
+      summary: Module detail with lessons
+      parameters: [ { $ref: "#/components/parameters/IdPath" } ]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ModuleDetail" }
+        "404": { $ref: "#/components/responses/Error" }
+
+  /lessons/{id}/:
+    get:
+      tags: [Content]
+      summary: Lesson detail (video + linked micro-test id)
+      parameters: [ { $ref: "#/components/parameters/IdPath" } ]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Lesson" }
+        "404": { $ref: "#/components/responses/Error" }
+
+  /tests/{id}/:
+    get:
+      tags: [Assessments]
+      summary: Test metadata (no answers revealed)
+      parameters: [ { $ref: "#/components/parameters/IdPath" } ]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Test" }
+
+  /attempts/:
+    post:
+      tags: [Assessments]
+      summary: Start an attempt; returns questions WITHOUT correct flags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [test_id]
+              properties:
+                test_id: { type: integer }
+      responses:
+        "201":
+          description: Attempt started
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AttemptStart" }
+
+  /attempts/{id}/answer/:
+    post:
+      tags: [Assessments]
+      summary: Submit one answer. is_correct returned immediately for micro tests, null for mock.
+      parameters: [ { $ref: "#/components/parameters/IdPath" } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [question_id, option_id]
+              properties:
+                question_id: { type: integer }
+                option_id: { type: integer }
+      responses:
+        "200":
+          description: Recorded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_correct:
+                    type: [boolean, "null"]
+                    description: null for mock tests until finish
+                  xp_awarded: { type: integer }
+
+  /attempts/{id}/finish/:
+    post:
+      tags: [Assessments]
+      summary: Finish attempt and compute score
+      parameters: [ { $ref: "#/components/parameters/IdPath" } ]
+      responses:
+        "200":
+          description: Finished
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AttemptResult" }
+
+  /attempts/{id}/review/:
+    get:
+      tags: [Assessments]
+      summary: Error review with correct answers and teacher explanations
+      parameters: [ { $ref: "#/components/parameters/IdPath" } ]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AttemptReview" }
+
+  /analytics/tags/:
+    get:
+      tags: [Analytics]
+      summary: Per-tag performance for radar / progress bars
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/TagStat" }
+
+  /analytics/recommendations/:
+    get:
+      tags: [Analytics]
+      summary: Weak tags (<50%) with linked lessons to study
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Recommendation" }
+
+  /careers/universities/:
+    get:
+      tags: [Careers]
+      summary: University + specialty + threshold catalog
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/University" }
+
+  /careers/calculate/:
+    post:
+      tags: [Careers]
+      summary: Predicted ENT score, qualifying grants, and goal gap
+      description: >
+        Uses the latest COMPLETED math mock attempt + the student's expected scores
+        for other subjects (from profile). Returns qualifying specialties and, if a
+        target is set, the gap and weakest-tag advice.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GrantCalcResult" }
+        "409":
+          description: No completed math mock attempt yet
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+
+  /gamification/me/:
+    get:
+      tags: [Gamification]
+      summary: XP, level, and streak for the current student
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Gamification" }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdPath:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer }
+
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        detail: { type: string }
+        code: { type: string }
+
+    AuthTokens:
+      type: object
+      properties:
+        access: { type: string }
+        refresh: { type: string }
+        user: { $ref: "#/components/schemas/User" }
+
+    User:
+      type: object
+      properties:
+        id: { type: integer }
+        email: { type: string }
+        first_name: { type: string }
+        is_staff: { type: boolean }
+        onboarding_completed: { type: boolean }
+
+    ExpectedScore:
+      type: object
+      properties:
+        subject: { type: string }
+        score: { type: integer, minimum: 0 }
+
+    StudentProfile:
+      type: object
+      properties:
+        target_university: { type: [integer, "null"] }
+        target_specialty: { type: [integer, "null"] }
+        target_score: { type: [integer, "null"] }
+        onboarding_completed: { type: boolean }
+        expected_scores:
+          type: array
+          items: { $ref: "#/components/schemas/ExpectedScore" }
+
+    StudentProfileUpdate:
+      type: object
+      properties:
+        target_university: { type: [integer, "null"] }
+        target_specialty: { type: [integer, "null"] }
+        target_score: { type: [integer, "null"] }
+        expected_scores:
+          type: array
+          items: { $ref: "#/components/schemas/ExpectedScore" }
+
+    Tag:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        slug: { type: string }
+
+    Module:
+      type: object
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        slug: { type: string }
+        order: { type: integer }
+        subject: { type: string, enum: [math_literacy, profile_math] }
+        lesson_count: { type: integer }
+
+    ModuleDetail:
+      allOf:
+        - $ref: "#/components/schemas/Module"
+        - type: object
+          properties:
+            lessons:
+              type: array
+              items: { $ref: "#/components/schemas/LessonSummary" }
+
+    LessonSummary:
+      type: object
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        order: { type: integer }
+        duration_sec: { type: integer }
+        completed: { type: boolean }
+
+    Lesson:
+      type: object
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        description: { type: string }
+        video_url: { type: string }
+        video_provider: { type: string, enum: [youtube, vimeo] }
+        duration_sec: { type: integer }
+        micro_test_id: { type: [integer, "null"] }
+
+    AnswerOptionPublic:
+      type: object
+      description: Option shape during a test — never reveals correctness
+      properties:
+        id: { type: integer }
+        text: { type: string }
+
+    QuestionPublic:
+      type: object
+      properties:
+        id: { type: integer }
+        text: { type: string }
+        image: { type: [string, "null"] }
+        options:
+          type: array
+          items: { $ref: "#/components/schemas/AnswerOptionPublic" }
+
+    Test:
+      type: object
+      properties:
+        id: { type: integer }
+        type: { type: string, enum: [micro, mock] }
+        title: { type: string }
+        time_limit_sec: { type: [integer, "null"] }
+        question_count: { type: integer }
+
+    AttemptStart:
+      type: object
+      properties:
+        attempt_id: { type: integer }
+        test:
+          $ref: "#/components/schemas/Test"
+        started_at: { type: string, format: date-time }
+        questions:
+          type: array
+          items: { $ref: "#/components/schemas/QuestionPublic" }
+
+    AttemptResult:
+      type: object
+      properties:
+        attempt_id: { type: integer }
+        score: { type: number, description: math score for this attempt }
+        correct_count: { type: integer }
+        total_count: { type: integer }
+        finished_at: { type: string, format: date-time }
+
+    AttemptReviewItem:
+      type: object
+      properties:
+        question_id: { type: integer }
+        question_text: { type: string }
+        selected_option_id: { type: [integer, "null"] }
+        correct_option_id: { type: integer }
+        is_correct: { type: boolean }
+        explanation: { type: string, description: teacher-written solution }
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: integer }
+              text: { type: string }
+              is_correct: { type: boolean }
+
+    AttemptReview:
+      type: object
+      properties:
+        attempt_id: { type: integer }
+        score: { type: number }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/AttemptReviewItem" }
+
+    TagStat:
+      type: object
+      properties:
+        tag: { $ref: "#/components/schemas/Tag" }
+        correct: { type: integer }
+        total: { type: integer }
+        percent: { type: number, description: 0-100, null-safe (0 when total=0) }
+
+    Recommendation:
+      type: object
+      properties:
+        tag: { $ref: "#/components/schemas/Tag" }
+        percent: { type: number }
+        lessons:
+          type: array
+          items: { $ref: "#/components/schemas/LessonSummary" }
+
+    University:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        city: { type: string }
+        code: { type: string }
+        specialties:
+          type: array
+          items: { $ref: "#/components/schemas/Specialty" }
+
+    Specialty:
+      type: object
+      properties:
+        id: { type: integer }
+        university_id: { type: integer }
+        name: { type: string }
+        code: { type: string }
+        latest_threshold: { type: [integer, "null"] }
+
+    QualifyingGrant:
+      type: object
+      properties:
+        university_name: { type: string }
+        specialty_name: { type: string }
+        min_score: { type: integer }
+        margin: { type: integer, description: predicted - min_score }
+
+    GoalTracker:
+      type: object
+      properties:
+        target_score: { type: integer }
+        predicted_score: { type: number }
+        gap: { type: number, description: target - predicted; <=0 means reached }
+        weakest_tag: { type: [string, "null"] }
+        advice: { type: string, description: e.g. "До цели не хватает 20 — упор на Тригонометрию" }
+
+    GrantCalcResult:
+      type: object
+      properties:
+        predicted_score: { type: number }
+        math_score: { type: number }
+        other_subjects_total: { type: number }
+        qualifying_grants:
+          type: array
+          items: { $ref: "#/components/schemas/QualifyingGrant" }
+        goal: { type: [object, "null"], $ref: "#/components/schemas/GoalTracker" }
+
+    Gamification:
+      type: object
+      properties:
+        total_xp: { type: integer }
+        level_code: { type: string, description: e.g. znatok, geniy }
+        level_label: { type: string }
+        xp_to_next_level: { type: integer }
+        streak:
+          type: object
+          properties:
+            current: { type: integer }
+            longest: { type: integer }
+            active_today: { type: boolean }

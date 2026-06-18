@@ -1,0 +1,410 @@
+import re
+import tempfile
+from datetime import timedelta
+from pathlib import Path
+
+import environ
+import sentry_sdk
+
+env = environ.Env()
+root_path = environ.Path(__file__) - 2
+env_file = Path(root_path(".env"))
+if env_file.is_file():
+    env.read_env(str(env_file))
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# -----------------------------------------------------------------------------
+# Basic Config
+# -----------------------------------------------------------------------------
+ROOT_URLCONF = "conf.urls"
+WSGI_APPLICATION = "conf.wsgi.application"
+DEBUG = env.bool("DEBUG", default=False)
+
+# -----------------------------------------------------------------------------
+# Time & Language
+# -----------------------------------------------------------------------------
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
+
+# -----------------------------------------------------------------------------
+# Security and Users
+# -----------------------------------------------------------------------------
+SECRET_KEY = env("DJANGO_SECRET_KEY")
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
+AUTH_USER_MODEL = "users.CustomUser"
+MIN_PASSWORD_LENGTH = env.int("MIN_PASSWORD_LENGTH", default=8)
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.ScryptPasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+]
+
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": MIN_PASSWORD_LENGTH},
+    },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+]
+
+# Security settings
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+
+if not DEBUG:
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# -----------------------------------------------------------------------------
+# Databases
+# -----------------------------------------------------------------------------
+DJANGO_DATABASE_URL = env.db("DATABASE_URL")
+DATABASES = {"default": DJANGO_DATABASE_URL}
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# -----------------------------------------------------------------------------
+# Applications configuration
+# -----------------------------------------------------------------------------
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "whitenoise.runserver_nostatic",
+    "django.contrib.staticfiles",
+    # 3rd party apps
+    "corsheaders",
+    "rest_framework",
+    "django_filters",
+    "knox",
+    "django_celery_beat",
+    "drf_spectacular",
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+    "import_export",
+    # local apps
+    "apps.users",
+    "apps.core",
+    "apps.accounts",
+    "apps.content",
+    "apps.assessments",
+    "apps.analytics",
+    "apps.careers",
+    "apps.gamification",
+    "apps.common",
+]
+
+SITE_ID = 1
+
+MIDDLEWARE = [
+    "apps.core.middleware.RequestIDMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [root_path("templates")],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+            "builtins": [],
+        },
+    },
+]
+
+# -----------------------------------------------------------------------------
+# Rest Framework
+# -----------------------------------------------------------------------------
+REST_KNOX = {
+    "SECURE_HASH_ALGORITHM": "hashlib.sha512",
+    "AUTH_TOKEN_CHARACTER_LENGTH": 64,
+    "TOKEN_TTL": timedelta(hours=10),
+    "USER_SERIALIZER": "apps.users.serializers.UserProfileSerializer",
+    "TOKEN_LIMIT_PER_USER": None,
+    "AUTO_REFRESH": False,
+    "AUTO_REFRESH_MAX_TTL": None,
+    "MIN_REFRESH_INTERVAL": 60,
+    "AUTH_HEADER_PREFIX": "Bearer",
+    "TOKEN_MODEL": "knox.AuthToken",
+}
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "knox.auth.TokenAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
+    "DEFAULT_VERSION": "v1",
+    "ALLOWED_VERSIONS": ["v1"],
+    "VERSION_PARAM": "version",
+    "DEFAULT_FILTER_BACKENDS": (
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.SearchFilter",
+        "rest_framework.filters.OrderingFilter",
+    ),
+    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "EXCEPTION_HANDLER": "apps.common.exceptions.handler",
+    # TODO ⚡ Adjust the throttle rates for your API
+    "DEFAULT_THROTTLE_RATES": {
+        "user": "1000/day",
+        "anon": "100/day",
+        "user_login": "5/minute",
+        "auth": "10/minute",
+        "answer": "120/minute",
+    },
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=14),
+    "ROTATE_REFRESH_TOKENS": False,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
+REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_AUTH_COOKIE": None,
+    "JWT_AUTH_REFRESH_COOKIE": None,
+    "USER_DETAILS_SERIALIZER": "apps.accounts.serializers.AuthUserSerializer",
+    "TOKEN_MODEL": None,
+}
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APP": {
+            "client_id": env("GOOGLE_OAUTH_CLIENT_ID", default=""),
+            "secret": env("GOOGLE_OAUTH_CLIENT_SECRET", default=""),
+            "key": "",
+        },
+        "SCOPE": ["profile", "email"],
+        "AUTH_PARAMS": {"access_type": "online"},
+    }
+}
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_SIGNUP_FIELDS = ["email*"]
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
+# -----------------------------------------------------------------------------
+# Business config
+# -----------------------------------------------------------------------------
+XP_RULES = {"video": 10, "correct_answer": 5}
+LEVELS = [
+    (0, "novice", "Новичок"),
+    (1000, "znatok", "Знаток"),
+    (5000, "geniy", "Гений"),
+]
+ENT_CONFIG = {
+    "math_subject": "profile_math",
+    "other_subjects": [
+        "История Казахстана",
+        "Грамотность чтения",
+        "Математическая грамотность",
+        "Профильный предмет 2",
+    ],
+    "max_total_score": 140,
+}
+
+# TODO ⚡ Update the settings for the DRF Spectacular
+SPECTACULAR_SETTINGS = {
+    "TITLE": "ENT Prep Platform API",
+    "DESCRIPTION": "Backend API for the ENT preparation platform",
+    "VERSION": "1.0.0-mvp",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
+
+if DEBUG:
+    try:
+        import django_extensions  # noqa
+
+        INSTALLED_APPS += ["django_extensions"]
+    except ImportError:
+        pass
+
+    REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] += (
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    )
+
+    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] += (
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    )
+
+CORS_ALLOW_ALL_ORIGINS = DEBUG
+if not CORS_ALLOW_ALL_ORIGINS:
+    CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
+
+# -----------------------------------------------------------------------------
+# Cache
+# -----------------------------------------------------------------------------
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": env("REDIS_URL", default="redis://redis:6379"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+
+# -----------------------------------------------------------------------------
+# Celery
+# -----------------------------------------------------------------------------
+CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://redis:6379")
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "UTC"
+CELERY_RESULT_EXTENDED = True
+
+# -----------------------------------------------------------------------------
+# Email
+# -----------------------------------------------------------------------------
+EMAIL_HOST = env("EMAIL_HOST", default="smtp.gmail.com")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
+EMAIL_PORT = env.int("EMAIL_PORT", default=587)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+
+# -----------------------------------------------------------------------------
+# Sentry and logging
+# -----------------------------------------------------------------------------
+# Error reporting
+IGNORABLE_404_URLS = [
+    re.compile(r"^/apple-touch-icon.*\.png$"),
+    re.compile(r"^/favicon\.ico$"),
+    re.compile(r"^/robots\.txt$"),
+]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "request_id": {"()": "apps.core.middleware.RequestIDFilter"},
+        "timed_log": {"()": "apps.core.middleware.TimeLogFilter"},
+    },
+    "formatters": {
+        "json": {
+            "()": "pythonjsonlogger.json.JsonFormatter",
+            "format": (
+                "%(asctime)s %(levelname)s %(module)s "
+                "%(process)d %(thread)d %(message)s "
+                "%(client)s %(request_id)s %(path)s "
+                "%(user_id)s %(status_code)d %(response_time).3f "
+            ),
+        },
+        "simple": {
+            "format": "%(asctime)s [%(levelname)s] %(message)s",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "json",
+            "filters": ["request_id"],
+        },
+    },
+    "loggers": {
+        "": {
+            "handlers": ["console"],
+            "level": "INFO",
+        },
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+        "apps": {
+            "handlers": ["console"],
+            "level": "DEBUG" if DEBUG else "INFO",
+            "propagate": False,
+        },
+    },
+}
+
+if not DEBUG:
+    sentry_dsn = env("SENTRY_DSN", default=None)
+    if sentry_dsn:
+        sentry_sdk.init(
+            dsn=sentry_dsn,
+            traces_sample_rate=0.1,
+            profiles_sample_rate=0.1,
+        )
+
+# -----------------------------------------------------------------------------
+# Static & Media Files
+# -----------------------------------------------------------------------------
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [root_path("static")]
+STATIC_ROOT = tempfile.mkdtemp() if DEBUG else root_path("static_root")
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = root_path("media_root")
+
+# -----------------------------------------------------------------------------
+# Django Debug Toolbar and Django Extensions
+# -----------------------------------------------------------------------------
+if DEBUG:
+    import socket
+
+    INSTALLED_APPS += ["debug_toolbar"]
+    INTERNAL_IPS = ["127.0.0.1"]
+
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS += [".".join(ip.split(".")[:-1] + ["1"]) for ip in ips]
+
+    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
