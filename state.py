@@ -42,3 +42,12 @@ class GraphState(TypedDict, total=False):
     # --- Storyteller / Critic loop ---
     draft_text: str                  # current problem draft (LaTeX in $...$); -> Question.text
     rewrite_notes: str               # Critic feedback the Storyteller must address (optional)
+
+    # Critic Agent
+    critic_passed: bool
+    revision_count: int
+
+    # --- what the Publisher produces ---
+    explanation: str                 # solution explanation -> Question.explanation (optional input)
+    question_id: int                 # PK of the assessments.Question the Publisher created
+

@@ -6,10 +6,11 @@ update dict (LangGraph merges it back into the state). Nodes stay thin: the
 real work lives in the modules they call.
 
     state.py        -> GraphState (the shared base)
-    math_engine.py  -> the deterministic math (pure, testable, no LLM)
+    math_engine.py  -> the deterministic math + verdict parsing (pure, testable)
+    prompts.py      -> the LLM system prompts (Storyteller, Critic)
 
-This file currently contains Agent 1 (Architect) and Agent 2 (Storyteller).
-The Critic, Publisher, and Tutor nodes will be added here later.
+This file contains Agents 1-4 (Architect, Storyteller, Critic, Publisher) plus
+the Critic's routing edge. The Tutor node will be added here later.
 
 HOW THIS CONNECTS TO THE DJANGO BACKEND
 ---------------------------------------
@@ -21,18 +22,47 @@ See GraphState in state.py for the field-by-field mapping.
 
 from __future__ import annotations
 
-import os
-from typing import Any
+from typing import Annotated, Any, TypedDict
 
-from llm import chat_openai
+import config
+from llm import chat_openai_structured
+from math_ques_types import compute_answer_key
 from math_engine import (
-    compute_answer_key,
+    build_answer_options,
+    deterministic_review,
     generate_math_spec,
     load_blueprint,
     render_constraints,
     resolve_difficulty,
 )
+from prompts import CRITIC_SYSTEM, STORYTELLER_SYSTEM
 from state import GraphState
+
+
+class StoryDraft(TypedDict):
+    """Schema the Storyteller is forced to return — just the finished problem.
+
+    Constraining the output to one field is what guarantees clean Question.text:
+    no "Here is your problem:" preamble, no markdown code fences, no commentary.
+    """
+
+    problem_statement: Annotated[
+        str,
+        ...,
+        "The complete word problem in Kazakh, formulas as LaTeX in $...$. Only "
+        "the statement a student reads — no preamble, no answer, no commentary.",
+    ]
+
+
+class CriticVerdict(TypedDict):
+    """Schema the Critic model is forced to return (see chat_openai_structured)."""
+
+    passed: Annotated[bool, ..., "True only if the draft passes every semantic check."]
+    notes: Annotated[
+        str,
+        ...,
+        "If failed: concrete, numbered rewrite instructions. If passed: empty string.",
+    ]
 
 
 # ---------------------------------------------------------------------------
@@ -48,8 +78,8 @@ def architect_node(state: GraphState) -> dict[str, Any]:
       4. Compute the correct answer natively.
       5. Render the numbers into the Jinja template -> rigid text spec.
     """
-    blueprint = load_blueprint(state["topic"])
 
+    blueprint = load_blueprint(state["topic"])
     difficulty = resolve_difficulty(state.get("student_profile", {}), blueprint)
     math_spec = generate_math_spec(blueprint, difficulty)
     answer_key = compute_answer_key(blueprint, math_spec)
@@ -70,32 +100,202 @@ def architect_node(state: GraphState) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 # Agent 2 — The Storyteller (fast, cheap LLM)
 # ---------------------------------------------------------------------------
-STORYTELLER_SYSTEM = (
-    "You translate rigid math constraints into an engaging, original word "
-    "problem for Kazakhstani 10-11th graders (ЕНТ/UNT prep). Rules:\n"
-    "- Keep every number EXACTLY as given; never invent or change a value.\n"
-    "- Pick a fresh, concrete real-world setting (e.g. Astana construction, "
-    "space logistics, a local cafe) so students cannot pattern-match.\n"
-    "- Vary sentence structure between problems.\n"
-    "- Render all formulas as native LaTeX wrapped in Markdown ($...$).\n"
-    "- Output ONLY the problem statement. Never reveal or hint at the answer."
-)
-
-
 def storyteller_node(state: GraphState) -> dict[str, Any]:
     """Draft (or redraft) the problem text from the Architect's constraints.
 
-    Reads `constraints_payload` (the rigid math spec). If the Critic has looped
-    back with `rewrite_notes`, those are appended so the redraft addresses them.
-    Produces `draft_text` -> later becomes assessments.Question.text.
+    Reads `constraints_payload` (the rigid math spec). If the Critic looped back
+    with `rewrite_notes`, this is a REVISION: the Storyteller is shown its own
+    previous draft and told to fix only the flagged issues, so it edits rather
+    than regenerating from scratch — that's what stops a redraft from silently
+    reintroducing problems an earlier round had already fixed. The reply is
+    constrained to the StoryDraft schema, so `draft_text` is always clean text.
     """
     user_prompt = state["constraints_payload"]
     if state.get("rewrite_notes"):
-        user_prompt += f"\n\nEditor rewrite notes to address:\n{state['rewrite_notes']}"
+        previous = state.get("draft_text", "")
+        user_prompt += (
+            f"\n\n--- REVISION REQUESTED ---\n"
+            f"The editor REJECTED your previous draft:\n{previous}\n\n"
+            f"Revise THAT draft to fix only the issues below. Keep everything "
+            f"else — numbers, setting, phrasing — exactly as it was, so you do "
+            f"not undo anything that was already correct:\n{state['rewrite_notes']}"
+        )
 
-    draft = chat_openai(
+    draft = chat_openai_structured(
         STORYTELLER_SYSTEM,
         user_prompt,
-        model=os.getenv("STORYTELLER_MODEL", "gpt-5-mini"),
+        model=config.STORYTELLER_MODEL,
+        schema=StoryDraft,
+        temperature=0.7,  # creative writing, unlike the Critic's verification
     )
-    return {"draft_text": draft.strip()}
+    return {"draft_text": draft["problem_statement"].strip()}
+
+# ---------------------------------------------------------------------------
+# Agent 3 — The Critic (reasoning LLM, Reflection Pattern)
+# ---------------------------------------------------------------------------
+def critic_node(state: GraphState) -> dict[str, Any]:
+    """Cross-check the Storyteller's draft against the Architect's math (arch.md §3).
+
+    Two passes, cheap-to-expensive:
+      1. `deterministic_review` decides number fidelity and answer-leak in pure
+         Python — the integrity checks an LLM must not be trusted with. If it
+         fails, we short-circuit (no model spend) and return its notes.
+      2. Only if that passes do we call the reasoning model for the judgement
+         calls it's actually good at (logic, reading level, language, semantic
+         leaks), with the reply constrained to the CriticVerdict schema.
+
+    On a fail it writes `rewrite_notes` for the Storyteller's next pass; either
+    way it increments `revision_count` (the count of reviews done) so the router
+    can break the loop once redrafts are exhausted (see `critic_router`).
+    """
+    notes: list[str] = []
+
+    gate = deterministic_review(
+        state["constraints_payload"], state["answer_key"], state["draft_text"]
+    )
+    passed = gate["passed"]
+    if gate["notes"]:
+        notes.append(gate["notes"])
+
+    if passed:
+        user_prompt = (
+            f"CONSTRAINTS:\n{state['constraints_payload']}\n\n"
+            f"CORRECT ANSWER (answer_key, for leak-checking only): {state['answer_key']}\n\n"
+            f"STORYTELLER DRAFT TO REVIEW:\n{state['draft_text']}"
+        )
+        verdict: CriticVerdict = chat_openai_structured(
+            CRITIC_SYSTEM,
+            user_prompt,
+            model=config.CRITIC_MODEL,
+            schema=CriticVerdict,
+        )
+        passed = bool(verdict["passed"])
+        if not passed and verdict["notes"].strip():
+            notes.append(verdict["notes"].strip())
+
+    update: dict[str, Any] = {
+        "critic_passed": passed,
+        "revision_count": state.get("revision_count", 0) + 1,
+    }
+    if not passed:
+        update["rewrite_notes"] = "\n".join(notes)
+    return update
+
+
+def critic_router(state: GraphState) -> str:
+    """Conditional edge after the Critic (arch.md flow + §5.4 breakout).
+
+    Returns a routing label (mapped to a destination at graph-build time):
+      - "publisher"   : draft approved.
+      - "fallback"    : failed too many times. Per arch.md §5.4 this should
+                        pull a pre-approved question, but that node isn't built
+                        yet -> for now wire it straight to END.
+      - "storyteller" : failed but under the limit; loop back for a redraft.
+
+    `revision_count` is the number of Critic reviews so far (= drafts produced).
+    The first draft is not a revision, so the Storyteller is allowed
+    config.MAX_REVISIONS *redrafts* on top of it: we break to the fallback only
+    once a draft has failed MORE than MAX_REVISIONS times (revision_count >
+    MAX_REVISIONS), i.e. after 1 + MAX_REVISIONS total attempts. At the default
+    of 2 that's "fails more than twice", exactly as arch.md §5.4 specifies.
+
+    Wire with (END from `from langgraph.graph import END`):
+        graph.add_conditional_edges("critic", critic_router, {
+            "publisher":   "publisher",
+            "storyteller": "storyteller",
+            "fallback":    END,           # TODO: replace with fallback_node
+        })
+    """
+    if state.get("critic_passed"):
+        return "publisher"
+    if state.get("revision_count", 0) > config.MAX_REVISIONS:
+        return "fallback"
+    return "storyteller"
+
+
+# ---------------------------------------------------------------------------
+# Agent 4 — The Publisher (deterministic Python + DB write, no LLM)
+# ---------------------------------------------------------------------------
+def _assert_publishable(
+    draft_text: str, options: list[dict[str, Any]], *, expected_options: int
+) -> None:
+    """Fail loudly if a question would violate the bank's core invariants.
+
+    The Publisher is the last gate before the database, and downstream automated
+    grading assumes EXACTLY ONE correct option. None of these conditions should
+    happen on the Critic's "pass" branch, so a violation is a data/logic bug — we
+    raise (the batch worker logs and skips) instead of persisting a broken item.
+    """
+    if not draft_text:
+        raise ValueError("Publisher: draft_text is empty; refusing to persist a blank question.")
+
+    if len(options) != expected_options:
+        raise ValueError(
+            f"Publisher: expected {expected_options} answer options, got {len(options)}."
+        )
+
+    n_correct = sum(1 for o in options if o["is_correct"])
+    if n_correct != 1:
+        raise ValueError(f"Publisher: expected exactly 1 correct option, got {n_correct}.")
+
+    texts = [o["text"] for o in options]
+    if len(set(texts)) != len(texts):
+        raise ValueError(f"Publisher: answer options are not distinct: {texts}.")
+
+
+def publisher_node(state: GraphState) -> dict[str, Any]:
+    """Persist the Critic-approved draft as an assessments.Question.
+
+    The ONLY node that touches the database. Reached on the Critic's "pass"
+    branch, so the state is complete and verified. It:
+      1. get_or_creates the content.Tag (by slug).
+      2. creates the Question (text + explanation + difficulty).
+      3. attaches the tag (Question.tags M2M).
+      4. bulk-creates the AnswerOptions (one correct + distractors).
+    All inside one transaction so a half-written question can't survive a crash.
+
+    Django models are imported lazily so the pure nodes above stay importable
+    (and unit-testable) without Django configured. This node, by contrast, must
+    run inside a Django context (settings loaded / `django.setup()`).
+    """
+    from django.db import transaction
+
+    from apps.assessments.models import AnswerOption, Question
+    from apps.content.models import Tag
+
+    n_options = 4
+    draft_text = (state.get("draft_text") or "").strip()
+    options = build_answer_options(state["answer_key"], n_options=n_options)
+
+    # Last gate before the DB — refuse to persist anything that would break the
+    # bank's invariants (see _assert_publishable).
+    _assert_publishable(draft_text, options, expected_options=n_options)
+
+    correct_text = next(o["text"] for o in options if o["is_correct"])
+    # GraphState has no real solution steps yet; fall back to stating the answer.
+    explanation = state.get("explanation") or f"Правильный ответ: {correct_text}."
+
+    with transaction.atomic():
+        tag, _ = Tag.objects.get_or_create(
+            slug=state["tag_slug"],
+            defaults={"name": state["tag_name"]},
+        )
+        question = Question.objects.create(
+            text=draft_text,
+            explanation=explanation,
+            difficulty=state.get("difficulty", 1),
+        )
+        question.tags.add(tag)
+        AnswerOption.objects.bulk_create(
+            [
+                AnswerOption(
+                    question=question,
+                    text=opt["text"],
+                    is_correct=opt["is_correct"],
+                )
+                for opt in options
+            ]
+        )
+
+    return {"question_id": question.pk}
+

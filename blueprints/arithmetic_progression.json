@@ -1,0 +1,41 @@
+{
+  "topic": "arithmetic_progression",
+  "display_name": "Arithmetic progression — nth term and partial sum",
+  "curriculum_ref": "KZ Grade 9-10 — Sequences and progressions",
+  "constraints_template": "arithmetic_progression.j2",
+
+  "_comment": "Becomes an assessments.Question tagged with the content.Tag below. Larger `n` => harder, so difficulty scales the term count.",
+
+  "tag": { "name": "Прогрессии", "slug": "progressii" },
+  "default_difficulty": 1,
+
+  "parameters": {
+    "a1": { "type": "int", "min": -10, "max": 20, "desc": "first term" },
+    "d":  { "type": "int", "min": 1, "max": 9, "desc": "common difference" },
+    "n":  { "type": "int", "min": 5, "max": 30, "desc": "term index / count to sum" }
+  },
+
+  "difficulty_overrides": {
+    "1": { "n": { "max": 10 } },
+    "2": { "n": { "max": 20 } }
+  },
+
+  "constraints": [
+    "d != 0  // a real progression, not a constant sequence"
+  ],
+
+  "integer_clean": true,
+
+  "answer": {
+    "type": "progression",
+    "nth_term": "a1 + (n - 1) * d",
+    "sum_n": "n * (2*a1 + (n - 1)*d) / 2",
+    "desc": "answer_key = { 'a_n': nth_term, 'S_n': sum_n }"
+  },
+
+  "narrative_settings": [
+    "stacking rows of seats in a stadium",
+    "monthly savings plan growing by a fixed amount",
+    "bricks laid per day on a construction site"
+  ]
+}

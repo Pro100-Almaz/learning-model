@@ -1,0 +1,47 @@
+{
+  "topic": "calculus_integrals",
+  "display_name": "Area under a curve (definite integral)",
+  "curriculum_ref": "KZ Grade 11 — Integrals / area of a curvilinear trapezoid",
+  "constraints_template": "calculus_integrals.j2",
+
+  "_comment": "Becomes an assessments.Question tagged with the content.Tag below. A wider integration interval => harder, so difficulty scales `upper`.",
+
+  "tag": { "name": "Интегралы", "slug": "integraly" },
+  "default_difficulty": 1,
+
+  "parameters": {
+    "a": { "type": "int", "min": 3, "max": 9, "desc": "x^2 coefficient (mult. of 3 keeps result integer)" },
+    "b": { "type": "int", "min": 0, "max": 8, "desc": "x coefficient (even keeps result integer)" },
+    "c": { "type": "int", "min": 1, "max": 9, "desc": "constant term" },
+    "lower": { "type": "int", "min": 0, "max": 3, "desc": "lower integration limit" },
+    "upper": { "type": "int", "min": 4, "max": 8, "desc": "upper integration limit" }
+  },
+
+  "difficulty_overrides": {
+    "1": { "upper": { "max": 5 } },
+    "2": { "upper": { "max": 6 } }
+  },
+
+  "constraints": [
+    "upper > lower",
+    "a % 3 == 0  // keeps (a/3)*x^3 term integer",
+    "b % 2 == 0  // keeps (b/2)*x^2 term integer"
+  ],
+
+  "integer_clean": true,
+
+  "answer": {
+    "type": "integral_definite",
+    "expression": "a*x**2 + b*x + c",
+    "var": "x",
+    "from": "lower",
+    "to": "upper",
+    "desc": "answer_key = F(upper) - F(lower) where F is the antiderivative"
+  },
+
+  "narrative_settings": [
+    "civil engineering of a bridge arch in Astana",
+    "fuel consumption of a rocket over a time interval",
+    "water volume filling a curved reservoir"
+  ]
+}

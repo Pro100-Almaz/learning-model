@@ -11,12 +11,15 @@ Public API:
     generate_math_spec(blueprint, difficulty) -> dict
     compute_answer_key(blueprint, spec)   -> Any
     render_constraints(blueprint, spec)   -> str
+    parse_verdict(raw)                    -> dict ({"passed", "notes"})
+    format_answer(answer_key)             -> str
+    build_answer_options(answer_key)      -> list[dict] ({"text", "is_correct"})
 """
-
 from __future__ import annotations
 
 import json
 import random
+import re
 from pathlib import Path
 from typing import Any
 
@@ -101,40 +104,101 @@ def generate_math_spec(blueprint: dict, difficulty: int) -> dict[str, Any]:
         for name, expr in derived.items():
             spec[name] = _eval(expr, spec)
 
-        # Accept this roll only if all constraints hold; otherwise re-roll.
-        if all(_eval(rule, spec) for rule in constraints):
+        # Accept only if the blueprint's own constraints hold AND the roll isn't
+        # structurally degenerate; otherwise re-roll.
+        if all(_eval(rule, spec) for rule in constraints) and not _is_degenerate(
+            blueprint, spec
+        ):
             return spec
 
     raise RuntimeError(f"Could not satisfy constraints for {blueprint['topic']}")
 
 
-def compute_answer_key(blueprint: dict, spec: dict) -> Any:
-    """Compute the absolute correct answer, in pure Python, from the spec.
+def _is_degenerate(blueprint: dict, spec: dict) -> bool:
+    """Universal non-degeneracy floor, applied on top of blueprint constraints.
 
-    Never delegated to an LLM — this is the math-integrity guarantee.
+    Rejects rolls that produce a trivial or malformed problem *structurally* —
+    independent of whether the blueprint author remembered to forbid them — so a
+    forgetful blueprint can't ship a broken question. Derived from the `answer`
+    block, so it needs no per-blueprint configuration:
+
+      - `roots` answers must have pairwise-distinct, not-all-zero roots. A
+        repeated root collapses a "find both roots" problem (and its multiple-
+        choice options) to a single value; all-zero roots is the trivial x = 0.
+
+    Topic-specific non-degeneracy that the engine can't infer (e.g. a leading
+    coefficient that must be non-zero so a curve stays a parabola) still belongs
+    in the blueprint's `constraints` list.
     """
-    answer = blueprint["answer"]
-    kind = answer["type"]
+    answer = blueprint.get("answer", {})
+    if answer.get("type") == "roots":
+        roots = [spec[name] for name in answer["values"]]
+        if len(set(roots)) < len(roots):  # a repeated root
+            return True
+        if all(r == 0 for r in roots):  # the trivial x = 0 problem
+            return True
+    return False
 
-    if kind == "roots":
-        # Quadratic: the roots are parameters we rolled directly.
-        return sorted(spec[name] for name in answer["values"])
 
-    if kind == "progression":
-        # Arithmetic progression: evaluate the nth-term and sum formulas.
-        return {
-            "a_n": int(_eval(answer["nth_term"], spec)),
-            "S_n": int(_eval(answer["sum_n"], spec)),
-        }
+# ---------------------------------------------------------------------------
+# Answer option building (used by the Publisher node to fill AnswerOptions)
+# ---------------------------------------------------------------------------
+def format_answer(answer_key: Any) -> str:
+    """Render an answer_key (scalar, list of roots, or progression dict) as text.
 
-    if kind == "integral_definite":
-        # ∫(a x^2 + b x + c) dx = a/3 x^3 + b/2 x^2 + c x  ->  F(upper) - F(lower).
-        # Blueprint constraints guarantee a%3==0 and b%2==0, so it stays integer.
-        a, b, c = spec["a"], spec["b"], spec["c"]
-        f = lambda x: a / 3 * x**3 + b / 2 * x**2 + c * x
-        return round(f(spec["upper"]) - f(spec["lower"]))
+    Mirrors the three `compute_answer_key` shapes:
+      - dict   -> "a_n = 12, S_n = 90"   (progression)
+      - list   -> "-3, 5"                (roots)
+      - scalar -> "258"                  (definite integral)
+    """
+    if isinstance(answer_key, dict):
+        return ", ".join(f"{k} = {v}" for k, v in answer_key.items())
+    if isinstance(answer_key, (list, tuple)):
+        return ", ".join(str(v) for v in answer_key)
+    return str(answer_key)
 
-    raise ValueError(f"Unknown answer type: {kind}")
+
+def build_answer_options(answer_key: Any, n_options: int = 4) -> list[dict[str, Any]]:
+    """Build one correct option plus deterministic numeric distractors.
+
+    Distractors are the correct answer with every number shifted by a fixed set
+    of deltas (so they look plausible but are wrong), de-duplicated by rendered
+    text, then shuffled so the correct option isn't always first. The shuffle
+    uses `random`, so seed it in tests for reproducible output.
+    """
+    correct_text = format_answer(answer_key)
+    options = [{"text": correct_text, "is_correct": True}]
+    seen = {correct_text}
+
+    for delta in (1, -1, 2, -2, 3, -3, 5, -5, 10, -10):
+        if len(options) >= n_options:
+            break
+        candidate = format_answer(_shift_numbers(answer_key, delta))
+        if candidate not in seen:
+            seen.add(candidate)
+            options.append({"text": candidate, "is_correct": False})
+
+    random.shuffle(options)
+    return options
+
+
+def _shift_numbers(answer_key: Any, delta: int) -> Any:
+    """Return a copy of answer_key with every numeric value shifted by `delta`."""
+    if isinstance(answer_key, dict):
+        return {k: _shift(v, delta) for k, v in answer_key.items()}
+    if isinstance(answer_key, (list, tuple)):
+        return [_shift(v, delta) for v in answer_key]
+    return _shift(answer_key, delta)
+
+
+def _shift(value: Any, delta: int) -> Any:
+    if isinstance(value, bool):  # bool is an int subclass; leave it alone
+        return value
+    if isinstance(value, int):
+        return value + delta
+    if isinstance(value, float):
+        return round(value + delta, 2)
+    return value
 
 
 # ---------------------------------------------------------------------------
@@ -164,3 +228,108 @@ def _eval(expr: str, scope: dict) -> Any:
     """
     code = expr.split("//")[0].strip()
     return eval(code, {"__builtins__": {}}, scope)
+
+
+# ---------------------------------------------------------------------------
+# Deterministic verification gate (the Critic's hallucination-proof first pass)
+# ---------------------------------------------------------------------------
+# Matches integers and decimals (comma OR dot), with an optional leading sign.
+_NUM_RE = re.compile(r"-?\d+(?:[.,]\d+)?")
+
+
+def _abs_number_set(text: str) -> set[float]:
+    """Every numeric literal in `text`, as a set of absolute float values.
+
+    We compare on magnitude (abs) so that minus-sign spacing/dash differences
+    between the rendered constraints and the draft can't cause false mismatches.
+    """
+    out: set[float] = set()
+    for token in _NUM_RE.findall(text):
+        try:
+            out.add(abs(float(token.replace(",", "."))))
+        except ValueError:
+            continue
+    return out
+
+
+def _answer_number_set(answer_key: Any) -> set[float]:
+    """The numeric value(s) inside an answer_key (scalar, list, or dict)."""
+    if isinstance(answer_key, dict):
+        values = list(answer_key.values())
+    elif isinstance(answer_key, (list, tuple)):
+        values = list(answer_key)
+    else:
+        values = [answer_key]
+
+    out: set[float] = set()
+    for value in values:
+        if isinstance(value, bool):  # bool is an int subclass; not a real number here
+            continue
+        if isinstance(value, (int, float)):
+            out.add(abs(float(value)))
+    return out
+
+
+def deterministic_review(
+    constraints_payload: str, answer_key: Any, draft_text: str
+) -> dict[str, Any]:
+    """Hallucination-proof checks the LLM Critic must NOT be trusted with.
+
+    The Architect already knows every number exactly, so number fidelity and
+    answer-leak are decided in pure Python — no model judgement involved:
+
+      1. FIDELITY: every value shown in `constraints_payload` must survive into
+         the draft (the Storyteller may not drop, round, or alter a given value).
+      2. LEAK: no `answer_key` value may appear in the draft UNLESS it was also a
+         shown input. That exception is what resolves the case where the answer
+         is itself one of the rolled inputs (e.g. quadratic roots).
+
+    Returns {"passed": bool, "notes": str} — same shape as `parse_verdict`, so
+    the Critic node can merge it with the LLM's semantic verdict.
+    """
+    shown = _abs_number_set(constraints_payload)
+    drafted = _abs_number_set(draft_text)
+    answers = _answer_number_set(answer_key)
+
+    notes: list[str] = []
+
+    missing = sorted(shown - drafted)
+    if missing:
+        notes.append(
+            "NUMBERS: these required values are missing or altered in the draft "
+            f"(reproduce them as digits, exactly as given): {missing}."
+        )
+
+    # A leaked answer value: present in the draft, but not legitimately shown.
+    leaked = sorted((answers & drafted) - shown)
+    if leaked:
+        notes.append(
+            f"ANSWER LEAK: the draft exposes the final answer value(s) {leaked}; "
+            "remove them — the problem statement must never reveal the answer."
+        )
+
+    return {"passed": not notes, "notes": " ".join(notes)}
+
+
+# ---------------------------------------------------------------------------
+# Verdict parsing (used by the Critic node to read an LLM's JSON reply)
+# ---------------------------------------------------------------------------
+def parse_verdict(raw: str) -> dict[str, Any]:
+    """Pull the {"passed", "notes"} object out of the Critic model's reply.
+
+    Tolerant of ```json fences or stray prose around the object. On any parse
+    failure we fail safe (passed=False) so a malformed verdict triggers a
+    rewrite rather than letting an unverified draft through.
+    """
+    text = raw.strip()
+    start, end = text.find("{"), text.rfind("}")
+    if start != -1 and end > start:
+        try:
+            data = json.loads(text[start : end + 1])
+            return {
+                "passed": bool(data.get("passed", False)),
+                "notes": str(data.get("notes", "")).strip(),
+            }
+        except (json.JSONDecodeError, ValueError):
+            pass
+    return {"passed": False, "notes": f"Could not parse critic verdict: {text[:200]}"}
