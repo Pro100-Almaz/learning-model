@@ -38,6 +38,12 @@
     "desc": "answer_key = sorted([r1, r2])"
   },
 
+  "distractors": [
+    { "id": "sign_flip_both", "desc": "Reported both roots with the opposite sign — likely dropped the minus sign when applying Vieta's sum x1 + x2 = -b/a.", "transform": ["-r1", "-r2"] },
+    { "id": "sign_slip_first", "desc": "Got the first root's sign wrong — a sign slip when splitting the middle term while factoring.", "transform": ["-r1", "r2"] },
+    { "id": "sign_slip_second", "desc": "Got the second root's sign wrong — a sign slip when splitting the middle term while factoring.", "transform": ["r1", "-r2"] }
+  ],
+
   "narrative_settings": [
     "trajectory of a basketball shot",
     "profit model for a small Almaty cafe",

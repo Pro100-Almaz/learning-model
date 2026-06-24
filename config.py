@@ -15,4 +15,6 @@ CRITIC_MODEL = "o3"
 # the breakout triggers after a draft "fails more than twice".
 MAX_REVISIONS = 2
 
+TUTOR_MODEL = "claude-sonnet-4-6"
+
 config = Config()

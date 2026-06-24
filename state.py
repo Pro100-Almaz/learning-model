@@ -22,7 +22,9 @@ class GraphState(TypedDict, total=False):
         GraphState key      ->  Django field
         -----------------       ------------------------------------------
         constraints_payload ->  (input to Storyteller; becomes Question.text)
+        solution            ->  Question.solution  (worked steps; the Tutor's ground truth)
         answer_key          ->  drives which AnswerOption.is_correct = True
+        answer_options      ->  the AnswerOption rows (text + is_correct + misconception tag)
         difficulty          ->  Question.difficulty  (PositiveSmallInt, 1-3)
         tag_slug / tag_name ->  Question.tags  (M2M to content.Tag; >=1 required)
     """
@@ -35,6 +37,8 @@ class GraphState(TypedDict, total=False):
     math_spec: dict[str, Any]        # the concrete numbers rolled for this problem
     answer_key: Any                  # the correct answer, computed natively in Python
     constraints_payload: str         # rendered rigid spec; the Storyteller's input
+    solution: dict[str, Any]         # structured worked solution -> Question.solution; the Tutor's ground truth
+    answer_options: list[dict[str, Any]]  # {text, is_correct, misconception} -> assessments.AnswerOption rows
     difficulty: int                  # 1-3, maps to assessments.Question.difficulty
     tag_slug: str                    # maps to a content.Tag (Question.tags M2M)
     tag_name: str                    # human label of that Tag

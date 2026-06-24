@@ -39,6 +39,12 @@
     "desc": "answer_key = F(upper) - F(lower) where F is the antiderivative"
   },
 
+  "distractors": [
+    { "id": "dropped_constant", "desc": "Dropped the constant term c when integrating (forgot that the integral of c dx is c*x).", "transform": "(a/3*upper**3 + b/2*upper**2) - (a/3*lower**3 + b/2*lower**2)" },
+    { "id": "upper_limit_only", "desc": "Evaluated the antiderivative at the upper limit only, forgetting to subtract F(lower).", "transform": "a/3*upper**3 + b/2*upper**2 + c*upper" },
+    { "id": "no_integration", "desc": "Subtracted f(upper) - f(lower) of the original function instead of integrating it first.", "transform": "(a*upper**2 + b*upper + c) - (a*lower**2 + b*lower + c)" }
+  ],
+
   "narrative_settings": [
     "civil engineering of a bridge arch in Astana",
     "fuel consumption of a rocket over a time interval",

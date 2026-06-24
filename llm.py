@@ -68,3 +68,39 @@ def chat_openai_structured(
     llm = _build_client(model, temperature)
     structured = llm.with_structured_output(schema)
     return structured.invoke([("system", system), ("human", user)])
+
+
+def chat_anthropic(
+    system: str,
+    user: str,
+    *,
+    model: str,
+    temperature: float = 0.7,
+    max_tokens: int = 300,
+) -> str:
+    """Send one system+user turn to an Anthropic (Claude) model, return its text.
+
+    Used by the Tutor (arch.md §5). `langchain_anthropic` is imported lazily so
+    this module — and the OpenAI-backed Storyteller/Critic — stay importable even
+    when the Anthropic client isn't installed, and so code paths/tests that never
+    call the Tutor don't pay for the import. `max_tokens` is kept small: the
+    Tutor's margin note is only 2-3 sentences.
+    """
+    from langchain_anthropic import ChatAnthropic
+
+    llm = ChatAnthropic(
+        model=model,
+        api_key=Config.ANTHRO_API_KEY,
+        temperature=temperature,
+        max_tokens=max_tokens,
+    )
+    response = llm.invoke([("system", system), ("human", user)])
+
+    # Anthropic replies can arrive as a list of content blocks; flatten to text.
+    content = response.content
+    if isinstance(content, list):
+        return "".join(
+            part.get("text", "") if isinstance(part, dict) else str(part)
+            for part in content
+        )
+    return content

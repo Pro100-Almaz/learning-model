@@ -11,15 +11,18 @@ Public API:
     generate_math_spec(blueprint, difficulty) -> dict
     compute_answer_key(blueprint, spec)   -> Any
     render_constraints(blueprint, spec)   -> str
+    build_solution(blueprint, spec, answer_key) -> dict (the Tutor's ground truth)
     parse_verdict(raw)                    -> dict ({"passed", "notes"})
     format_answer(answer_key)             -> str
-    build_answer_options(answer_key)      -> list[dict] ({"text", "is_correct"})
+    build_answer_options(answer_key, distractors, spec) -> list[dict]
+        ({"text", "is_correct", "misconception"})
 """
 from __future__ import annotations
 
 import json
 import random
 import re
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
@@ -141,6 +144,117 @@ def _is_degenerate(blueprint: dict, spec: dict) -> bool:
 
 
 # ---------------------------------------------------------------------------
+# Worked-solution building (the ground truth the Tutor relies on, arch.md §5)
+# ---------------------------------------------------------------------------
+def build_solution(blueprint: dict, spec: dict, answer_key: Any) -> dict[str, Any]:
+    """Build a structured, fully-worked solution for one rolled problem.
+
+    This is what the Tutor (Agent 5) reverse-engineers a student's mistake
+    against: the concrete numbers (`spec`), the canonical method, and a
+    deterministic step-by-step derivation. Every number here is computed in
+    pure Python — never an LLM — so the solution carries the same math-integrity
+    guarantee as `compute_answer_key`. It dispatches on the same `answer.type`,
+    so add a branch here whenever you add one there.
+
+    Returns a JSON-serializable dict (it is persisted on assessments.Question
+    via the Publisher; see GraphState.solution):
+
+        {
+          "answer_type":    "roots" | "progression" | "integral_definite",
+          "curriculum_ref": str,
+          "spec":           {<the rolled numbers, incl. derived ones>},
+          "answer_key":     <the correct answer, as compute_answer_key returns it>,
+          "steps":          [{"label": str, "detail": str}, ...],
+        }
+    """
+    answer = blueprint["answer"]
+    kind = answer["type"]
+
+    builders = {
+        "roots": _solution_roots,
+        "progression": _solution_progression,
+        "integral_definite": _solution_integral,
+    }
+    builder = builders.get(kind)
+    if builder is None:
+        raise ValueError(f"Unknown answer type: {kind}")
+
+    return {
+        "answer_type": kind,
+        "curriculum_ref": blueprint.get("curriculum_ref", ""),
+        "spec": dict(spec),
+        "answer_key": answer_key,
+        "steps": builder(answer, spec),
+    }
+
+
+def _solution_roots(answer: dict, spec: dict) -> list[dict[str, str]]:
+    """Vieta's-theorem derivation for a*x^2 + b*x + c = 0.
+
+    `b` and `c` are derived from the roots in the blueprint (b = -a(r1+r2),
+    c = a*r1*r2), so the Vieta identities below are exact integers here.
+    """
+    a, b, c = spec["a"], spec["b"], spec["c"]
+    roots = sorted(spec[name] for name in answer["values"])
+    return [
+        {"label": "Equation",
+         "detail": f"{a}x^2 + ({b})x + ({c}) = 0  — find both roots"},
+        {"label": "Vieta: sum of roots",
+         "detail": f"x1 + x2 = -b/a = -({b})/{a} = {roots[0] + roots[1]}"},
+        {"label": "Vieta: product of roots",
+         "detail": f"x1 * x2 = c/a = ({c})/{a} = {roots[0] * roots[1]}"},
+        {"label": "Roots",
+         "detail": f"x1 = {roots[0]}, x2 = {roots[1]}"},
+    ]
+
+
+def _solution_progression(answer: dict, spec: dict) -> list[dict[str, str]]:
+    """nth-term and partial-sum derivation for an arithmetic progression."""
+    a1, d, n = spec["a1"], spec["d"], spec["n"]
+    a_n = int(_eval(answer["nth_term"], spec))
+    s_n = int(_eval(answer["sum_n"], spec))
+    return [
+        {"label": "Given",
+         "detail": f"a1 = {a1}, d = {d}, n = {n}"},
+        {"label": "nth term",
+         "detail": f"a_n = a1 + (n-1)d = {a1} + ({n}-1)*{d} = {a_n}"},
+        {"label": "Partial sum",
+         "detail": f"S_n = n(2a1 + (n-1)d)/2 = {n}(2*{a1} + ({n}-1)*{d})/2 = {s_n}"},
+    ]
+
+
+def _solution_integral(answer: dict, spec: dict) -> list[dict[str, str]]:
+    """Definite integral via the antiderivative (FTC), using exact rationals.
+
+    Mirrors compute_answer_key's integral branch: Fraction (not float+round)
+    so the shown intermediate values can never drift from the answer_key.
+    """
+    a, b, c = spec["a"], spec["b"], spec["c"]
+    lower, upper = spec["lower"], spec["upper"]
+    antideriv = lambda x: Fraction(a, 3) * x**3 + Fraction(b, 2) * x**2 + Fraction(c) * x
+    f_upper, f_lower = antideriv(upper), antideriv(lower)
+    return [
+        {"label": "Integral",
+         "detail": f"S = integral of ({a}x^2 + {b}x + {c}) dx, from {lower} to {upper}"},
+        {"label": "Antiderivative",
+         "detail": f"F(x) = ({a}/3)x^3 + ({b}/2)x^2 + {c}x"},
+        {"label": "Evaluate at upper limit",
+         "detail": f"F({upper}) = {_fmt_frac(f_upper)}"},
+        {"label": "Evaluate at lower limit",
+         "detail": f"F({lower}) = {_fmt_frac(f_lower)}"},
+        {"label": "Definite integral (FTC)",
+         "detail": f"F({upper}) - F({lower}) = {_fmt_frac(f_upper - f_lower)}"},
+    ]
+
+
+def _fmt_frac(value: Fraction) -> str:
+    """Render a Fraction as a plain int when it's whole, else as 'p/q'."""
+    if value.denominator == 1:
+        return str(value.numerator)
+    return f"{value.numerator}/{value.denominator}"
+
+
+# ---------------------------------------------------------------------------
 # Answer option building (used by the Publisher node to fill AnswerOptions)
 # ---------------------------------------------------------------------------
 def format_answer(answer_key: Any) -> str:
@@ -158,28 +272,84 @@ def format_answer(answer_key: Any) -> str:
     return str(answer_key)
 
 
-def build_answer_options(answer_key: Any, n_options: int = 4) -> list[dict[str, Any]]:
-    """Build one correct option plus deterministic numeric distractors.
+def build_answer_options(
+    answer_key: Any,
+    distractors: list[dict] | None = None,
+    spec: dict | None = None,
+    n_options: int = 4,
+) -> list[dict[str, Any]]:
+    """Build one correct option plus wrong options, each tagged with its cause.
 
-    Distractors are the correct answer with every number shifted by a fixed set
-    of deltas (so they look plausible but are wrong), de-duplicated by rendered
-    text, then shuffled so the correct option isn't always first. The shuffle
-    uses `random`, so seed it in tests for reproducible output.
+    Two sources of distractors, used in order:
+
+      1. MISCONCEPTION-DERIVED (preferred): each entry in the blueprint's
+         `distractors` carries an `id`, a human `desc`, and a `transform` that
+         computes the answer a student would get if they made that specific
+         mistake (see `_apply_misconception`). The resulting option is tagged
+         with that `id`, so a student's wrong pick *names their error* — the
+         Tutor (arch.md §5) reads it instead of guessing.
+      2. GENERIC NUMERIC SHIFTS (fallback): if the blueprint declares too few
+         misconceptions, or some collapse to duplicate/degenerate values, the
+         remaining slots are topped up with the answer shifted by a fixed delta.
+         These carry an empty `misconception` — the Tutor must infer those.
+
+    Options are de-duplicated by rendered text and shuffled, so the correct one
+    isn't always first. The shuffle uses `random`; seed it in tests.
     """
+    spec = spec or {}
     correct_text = format_answer(answer_key)
-    options = [{"text": correct_text, "is_correct": True}]
+    options = [{"text": correct_text, "is_correct": True, "misconception": ""}]
     seen = {correct_text}
 
+    # 1) Misconception-derived distractors (each names a specific student error).
+    for d in distractors or []:
+        if len(options) >= n_options:
+            break
+        try:
+            wrong = _apply_misconception(d["transform"], spec, answer_key)
+        except (ArithmeticError, KeyError, TypeError, ValueError):
+            # A transform that can't be evaluated for this roll (e.g. divide by
+            # zero) is simply skipped; the fallback below tops up the slot.
+            continue
+        text = format_answer(wrong)
+        if text in seen:
+            continue  # collapsed onto the correct answer or another distractor
+        seen.add(text)
+        options.append({"text": text, "is_correct": False, "misconception": d["id"]})
+
+    # 2) Fallback: top up any remaining slots with generic numeric shifts.
     for delta in (1, -1, 2, -2, 3, -3, 5, -5, 10, -10):
         if len(options) >= n_options:
             break
         candidate = format_answer(_shift_numbers(answer_key, delta))
         if candidate not in seen:
             seen.add(candidate)
-            options.append({"text": candidate, "is_correct": False})
+            options.append({"text": candidate, "is_correct": False, "misconception": ""})
 
     random.shuffle(options)
     return options
+
+
+def _apply_misconception(transform: Any, spec: dict, answer_key: Any) -> Any:
+    """Evaluate a blueprint distractor `transform` into a wrong-but-plausible answer.
+
+    The result has the SAME shape as `answer_key` (so `format_answer` renders it
+    identically to the correct option), mirroring `compute_answer_key`'s three
+    answer shapes. Every value is coerced to int, matching the integer-clean
+    guarantee the real answer key satisfies. `transform` is expressed in terms of
+    the rolled `spec`, exactly like the blueprint's `derived` / `answer` formulas,
+    and is evaluated with the same builtin-free `_eval`.
+
+        roots        -> transform is a list of exprs:  ["-r1", "-r2"]
+        progression  -> transform is a dict of exprs:  {"a_n": "...", "S_n": "..."}
+        scalar       -> transform is a single expr:    "a/3*upper**3 + ..."
+    """
+    if isinstance(answer_key, dict):
+        # Follow answer_key's key order so the rendered text lines up column-for-column.
+        return {key: int(_eval(transform[key], spec)) for key in answer_key}
+    if isinstance(answer_key, (list, tuple)):
+        return [int(_eval(expr, spec)) for expr in transform]
+    return int(_eval(transform, spec))
 
 
 def _shift_numbers(answer_key: Any, delta: int) -> Any:

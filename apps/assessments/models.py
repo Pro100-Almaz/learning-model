@@ -6,6 +6,10 @@ class Question(models.Model):
     text = models.TextField()
     image = models.ImageField(upload_to="questions/", null=True, blank=True)
     explanation = models.TextField()
+    # Structured, deterministically-computed worked solution (steps + the rolled
+    # numbers). The Tutor reads this to diagnose a student's mistake; see
+    # math_engine.build_solution for the shape.
+    solution = models.JSONField(default=dict, blank=True)
     difficulty = models.PositiveSmallIntegerField(default=1)
     lesson = models.ForeignKey(
         "content.Lesson",
@@ -31,6 +35,11 @@ class AnswerOption(models.Model):
     )
     text = models.CharField(max_length=500)
     is_correct = models.BooleanField(default=False)
+    # For a wrong option, the slug of the misconception that produces it (see the
+    # blueprint `distractors`); empty for the correct option and untagged
+    # distractors. The Tutor reads this to name the student's error. Never
+    # exposed to students (see assessments.serializers).
+    misconception = models.CharField(max_length=100, blank=True, default="")
 
     def __str__(self) -> str:
         marker = "*" if self.is_correct else " "

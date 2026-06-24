@@ -85,7 +85,7 @@ To maximize execution efficiency and maintain low API operating costs, the syste
 | **2. The Storyteller** | Fast Creative Writing | DeepSeek V3.2 / GPT-5 Mini | **Ultra-Cheap** (~$0.25 / 1M tokens). High-speed generation optimized for rapid creative phrasing and raw LaTeX formatting. |
 | **3. The Critic** | Logical Verification | DeepSeek R1 / OpenAI o3 | **Cheap Reasoning** (~$0.55 / 1M tokens). Advanced reasoning models utilizing internal Chain-of-Thought processing to validate math constraints. |
 | **4. The Publisher** | DB Formatting & Math Eval | Local Python Logic | **Free** ($0.00 compute cost). Automated script node executing final programmatic calculation and direct database injection. |
-| **5. The Tutor** | Real-Time Text Diagnosis & Persona | Claude 3.5 / 4.6 Sonnet | **Standard** (~$3.00 / 1M tokens). High instruction-following efficiency via short responses (2-3 sentences max). Elite tone-control mechanics to completely eliminate "AI-isms" for natural text feedback. |
+| **5. The Tutor** | Real-Time Text Diagnosis & Persona | Claude Sonnet 4.6 (`claude-sonnet-4-6`) | **Standard** (~$3.00 / 1M tokens). High instruction-following efficiency via short responses (2-3 sentences max). Elite tone-control mechanics to completely eliminate "AI-isms" for natural text feedback. Runs live & on-demand (review-only), not in the generation graph. |
 ---
 
 ## 5. Key Implementation Strategies for Scale

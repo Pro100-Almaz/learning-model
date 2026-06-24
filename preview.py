@@ -28,6 +28,11 @@ def preview(topic: str, target_score: int | None = None) -> None:
     print(f"\n{'=' * 70}")
     print(f"{topic}  (difficulty {state['difficulty']}, answer_key={state['answer_key']})")
     print("=" * 70)
+    print("options:")
+    for opt in state["answer_options"]:
+        mark = "*" if opt["is_correct"] else " "
+        tag = f"  <- {opt['misconception']}" if opt["misconception"] else ""
+        print(f"  [{mark}] {opt['text']}{tag}")
 
     while True:
         state.update(storyteller_node(state))

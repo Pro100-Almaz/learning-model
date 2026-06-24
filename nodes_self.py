@@ -10,7 +10,9 @@ real work lives in the modules they call.
     prompts.py      -> the LLM system prompts (Storyteller, Critic)
 
 This file contains Agents 1-4 (Architect, Storyteller, Critic, Publisher) plus
-the Critic's routing edge. The Tutor node will be added here later.
+the Critic's routing edge. The Tutor (Agent 5) is NOT here: it runs live and
+on-demand from the Django request path (apps.assessments.services), not as a
+node in this offline generation graph.
 
 HOW THIS CONNECTS TO THE DJANGO BACKEND
 ---------------------------------------
@@ -29,6 +31,7 @@ from llm import chat_openai_structured
 from math_ques_types import compute_answer_key
 from math_engine import (
     build_answer_options,
+    build_solution,
     deterministic_review,
     generate_math_spec,
     load_blueprint,
@@ -37,6 +40,10 @@ from math_engine import (
 )
 from prompts import CRITIC_SYSTEM, STORYTELLER_SYSTEM
 from state import GraphState
+
+# Every published Question carries exactly this many answer options (one correct
+# + distractors). The Architect builds them; the Publisher enforces the count.
+N_ANSWER_OPTIONS = 4
 
 
 class StoryDraft(TypedDict):
@@ -77,6 +84,9 @@ def architect_node(state: GraphState) -> dict[str, Any]:
       3. Roll random-but-valid numbers at that difficulty.
       4. Compute the correct answer natively.
       5. Render the numbers into the Jinja template -> rigid text spec.
+      6. Build the deterministic worked solution (the Tutor's ground truth).
+      7. Build the answer options, each wrong one tagged with the misconception
+         that produces it (so a student's pick names their error).
     """
 
     blueprint = load_blueprint(state["topic"])
@@ -84,6 +94,19 @@ def architect_node(state: GraphState) -> dict[str, Any]:
     math_spec = generate_math_spec(blueprint, difficulty)
     answer_key = compute_answer_key(blueprint, math_spec)
     constraints_payload = render_constraints(blueprint, math_spec)
+    solution = build_solution(blueprint, math_spec, answer_key)
+
+    blueprint_distractors = blueprint.get("distractors", [])
+    answer_options = build_answer_options(
+        answer_key, blueprint_distractors, math_spec, n_options=N_ANSWER_OPTIONS
+    )
+    # Carry the human description for only the misconceptions that actually
+    # became options (some collapse to duplicates on a given roll). The Tutor
+    # maps a wrong option's tag -> this text without reloading the blueprint.
+    used = {o["misconception"] for o in answer_options if o["misconception"]}
+    solution["misconceptions"] = {
+        d["id"]: d["desc"] for d in blueprint_distractors if d["id"] in used
+    }
 
     tag = blueprint["tag"]
     # Return only the keys this agent owns; LangGraph merges them into State.
@@ -91,6 +114,8 @@ def architect_node(state: GraphState) -> dict[str, Any]:
         "math_spec": math_spec,
         "answer_key": answer_key,
         "constraints_payload": constraints_payload,
+        "solution": solution,
+        "answer_options": answer_options,
         "difficulty": difficulty,
         "tag_slug": tag["slug"],
         "tag_name": tag["name"],
@@ -249,7 +274,7 @@ def publisher_node(state: GraphState) -> dict[str, Any]:
     The ONLY node that touches the database. Reached on the Critic's "pass"
     branch, so the state is complete and verified. It:
       1. get_or_creates the content.Tag (by slug).
-      2. creates the Question (text + explanation + difficulty).
+      2. creates the Question (text + explanation + difficulty + solution).
       3. attaches the tag (Question.tags M2M).
       4. bulk-creates the AnswerOptions (one correct + distractors).
     All inside one transaction so a half-written question can't survive a crash.
@@ -263,17 +288,21 @@ def publisher_node(state: GraphState) -> dict[str, Any]:
     from apps.assessments.models import AnswerOption, Question
     from apps.content.models import Tag
 
-    n_options = 4
     draft_text = (state.get("draft_text") or "").strip()
-    options = build_answer_options(state["answer_key"], n_options=n_options)
+    # The Architect builds the misconception-tagged options; fall back to plain
+    # numeric distractors only if a caller invoked the Publisher without them.
+    options = state.get("answer_options") or build_answer_options(state["answer_key"])
 
     # Last gate before the DB — refuse to persist anything that would break the
     # bank's invariants (see _assert_publishable).
-    _assert_publishable(draft_text, options, expected_options=n_options)
+    _assert_publishable(draft_text, options, expected_options=N_ANSWER_OPTIONS)
 
     correct_text = next(o["text"] for o in options if o["is_correct"])
-    # GraphState has no real solution steps yet; fall back to stating the answer.
     explanation = state.get("explanation") or f"Правильный ответ: {correct_text}."
+    # The structured worked solution the Architect built — the Tutor's ground
+    # truth for diagnosing a wrong answer (arch.md §5). Default to {} so a
+    # question is still publishable if it somehow arrived without one.
+    solution = state.get("solution") or {}
 
     with transaction.atomic():
         tag, _ = Tag.objects.get_or_create(
@@ -284,6 +313,7 @@ def publisher_node(state: GraphState) -> dict[str, Any]:
             text=draft_text,
             explanation=explanation,
             difficulty=state.get("difficulty", 1),
+            solution=solution,
         )
         question.tags.add(tag)
         AnswerOption.objects.bulk_create(
@@ -292,10 +322,10 @@ def publisher_node(state: GraphState) -> dict[str, Any]:
                     question=question,
                     text=opt["text"],
                     is_correct=opt["is_correct"],
+                    misconception=opt.get("misconception", ""),
                 )
                 for opt in options
             ]
         )
 
     return {"question_id": question.pk}
-

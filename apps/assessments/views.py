@@ -18,6 +18,8 @@ from .serializers import (
     AttemptReviewSerializer,
     AttemptStartSerializer,
     TestSerializer,
+    TutorFeedbackSerializer,
+    TutorRequestInputSerializer,
 )
 
 
@@ -121,3 +123,29 @@ class AttemptReviewView(APIView):
         attempt = services.get_attempt_for_owner(request.user, id)
         body = services.build_attempt_review_payload(attempt)
         return Response(AttemptReviewSerializer(body).data)
+
+
+class AttemptTutorView(APIView):
+    """POST /api/v1/attempts/{id}/tutor/ — on-demand help for one wrong answer.
+
+    The student opts in (this never fires automatically). Review-only: the
+    attempt must be finished. Returns a short 'margin note' that names the
+    mistake without revealing the answer.
+    """
+
+    permission_classes = [IsAuthenticated]
+    throttle_scope = "tutor"
+    serializer_class = TutorFeedbackSerializer
+
+    @extend_schema(
+        request=TutorRequestInputSerializer,
+        responses={200: TutorFeedbackSerializer},
+    )
+    def post(self, request, id: int):
+        attempt = services.get_attempt_for_owner(request.user, id)
+        payload = TutorRequestInputSerializer(data=request.data)
+        payload.is_valid(raise_exception=True)
+        feedback = services.get_tutor_feedback(
+            attempt, question_id=payload.validated_data["question_id"]
+        )
+        return Response(TutorFeedbackSerializer({"feedback": feedback}).data)

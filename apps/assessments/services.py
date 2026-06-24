@@ -143,6 +143,121 @@ def enforce_mock_timeout(attempt: TestAttempt) -> bool:
 
 
 # ---------------------------------------------------------------------------
+# Tutor (Agent 5) — on-demand, review-only feedback for a wrong answer
+# ---------------------------------------------------------------------------
+
+# Process-local cache of generated notes, keyed by (question_id, option_id). The
+# note depends on the question and which wrong option was chosen — not on the
+# individual student — so it is safe to share across students. This is a
+# deliberate placeholder: it is ephemeral (cleared on restart, not shared across
+# worker processes), so the same note may occasionally regenerate. Swap it for
+# Django's cache or a TutorNote model later; get_tutor_feedback is the only
+# caller, so nothing else changes.
+_TUTOR_CACHE: dict[tuple[int, int], str] = {}
+
+
+def _build_tutor_prompt(question: Question, option: AnswerOption) -> str:
+    """Assemble the Tutor's user message from the data the Architect persisted.
+
+    Degrades gracefully: legacy/seeded questions have no `solution`, and some
+    distractors carry no misconception tag — in both cases we tell the model to
+    infer the error rather than crashing on a missing key.
+    """
+    solution = question.solution or {}
+    steps = solution.get("steps", [])
+    misconceptions = solution.get("misconceptions", {})
+
+    steps_text = (
+        "\n".join(
+            f"{i}. {s.get('label', '')}: {s.get('detail', '')}"
+            for i, s in enumerate(steps, 1)
+        )
+        or "(no worked solution on file — infer the method from the problem)"
+    )
+
+    slug = option.misconception
+    if slug and slug in misconceptions:
+        mistake = misconceptions[slug]
+    else:
+        mistake = (
+            "unknown — infer the most likely error from the worked solution and "
+            "the student's answer."
+        )
+
+    return (
+        f"PROBLEM:\n{question.text}\n\n"
+        f"WORKED SOLUTION (correct; for your reasoning only):\n{steps_text}\n\n"
+        f"CORRECT ANSWER (never reveal to the student): "
+        f"{solution.get('answer_key', '(unknown)')}\n\n"
+        f"STUDENT'S WRONG ANSWER: {option.text}\n\n"
+        f"THE STUDENT'S LIKELY MISTAKE: {mistake}"
+    )
+
+
+def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
+    """Return an on-demand 'margin note' for one wrong answer in a finished attempt.
+
+    Review-only: the attempt must be completed — we never reveal that an answer
+    was wrong mid-test (correctness on mocks is withheld until /finish/). Raises
+    the 4xx-shaped errors the view surfaces. Cached per (question, option) so
+    repeated requests don't re-bill the LLM.
+    """
+    if not attempt.is_completed:
+        raise ValidationError(
+            {
+                "detail": "tutor feedback is available only after finishing the attempt",
+                "code": "attempt_not_finished",
+            }
+        )
+
+    try:
+        question = Question.objects.get(pk=question_id, tests=attempt.test)
+    except Question.DoesNotExist as exc:
+        raise NotFound(
+            {"detail": "question not in test", "code": "question_not_in_test"}
+        ) from exc
+
+    try:
+        answer = AttemptAnswer.objects.select_related("selected_option").get(
+            attempt=attempt, question=question
+        )
+    except AttemptAnswer.DoesNotExist as exc:
+        raise ValidationError(
+            {"detail": "no answer recorded for this question", "code": "not_answered"}
+        ) from exc
+
+    if answer.is_correct:
+        raise ValidationError(
+            {"detail": "this answer was correct; no feedback needed", "code": "answer_correct"}
+        )
+
+    option = answer.selected_option
+    if option is None:
+        raise ValidationError(
+            {"detail": "no option was selected", "code": "no_option"}
+        )
+
+    cache_key = (question.pk, option.pk)
+    if cache_key in _TUTOR_CACHE:
+        return _TUTOR_CACHE[cache_key]
+
+    # Lazy imports keep the LLM stack (and its API key) out of Django startup and
+    # out of any request/test that never reaches the Tutor.
+    from config import TUTOR_MODEL
+    from llm import chat_anthropic
+    from prompts import TUTOR_SYSTEM
+
+    note = chat_anthropic(
+        TUTOR_SYSTEM,
+        _build_tutor_prompt(question, option),
+        model=TUTOR_MODEL,
+    ).strip()
+
+    _TUTOR_CACHE[cache_key] = note
+    return note
+
+
+# ---------------------------------------------------------------------------
 # Read helpers used by views
 # ---------------------------------------------------------------------------
 
