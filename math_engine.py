@@ -7,6 +7,7 @@ Architect node (nodes_self.py) is a thin wrapper that calls into this module.
 
 Public API:
     load_blueprint(topic)                 -> dict
+    compute_content_hash(topic, spec)     -> str (dedup key for the bank)
     resolve_difficulty(profile, blueprint) -> int (1-3)
     generate_math_spec(blueprint, difficulty) -> dict
     compute_answer_key(blueprint, spec)   -> Any
@@ -19,6 +20,7 @@ Public API:
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import random
 import re
@@ -60,6 +62,29 @@ def render_constraints(blueprint: dict, spec: dict) -> str:
     """Render the topic's Jinja template with the rolled numbers."""
     template = TEMPLATE_ENV.get_template(blueprint["constraints_template"])
     return template.render(**spec)
+
+
+def compute_content_hash(topic: str, math_spec: dict[str, Any]) -> str:
+    """A stable fingerprint of a problem's *mathematical* identity (dedup key).
+
+    Two generated questions are "the same problem" when they share a topic and
+    the same rolled numbers — NOT when their text matches. The Storyteller
+    rewraps the same spec in a fresh narrative on every run, so hashing the
+    draft would never catch a real duplicate; hashing the spec does. The
+    answer_key and worked solution are deterministic functions of the spec, so
+    (topic, math_spec) captures the whole identity.
+
+    Canonical JSON (sorted keys, no whitespace) makes the hash independent of
+    dict ordering; `default=str` keeps it from crashing on a stray Fraction.
+    Used by the Publisher to fill assessments.Question.content_hash (unique).
+    """
+    canonical = json.dumps(
+        {"topic": topic, "spec": math_spec},
+        sort_keys=True,
+        separators=(",", ":"),
+        default=str,
+    )
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
 # ---------------------------------------------------------------------------

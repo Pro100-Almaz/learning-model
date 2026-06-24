@@ -10,6 +10,18 @@ class Question(models.Model):
     # numbers). The Tutor reads this to diagnose a student's mistake; see
     # math_engine.build_solution for the shape.
     solution = models.JSONField(default=dict, blank=True)
+    # SHA-256 of the problem's mathematical identity (topic + rolled numbers),
+    # set by the generation Publisher (see math_engine.compute_content_hash).
+    # The unique constraint is what stops a batch run from inserting the same
+    # problem twice. NULL for hand-authored / seeded questions, which carry no
+    # spec and so don't participate in dedup (multiple NULLs are allowed).
+    content_hash = models.CharField(
+        max_length=64,
+        null=True,
+        blank=True,
+        unique=True,
+        editable=False,
+    )
     difficulty = models.PositiveSmallIntegerField(default=1)
     lesson = models.ForeignKey(
         "content.Lesson",

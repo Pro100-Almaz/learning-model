@@ -51,7 +51,11 @@ class GraphState(TypedDict, total=False):
     critic_passed: bool
     revision_count: int
 
+    # --- dedup (Architect computes it; Publisher enforces it) ---
+    content_hash: str                # sha256 of topic+math_spec -> Question.content_hash (unique)
+
     # --- what the Publisher produces ---
     explanation: str                 # solution explanation -> Question.explanation (optional input)
-    question_id: int                 # PK of the assessments.Question the Publisher created
+    question_id: int                 # PK of the assessments.Question (existing one if was_duplicate)
+    was_duplicate: bool              # True if this problem was already in the bank; no new row written
 

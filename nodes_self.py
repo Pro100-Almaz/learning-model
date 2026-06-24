@@ -32,6 +32,7 @@ from math_ques_types import compute_answer_key
 from math_engine import (
     build_answer_options,
     build_solution,
+    compute_content_hash,
     deterministic_review,
     generate_math_spec,
     load_blueprint,
@@ -119,6 +120,9 @@ def architect_node(state: GraphState) -> dict[str, Any]:
         "difficulty": difficulty,
         "tag_slug": tag["slug"],
         "tag_name": tag["name"],
+        # Dedup key for the bank, computed from the rolled numbers (the problem's
+        # math identity, before any storytelling). The Publisher enforces it.
+        "content_hash": compute_content_hash(state["topic"], math_spec),
     }
 
 
@@ -268,25 +272,65 @@ def _assert_publishable(
         raise ValueError(f"Publisher: answer options are not distinct: {texts}.")
 
 
+def _resolve_content_hash(state: GraphState) -> str | None:
+    """The dedup key for this run, or None if there's nothing to hash.
+
+    Normally the Architect already put it on the state; recompute it from the
+    spec if a caller invoked the Publisher directly. None only when there's no
+    spec at all (e.g. a hand-built test state) — dedup is then simply skipped.
+    """
+    content_hash = state.get("content_hash")
+    if content_hash:
+        return content_hash
+    if state.get("topic") and state.get("math_spec") is not None:
+        return compute_content_hash(state["topic"], state["math_spec"])
+    return None
+
+
 def publisher_node(state: GraphState) -> dict[str, Any]:
     """Persist the Critic-approved draft as an assessments.Question.
 
     The ONLY node that touches the database. Reached on the Critic's "pass"
     branch, so the state is complete and verified. It:
+      0. DEDUP: if a Question with this run's content_hash already exists, reuse
+         it and write nothing (returns was_duplicate=True). This is what stops a
+         batch that re-rolls the same numbers from filling the bank with the same
+         problem — possibly wrapped in a different story. The unique constraint on
+         Question.content_hash is the real guarantee: the pre-check is the fast,
+         common path; the IntegrityError handler covers the race where a
+         concurrent worker inserts the same hash between our check and our write.
       1. get_or_creates the content.Tag (by slug).
-      2. creates the Question (text + explanation + difficulty + solution).
+      2. creates the Question (text + explanation + difficulty + solution + hash).
       3. attaches the tag (Question.tags M2M).
       4. bulk-creates the AnswerOptions (one correct + distractors).
-    All inside one transaction so a half-written question can't survive a crash.
+    Steps 1-4 run inside one transaction so a half-written question can't survive
+    a crash.
+
+    Returns {"question_id", "was_duplicate"}: on a fresh write question_id is the
+    new row and was_duplicate is False; on a dedup hit question_id points at the
+    EXISTING row and was_duplicate is True (no new row, no new options).
 
     Django models are imported lazily so the pure nodes above stay importable
     (and unit-testable) without Django configured. This node, by contrast, must
     run inside a Django context (settings loaded / `django.setup()`).
     """
-    from django.db import transaction
+    from django.db import IntegrityError, transaction
 
     from apps.assessments.models import AnswerOption, Question
     from apps.content.models import Tag
+
+    content_hash = _resolve_content_hash(state)
+
+    # Fast path: this exact problem is already in the bank -> reuse it, write
+    # nothing. (Skipped when there's no hash to dedup on.)
+    if content_hash:
+        existing = (
+            Question.objects.filter(content_hash=content_hash)
+            .values_list("pk", flat=True)
+            .first()
+        )
+        if existing is not None:
+            return {"question_id": existing, "was_duplicate": True}
 
     draft_text = (state.get("draft_text") or "").strip()
     # The Architect builds the misconception-tagged options; fall back to plain
@@ -304,28 +348,43 @@ def publisher_node(state: GraphState) -> dict[str, Any]:
     # question is still publishable if it somehow arrived without one.
     solution = state.get("solution") or {}
 
-    with transaction.atomic():
-        tag, _ = Tag.objects.get_or_create(
-            slug=state["tag_slug"],
-            defaults={"name": state["tag_name"]},
-        )
-        question = Question.objects.create(
-            text=draft_text,
-            explanation=explanation,
-            difficulty=state.get("difficulty", 1),
-            solution=solution,
-        )
-        question.tags.add(tag)
-        AnswerOption.objects.bulk_create(
-            [
-                AnswerOption(
-                    question=question,
-                    text=opt["text"],
-                    is_correct=opt["is_correct"],
-                    misconception=opt.get("misconception", ""),
-                )
-                for opt in options
-            ]
-        )
+    try:
+        with transaction.atomic():
+            tag, _ = Tag.objects.get_or_create(
+                slug=state["tag_slug"],
+                defaults={"name": state["tag_name"]},
+            )
+            question = Question.objects.create(
+                text=draft_text,
+                explanation=explanation,
+                difficulty=state.get("difficulty", 1),
+                solution=solution,
+                content_hash=content_hash,
+            )
+            question.tags.add(tag)
+            AnswerOption.objects.bulk_create(
+                [
+                    AnswerOption(
+                        question=question,
+                        text=opt["text"],
+                        is_correct=opt["is_correct"],
+                        misconception=opt.get("misconception", ""),
+                    )
+                    for opt in options
+                ]
+            )
+    except IntegrityError:
+        # We lost a race: a concurrent batch worker inserted the same hash
+        # between our pre-check and our write. The unique constraint did its job
+        # — adopt the winner's row instead of failing the run.
+        if content_hash:
+            existing = (
+                Question.objects.filter(content_hash=content_hash)
+                .values_list("pk", flat=True)
+                .first()
+            )
+            if existing is not None:
+                return {"question_id": existing, "was_duplicate": True}
+        raise  # not our dedup constraint -> a genuine error, don't swallow it
 
-    return {"question_id": question.pk}
+    return {"question_id": question.pk, "was_duplicate": False}

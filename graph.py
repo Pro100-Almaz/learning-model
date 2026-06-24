@@ -79,9 +79,12 @@ def generate_question(topic: str, student_profile: dict[str, Any] | None = None)
     MUST have Django configured (DJANGO_SETTINGS_MODULE=conf.settings) before
     calling, because the Publisher writes to the ORM.
 
-    On success the result holds `question_id` (the persisted Question). If the
-    draft hit the fallback breakout instead, `critic_passed` is False and no
-    Question was created — check that before treating the run as published.
+    On success the result holds `question_id` (the persisted Question) and
+    `was_duplicate`: False if this run wrote a new row, True if the same problem
+    was already in the bank (dedup hit) — `question_id` then points at the
+    existing row and nothing new was written. If the draft hit the fallback
+    breakout instead, `critic_passed` is False and no Question was created —
+    check that before treating the run as published.
     """
     initial: GraphState = {"topic": topic, "student_profile": student_profile or {}}
     return graph.invoke(initial)
