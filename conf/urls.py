@@ -28,11 +28,7 @@ urlpatterns = [
         include(
             (
                 [
-                    # TODO ⚡ Disable the auth endpoints you don't need.
-                    # Enabled: create, profile, login, logout, logoutall
-                    path("auth/", include("apps.users.urls")),
                     path("core/", include("apps.core.urls")),
-                    # New ENT Prep Platform endpoints
                     path("auth/", include("apps.accounts.auth_urls")),
                     path("profile/", include("apps.accounts.urls")),
                     path("modules/", include("apps.content.urls_modules")),
@@ -43,6 +39,7 @@ urlpatterns = [
                     path("careers/", include("apps.careers.urls")),
                     path("gamification/", include("apps.gamification.urls")),
                     path("roadmap/", include("apps.roadmap.urls")),
+                    path("generation/", include("apps.generation.urls")),
                 ],
                 "v1",
             ),

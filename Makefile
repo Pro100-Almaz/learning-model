@@ -81,6 +81,16 @@ superuser:
 seed:
 	docker compose exec backend python manage.py seed --users 20 --superuser --clean
 
+# Question generation (MAIQE) ----------------------------------------------
+# Usage:
+#   make generate                          # 1 quadratic, default difficulty (CLI, blocking)
+#   make generate topic=calculus_integrals count=3 target=120
+generate:
+	docker compose exec backend python manage.py generate_questions \
+		--topic $(or $(topic),quadratic_equations) \
+		--count $(or $(count),1) \
+		$(if $(target),--target-score $(target),)
+
 # Testing & Debugging
 test:
 	docker compose exec backend pytest

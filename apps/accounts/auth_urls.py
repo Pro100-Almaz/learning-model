@@ -1,20 +1,22 @@
-"""URL routes for the JWT auth surface.
+"""Thin auth surface backed by Clerk.
 
-Mounted under ``/api/v1/auth/`` in ``conf/urls.py`` alongside (but not
-colliding with) the template's existing knox endpoints from
-``apps.users.urls``. Routes:
+The user-facing login UI is hosted by Clerk. Our backend only needs:
 
-- ``POST /api/v1/auth/google/``  exchange Google id_token for JWTs
-- ``POST /api/v1/auth/refresh/`` rotate access token via simplejwt
-- ``GET  /api/v1/auth/me/``      current user (onboarding flag included)
+* ``GET  /api/v1/auth/me/``               — return the local user the inbound
+  Clerk JWT resolves to (with onboarding_completed). Authenticated by
+  ``ClerkAuthentication``.
+* ``POST /api/v1/auth/clerk-webhook/``    — Clerk posts user.created /
+  user.updated / user.deleted here so we keep the local row in sync without
+  waiting for the next request from that user. Public; svix signature
+  verification is a TODO (see webhooks.py).
 """
 
 from django.urls import path
 
-from .auth_views import AuthMeView, GoogleAuthView, TokenRefreshView
+from .views import AuthMeView
+from .webhooks import ClerkWebhookView
 
 urlpatterns = [
-    path("google/", GoogleAuthView.as_view(), name="auth-google"),
-    path("refresh/", TokenRefreshView.as_view(), name="auth-refresh"),
     path("me/", AuthMeView.as_view(), name="auth-me"),
+    path("clerk-webhook/", ClerkWebhookView.as_view(), name="auth-clerk-webhook"),
 ]

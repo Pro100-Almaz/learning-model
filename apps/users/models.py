@@ -17,6 +17,18 @@ class CustomUser(AbstractUser):
     # The email field is set to be unique because it is the unique identifier.
     email = models.EmailField(_("email address"), unique=True)
 
+    # Clerk's stable subject id (the "sub" claim on every Clerk JWT). Nullable
+    # so admin-created users (createsuperuser, fixtures) work without one; set
+    # on first authenticated request by apps.accounts.authentication.ClerkAuthentication.
+    clerk_user_id = models.CharField(
+        _("Clerk user id"),
+        max_length=64,
+        unique=True,
+        null=True,
+        blank=True,
+        db_index=True,
+    )
+
     # Specifies the field to be used as the unique identifier for the user.
     USERNAME_FIELD = "email"
 

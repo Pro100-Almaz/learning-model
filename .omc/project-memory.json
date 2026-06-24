@@ -155,20 +155,26 @@
   "hotPaths": [
     {
       "path": "conf/settings.py",
-      "accessCount": 18,
-      "lastAccessed": 1782283646760,
+      "accessCount": 24,
+      "lastAccessed": 1782323793111,
       "type": "file"
     },
     {
       "path": "conf/urls.py",
-      "accessCount": 12,
-      "lastAccessed": 1782283648184,
+      "accessCount": 14,
+      "lastAccessed": 1782323854712,
       "type": "file"
     },
     {
       "path": "apps/assessments/models.py",
+      "accessCount": 12,
+      "lastAccessed": 1782321644274,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/views.py",
       "accessCount": 11,
-      "lastAccessed": 1782283585182,
+      "lastAccessed": 1782321654250,
       "type": "file"
     },
     {
@@ -178,15 +184,15 @@
       "type": "file"
     },
     {
-      "path": "apps/assessments/views.py",
+      "path": "apps/content/models.py",
       "accessCount": 10,
-      "lastAccessed": 1782283592310,
+      "lastAccessed": 1782321654734,
       "type": "file"
     },
     {
-      "path": "apps/content/models.py",
-      "accessCount": 9,
-      "lastAccessed": 1782208287382,
+      "path": "pyproject.toml",
+      "accessCount": 10,
+      "lastAccessed": 1782323762959,
       "type": "file"
     },
     {
@@ -208,15 +214,15 @@
       "type": "file"
     },
     {
-      "path": "pyproject.toml",
+      "path": "apps/assessments/services.py",
       "accessCount": 8,
-      "lastAccessed": 1782222395319,
+      "lastAccessed": 1782321647450,
       "type": "file"
     },
     {
       "path": "apps/assessments/serializers.py",
-      "accessCount": 6,
-      "lastAccessed": 1781767824698,
+      "accessCount": 7,
+      "lastAccessed": 1782321666338,
       "type": "file"
     },
     {
@@ -232,12 +238,6 @@
       "type": "file"
     },
     {
-      "path": "apps/assessments/services.py",
-      "accessCount": 6,
-      "lastAccessed": 1782283748481,
-      "type": "file"
-    },
-    {
       "path": "apps/content/views.py",
       "accessCount": 5,
       "lastAccessed": 1781765303541,
@@ -247,6 +247,18 @@
       "path": "plan/03_Ticket_Breakdown.md",
       "accessCount": 5,
       "lastAccessed": 1781765665937,
+      "type": "file"
+    },
+    {
+      "path": "apps/accounts/auth_urls.py",
+      "accessCount": 5,
+      "lastAccessed": 1782323859494,
+      "type": "file"
+    },
+    {
+      "path": ".env.example",
+      "accessCount": 5,
+      "lastAccessed": 1782323894195,
       "type": "file"
     },
     {
@@ -280,9 +292,15 @@
       "type": "file"
     },
     {
-      "path": "apps/accounts/auth_urls.py",
+      "path": "apps/assessments/urls_attempts.py",
       "accessCount": 4,
-      "lastAccessed": 1781765743422,
+      "lastAccessed": 1782321673485,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/urls_tests.py",
+      "accessCount": 4,
+      "lastAccessed": 1782321673628,
       "type": "file"
     },
     {
@@ -328,27 +346,9 @@
       "type": "file"
     },
     {
-      "path": "apps/assessments/urls_tests.py",
-      "accessCount": 3,
-      "lastAccessed": 1781765267945,
-      "type": "file"
-    },
-    {
-      "path": "apps/assessments/urls_attempts.py",
-      "accessCount": 3,
-      "lastAccessed": 1781765270178,
-      "type": "file"
-    },
-    {
       "path": "plan/05_Seed_Data_Spec.md",
       "accessCount": 3,
       "lastAccessed": 1781765658645,
-      "type": "file"
-    },
-    {
-      "path": ".env.example",
-      "accessCount": 3,
-      "lastAccessed": 1782208279223,
       "type": "file"
     },
     {

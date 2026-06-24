@@ -1,6 +1,5 @@
 import re
 import tempfile
-from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -91,16 +90,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "django_filters",
-    "knox",
     "django_celery_beat",
     "drf_spectacular",
-    "django.contrib.sites",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
-    "dj_rest_auth",
-    "dj_rest_auth.registration",
     "import_export",
     # local apps
     "apps.users",
@@ -112,10 +103,9 @@ INSTALLED_APPS = [
     "apps.careers",
     "apps.gamification",
     "apps.roadmap",
+    "apps.generation",
     "apps.common",
 ]
-
-SITE_ID = 1
 
 MIDDLEWARE = [
     "apps.core.middleware.RequestIDMiddleware",
@@ -127,13 +117,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-]
-
-AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 
@@ -157,23 +141,9 @@ TEMPLATES = [
 # -----------------------------------------------------------------------------
 # Rest Framework
 # -----------------------------------------------------------------------------
-REST_KNOX = {
-    "SECURE_HASH_ALGORITHM": "hashlib.sha512",
-    "AUTH_TOKEN_CHARACTER_LENGTH": 64,
-    "TOKEN_TTL": timedelta(hours=10),
-    "USER_SERIALIZER": "apps.users.serializers.UserProfileSerializer",
-    "TOKEN_LIMIT_PER_USER": None,
-    "AUTO_REFRESH": False,
-    "AUTO_REFRESH_MAX_TTL": None,
-    "MIN_REFRESH_INTERVAL": 60,
-    "AUTH_HEADER_PREFIX": "Bearer",
-    "TOKEN_MODEL": "knox.AuthToken",
-}
-
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "knox.auth.TokenAuthentication",
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "apps.accounts.authentication.ClerkAuthentication",
     ),
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
     "DEFAULT_VERSION": "v1",
@@ -187,49 +157,24 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "EXCEPTION_HANDLER": "apps.common.exceptions.handler",
-    # TODO ⚡ Adjust the throttle rates for your API
     "DEFAULT_THROTTLE_RATES": {
         "user": "1000/day",
         "anon": "100/day",
-        "user_login": "5/minute",
-        "auth": "10/minute",
         "answer": "120/minute",
         # The Tutor makes a paid LLM call on a cache miss; keep it modest.
         "tutor": "30/minute",
     },
 }
 
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=14),
-    "ROTATE_REFRESH_TOKENS": False,
-    "AUTH_HEADER_TYPES": ("Bearer",),
-}
-
-REST_AUTH = {
-    "USE_JWT": True,
-    "JWT_AUTH_COOKIE": None,
-    "JWT_AUTH_REFRESH_COOKIE": None,
-    "USER_DETAILS_SERIALIZER": "apps.accounts.serializers.AuthUserSerializer",
-    "TOKEN_MODEL": None,
-}
-
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "APP": {
-            "client_id": env("GOOGLE_OAUTH_CLIENT_ID", default=""),
-            "secret": env("GOOGLE_OAUTH_CLIENT_SECRET", default=""),
-            "key": "",
-        },
-        "SCOPE": ["profile", "email"],
-        "AUTH_PARAMS": {"access_type": "online"},
-    }
-}
-
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_LOGIN_METHODS = {"email"}
-ACCOUNT_SIGNUP_FIELDS = ["email*"]
-ACCOUNT_EMAIL_VERIFICATION = "none"
+# -----------------------------------------------------------------------------
+# Clerk (auth) — set these in .env per environment. When CLERK_JWKS_URL is
+# empty the ClerkAuthentication class is a no-op so tests / local dev still
+# work via APIClient.force_authenticate.
+# -----------------------------------------------------------------------------
+CLERK_JWKS_URL = env("CLERK_JWKS_URL", default="")
+CLERK_ISSUER = env("CLERK_ISSUER", default="")
+CLERK_AUDIENCE = env("CLERK_AUDIENCE", default="")
+CLERK_SECRET_KEY = env("CLERK_SECRET_KEY", default="")
 
 # -----------------------------------------------------------------------------
 # Business config
