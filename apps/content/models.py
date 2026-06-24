@@ -30,6 +30,17 @@ class Lesson(models.Model):
         on_delete=models.CASCADE,
         related_name="lessons",
     )
+    # The topic this lesson teaches. Generated questions are linked to a lesson
+    # by matching their tag to this field (see assessments.services), and it
+    # gives the roadmap an explicit lesson<->topic link. Nullable so existing
+    # lessons keep working until they're tagged.
+    tag = models.ForeignKey(
+        "content.Tag",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="lessons",
+    )
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     video_url = models.URLField()

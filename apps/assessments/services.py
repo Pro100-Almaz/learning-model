@@ -7,22 +7,28 @@ tests can exercise it directly without HTTP plumbing.
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import Optional
 
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.exceptions import NotFound, ValidationError
+
+from apps.content.models import Lesson, Tag
 
 from .models import (
     AnswerOption,
     AttemptAnswer,
     Question,
     Test,
+    TestQuestion,
     TestAttempt,
 )
+
+logger = logging.getLogger("apps.assessments")
 
 
 @dataclass
@@ -162,6 +168,166 @@ def enforce_mock_timeout(attempt: TestAttempt) -> bool:
         finish_attempt(attempt)
         return True
     return False
+
+
+# ---------------------------------------------------------------------------
+# Publishing generated questions (the MAIQE graph's Publisher node calls this)
+# ---------------------------------------------------------------------------
+
+# Every generated question carries exactly this many options (1 correct + 3
+# distractors). The Architect builds them; publishing enforces the count.
+N_ANSWER_OPTIONS = 4
+
+
+def _assert_publishable(
+    text: str, options: list[dict], *, expected_options: int = N_ANSWER_OPTIONS
+) -> None:
+    """Refuse to persist anything that breaks the bank's core invariants.
+
+    Downstream automated grading assumes EXACTLY ONE correct option, so a
+    violation here is a data/logic bug — we raise (the batch worker logs and
+    skips) instead of storing a broken item.
+    """
+    if not text:
+        raise ValueError("publish: text is empty; refusing to persist a blank question.")
+    if len(options) != expected_options:
+        raise ValueError(
+            f"publish: expected {expected_options} answer options, got {len(options)}."
+        )
+    n_correct = sum(1 for o in options if o["is_correct"])
+    if n_correct != 1:
+        raise ValueError(f"publish: expected exactly 1 correct option, got {n_correct}.")
+    texts = [o["text"] for o in options]
+    if len(set(texts)) != len(texts):
+        raise ValueError(f"publish: answer options are not distinct: {texts}.")
+
+
+def _resolve_lesson_for_tag(tag: Tag) -> Optional[Lesson]:
+    """The Lesson that teaches this tag's topic, or None.
+
+    Uses the explicit Lesson.tag link. If several lessons teach the tag, the
+    earliest by ``order`` wins (the intro lesson). None means no lesson covers
+    this topic yet — the question is still stored, but unreachable until one
+    exists (the caller logs this).
+    """
+    return Lesson.objects.filter(tag=tag).order_by("order").first()
+
+
+def _link_to_micro_test(question: Question, lesson: Lesson) -> Test:
+    """Add ``question`` to its lesson's micro Test, creating the Test if needed.
+
+    The roadmap pulls practice via ``Test.objects.filter(lesson=lesson,
+    type='micro')`` and the student answer-flow requires a question to belong to
+    the attempt's test — so joining the micro test is what makes a generated
+    question reachable at all. Appends with the next order; idempotent via the
+    (test, question) unique constraint. Returns the Test.
+    """
+    test, _ = Test.objects.get_or_create(
+        lesson=lesson,
+        type="micro",
+        defaults={"title": f"{lesson.title} — практика"},
+    )
+    TestQuestion.objects.get_or_create(
+        test=test,
+        question=question,
+        defaults={"order": TestQuestion.objects.filter(test=test).count()},
+    )
+    return test
+
+
+def publish_generated_question(
+    *,
+    text: str,
+    explanation: str,
+    difficulty: int,
+    solution: dict,
+    options: list[dict],
+    tag_slug: str,
+    tag_name: str,
+    content_hash: Optional[str] = None,
+) -> dict:
+    """Persist one generated question, its options, and its content links.
+
+    The single DB boundary for the MAIQE Publisher node. In one transaction it:
+      0. dedups on ``content_hash`` — reuses the existing row if the same
+         problem was already published (so batches can't duplicate the bank);
+      1. get_or_creates the Tag and resolves the Lesson that teaches it;
+      2. creates the Question (linked to that lesson) + its AnswerOptions;
+      3. joins the question to the lesson's micro Test so students and the
+         roadmap can actually reach it.
+
+    Returns ``{question_id, was_duplicate, lesson_id, test_id}``. On a dedup hit
+    or when no lesson teaches the tag, the link ids are None.
+    """
+
+    def _dup(qid: int) -> dict:
+        return {"question_id": qid, "was_duplicate": True, "lesson_id": None, "test_id": None}
+
+    # Fast path: this exact problem is already in the bank -> reuse it.
+    if content_hash:
+        existing = (
+            Question.objects.filter(content_hash=content_hash)
+            .values_list("pk", flat=True)
+            .first()
+        )
+        if existing is not None:
+            return _dup(existing)
+
+    _assert_publishable(text, options)
+
+    lesson = None
+    try:
+        with transaction.atomic():
+            tag, _ = Tag.objects.get_or_create(slug=tag_slug, defaults={"name": tag_name})
+            lesson = _resolve_lesson_for_tag(tag)
+            question = Question.objects.create(
+                text=text,
+                explanation=explanation,
+                difficulty=difficulty,
+                solution=solution,
+                content_hash=content_hash,
+                lesson=lesson,
+            )
+            question.tags.add(tag)
+            AnswerOption.objects.bulk_create(
+                [
+                    AnswerOption(
+                        question=question,
+                        text=opt["text"],
+                        is_correct=opt["is_correct"],
+                        misconception=opt.get("misconception", ""),
+                    )
+                    for opt in options
+                ]
+            )
+            test = _link_to_micro_test(question, lesson) if lesson else None
+    except IntegrityError:
+        # Lost a race: a concurrent worker inserted the same hash between our
+        # pre-check and our write. The unique constraint is the real guarantee.
+        if content_hash:
+            existing = (
+                Question.objects.filter(content_hash=content_hash)
+                .values_list("pk", flat=True)
+                .first()
+            )
+            if existing is not None:
+                return _dup(existing)
+        raise  # not our dedup constraint -> a genuine error
+
+    if lesson is None:
+        logger.warning(
+            "Published Question #%s (tag=%s) but no Lesson teaches that tag yet; "
+            "it won't surface to students or the roadmap until one does.",
+            question.pk,
+            tag_slug,
+        )
+
+    return {
+        "question_id": question.pk,
+        "was_duplicate": False,
+        "lesson_id": lesson.pk if lesson else None,
+        "test_id": test.pk if test else None,
+    }
 
 
 # ---------------------------------------------------------------------------

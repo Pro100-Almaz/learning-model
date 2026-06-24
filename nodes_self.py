@@ -245,33 +245,6 @@ def critic_router(state: GraphState) -> str:
 # ---------------------------------------------------------------------------
 # Agent 4 — The Publisher (deterministic Python + DB write, no LLM)
 # ---------------------------------------------------------------------------
-def _assert_publishable(
-    draft_text: str, options: list[dict[str, Any]], *, expected_options: int
-) -> None:
-    """Fail loudly if a question would violate the bank's core invariants.
-
-    The Publisher is the last gate before the database, and downstream automated
-    grading assumes EXACTLY ONE correct option. None of these conditions should
-    happen on the Critic's "pass" branch, so a violation is a data/logic bug — we
-    raise (the batch worker logs and skips) instead of persisting a broken item.
-    """
-    if not draft_text:
-        raise ValueError("Publisher: draft_text is empty; refusing to persist a blank question.")
-
-    if len(options) != expected_options:
-        raise ValueError(
-            f"Publisher: expected {expected_options} answer options, got {len(options)}."
-        )
-
-    n_correct = sum(1 for o in options if o["is_correct"])
-    if n_correct != 1:
-        raise ValueError(f"Publisher: expected exactly 1 correct option, got {n_correct}.")
-
-    texts = [o["text"] for o in options]
-    if len(set(texts)) != len(texts):
-        raise ValueError(f"Publisher: answer options are not distinct: {texts}.")
-
-
 def _resolve_content_hash(state: GraphState) -> str | None:
     """The dedup key for this run, or None if there's nothing to hash.
 
@@ -288,103 +261,39 @@ def _resolve_content_hash(state: GraphState) -> str | None:
 
 
 def publisher_node(state: GraphState) -> dict[str, Any]:
-    """Persist the Critic-approved draft as an assessments.Question.
+    """Persist the Critic-approved draft and link it into the content graph.
 
     The ONLY node that touches the database. Reached on the Critic's "pass"
-    branch, so the state is complete and verified. It:
-      0. DEDUP: if a Question with this run's content_hash already exists, reuse
-         it and write nothing (returns was_duplicate=True). This is what stops a
-         batch that re-rolls the same numbers from filling the bank with the same
-         problem — possibly wrapped in a different story. The unique constraint on
-         Question.content_hash is the real guarantee: the pre-check is the fast,
-         common path; the IntegrityError handler covers the race where a
-         concurrent worker inserts the same hash between our check and our write.
-      1. get_or_creates the content.Tag (by slug).
-      2. creates the Question (text + explanation + difficulty + solution + hash).
-      3. attaches the tag (Question.tags M2M).
-      4. bulk-creates the AnswerOptions (one correct + distractors).
-    Steps 1-4 run inside one transaction so a half-written question can't survive
-    a crash.
+    branch, so the state is complete and verified. It's a thin adapter: it
+    gathers the fields off the GraphState and delegates the actual write to
+    ``apps.assessments.services.publish_generated_question`` — which dedups on
+    the content hash, persists the Question + AnswerOptions, sets the Lesson, and
+    joins the lesson's micro Test (so students and the roadmap can reach it).
 
-    Returns {"question_id", "was_duplicate"}: on a fresh write question_id is the
-    new row and was_duplicate is False; on a dedup hit question_id points at the
-    EXISTING row and was_duplicate is True (no new row, no new options).
+    Returns ``{"question_id", "was_duplicate", "lesson_id", "test_id"}`` (the
+    link ids are None on a dedup hit or when no lesson teaches the tag).
 
-    Django models are imported lazily so the pure nodes above stay importable
-    (and unit-testable) without Django configured. This node, by contrast, must
-    run inside a Django context (settings loaded / `django.setup()`).
+    The service is imported lazily so the pure nodes above stay importable (and
+    unit-testable) without Django configured; this node must run inside a Django
+    context (settings loaded / ``django.setup()``).
     """
-    from django.db import IntegrityError, transaction
+    from apps.assessments.services import publish_generated_question
 
-    from apps.assessments.models import AnswerOption, Question
-    from apps.content.models import Tag
-
-    content_hash = _resolve_content_hash(state)
-
-    # Fast path: this exact problem is already in the bank -> reuse it, write
-    # nothing. (Skipped when there's no hash to dedup on.)
-    if content_hash:
-        existing = (
-            Question.objects.filter(content_hash=content_hash)
-            .values_list("pk", flat=True)
-            .first()
-        )
-        if existing is not None:
-            return {"question_id": existing, "was_duplicate": True}
-
-    draft_text = (state.get("draft_text") or "").strip()
-    # The Architect builds the misconception-tagged options; fall back to plain
-    # numeric distractors only if a caller invoked the Publisher without them.
     options = state.get("answer_options") or build_answer_options(state["answer_key"])
+    correct_text = next((o["text"] for o in options if o["is_correct"]), None)
+    explanation = state.get("explanation") or (
+        f"Правильный ответ: {correct_text}." if correct_text else ""
+    )
 
-    # Last gate before the DB — refuse to persist anything that would break the
-    # bank's invariants (see _assert_publishable).
-    _assert_publishable(draft_text, options, expected_options=N_ANSWER_OPTIONS)
-
-    correct_text = next(o["text"] for o in options if o["is_correct"])
-    explanation = state.get("explanation") or f"Правильный ответ: {correct_text}."
-    # The structured worked solution the Architect built — the Tutor's ground
-    # truth for diagnosing a wrong answer (arch.md §5). Default to {} so a
-    # question is still publishable if it somehow arrived without one.
-    solution = state.get("solution") or {}
-
-    try:
-        with transaction.atomic():
-            tag, _ = Tag.objects.get_or_create(
-                slug=state["tag_slug"],
-                defaults={"name": state["tag_name"]},
-            )
-            question = Question.objects.create(
-                text=draft_text,
-                explanation=explanation,
-                difficulty=state.get("difficulty", 1),
-                solution=solution,
-                content_hash=content_hash,
-            )
-            question.tags.add(tag)
-            AnswerOption.objects.bulk_create(
-                [
-                    AnswerOption(
-                        question=question,
-                        text=opt["text"],
-                        is_correct=opt["is_correct"],
-                        misconception=opt.get("misconception", ""),
-                    )
-                    for opt in options
-                ]
-            )
-    except IntegrityError:
-        # We lost a race: a concurrent batch worker inserted the same hash
-        # between our pre-check and our write. The unique constraint did its job
-        # — adopt the winner's row instead of failing the run.
-        if content_hash:
-            existing = (
-                Question.objects.filter(content_hash=content_hash)
-                .values_list("pk", flat=True)
-                .first()
-            )
-            if existing is not None:
-                return {"question_id": existing, "was_duplicate": True}
-        raise  # not our dedup constraint -> a genuine error, don't swallow it
-
-    return {"question_id": question.pk, "was_duplicate": False}
+    return publish_generated_question(
+        text=(state.get("draft_text") or "").strip(),
+        explanation=explanation,
+        difficulty=state.get("difficulty", 1),
+        # The Architect's structured worked solution — the Tutor's ground truth
+        # (arch.md §5). Default {} so a question is still publishable without one.
+        solution=state.get("solution") or {},
+        options=options,
+        tag_slug=state["tag_slug"],
+        tag_name=state["tag_name"],
+        content_hash=_resolve_content_hash(state),
+    )

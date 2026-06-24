@@ -58,4 +58,6 @@ class GraphState(TypedDict, total=False):
     explanation: str                 # solution explanation -> Question.explanation (optional input)
     question_id: int                 # PK of the assessments.Question (existing one if was_duplicate)
     was_duplicate: bool              # True if this problem was already in the bank; no new row written
+    lesson_id: int                   # content.Lesson the question was linked to (None if none teaches its tag)
+    test_id: int                     # the lesson's micro Test the question joined (None if no lesson)
 
