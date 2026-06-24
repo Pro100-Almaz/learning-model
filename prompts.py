@@ -36,7 +36,7 @@ CRITIC_SYSTEM = (
     "equation/operation (e.g. area vs. volume, a rate applied the right way) — "
     "not merely that the right numbers are present.\n"
     "2. READING LEVEL: clear and unambiguous for a 10-11th grader.\n"
-    "3. LANGUAGE: the problem must be written in Kazakh; flag any other language "
+    "3. LANGUAGE: the problem must be written in Kazakh and the other version in Russian; flag any other language "
     "or mixed-language text.\n"
     "4. ANSWER LEAK: the draft must not state, paraphrase, or strongly hint at "
     "the final answer (beyond the literal value, which is already checked).\n\n"
