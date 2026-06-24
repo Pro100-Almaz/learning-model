@@ -50,6 +50,8 @@ EXPECTED_SCORES: tuple[tuple[str, int], ...] = (
 
 # The mock test seeded by the content fixture.
 MOCK_TEST_PK = 1
+# The diagnostic test seeded by the content fixture (drives the roadmap).
+DIAGNOSTIC_TEST_PK = 2
 
 # Tag slug that we deliberately make weak (~30% correct).
 WEAK_TAG_SLUG = "trigonometry"
@@ -184,6 +186,68 @@ class Command(BaseCommand):
                 f"(score={attempt.score:.1f})."
             )
         )
+
+        # --- diagnostic attempt + roadmap -------------------------------
+        diag_test = Test.objects.filter(pk=DIAGNOSTIC_TEST_PK).first()
+        if diag_test is None:
+            self.stdout.write(
+                self.style.WARNING(
+                    "Diagnostic test (pk=2) missing — skipping roadmap seed. "
+                    "Run `seed` after pulling the latest fixtures."
+                )
+            )
+        else:
+            TestAttempt.objects.filter(student=user, test=diag_test).delete()
+            diag_attempt = TestAttempt.objects.create(
+                student=user,
+                test=diag_test,
+                is_completed=True,
+                finished_at=timezone.now(),
+            )
+            diag_questions = list(
+                diag_test.questions.all().prefetch_related("tags", "options")
+            )
+            diag_correct = 0
+            for idx, question in enumerate(diag_questions):
+                is_weak = question.tags.filter(slug=WEAK_TAG_SLUG).exists()
+                should_be_correct = (
+                    (idx % 3 == 0) if is_weak else (((idx * 7) % 10) < 7)
+                )
+                correct_option = question.options.filter(is_correct=True).first()
+                incorrect_option = question.options.filter(is_correct=False).first()
+                if correct_option is None:
+                    continue
+                selected = correct_option if should_be_correct else (
+                    incorrect_option or correct_option
+                )
+                if selected.is_correct:
+                    diag_correct += 1
+                AttemptAnswer.objects.create(
+                    attempt=diag_attempt,
+                    question=question,
+                    selected_option=selected,
+                    is_correct=selected.is_correct,
+                )
+            diag_total = len(diag_questions)
+            diag_attempt.score = (
+                (diag_correct / diag_total * 100.0) if diag_total else 0.0
+            )
+            diag_attempt.save(update_fields=["score"])
+
+            # Generate the roadmap from this diagnostic attempt.
+            from apps.roadmap.services import generate_roadmap_for_student
+
+            roadmap = generate_roadmap_for_student(
+                user, source_attempt=diag_attempt, source="diagnostic"
+            )
+            item_count = roadmap.items.count() if roadmap else 0
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"Diagnostic: {diag_correct}/{diag_total} "
+                    f"(score={diag_attempt.score:.1f}) → roadmap "
+                    f"with {item_count} items."
+                )
+            )
 
         self.stdout.write(self.style.SUCCESS("Demo account ready."))
         self.stdout.write(f"  email:    {DEMO_EMAIL}")

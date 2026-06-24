@@ -93,6 +93,12 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/StudentProfile" }
+              example:
+                target_university: null
+                target_specialty: null
+                target_score: null
+                onboarding_completed: false
+                expected_scores: []
     patch:
       tags: [Profile]
       summary: Update profile / complete onboarding
@@ -131,6 +137,42 @@ paths:
                     type: array
                     description: Other ENT subjects the student estimates
                     items: { type: string }
+              example:
+                universities:
+                  - id: 1
+                    name: "Казахстанско-Британский Технический Университет"
+                    city: "Алматы"
+                    code: "KBTU"
+                    specialties: []
+                  - id: 2
+                    name: "ЕНУ им. Гумилёва"
+                    city: "Астана"
+                    code: "ENU"
+                    specialties: []
+                  - id: 3
+                    name: "Назарбаев Университет"
+                    city: "Астана"
+                    code: "NU"
+                    specialties: []
+                  - id: 4
+                    name: "КазНУ им. аль-Фараби"
+                    city: "Алматы"
+                    code: "KazNU"
+                    specialties: []
+                specialties:
+                  - { id: 11, university_id: 1, name: "Информационные системы", code: "6B06101", latest_threshold: 118 }
+                  - { id: 12, university_id: 1, name: "Компьютерная инженерия", code: "6B06102", latest_threshold: 125 }
+                  - { id: 21, university_id: 2, name: "Программная инженерия",  code: "6B06201", latest_threshold: 115 }
+                  - { id: 22, university_id: 2, name: "Прикладная математика",  code: "6B05402", latest_threshold: 110 }
+                  - { id: 31, university_id: 3, name: "Computer Science",      code: "6B06301", latest_threshold: 132 }
+                  - { id: 32, university_id: 3, name: "Robotics",              code: "6B06302", latest_threshold: 130 }
+                  - { id: 41, university_id: 4, name: "Математика",             code: "6B05401", latest_threshold: 105 }
+                  - { id: 42, university_id: 4, name: "Информатика",           code: "6B06103", latest_threshold: 112 }
+                subjects:
+                  - "История Казахстана"
+                  - "Грамотность чтения"
+                  - "Математическая грамотность"
+                  - "Профильный предмет 2"
 
   /modules/:
     get:
@@ -267,6 +309,31 @@ paths:
               schema:
                 type: array
                 items: { $ref: "#/components/schemas/TagStat" }
+              example:
+                - tag: { id: 1, name: "Логарифмы",       slug: "logarithms" }
+                  correct: 4
+                  total: 6
+                  percent: 67
+                - tag: { id: 2, name: "Тригонометрия",   slug: "trigonometry" }
+                  correct: 2
+                  total: 10
+                  percent: 20
+                - tag: { id: 3, name: "Дроби",           slug: "fractions" }
+                  correct: 8
+                  total: 10
+                  percent: 80
+                - tag: { id: 4, name: "Производная",     slug: "derivative" }
+                  correct: 3
+                  total: 8
+                  percent: 38
+                - tag: { id: 5, name: "Геометрия",       slug: "geometry" }
+                  correct: 5
+                  total: 7
+                  percent: 71
+                - tag: { id: 6, name: "Уравнения",       slug: "equations" }
+                  correct: 9
+                  total: 10
+                  percent: 90
 
   /analytics/recommendations/:
     get:
@@ -280,6 +347,17 @@ paths:
               schema:
                 type: array
                 items: { $ref: "#/components/schemas/Recommendation" }
+              example:
+                - tag: { id: 2, name: "Тригонометрия", slug: "trigonometry" }
+                  percent: 20
+                  lessons:
+                    - { id: 21, title: "Синусы и косинусы",      order: 1, duration_sec: 420, completed: false }
+                    - { id: 22, title: "Тригонометрические тождества", order: 2, duration_sec: 540, completed: false }
+                - tag: { id: 4, name: "Производная", slug: "derivative" }
+                  percent: 38
+                  lessons:
+                    - { id: 41, title: "Понятие производной",    order: 1, duration_sec: 360, completed: false }
+                    - { id: 42, title: "Производная сложной функции", order: 2, duration_sec: 510, completed: false }
 
   /careers/universities/:
     get:
@@ -308,6 +386,21 @@ paths:
           content:
             application/json:
               schema: { $ref: "#/components/schemas/GrantCalcResult" }
+              example:
+                predicted_score: 118
+                math_score: 48
+                other_subjects_total: 70
+                qualifying_grants:
+                  - { university_name: "КазНУ им. аль-Фараби",  specialty_name: "Математика",            min_score: 105, margin: 13 }
+                  - { university_name: "ЕНУ им. Гумилёва",       specialty_name: "Прикладная математика", min_score: 110, margin: 8 }
+                  - { university_name: "ЕНУ им. Гумилёва",       specialty_name: "Программная инженерия", min_score: 115, margin: 3 }
+                  - { university_name: "КазНУ им. аль-Фараби",  specialty_name: "Информатика",           min_score: 112, margin: 6 }
+                goal:
+                  target_score: 132
+                  predicted_score: 118
+                  gap: 14
+                  weakest_tag: "Тригонометрия"
+                  advice: "До цели не хватает 14 — упор на Тригонометрию."
         "409":
           description: No completed math mock attempt yet
           content:
@@ -593,3 +686,12 @@ components:
             current: { type: integer }
             longest: { type: integer }
             active_today: { type: boolean }
+      example:
+        total_xp: 1240
+        level_code: znatok
+        level_label: Знаток
+        xp_to_next_level: 3760
+        streak:
+          current: 7
+          longest: 15
+          active_today: true
