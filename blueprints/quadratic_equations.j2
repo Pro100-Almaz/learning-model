@@ -1,0 +1,14 @@
+{#- Pretty-print a x^2 + b x + c = 0: drop a unit leading coefficient, fold
+    signs into the operator, and omit zero or unit coefficients. `a` is always
+    a positive integer (>= 1); `b`/`c` may be negative or zero. -#}
+{%- macro quad(a, b, c) -%}
+{{ '' if a == 1 else a }}x^2
+{%- if b != 0 %} {{ '+' if b > 0 else '-' }} {{ '' if b in (1, -1) else (b if b > 0 else -b) }}x{% endif %}
+{%- if c != 0 %} {{ '+' if c > 0 else '-' }} {{ c if c > 0 else -c }}{% endif %} = 0
+{%- endmacro -%}
+MATH CONSTRAINTS (do not alter any number):
+- Equation: {{ quad(a, b, c) }}
+- Task: find both real roots of the equation.
+- The roots are integers; the student should solve via factoring, Vieta's theorem, or the quadratic formula.
+- Render all math as LaTeX inside $...$ (e.g. ${{ quad(a, b, c) }}$).
+- Do NOT state or hint at the values of the roots.

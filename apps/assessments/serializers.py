@@ -102,6 +102,16 @@ class AttemptAnswerInputSerializer(serializers.Serializer):
     option_id = serializers.IntegerField()
 
 
+class TutorRequestInputSerializer(serializers.Serializer):
+    question_id = serializers.IntegerField()
+
+
+class TutorFeedbackSerializer(serializers.Serializer):
+    """Tutor output — only the note. Never exposes the misconception or answer."""
+
+    feedback = serializers.CharField()
+
+
 # Helper exports so tests / other code can use models cleanly.
 __all__ = [
     "TestSerializer",
@@ -113,6 +123,8 @@ __all__ = [
     "AttemptReviewItemSerializer",
     "AttemptCreateInputSerializer",
     "AttemptAnswerInputSerializer",
+    "TutorRequestInputSerializer",
+    "TutorFeedbackSerializer",
     "AttemptAnswer",
     "TestAttempt",
 ]

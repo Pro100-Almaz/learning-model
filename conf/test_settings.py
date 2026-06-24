@@ -18,3 +18,7 @@ LOGGING["loggers"]["apps"]["level"] = "DEBUG"  # noqa
 REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"]["user_login"] = "1000/minute"  # noqa
 REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"]["user"] = "1000/minute"  # noqa
 REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"]["anon"] = "1000/minute"  # noqa
+
+# settings.py enables HTTPS redirect whenever DEBUG is off; the test client
+# speaks plain HTTP, so without this every endpoint test 301-redirects to https.
+SECURE_SSL_REDIRECT = False

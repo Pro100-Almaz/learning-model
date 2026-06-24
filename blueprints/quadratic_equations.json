@@ -1,0 +1,52 @@
+{
+  "topic": "quadratic_equations",
+  "display_name": "Solving a quadratic equation",
+  "curriculum_ref": "KZ Grade 10 — Quadratic equations / Vieta's theorem",
+  "constraints_template": "quadratic_equations.j2",
+
+  "_comment": "Becomes an assessments. Question tagged with the content.Tag below. Base ranges are tuned for the HARDEST band (difficulty 3); `difficulty_overrides` shrink them for easier students.",
+
+  "tag": { "name": "Квадратные уравнения", "slug": "kvadratnye-uravneniya" },
+  "default_difficulty": 1,
+
+  "parameters": {
+    "a": { "type": "int", "min": 1, "max": 3, "desc": "leading coefficient" },
+    "r1": { "type": "int", "min": -9, "max": 9, "desc": "first root" },
+    "r2": { "type": "int", "min": -9, "max": 9, "desc": "second root" }
+  },
+
+  "difficulty_overrides": {
+    "1": { "a": { "max": 1 }, "r1": { "min": -5, "max": 5 }, "r2": { "min": -5, "max": 5 } },
+    "2": { "a": { "max": 2 } }
+  },
+
+  "derived": {
+    "b": "-a * (r1 + r2)",
+    "c": "a * r1 * r2"
+  },
+
+  "constraints": [
+    "r1 != 0 or r2 != 0  // avoid the trivial x=0 double root",
+    "r1 != r2           // ensure two distinct roots"
+  ],
+
+  "integer_clean": true,
+
+  "answer": {
+    "type": "roots",
+    "values": ["r1", "r2"],
+    "desc": "answer_key = sorted([r1, r2])"
+  },
+
+  "distractors": [
+    { "id": "sign_flip_both", "desc": "Reported both roots with the opposite sign — likely dropped the minus sign when applying Vieta's sum x1 + x2 = -b/a.", "transform": ["-r1", "-r2"] },
+    { "id": "sign_slip_first", "desc": "Got the first root's sign wrong — a sign slip when splitting the middle term while factoring.", "transform": ["-r1", "r2"] },
+    { "id": "sign_slip_second", "desc": "Got the second root's sign wrong — a sign slip when splitting the middle term while factoring.", "transform": ["r1", "-r2"] }
+  ],
+
+  "narrative_settings": [
+    "trajectory of a basketball shot",
+    "profit model for a small Almaty cafe",
+    "dimensions of a rectangular garden plot"
+  ]
+}

@@ -194,6 +194,8 @@ REST_FRAMEWORK = {
         "user_login": "5/minute",
         "auth": "10/minute",
         "answer": "120/minute",
+        # The Tutor makes a paid LLM call on a cache miss; keep it modest.
+        "tutor": "30/minute",
     },
 }
 
