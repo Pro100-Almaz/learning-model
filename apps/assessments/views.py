@@ -84,9 +84,9 @@ class AttemptAnswerView(APIView):
             option_id=payload.validated_data["option_id"],
         )
 
-        # Mock tests withhold correctness until /finish/.
+        # Mock + diagnostic withhold correctness until /finish/.
         is_correct_for_client = (
-            None if attempt.test.type == "mock" else result.is_correct
+            None if attempt.test.type in ("mock", "diagnostic") else result.is_correct
         )
         return Response(
             {

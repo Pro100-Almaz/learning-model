@@ -1,17 +1,45 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1781762510812,
+  "lastScanned": 1782282266172,
   "projectRoot": "/Users/almazamanzholuly/Documents/qadam/learning-model",
   "techStack": {
-    "languages": [],
-    "frameworks": [],
+    "languages": [
+      {
+        "name": "Python",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "pyproject.toml"
+        ]
+      },
+      {
+        "name": "C/C++",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "Makefile"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "django",
+        "version": null,
+        "category": "backend"
+      },
+      {
+        "name": "pytest",
+        "version": null,
+        "category": "testing"
+      }
+    ],
     "packageManager": null,
     "runtime": null
   },
   "build": {
-    "buildCommand": null,
-    "testCommand": null,
-    "lintCommand": null,
+    "buildCommand": "make build",
+    "testCommand": "make test",
+    "lintCommand": "ruff check",
     "devCommand": null,
     "scripts": {}
   },
@@ -24,19 +52,123 @@
   "structure": {
     "isMonorepo": false,
     "workspaces": [],
-    "mainDirectories": [],
+    "mainDirectories": [
+      "docs",
+      "scripts",
+      "static"
+    ],
     "gitBranches": {
       "defaultBranch": "main",
       "branchingStrategy": null
     }
   },
   "customNotes": [],
-  "directoryMap": {},
+  "directoryMap": {
+    "apps": {
+      "path": "apps",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1782282266168,
+      "keyFiles": []
+    },
+    "conf": {
+      "path": "conf",
+      "purpose": null,
+      "fileCount": 8,
+      "lastAccessed": 1782282266168,
+      "keyFiles": [
+        "__init__.py",
+        "asgi.py",
+        "celery.py",
+        "settings.py",
+        "test_settings.py"
+      ]
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 15,
+      "lastAccessed": 1782282266168,
+      "keyFiles": [
+        "ai.md",
+        "authentication.md",
+        "auto_documentation.md",
+        "core_endpoints.md",
+        "database_seeding.md"
+      ]
+    },
+    "plan": {
+      "path": "plan",
+      "purpose": null,
+      "fileCount": 6,
+      "lastAccessed": 1782282266168,
+      "keyFiles": [
+        "00_README_Build_Harness.md",
+        "02_Data_Model_Spec.md",
+        "03_Ticket_Breakdown.md",
+        "04_Environment_And_Scaffold.md",
+        "05_Seed_Data_Spec.md"
+      ]
+    },
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 2,
+      "lastAccessed": 1782282266168,
+      "keyFiles": [
+        "bump.py",
+        "wait-for-migrations.sh"
+      ]
+    },
+    "static": {
+      "path": "static",
+      "purpose": "Static files",
+      "fileCount": 3,
+      "lastAccessed": 1782282266169,
+      "keyFiles": [
+        "TODO.png",
+        "USE.png",
+        "logo.png"
+      ]
+    },
+    "templates": {
+      "path": "templates",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1782282266169,
+      "keyFiles": [
+        "404.html",
+        "500.html",
+        "index.html"
+      ]
+    },
+    "docs/assets": {
+      "path": "docs/assets",
+      "purpose": "Static assets",
+      "fileCount": 1,
+      "lastAccessed": 1782282266169,
+      "keyFiles": [
+        "logo.png"
+      ]
+    }
+  },
   "hotPaths": [
     {
       "path": "conf/settings.py",
-      "accessCount": 15,
-      "lastAccessed": 1781765670949,
+      "accessCount": 18,
+      "lastAccessed": 1782283646760,
+      "type": "file"
+    },
+    {
+      "path": "conf/urls.py",
+      "accessCount": 12,
+      "lastAccessed": 1782283648184,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/models.py",
+      "accessCount": 11,
+      "lastAccessed": 1782283585182,
       "type": "file"
     },
     {
@@ -46,15 +178,15 @@
       "type": "file"
     },
     {
-      "path": "conf/urls.py",
-      "accessCount": 9,
-      "lastAccessed": 1781765671502,
+      "path": "apps/assessments/views.py",
+      "accessCount": 10,
+      "lastAccessed": 1782283592310,
       "type": "file"
     },
     {
-      "path": "apps/assessments/views.py",
-      "accessCount": 8,
-      "lastAccessed": 1781765471667,
+      "path": "apps/content/models.py",
+      "accessCount": 9,
+      "lastAccessed": 1782208287382,
       "type": "file"
     },
     {
@@ -70,21 +202,15 @@
       "type": "file"
     },
     {
-      "path": "apps/content/models.py",
-      "accessCount": 8,
-      "lastAccessed": 1781765671450,
-      "type": "file"
-    },
-    {
-      "path": "apps/assessments/models.py",
-      "accessCount": 8,
-      "lastAccessed": 1781765671949,
-      "type": "file"
-    },
-    {
       "path": "apps/accounts/models.py",
-      "accessCount": 7,
-      "lastAccessed": 1781765673085,
+      "accessCount": 8,
+      "lastAccessed": 1782208286312,
+      "type": "file"
+    },
+    {
+      "path": "pyproject.toml",
+      "accessCount": 8,
+      "lastAccessed": 1782222395319,
       "type": "file"
     },
     {
@@ -101,8 +227,14 @@
     },
     {
       "path": "apps/analytics/services.py",
-      "accessCount": 5,
-      "lastAccessed": 1781765237052,
+      "accessCount": 6,
+      "lastAccessed": 1782208290337,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/services.py",
+      "accessCount": 6,
+      "lastAccessed": 1782283748481,
       "type": "file"
     },
     {
@@ -148,12 +280,6 @@
       "type": "file"
     },
     {
-      "path": "pyproject.toml",
-      "accessCount": 4,
-      "lastAccessed": 1781765696350,
-      "type": "file"
-    },
-    {
       "path": "apps/accounts/auth_urls.py",
       "accessCount": 4,
       "lastAccessed": 1781765743422,
@@ -181,12 +307,6 @@
       "path": "apps/analytics/serializers.py",
       "accessCount": 3,
       "lastAccessed": 1781765244231,
-      "type": "file"
-    },
-    {
-      "path": "apps/assessments/services.py",
-      "accessCount": 3,
-      "lastAccessed": 1781765247480,
       "type": "file"
     },
     {
@@ -227,8 +347,8 @@
     },
     {
       "path": ".env.example",
-      "accessCount": 2,
-      "lastAccessed": 1781764705100,
+      "accessCount": 3,
+      "lastAccessed": 1782208279223,
       "type": "file"
     },
     {

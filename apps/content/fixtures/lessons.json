@@ -749,5 +749,29 @@
   {"model": "assessments.testquestion", "pk": 17, "fields": {"test": 1, "question": 17, "order": 17}},
   {"model": "assessments.testquestion", "pk": 18, "fields": {"test": 1, "question": 18, "order": 18}},
   {"model": "assessments.testquestion", "pk": 19, "fields": {"test": 1, "question": 19, "order": 19}},
-  {"model": "assessments.testquestion", "pk": 20, "fields": {"test": 1, "question": 20, "order": 20}}
+  {"model": "assessments.testquestion", "pk": 20, "fields": {"test": 1, "question": 20, "order": 20}},
+
+  {
+    "model": "assessments.test",
+    "pk": 2,
+    "fields": {
+      "type": "diagnostic",
+      "title": "Диагностический тест",
+      "lesson": null,
+      "time_limit_sec": null
+    }
+  },
+
+  {"model": "assessments.testquestion", "pk": 21, "fields": {"test": 2, "question": 1,  "order": 1}},
+  {"model": "assessments.testquestion", "pk": 22, "fields": {"test": 2, "question": 2,  "order": 2}},
+  {"model": "assessments.testquestion", "pk": 23, "fields": {"test": 2, "question": 4,  "order": 3}},
+  {"model": "assessments.testquestion", "pk": 24, "fields": {"test": 2, "question": 5,  "order": 4}},
+  {"model": "assessments.testquestion", "pk": 25, "fields": {"test": 2, "question": 10, "order": 5}},
+  {"model": "assessments.testquestion", "pk": 26, "fields": {"test": 2, "question": 11, "order": 6}},
+  {"model": "assessments.testquestion", "pk": 27, "fields": {"test": 2, "question": 13, "order": 7}},
+  {"model": "assessments.testquestion", "pk": 28, "fields": {"test": 2, "question": 14, "order": 8}},
+  {"model": "assessments.testquestion", "pk": 29, "fields": {"test": 2, "question": 16, "order": 9}},
+  {"model": "assessments.testquestion", "pk": 30, "fields": {"test": 2, "question": 17, "order": 10}},
+  {"model": "assessments.testquestion", "pk": 31, "fields": {"test": 2, "question": 7,  "order": 11}},
+  {"model": "assessments.testquestion", "pk": 32, "fields": {"test": 2, "question": 8,  "order": 12}}
 ]

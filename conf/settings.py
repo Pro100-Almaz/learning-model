@@ -111,6 +111,7 @@ INSTALLED_APPS = [
     "apps.analytics",
     "apps.careers",
     "apps.gamification",
+    "apps.roadmap",
     "apps.common",
 ]
 

@@ -1,7 +1,0 @@
-{
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"DJANGO_SETTINGS_MODULE=conf.test_settings /Users/almazamanzholuly/Documents/qadam/learning-model/.venv/bin/python -c \\\"\\nimport django\\ndjango.setup()\\nfrom django.core.management import f...",
-  "error": "Exit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 8, in <module>\n    path = __import__(cfg.name + '.management', fromlist=['']).__path__[0] if cfg.name+'.management' else None\n           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nModuleNotFoundError: No module named 'apps.users.management'",
-  "timestamp": "2026-06-18T06:58:38.937Z",
-  "retry_count": 1
-}

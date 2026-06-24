@@ -1,4 +1,4 @@
-.PHONY: help up down build rebuild shell migrate makemigrations test test-cov logs logs-worker logs-beat superuser seed clean prune ps docs docs-serve docs-build docs-deploy bump update-deps add-dep remove-dep
+.PHONY: help up upd down build rebuild shell migrate makemigrations test test-cov logs logs-worker logs-beat superuser seed clean prune ps docs docs-serve docs-build docs-deploy bump update-deps add-dep remove-dep
 
 # Default target - show help
 help:
@@ -7,7 +7,8 @@ help:
 	@echo "Usage: make [target]"
 	@echo ""
 	@echo "Service Management:"
-	@echo "  up              Start all services (db, redis, backend, worker, beat)"
+	@echo "  up              Start all services (db, redis, backend, worker, beat) — attached"
+	@echo "  upd             Start all services in detached mode (background)"
 	@echo "  down            Stop all services"
 	@echo "  build           Build Docker image"
 	@echo "  rebuild         Rebuild image and restart services"
@@ -48,6 +49,9 @@ help:
 # Service Management
 up:
 	docker compose up
+
+upd:
+	docker compose up -d
 
 down:
 	docker compose down

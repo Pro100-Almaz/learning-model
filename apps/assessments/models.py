@@ -62,9 +62,10 @@ class Test(models.Model):
     TYPE_CHOICES = [
         ("micro", "Micro"),
         ("mock", "Mock"),
+        ("diagnostic", "Diagnostic"),
     ]
 
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES)
     title = models.CharField(max_length=200)
     lesson = models.ForeignKey(
         "content.Lesson",

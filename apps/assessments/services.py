@@ -103,6 +103,27 @@ def record_answer(
     return AnswerResult(is_correct=is_correct, xp_awarded=xp_awarded)
 
 
+def _trigger_roadmap_hooks(attempt: TestAttempt) -> None:
+    """Notify the roadmap app that an attempt just finished.
+
+    Lazy import to keep assessments standalone and to avoid an app-loading
+    cycle. Failures here must never break the attempt finish flow.
+    """
+    try:
+        from apps.roadmap import services as roadmap_services
+    except Exception:  # pragma: no cover - roadmap optional at runtime
+        return
+    try:
+        if attempt.test.type == "diagnostic":
+            roadmap_services.generate_roadmap_for_student(
+                attempt.student, source_attempt=attempt, source="diagnostic"
+            )
+        # Mark any matching micro-test item on the active roadmap.
+        roadmap_services.mark_item_status_from_attempt(attempt)
+    except Exception:  # pragma: no cover - defensive
+        return
+
+
 @transaction.atomic
 def finish_attempt(attempt: TestAttempt) -> TestAttempt:
     """Mark the attempt finished and compute its score (0–100)."""
@@ -120,6 +141,7 @@ def finish_attempt(attempt: TestAttempt) -> TestAttempt:
     attempt.is_completed = True
     attempt.finished_at = timezone.now()
     attempt.save(update_fields=["score", "is_completed", "finished_at"])
+    _trigger_roadmap_hooks(attempt)
     return attempt
 
 

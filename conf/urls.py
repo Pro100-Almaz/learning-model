@@ -42,6 +42,7 @@ urlpatterns = [
                     path("analytics/", include("apps.analytics.urls")),
                     path("careers/", include("apps.careers.urls")),
                     path("gamification/", include("apps.gamification.urls")),
+                    path("roadmap/", include("apps.roadmap.urls")),
                 ],
                 "v1",
             ),
