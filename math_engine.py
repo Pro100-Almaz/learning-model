@@ -64,6 +64,26 @@ def render_constraints(blueprint: dict, spec: dict) -> str:
     return template.render(**spec)
 
 
+def render_value(value: Any, spec: dict) -> Any:
+    """Render one declarative (static_choice) answer/transform value vs the spec.
+
+    A static-choice answer field may embed Jinja expressions referencing the
+    rolled parameters, so a parameter-dependent answer needs no symbolic engine:
+
+        "{{ -denom_d }}/{{ denom_c }}"                 -> "4/1"   (arithmetic)
+        "2pi/{{ k }}"                                  -> "2pi/3" (substitution)
+        "{{ 'Влево' if shift_x > 0 else 'Вправо' }}"   -> "Вправо" (branching)
+
+    Non-string values, and strings without a Jinja marker (`{{` expression or
+    `{%` statement) — e.g. "нечетная", "[-1, 1]" — pass through unchanged, so
+    purely static answers cost nothing. Note a branched answer may use only
+    `{% if %}` tags with no `{{ }}`, so both markers must be checked.
+    """
+    if not isinstance(value, str) or ("{{" not in value and "{%" not in value):
+        return value
+    return TEMPLATE_ENV.from_string(value).render(**spec)
+
+
 def compute_content_hash(topic: str, math_spec: dict[str, Any]) -> str:
     """A stable fingerprint of a problem's *mathematical* identity (dedup key).
 
@@ -124,9 +144,14 @@ def generate_math_spec(blueprint: dict, difficulty: int) -> dict[str, Any]:
     for _ in range(1000):  # safety cap so a bad blueprint can't loop forever
         spec: dict[str, Any] = {}
 
-        # Roll one random integer per parameter, inside its [min, max] range.
+        # Roll one value per parameter: pick from a fixed `options` list when the
+        # blueprint declares one (string/float-valued params like a function name
+        # or a table angle), otherwise a random integer inside its [min, max] range.
         for name, rule in parameters.items():
-            spec[name] = random.randint(rule["min"], rule["max"])
+            if "options" in rule:
+                spec[name] = random.choice(rule["options"])
+            else:
+                spec[name] = random.randint(rule["min"], rule["max"])
 
         # Fill in any values that are *computed* from the rolled ones.
         for name, expr in derived.items():
@@ -199,6 +224,7 @@ def build_solution(blueprint: dict, spec: dict, answer_key: Any) -> dict[str, An
         "roots": _solution_roots,
         "progression": _solution_progression,
         "integral_definite": _solution_integral,
+        "static_choice": _solution_static,
     }
     builder = builders.get(kind)
     if builder is None:
@@ -272,6 +298,23 @@ def _solution_integral(answer: dict, spec: dict) -> list[dict[str, str]]:
     ]
 
 
+def _solution_static(answer: dict, spec: dict) -> list[dict[str, str]]:
+    """'Worked solution' for a declarative (static_choice) answer.
+
+    These topics are conceptual — a classification or a set of named properties —
+    so there is nothing to *compute*: the derivation is simply the correct
+    value(s) spelled out, mirroring the `correct` field compute_answer_key
+    returns. A dict yields one step per named property; a scalar yields one step.
+    """
+    correct = answer["correct"]
+    if isinstance(correct, dict):
+        return [
+            {"label": str(key), "detail": str(render_value(val, spec))}
+            for key, val in correct.items()
+        ]
+    return [{"label": "Answer", "detail": str(render_value(correct, spec))}]
+
+
 def _fmt_frac(value: Fraction) -> str:
     """Render a Fraction as a plain int when it's whole, else as 'p/q'."""
     if value.denominator == 1:
@@ -302,6 +345,7 @@ def build_answer_options(
     distractors: list[dict] | None = None,
     spec: dict | None = None,
     n_options: int = 4,
+    literal: bool = False,
 ) -> list[dict[str, Any]]:
     """Build one correct option plus wrong options, each tagged with its cause.
 
@@ -318,6 +362,12 @@ def build_answer_options(
          remaining slots are topped up with the answer shifted by a fixed delta.
          These carry an empty `misconception` — the Tutor must infer those.
 
+    `literal=True` marks a declarative (static_choice) answer: transforms are
+    applied as literal replacement text (no eval / no int-coercion) and the
+    numeric-shift fallback is skipped, since shifting strings is meaningless. A
+    static topic therefore yields exactly one option per declared distractor (plus
+    the correct one); declare enough distractors to fill `n_options`.
+
     Options are de-duplicated by rendered text and shuffled, so the correct one
     isn't always first. The shuffle uses `random`; seed it in tests.
     """
@@ -331,7 +381,7 @@ def build_answer_options(
         if len(options) >= n_options:
             break
         try:
-            wrong = _apply_misconception(d["transform"], spec, answer_key)
+            wrong = _apply_misconception(d["transform"], spec, answer_key, literal)
         except (ArithmeticError, KeyError, TypeError, ValueError):
             # A transform that can't be evaluated for this roll (e.g. divide by
             # zero) is simply skipped; the fallback below tops up the slot.
@@ -342,33 +392,54 @@ def build_answer_options(
         seen.add(text)
         options.append({"text": text, "is_correct": False, "misconception": d["id"]})
 
-    # 2) Fallback: top up any remaining slots with generic numeric shifts.
-    for delta in (1, -1, 2, -2, 3, -3, 5, -5, 10, -10):
-        if len(options) >= n_options:
-            break
-        candidate = format_answer(_shift_numbers(answer_key, delta))
-        if candidate not in seen:
-            seen.add(candidate)
-            options.append({"text": candidate, "is_correct": False, "misconception": ""})
+    # 2) Fallback: top up any remaining slots with generic numeric shifts. Skipped
+    #    for declarative answers, where the values are text and shifting is a no-op.
+    if not literal:
+        for delta in (1, -1, 2, -2, 3, -3, 5, -5, 10, -10):
+            if len(options) >= n_options:
+                break
+            candidate = format_answer(_shift_numbers(answer_key, delta))
+            if candidate not in seen:
+                seen.add(candidate)
+                options.append({"text": candidate, "is_correct": False, "misconception": ""})
 
     random.shuffle(options)
     return options
 
 
-def _apply_misconception(transform: Any, spec: dict, answer_key: Any) -> Any:
+def _apply_misconception(
+    transform: Any, spec: dict, answer_key: Any, literal: bool = False
+) -> Any:
     """Evaluate a blueprint distractor `transform` into a wrong-but-plausible answer.
 
     The result has the SAME shape as `answer_key` (so `format_answer` renders it
-    identically to the correct option), mirroring `compute_answer_key`'s three
-    answer shapes. Every value is coerced to int, matching the integer-clean
-    guarantee the real answer key satisfies. `transform` is expressed in terms of
-    the rolled `spec`, exactly like the blueprint's `derived` / `answer` formulas,
-    and is evaluated with the same builtin-free `_eval`.
+    identically to the correct option), mirroring `compute_answer_key`'s answer
+    shapes. `transform` is expressed in terms of the rolled `spec`, exactly like
+    the blueprint's `derived` / `answer` formulas, and is evaluated with the same
+    builtin-free `_eval`. Every value is coerced to int, matching the
+    integer-clean guarantee the real answer key satisfies.
 
         roots        -> transform is a list of exprs:  ["-r1", "-r2"]
         progression  -> transform is a dict of exprs:  {"a_n": "...", "S_n": "..."}
         scalar       -> transform is a single expr:    "a/3*upper**3 + ..."
+
+    `literal=True` (declarative / static_choice answers): the transform carries
+    replacement TEXT, applied without evaluation or int-coercion. A dict transform
+    overrides just the named fields of the correct answer (the other properties
+    stay correct, so only the targeted misconception is wrong); a list/scalar
+    transform replaces the answer outright.
+
+        static dict  -> transform overrides fields:    {"четность": "четная"}
     """
+    if literal:
+        if isinstance(answer_key, dict):
+            # Render each override vs the spec, then override only those fields.
+            overrides = {key: render_value(val, spec) for key, val in transform.items()}
+            return {**answer_key, **overrides}
+        if isinstance(answer_key, (list, tuple)):
+            return [render_value(v, spec) for v in transform]
+        return render_value(transform, spec)
+
     if isinstance(answer_key, dict):
         # Follow answer_key's key order so the rendered text lines up column-for-column.
         return {key: int(_eval(transform[key], spec)) for key in answer_key}
