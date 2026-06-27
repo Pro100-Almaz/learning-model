@@ -1,0 +1,39 @@
+{
+  "topic": "trig_eq_deg_sum",
+  "display_name": "Комбинация методов: Понижение степени и преобразование в произведение",
+  "curriculum_ref": "10 класс — Решение тригонометрических уравнений",
+  "constraints_template": "trig_eq_deg_sum.j2",
+
+  "_comment": "Уравнения вида sin^2(ax) + sin^2(bx) = 1. Применяется формула понижения степени (аргумент удваивается). Дроби сокращаются, единицы уничтожаются. Затем применяется формула суммы/разности косинусов для разложения на множители.",
+
+  "tag": { "name": "Понижение степени и суммы", "slug": "trig-deg-red-sum" },
+  "default_difficulty": 6,
+
+  "parameters": {
+    "arg1": { "type": "string", "options": ["2x", "x"], "desc": "Аргумент первого синуса в квадрате" },
+    "arg2": { "type": "string", "options": ["3x", "2x"], "desc": "Аргумент второго синуса в квадрате" },
+    "rhs": { "type": "string", "options": ["1"], "desc": "Правая часть уравнения" }
+  },
+
+  "constraints": [
+    "not (arg1 == '2x' and arg2 == '2x') // (2x,2x) вырождается в одно семейство (2sin^2(2x)=1) и ломает единый вид ответа из двух серий"
+  ],
+  "integer_clean": true,
+
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% if arg1 == '2x' and arg2 == '3x' %}x = pi/10 + pi*n/5;  x = pi/2 + pi*n{% elif arg1 == 'x' and arg2 == '3x' %}x = pi/8 + pi*n/4;  x = pi/4 + pi*n/2{% else %}x = pi/6 + pi*n/3;  x = pi/2 + pi*n{% endif %}",
+    "desc": "sin^2(arg1)+sin^2(arg2)=1 -> понижаем степень (аргумент удваивается), приводим -> cos(2*arg1)+cos(2*arg2)=0 -> сумма в произведение 2cos(arg1+arg2)cos(arg1-arg2)=0 -> два уравнения cos(kx)=0, каждое даёт x = pi/(2k) + pi*n/k. Ответ — объединение двух серий."
+  },
+
+  "distractors": [
+    { "id": "forgot_angle_double", "desc": "Забыл удвоить аргумент в формуле понижения (взял cos(arg) вместо cos(2*arg)), из-за чего частоты множителей вдвое меньше.", "transform": "{% if arg1 == '2x' and arg2 == '3x' %}x = pi/5 + 2pi*n/5;  x = pi + 2pi*n{% elif arg1 == 'x' and arg2 == '3x' %}x = pi/4 + pi*n/2;  x = pi/2 + pi*n{% else %}x = pi/3 + 2pi*n/3;  x = pi + 2pi*n{% endif %}" },
+    { "id": "dropped_one_factor", "desc": "Приравнял к нулю только один множитель произведения, потеряв вторую серию решений.", "transform": "{% if arg1 == '2x' and arg2 == '3x' %}x = pi/10 + pi*n/5{% elif arg1 == 'x' and arg2 == '3x' %}x = pi/8 + pi*n/4{% else %}x = pi/6 + pi*n/3{% endif %}" },
+    { "id": "period_not_divided", "desc": "Не разделил период на коэффициент при x (оставил 2pin вместо pin/k в каждой серии).", "transform": "{% if arg1 == '2x' and arg2 == '3x' %}x = pi/10 + 2pi*n;  x = pi/2 + 2pi*n{% elif arg1 == 'x' and arg2 == '3x' %}x = pi/8 + 2pi*n;  x = pi/4 + 2pi*n{% else %}x = pi/6 + 2pi*n;  x = pi/2 + 2pi*n{% endif %}" }
+  ],
+
+  "narrative_settings": [
+    "вычисление резонансных частот в сложных механических системах",
+    "анализ биений при наложении двух звуковых волн разных частот"
+  ]
+}

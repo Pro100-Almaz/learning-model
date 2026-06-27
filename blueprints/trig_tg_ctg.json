@@ -1,0 +1,40 @@
+{
+  "topic": "trig_tg_ctg",
+  "display_name": "Свойства функций тангенса и котангенса",
+  "curriculum_ref": "10 класс — Тригонометрические функции",
+  "constraints_template": "trig_tg_ctg.j2",
+
+  "_comment": "Нахождение выколотых точек (ОДЗ) и периода. Тангенс не существует в точках pi/2 + pi*k, а котангенс в pi*k [3, 10].",
+
+  "tag": { "name": "Тангенс и Котангенс", "slug": "tg-i-ctg" },
+  "default_difficulty": 2,
+
+  "parameters": {
+    "func_type": { "type": "string", "options": ["tg", "ctg"], "desc": "Выбор функции для генерации вопроса" }
+  },
+
+  "constraints": [],
+  "integer_clean": true,
+
+  "answer": {
+    "type": "static_choice",
+    "correct": {
+      "ОДЗ": "{{ 'x != pi/2 + pi*k' if func_type == 'tg' else 'x != pi*k' }}",
+      "область_значений": "(-inf, +inf)",
+      "четность": "нечетная",
+      "период": "pi"
+    },
+    "desc": "Свойства выбранной функции (func_type). ОДЗ зависит от func_type. answer_key = correct."
+  },
+
+  "distractors": [
+    { "id": "swapped_domains", "desc": "Ученик перепутал ограничения тангенса и котангенса местами.", "transform": { "ОДЗ": "{{ 'x != pi*k' if func_type == 'tg' else 'x != pi/2 + pi*k' }}" } },
+    { "id": "limited_range", "desc": "По аналогии с синусом и косинусом ученик решил, что тангенс ограничен по оси Y.", "transform": { "область_значений": "[-1, 1]" } },
+    { "id": "wrong_period_tg", "desc": "Ученик указал стандартный период 2*pi вместо укороченного периода pi.", "transform": { "период": "2*pi" } }
+  ],
+
+  "narrative_settings": [
+    "расчет углов наклона ската крыши",
+    "анализ длины отбрасываемой тени в зависимости от угла солнца"
+  ]
+}

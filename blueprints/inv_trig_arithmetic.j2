@@ -1,0 +1,27 @@
+{#- Real-parameter version. `expression_type` picks the shape; only the relevant
+    parameters are used (see the JSON _comment). Lookup tables convert the raw
+    function names and table values into clean LaTeX. -#}
+{%- set arc = {'arcsin': '\\arcsin', 'arccos': '\\arccos', 'arctg': '\\operatorname{arctg}'} -%}
+{%- set trig = {'sin': '\\sin', 'cos': '\\cos', 'tg': '\\operatorname{tg}'} -%}
+{%- set vals = {'0': '0', '1/2': '\\frac{1}{2}', '-1/2': '-\\frac{1}{2}', 'sqrt(2)/2': '\\frac{\\sqrt{2}}{2}', '-sqrt(2)/2': '-\\frac{\\sqrt{2}}{2}', 'sqrt(3)/2': '\\frac{\\sqrt{3}}{2}', '-sqrt(3)/2': '-\\frac{\\sqrt{3}}{2}', '1': '1', '-1': '-1'} -%}
+{#- coefficient prefix: drop it entirely when the coefficient is 1 -#}
+{%- macro coef(c) -%}{{ '' if c == 1 else c ~ ' \\cdot ' }}{%- endmacro -%}
+MATH CONSTRAINTS (do not alter any number):
+{% if expression_type == 'linear_combination' -%}
+- Expression: y = {{ coef(coef1) }}{{ arc[func1] }}\left({{ vals[val1] }}\right) {{ op }} {{ coef(coef2) }}{{ arc[func2] }}\left({{ vals[val2] }}\right)
+- Task: evaluate each arc-function to a radian angle, multiply by its integer
+  coefficient (mind the sign when a coefficient meets a negative angle), then combine
+  the two results over a common denominator.
+{%- elif expression_type == 'direct_composition' -%}
+- Expression: y = {{ trig[outer] }}\left({{ arc[func1] }}\left({{ vals[val1] }}\right)\right)
+- Task: simplify. The outer function is the inverse of the inner arc-function, so they
+  CANCEL — the value is the inner argument itself. No angle needs to be computed.
+{%- else -%}
+- Expression: y = {{ trig[outer] }}\left(2 \cdot {{ arc[func1] }}\left({{ vals[val1] }}\right)\right)
+- Task: the inner arc-function gives an angle; apply the DOUBLE-ANGLE formula for the
+  outer function to that angle. The functions do NOT simply cancel here because of the
+  factor 2.
+{%- endif %}
+- Render all math as LaTeX inside $...$.
+- Do NOT state or hint at the answer: the final value (a radian angle or a number)
+  must NOT be given to the student.

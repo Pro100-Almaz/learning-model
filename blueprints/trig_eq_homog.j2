@@ -1,0 +1,29 @@
+{#- Homogeneous trig equation: left_side = rhs_value. Solved by dividing by the
+    highest power of cos(x) to get an equation in tg(x). If the RHS is a nonzero
+    number it must first be homogenized by multiplying it by (sin^2 x + cos^2 x).
+    `degree` (1 or 2) must match the degree of `left_side` (see the JSON note). -#}
+{%- set lhsL = {'2sin(x) - 3cos(x)': '2\\sin x - 3\\cos x', '5sin^2(x) + 3sin(x)cos(x)': '5\\sin^2 x + 3\\sin x\\cos x'} -%}
+{%- set cosPow = {'1': '\\cos x', '2': '\\cos^2 x'} -%}
+{%- set is_zero = rhs_value == '0' -%}
+MATH CONSTRAINTS (do not alter any number):
+- Equation: {{ lhsL[left_side] }} = {{ rhs_value }}
+- Task: solve this HOMOGENEOUS equation by reducing it to an equation in tg(x).
+- Method to recall (do NOT reveal the result):
+{% if not is_zero -%}
+  1) the right-hand side is a NONZERO number — FIRST homogenize it: replace {{ rhs_value }}
+     with {{ rhs_value }}·(sin^2 x + cos^2 x), expand, move everything to the left and
+     collect like terms so every term has the same degree. Do NOT divide by cos before
+     this step.
+  2) divide the homogeneous equation by {{ cosPow[degree] }} (valid only where cos x != 0);
+{% else -%}
+  1) the right-hand side is 0, so divide directly by {{ cosPow[degree] }} (valid only
+     where cos x != 0);
+{% endif -%}
+  3) CHECK the case cos x = 0 separately — verify whether it satisfies the original
+     equation; do not silently drop it and do not include it if it contradicts.
+  4) the result is a {{ 'quadratic' if degree == '2' else 'linear' }} equation in tg(x).
+- Remember: tg(x) takes ANY real value, so a result like tg(x) = 1.5 or tg(x) = -4 DOES
+  have solutions — it is never an empty set on that ground.
+- Render all math as LaTeX inside $...$.
+- Do NOT state or hint at the answer: the value(s) of tg(x) or the solution set for x
+  must NOT be given to the student.

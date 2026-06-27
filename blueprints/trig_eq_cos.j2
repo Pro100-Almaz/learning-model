@@ -1,0 +1,31 @@
+{#- The ORIGINAL equation is  coefficient * cos(inner) = coefficient*value.
+    `value` is the RHS AFTER dividing by the coefficient (the 'a' in cos = a), so the
+    original RHS is the product coefficient*value — precomputed below for all 8 combos
+    to keep the rendered numbers exact. The student must divide back to cos(inner)=a,
+    solve, then express x from the inner argument. -#}
+{%- set coefL = {'2': '2', 'sqrt(2)': '\\sqrt{2}'} -%}
+{%- set innerL = {'x': 'x', '2x': '2x', 'x/3 - pi/6': '\\frac{x}{3} - \\frac{\\pi}{6}'} -%}
+{%- set valL = {'1': '1', 'sqrt(2)/2': '\\frac{\\sqrt{2}}{2}', '-sqrt(2)/2': '-\\frac{\\sqrt{2}}{2}', '0.7': '0{,}7'} -%}
+{%- set rhs = {
+  '2|1': '2', '2|sqrt(2)/2': '\\sqrt{2}', '2|-sqrt(2)/2': '-\\sqrt{2}', '2|0.7': '1{,}4',
+  'sqrt(2)|1': '\\sqrt{2}', 'sqrt(2)|sqrt(2)/2': '1', 'sqrt(2)|-sqrt(2)/2': '-1', 'sqrt(2)|0.7': '0{,}7\\sqrt{2}'
+} -%}
+{%- set is_special = value in ['1', '0', '-1'] -%}
+{%- set is_negative = value.startswith('-') -%}
+MATH CONSTRAINTS (do not alter any number):
+- Equation: {{ coefL[coefficient] }}\cos\left({{ innerL[inner_func] }}\right) = {{ rhs[coefficient ~ '|' ~ value] }}
+- Task: divide both sides by the coefficient to reach the form cos(...) = a, solve for
+  the inner argument, then express x.
+- Method to recall (do NOT reveal the result): {{
+    'a is one of the special values (1, 0 or -1) — use the corresponding PARTICULAR-CASE solution, not the general ±arccos formula'
+    if is_special else
+    'a is NEGATIVE — get the argument from x = ±(pi - arccos(|a|)) + 2*pi*n, NOT by pulling a minus out in front of arccos'
+    if is_negative else
+    'use the general formula: argument = ±arccos(a) + 2*pi*n' }}.
+{% if inner_func != 'x' -%}
+- The argument is not a bare x: after solving for the argument, express x by MULTIPLYING
+  by the reciprocal of the inner coefficient (do NOT divide the whole right-hand side as
+  a single fraction).
+{% endif -%}
+- Render all math as LaTeX inside $...$.
+- Do NOT state or hint at the answer: the solution set for x must NOT be given to the student.

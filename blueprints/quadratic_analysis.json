@@ -1,0 +1,47 @@
+{
+  "topic": "quadratic_analysis",
+  "display_name": "Полный анализ функции: нули, монотонность и знакопостоянство",
+  "curriculum_ref": "10 класс — Свойства функции",
+  "constraints_template": "quadratic_analysis.j2",
+
+  "_comment": "Анализ параболы y = x^2 + px + q. Находим нули, координаты вершины для монотонности и интервалы знакопостоянства (>0, <0).",
+
+  "tag": { "name": "Исследование функции", "slug": "issledovanie-funktsii" },
+  "default_difficulty": 2,
+
+  "parameters": {
+    "root1": { "type": "int", "min": -5, "max": 0, "desc": "Первый корень уравнения" },
+    "root2": { "type": "int", "min": 1, "max": 6, "desc": "Второй корень уравнения" }
+  },
+
+  "constraints": [
+    "root1 != root2 // Функция пересекает ось X в двух точках",
+    "(root1 + root2) % 2 == 0 // Чтобы x вершины параболы был целым числом для простоты"
+  ],
+
+  "integer_clean": true,
+
+  "answer": {
+    "type": "static_choice",
+    "correct": {
+      "нули": "[{{ root1 }}, {{ root2 }}]",
+      "вершина_x": "{{ (root1 + root2)//2 }}",
+      "возрастание": "[{{ (root1 + root2)//2 }}, +inf)",
+      "убывание": "(-inf, {{ (root1 + root2)//2 }}]",
+      "f(x)>0": "(-inf, {{ root1 }}) U ({{ root2 }}, +inf)",
+      "f(x)<0": "({{ root1 }}, {{ root2 }})"
+    },
+    "desc": "Парабола y = x^2 + px + q по корням. Вершина в (root1+root2)/2 (целое по constraints). answer_key = correct."
+  },
+
+  "distractors": [
+    { "id": "sign_error_roots", "desc": "Ошибся в знаках при нахождении нулей функции по теореме Виета.", "transform": { "нули": "[{{ -root1 }}, {{ -root2 }}]" } },
+    { "id": "confused_monotonicity", "desc": "Перепутал промежуток возрастания с промежутком убывания (взял ветвь до вершины вместо после).", "transform": { "возрастание": "(-inf, {{ (root1 + root2)//2 }}]" } },
+    { "id": "confused_constant_sign", "desc": "Взял внутренний интервал корней для f(x) > 0 вместо внешних, перепутав знаки интервалов.", "transform": { "f(x)>0": "({{ root1 }}, {{ root2 }})" } }
+  ],
+
+  "narrative_settings": [
+    "анализ траектории брошенного тела",
+    "график изменения прибыли предприятия"
+  ]
+}

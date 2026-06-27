@@ -1,0 +1,24 @@
+{#- Equation: squared_func [+ linear_term] = rhs_value, e.g. cos^2(x) + cos(2x) = 5/4.
+    The squared term is reduced via the power-reduction (double-angle) formula, turning
+    the whole equation into a linear one in cos(2x). linear_term may be 'none'. -#}
+{%- set sqL = {'cos^2(x)': '\\cos^2 x', 'sin^2(x)': '\\sin^2 x'} -%}
+{%- set rhsL = {'5/4': '\\frac{5}{4}', '3/4': '\\frac{3}{4}'} -%}
+{%- set is_cos = squared_func == 'cos^2(x)' -%}
+MATH CONSTRAINTS (do not alter any number):
+- Equation: {{ sqL[squared_func] }}{% if linear_term != 'none' %} + \cos 2x{% endif %} = {{ rhsL[rhs_value] }}
+- Task: solve by the POWER-REDUCTION method — replace the squared function with its
+  double-angle form so the equation becomes linear in cos(2x), then solve.
+- Method to recall (do NOT reveal the result):
+  1) replace the squared term using {{
+       'cos^2(x) = (1 + cos(2x)) / 2  (PLUS in the numerator for cosine)'
+       if is_cos else
+       'sin^2(x) = (1 - cos(2x)) / 2  (MINUS in the numerator for sine)' }};
+  2) multiply the whole equation by 2 to clear the denominator;
+  3) bring like terms together with respect to cos(2x) and solve the resulting simplest
+     equation cos(2x) = a.
+- Do NOT extract a square root directly (e.g. cos(x) = ...): that path forces you to
+  track both the positive AND negative case and easily loses solutions — reduction
+  avoids this entirely.
+- Render all math as LaTeX inside $...$.
+- Do NOT state or hint at the answer: the value of cos(2x) or the solution set for x
+  must NOT be given to the student.

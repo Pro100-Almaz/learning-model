@@ -1,0 +1,20 @@
+{#- One blueprint serves all four arc-functions. Pick the human name, the LaTeX
+    command, and whether the argument is bounded to [-1, 1] (arcsin/arccos) or
+    accepts any real value (arctg/arcctg). The argument `value` is mapped from its
+    plain form to clean LaTeX. -#}
+{%- set names = {'arcsin': 'арксинуса', 'arccos': 'арккосинуса', 'arctg': 'арктангенса', 'arcctg': 'арккотангенса'} -%}
+{%- set latex = {'arcsin': '\\arcsin', 'arccos': '\\arccos', 'arctg': '\\operatorname{arctg}', 'arcctg': '\\operatorname{arcctg}'} -%}
+{%- set vals = {'0': '0', '1/2': '\\frac{1}{2}', 'sqrt(2)/2': '\\frac{\\sqrt{2}}{2}', 'sqrt(3)/2': '\\frac{\\sqrt{3}}{2}', '1': '1', 'sqrt(3)': '\\sqrt{3}'} -%}
+{%- set bounded = func_type in ['arcsin', 'arccos'] -%}
+MATH CONSTRAINTS (do not alter any number):
+- Expression: y = {{ func_type }}({{ value }})
+- Task: using the table of standard angles, compute the value of the {{ names[func_type] }}
+  (give the answer as an angle in RADIANS), and state the domain and range of this function.
+- Key facts to recall (do NOT reveal them as the answer): {{
+    'this is an inverse of a bounded function, so its argument lives in a closed segment'
+    if bounded else
+    'this is an inverse of an unbounded function, so its argument may be ANY real number' }};
+  the result is always an angle measured in radians, never in degrees.
+- Render all math as LaTeX inside $...$ (e.g. $y = {{ latex[func_type] }}{{ '{' }}{{ vals[value] }}{{ '}' }}$).
+- Do NOT state or hint at the answer: the resulting angle, the domain, or the range of
+  the {{ names[func_type] }} must NOT be given to the student.

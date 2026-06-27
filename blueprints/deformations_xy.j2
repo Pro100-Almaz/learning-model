@@ -1,0 +1,20 @@
+{#- Render a float coefficient cleanly: drop the trailing ".0" on whole
+    numbers (2.0 -> 2) but keep fractions like 0.5. coef_y is the outer
+    factor (deformation along OY), coef_x the inner factor (along OX).
+    Both are guaranteed != 1 by the constraints. -#}
+{%- macro num(c) -%}
+{{ c | int if c == c | int else c }}
+{%- endmacro -%}
+GRAPH CONSTRAINTS (do not alter any number):
+- Function: y = {{ num(coef_y) }}·sin({{ num(coef_x) }}·x)
+- Base graph: y = sin(x).
+- Task: describe how the base graph y = sin(x) is deformed (stretched or compressed)
+  along OY by the outer factor {{ num(coef_y) }} and along OX by the inner factor {{ num(coef_x) }}.
+- OUTER factor (along OY): a > 1 stretches the graph away from OX; 0 < a < 1 compresses
+  it toward OX (changes amplitude).
+- INNER factor (along OX): the logic is INVERTED — a > 1 compresses the graph toward OY;
+  0 < a < 1 stretches it away from OY. This changes the number of oscillations
+  (точек максимума/минимума) on a fixed interval.
+- Render all math as LaTeX inside $...$ (e.g. $y = {{ num(coef_y) }}\sin({{ num(coef_x) }}x)$).
+- Do NOT state or hint at the answer: whether each axis is stretched or compressed, the
+  factor magnitudes, or how the oscillation count changes must NOT be given to the student.

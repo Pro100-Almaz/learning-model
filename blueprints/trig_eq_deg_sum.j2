@@ -1,0 +1,23 @@
+{#- Equation: sin^2(arg1) + sin^2(arg2) = rhs (rhs = 1). Two-method chain:
+    1) power-reduction sin^2(a) = (1 - cos(2a))/2 — the argument DOUBLES;
+    2) the constants and the RHS cancel, leaving cos(2*arg1) + cos(2*arg2) = 0;
+    3) sum-to-product factors it; each factor set to 0 gives the solutions.
+    All arg combos here factor cleanly, so no validity constraint is needed. -#}
+{%- set argL = {'x': 'x', '2x': '2x', '3x': '3x'} -%}
+{%- set rhsL = {'1': '1'} -%}
+MATH CONSTRAINTS (do not alter any number):
+- Equation: \sin^2 {{ argL[arg1] }} + \sin^2 {{ argL[arg2] }} = {{ rhsL[rhs] }}
+- Task: solve by combining POWER-REDUCTION with the SUM-TO-PRODUCT formula.
+- Method to recall (do NOT reveal the result):
+  1) reduce each square with sin^2(a) = (1 - cos(2a))/2 — note the MINUS in the numerator
+     and that the argument DOUBLES (e.g. sin^2(2x) uses cos(4x), not cos(2x));
+  2) multiply the whole equation by 2: the free terms (1 + 1 = 2) and the doubled
+     right-hand side (1·2 = 2) cancel, leaving cos(2·arg1) + cos(2·arg2) = 0
+     (after taking the minus out of both terms);
+  3) convert the sum of cosines into a product with
+     cos(A) + cos(B) = 2·cos((A + B)/2)·cos((A - B)/2) (do NOT confuse it with the
+     cosine-of-a-sum formula);
+  4) set EACH factor equal to zero and solve the two simplest equations; cosine is even,
+     so a minus inside its argument disappears.
+- Render all math as LaTeX inside $...$.
+- Do NOT state or hint at the answer: the solution set for x must NOT be given to the student.

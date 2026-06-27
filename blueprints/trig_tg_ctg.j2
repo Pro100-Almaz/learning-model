@@ -1,0 +1,15 @@
+{#- One blueprint serves both functions: func_type selects "tg" or "ctg".
+    Pick the human name and the LaTeX command accordingly. -#}
+{%- set name = 'тангенса' if func_type == 'tg' else 'котангенса' -%}
+{%- set latex = '\\tan' if func_type == 'tg' else '\\cot' -%}
+MATH CONSTRAINTS (do not alter any number):
+- Function: y = {{ func_type }}(x)
+- Task: state the properties of the {{ name }} function from its graph — its domain
+  (the punctured points / ОДЗ where the function does not exist), its range, parity
+  (even/odd), and period.
+- Key facts to recall (do NOT reveal them as the answer): the graph has vertical
+  asymptotes at the points where the function is undefined and repeats with a SHORTER
+  period than sine and cosine; it is unbounded along OY and symmetric about the origin.
+- Render all math as LaTeX inside $...$ (e.g. $y = {{ latex }} x$).
+- Do NOT state or hint at the answer: the punctured points / domain, range, parity, or
+  period of the {{ name }} function must NOT be given to the student.
