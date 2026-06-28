@@ -502,6 +502,15 @@ def _eval(expr: str, scope: dict) -> Any:
 # Matches integers and decimals (comma OR dot), with an optional leading sign.
 _NUM_RE = re.compile(r"-?\d+(?:[.,]\d+)?")
 
+# A constraints template may split its rendered payload into a student-facing
+# section and an author-only guidance section, the latter introduced by this
+# marker (see blueprints/*.j2 — the trig topics use it). Only the student-facing
+# section states the problem, so number-fidelity is checked against that part
+# alone: numbers that live only in the INTERNAL method notes are guidance for
+# the Storyteller, not values the draft is required to echo. Payloads without
+# the marker (most topics) are treated wholly as student-facing, unchanged.
+INTERNAL_MARKER = "=== INTERNAL"
+
 
 def _abs_number_set(text: str) -> set[float]:
     """Every numeric literal in `text`, as a set of absolute float values.
@@ -553,7 +562,10 @@ def deterministic_review(
     Returns {"passed": bool, "notes": str} — same shape as `parse_verdict`, so
     the Critic node can merge it with the LLM's semantic verdict.
     """
-    shown = _abs_number_set(constraints_payload)
+    # Only the student-facing section is posed to the student; numbers confined
+    # to the INTERNAL guidance section are not required to appear in the draft.
+    student_facing = constraints_payload.split(INTERNAL_MARKER, 1)[0]
+    shown = _abs_number_set(student_facing)
     drafted = _abs_number_set(draft_text)
     answers = _answer_number_set(answer_key)
 

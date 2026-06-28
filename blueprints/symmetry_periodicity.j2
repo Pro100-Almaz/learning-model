@@ -3,9 +3,11 @@
 {%- macro pw(n) -%}
 x{% if n != 1 %}^{{ n }}{% endif %}
 {%- endmacro -%}
-MATH CONSTRAINTS (do not alter any number):
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
 - Task 1 (периодичность): find the period of g(x) = cos({{ k }}x + b), where b is an arbitrary real constant.
 - Task 2 (четность): determine whether the polynomial f(x) = {{ pw(poly_power2) }} + {{ pw(poly_power1) }} is even, odd, or neither (общего вида), by substituting -x.
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
 - The period of cos({{ k }}x + b) depends only on the coefficient {{ k }} before x; the shift b does NOT change the period.
 - Parity is decided by comparing f(-x) with f(x) and -f(x): even powers keep the sign, odd powers flip it.
 - Render all math as LaTeX inside $...$ (e.g. $g(x) = \cos({{ k }}x + b)$ and $f(x) = {{ pw(poly_power2) }} + {{ pw(poly_power1) }}$).

@@ -6,11 +6,14 @@
 {%- set arcname = {'1/2 * arccos': '\\arccos', 'arccos': '\\arccos', 'arcsin': '\\arcsin'} -%}
 {%- set vals = {'3/5': '\\frac{3}{5}', '4/5': '\\frac{4}{5}', '5/13': '\\frac{5}{13}', '12/13': '\\frac{12}{13}'} -%}
 {%- set halved = inner_func == '1/2 * arccos' -%}
-MATH CONSTRAINTS (do not alter any number):
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
 - Expression: y = {{ outer[outer_func] }}\left({{ '\\tfrac{1}{2}' if halved else '' }}{{ arcname[inner_func] }}{{ vals[value] }}\right)
-- Task: simplify this to a single rational number, then confirm the sign of the result
-  from the quarter in which the inner angle lies.
-- Method to recall (do NOT reveal the result): {{
+- Ask the student to simplify this expression to a single rational number.
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
+- Task: simplify to a single rational number, then confirm the sign of the result from
+  the quarter in which the inner angle lies.
+- Method to recall: {{
     'the inner angle is HALVED, so use the half-angle identity tg^2(a/2) = (1 - cos a)/(1 + cos a) (and its ctg counterpart), with cos a = ' ~ value
     if halved else
     'rewrite the outer function through sine and cosine of the inner angle, then use the Pythagorean identity sin^2 + cos^2 = 1 to get the missing ratio from ' ~ value }}.

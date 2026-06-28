@@ -12,11 +12,14 @@
 } -%}
 {%- set is_special = value in ['1', '0', '-1'] -%}
 {%- set is_negative = value.startswith('-') -%}
-MATH CONSTRAINTS (do not alter any number):
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
 - Equation: {{ coefL[coefficient] }}\cos\left({{ innerL[inner_func] }}\right) = {{ rhs[coefficient ~ '|' ~ value] }}
+- Ask the student to find every value of x that satisfies this equation (the general solution).
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
 - Task: divide both sides by the coefficient to reach the form cos(...) = a, solve for
   the inner argument, then express x.
-- Method to recall (do NOT reveal the result): {{
+- Method to recall: {{
     'a is one of the special values (1, 0 or -1) — use the corresponding PARTICULAR-CASE solution, not the general ±arccos formula'
     if is_special else
     'a is NEGATIVE — get the argument from x = ±(pi - arccos(|a|)) + 2*pi*n, NOT by pulling a minus out in front of arccos'

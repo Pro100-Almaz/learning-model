@@ -5,10 +5,13 @@
     All arg combos here factor cleanly, so no validity constraint is needed. -#}
 {%- set argL = {'x': 'x', '2x': '2x', '3x': '3x'} -%}
 {%- set rhsL = {'1': '1'} -%}
-MATH CONSTRAINTS (do not alter any number):
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
 - Equation: \sin^2 {{ argL[arg1] }} + \sin^2 {{ argL[arg2] }} = {{ rhsL[rhs] }}
+- Ask the student to find every value of x that satisfies this equation (the general solution).
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
 - Task: solve by combining POWER-REDUCTION with the SUM-TO-PRODUCT formula.
-- Method to recall (do NOT reveal the result):
+- Method to recall:
   1) reduce each square with sin^2(a) = (1 - cos(2a))/2 — note the MINUS in the numerator
      and that the argument DOUBLES (e.g. sin^2(2x) uses cos(4x), not cos(2x));
   2) multiply the whole equation by 2: the free terms (1 + 1 = 2) and the doubled

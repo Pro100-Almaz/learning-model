@@ -5,10 +5,13 @@
 {%- set linL = {'2pi/3': '\\frac{2\\pi}{3}', 'pi/2': '\\frac{\\pi}{2}'} -%}
 {%- set trigLhsL = {'cos(x) + cos(y)': '\\cos x + \\cos y'} -%}
 {%- set trigRhsL = {'1': '1', 'sqrt(2)': '\\sqrt{2}'} -%}
-MATH CONSTRAINTS (do not alter any number):
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
 - System: $\begin{cases} x + y = {{ linL[linear_eq_rhs] }} \\ {{ trigLhsL[trig_eq_lhs] }} = {{ trigRhsL[trig_eq_rhs] }} \end{cases}$
+- Ask the student to find every pair (x, y) that satisfies this system.
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
 - Task: solve the system by SUBSTITUTION, using the sum-of-cosines formula.
-- Method to recall (do NOT reveal the result):
+- Method to recall:
   1) from the linear equation express y = {{ linL[linear_eq_rhs] }} - x;
   2) substitute into the second equation and apply the sum-to-product identity
      cos(x) + cos(y) = 2·cos((x + y)/2)·cos((x - y)/2) — note that BOTH arguments are

@@ -4,11 +4,14 @@
     Then solve the linear system for x and y, keeping SEPARATE period counters. -#}
 {%- set lhsL = {'sin(x)cos(y)': '\\sin x\\cos y', 'cos(x)sin(y)': '\\cos x\\sin y'} -%}
 {%- set rhsL = {'0.5': '\\frac{1}{2}', '-0.5': '-\\frac{1}{2}', 'sqrt(3)/4': '\\frac{\\sqrt{3}}{4}'} -%}
-MATH CONSTRAINTS (do not alter any number):
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
 - System: $\begin{cases} {{ lhsL[eq1_lhs] }} = {{ rhsL[eq1_rhs] }} \\ {{ lhsL[eq2_lhs] }} = {{ rhsL[eq2_rhs] }} \end{cases}$
+- Ask the student to find every pair (x, y) that satisfies this system.
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
 - Task: solve the system by the ADDITION method, folding the left sides into sine of a
   sum and sine of a difference.
-- Method to recall (do NOT reveal the result):
+- Method to recall:
   1) ADD the two equations: the left side becomes sin(x + y) (the sine-of-SUM formula,
      NOT cosine) — set it equal to the sum of the right-hand sides;
   2) SUBTRACT the second from the first: the left side becomes sin(x - y) — set it equal

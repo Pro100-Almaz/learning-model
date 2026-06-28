@@ -4,11 +4,14 @@
 {%- set sqL = {'cos^2(x)': '\\cos^2 x', 'sin^2(x)': '\\sin^2 x'} -%}
 {%- set rhsL = {'5/4': '\\frac{5}{4}', '3/4': '\\frac{3}{4}'} -%}
 {%- set is_cos = squared_func == 'cos^2(x)' -%}
-MATH CONSTRAINTS (do not alter any number):
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
 - Equation: {{ sqL[squared_func] }}{% if linear_term != 'none' %} + \cos 2x{% endif %} = {{ rhsL[rhs_value] }}
+- Ask the student to find every value of x that satisfies this equation (the general solution).
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
 - Task: solve by the POWER-REDUCTION method — replace the squared function with its
   double-angle form so the equation becomes linear in cos(2x), then solve.
-- Method to recall (do NOT reveal the result):
+- Method to recall:
   1) replace the squared term using {{
        'cos^2(x) = (1 + cos(2x)) / 2  (PLUS in the numerator for cosine)'
        if is_cos else

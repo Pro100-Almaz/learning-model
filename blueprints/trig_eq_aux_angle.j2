@@ -11,11 +11,14 @@
 {%- set sq = {'1': 1, 'sqrt(3)': 3, '2': 4, '-sqrt(3)': 3, '-2': 4} -%}
 {%- set r2 = sq[coeff_a] + sq[coeff_b] -%}
 {%- set is_no_solution = sq[rhs_c] > r2 -%}
-MATH CONSTRAINTS (do not alter any number):
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
 - Equation: {{ magA[coeff_a] }}\sin x {{ signB }} {{ magB[coeff_b] }}\cos x = {{ rhsL[rhs_c] }}
+- Ask the student to find every value of x that satisfies this equation (the general solution).
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
 - Task: solve by the AUXILIARY-ANGLE method — collapse the left side into a single
   sine (or cosine) of a shifted argument, then solve the resulting simplest equation.
-- Method to recall (do NOT reveal the result):
+- Method to recall:
   1) compute the correcting factor r = sqrt(a^2 + b^2);
   2) divide BOTH sides by r — including the right-hand side (dividing only the left side
      breaks the equation and loses all solutions);

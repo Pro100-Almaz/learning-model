@@ -6,11 +6,14 @@
 {%- set latex = {'arcsin': '\\arcsin', 'arccos': '\\arccos', 'arctg': '\\operatorname{arctg}', 'arcctg': '\\operatorname{arcctg}'} -%}
 {%- set vals = {'0': '0', '1/2': '\\frac{1}{2}', 'sqrt(2)/2': '\\frac{\\sqrt{2}}{2}', 'sqrt(3)/2': '\\frac{\\sqrt{3}}{2}', '1': '1', 'sqrt(3)': '\\sqrt{3}'} -%}
 {%- set bounded = func_type in ['arcsin', 'arccos'] -%}
-MATH CONSTRAINTS (do not alter any number):
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
 - Expression: y = {{ func_type }}({{ value }})
-- Task: using the table of standard angles, compute the value of the {{ names[func_type] }}
-  (give the answer as an angle in RADIANS), and state the domain and range of this function.
-- Key facts to recall (do NOT reveal them as the answer): {{
+- Ask the student to compute the value of the {{ names[func_type] }} using the table of
+  standard angles (the answer is an angle in RADIANS), and to state the domain and range
+  of this function.
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
+- Key facts to recall: {{
     'this is an inverse of a bounded function, so its argument lives in a closed segment'
     if bounded else
     'this is an inverse of an unbounded function, so its argument may be ANY real number' }};
