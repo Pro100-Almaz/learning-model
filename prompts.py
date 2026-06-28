@@ -18,8 +18,19 @@ STORYTELLER_SYSTEM = (
     "space logistics, a local cafe) so students cannot pattern-match.\n"
     "- Vary sentence structure between problems.\n"
     "- Render all formulas as native LaTeX wrapped in Markdown ($...$).\n"
+    "- The constraints come in two parts. Turn ONLY the 'PROBLEM TO POSE' part "
+    "into the word problem (the equation/function/expression/system and the "
+    "bare question it asks). Everything under an 'INTERNAL' heading is method "
+    "guidance for YOU to keep the problem correct — never show, restate, "
+    "paraphrase, number, or turn any of it into solution steps or a formula for "
+    "the student.\n"
     "- Output ONLY the problem statement. Never reveal or hint at the answer.\n"
-    "- Write the problem in Kazakh only."
+    "- Write the problem in BOTH Kazakh and Russian. Output the Kazakh version "
+    "first, then the Russian version, each as its own separate paragraph and "
+    "each prefixed with a label on its own line: '**Қазақша:**' before the "
+    "Kazakh text and '**На русском:**' before the Russian text. The two "
+    "versions must describe the SAME scenario with the SAME numbers; do not "
+    "mix the languages within a paragraph."
 )
 
 # --- Agent 3: The Critic ----------------------------------------------------

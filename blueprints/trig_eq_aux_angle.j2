@@ -1,0 +1,35 @@
+{#- Equation: coeff_a*sin(x) + coeff_b*cos(x) = rhs_c. coeff_a is always positive
+    (1, sqrt(3), 2); coeff_b may be negative — its sign is folded into the operator.
+    A unit coefficient (|c| == 1) is dropped. The auxiliary-angle method (find
+    r = sqrt(a^2+b^2), divide BOTH sides by r, fold the left side) is left as guidance,
+    since r is irrational for most combos. -#}
+{%- set magA = {'1': '', 'sqrt(3)': '\\sqrt{3}', '2': '2'} -%}
+{%- set magB = {'1': '', '-sqrt(3)': '\\sqrt{3}', '-2': '2'} -%}
+{%- set rhsL = {'sqrt(3)': '\\sqrt{3}', '2': '2', '1': '1'} -%}
+{%- set signB = '-' if coeff_b.startswith('-') else '+' -%}
+{#- squares are integers, so the domain check |c/r| <= 1  <=>  c^2 <= a^2 + b^2 is exact -#}
+{%- set sq = {'1': 1, 'sqrt(3)': 3, '2': 4, '-sqrt(3)': 3, '-2': 4} -%}
+{%- set r2 = sq[coeff_a] + sq[coeff_b] -%}
+{%- set is_no_solution = sq[rhs_c] > r2 -%}
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
+- Equation: {{ magA[coeff_a] }}\sin x {{ signB }} {{ magB[coeff_b] }}\cos x = {{ rhsL[rhs_c] }}
+- Ask the student to find every value of x that satisfies this equation (the general solution).
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
+- Task: solve by the AUXILIARY-ANGLE method — collapse the left side into a single
+  sine (or cosine) of a shifted argument, then solve the resulting simplest equation.
+- Method to recall:
+  1) compute the correcting factor r = sqrt(a^2 + b^2);
+  2) divide BOTH sides by r — including the right-hand side (dividing only the left side
+     breaks the equation and loses all solutions);
+  3) CHECK THE DOMAIN: the equation is solvable only if |c/r| <= 1 (equivalently
+     c^2 <= a^2 + b^2). {{
+       'Here this FAILS, so the equation has NO solutions — stop after this check.'
+       if is_no_solution else
+       'Here this holds, so solutions exist; continue.' }}
+  4) find the auxiliary angle alpha with cos(alpha) = a/r and sin(alpha) = b/r;
+  5) fold the left side with the sum/difference formula, watching the SIGNS carefully
+     (e.g. sin(alpha)cos(x) - cos(alpha)sin(x) = sin(alpha - x)).
+- Render all math as LaTeX inside $...$.
+- Do NOT state or hint at the answer: the value of r, the auxiliary angle, the solution
+  set for x, or whether it is empty must NOT be given to the student.

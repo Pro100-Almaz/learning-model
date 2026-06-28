@@ -1,0 +1,39 @@
+{
+  "topic": "trig_eq_cos",
+  "display_name": "Решение уравнений вида cos(x) = a с преобразованиями",
+  "curriculum_ref": "10 класс — Простейшие тригонометрические уравнения. y=cosx",
+  "constraints_template": "trig_eq_cos.j2",
+
+  "_comment": "Преобразование линейных уравнений к виду cos(x) = a. Использование формулы x = ±arccos(a) + 2πn, обработка отрицательного a через (π - arccos(a)) и применение частных случаев.",
+
+  "tag": { "name": "Уравнения с косинусом", "slug": "trig-eq-cos" },
+  "default_difficulty": 4,
+
+  "parameters": {
+    "coefficient": { "type": "string", "options": ["2", "sqrt(2)"], "desc": "Множитель перед косинусом в исходном уравнении" },
+    "inner_func": { "type": "string", "options": ["x", "2x"], "desc": "Внутренний аргумент функции" },
+    "value": { "type": "string", "options": ["sqrt(2)/2", "-sqrt(2)/2", "0.7"], "desc": "Правая часть после преобразований, значение 'a'" }
+  },
+
+  "constraints": [],
+  "integer_clean": true,
+
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% set A = 'pi/4' if value == 'sqrt(2)/2' else '3pi/4' if value == '-sqrt(2)/2' else 'arccos(0.7)' %}{% set Ah = 'pi/8' if value == 'sqrt(2)/2' else '3pi/8' if value == '-sqrt(2)/2' else 'arccos(0.7)/2' %}{% if inner_func == '2x' %}x = ± {{ Ah }} + pi*n{% else %}x = ± {{ A }} + 2pi*n{% endif %}",
+    "desc": "Делим на коэффициент -> cos(arg)=a, затем arg = ±arccos(a) + 2pin. Для a<0 используем arccos(a)=pi-arccos(|a|) (для -sqrt(2)/2 это 3pi/4). Из arg выражаем x: при 2x делим ВСЁ (включая период) на 2 -> +pin."
+  },
+
+  "distractors": [
+    { "id": "wrong_negative_transform", "desc": "При отрицательном a вынес минус перед арккосинусом вместо формулы arccos(a) = pi - arccos(|a|), получив угол pi/4 вместо 3pi/4.", "transform": "{% if value == '-sqrt(2)/2' %}{% if inner_func == '2x' %}x = ± pi/8 + pi*n{% else %}x = ± pi/4 + 2pi*n{% endif %}{% else %}{{ 1/0 }}{% endif %}" },
+    { "id": "wrong_division", "desc": "Выражая x из 2x, разделил на 2 только главный угол, но забыл разделить период (оставил 2pin вместо pin).", "transform": "{% set Ah = 'pi/8' if value == 'sqrt(2)/2' else '3pi/8' if value == '-sqrt(2)/2' else 'arccos(0.7)/2' %}{% if inner_func == '2x' %}x = ± {{ Ah }} + 2pi*n{% else %}{{ 1/0 }}{% endif %}" },
+    { "id": "dropped_pm_sign", "desc": "Записал только одно семейство решений (+), потеряв вторую ветвь (-) формулы ±arccos.", "transform": "{% set A = 'pi/4' if value == 'sqrt(2)/2' else '3pi/4' if value == '-sqrt(2)/2' else 'arccos(0.7)' %}{% set Ah = 'pi/8' if value == 'sqrt(2)/2' else '3pi/8' if value == '-sqrt(2)/2' else 'arccos(0.7)/2' %}{% if inner_func == '2x' %}x = {{ Ah }} + pi*n{% else %}x = {{ A }} + 2pi*n{% endif %}" },
+    { "id": "wrong_period", "desc": "Перепутал период косинуса: записал pin вместо 2pin (период серии решений косинуса равен 2pin).", "transform": "{% set A = 'pi/4' if value == 'sqrt(2)/2' else '3pi/4' if value == '-sqrt(2)/2' else 'arccos(0.7)' %}{% set Ah = 'pi/8' if value == 'sqrt(2)/2' else '3pi/8' if value == '-sqrt(2)/2' else 'arccos(0.7)/2' %}{% if inner_func == '2x' %}x = ± {{ Ah }} + 2pi*n{% else %}x = ± {{ A }} + pi*n{% endif %}" },
+    { "id": "dropped_period", "desc": "Потерял общий член семейства решений (+ 2pin), записав лишь главные значения.", "transform": "{% set A = 'pi/4' if value == 'sqrt(2)/2' else '3pi/4' if value == '-sqrt(2)/2' else 'arccos(0.7)' %}{% set Ah = 'pi/8' if value == 'sqrt(2)/2' else '3pi/8' if value == '-sqrt(2)/2' else 'arccos(0.7)/2' %}{% if inner_func == '2x' %}x = ± {{ Ah }}{% else %}x = ± {{ A }}{% endif %}" }
+  ],
+
+  "narrative_settings": [
+    "расчет фазы гармонических колебаний маятника",
+    "определение угла поворота механического вала"
+  ]
+}

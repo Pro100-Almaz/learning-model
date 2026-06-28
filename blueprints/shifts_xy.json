@@ -1,0 +1,43 @@
+{
+  "topic": "shifts_xy",
+  "display_name": "Сдвиги графика (вправо/влево и вверх/вниз)",
+  "curriculum_ref": "10 класс — Преобразование графиков",
+  "constraints_template": "shifts_xy.j2",
+
+  "_comment": "Комбинированный сдвиг вида y = (x + shift_x)^2 + shift_y. Главный акцент на знаке внутри скобки.",
+
+  "tag": { "name": "Параллельный перенос", "slug": "parallel-perenos" },
+  "default_difficulty": 2,
+
+  "parameters": {
+    "shift_x": { "type": "int", "min": -5, "max": 5, "desc": "Сдвиг по оси OX (внутри функции)" },
+    "shift_y": { "type": "int", "min": -5, "max": 5, "desc": "Сдвиг по оси OY (хвост функции)" }
+  },
+
+  "constraints": [
+    "shift_x != 0 // Должен быть сдвиг по X",
+    "shift_y != 0 // Должен быть сдвиг по Y"
+  ],
+
+  "integer_clean": true,
+
+  "answer": {
+    "type": "static_choice",
+    "correct": {
+      "сдвиг_по_X": "{{ 'Вправо на ' ~ (-shift_x) if shift_x < 0 else 'Влево на ' ~ shift_x }}",
+      "сдвиг_по_Y": "{{ 'Вниз на ' ~ (-shift_y) if shift_y < 0 else 'Вверх на ' ~ shift_y }}",
+      "новая_вершина": "({{ -shift_x }}, {{ shift_y }})"
+    },
+    "desc": "Знак внутри скобки сдвигает противоположно: (x + shift_x) -> влево на shift_x. Вершина в (-shift_x, shift_y). answer_key = correct."
+  },
+
+  "distractors": [
+    { "id": "wrong_x_direction", "desc": "Интуитивная ошибка: сдвинул минус влево, а плюс вправо (ошибка знака внутри функции).", "transform": { "сдвиг_по_X": "{{ 'Влево на ' ~ (-shift_x) if shift_x < 0 else 'Вправо на ' ~ shift_x }}" } },
+    { "id": "confuse_x_and_y_shifts", "desc": "Применил внутренний коэффициент к сдвигу по Y, а 'хвост' к сдвигу по X.", "transform": { "сдвиг_по_X": "Сдвиг по оси Y", "сдвиг_по_Y": "Сдвиг по оси X" } }
+  ],
+
+  "narrative_settings": [
+    "смещение центра линзы в оптике",
+    "перенос траектории струи воды"
+  ]
+}

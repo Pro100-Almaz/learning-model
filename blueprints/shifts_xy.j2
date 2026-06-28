@@ -1,0 +1,17 @@
+{#- Fold the sign of a constant into its operator: shift_x inside the bracket
+    (x + shift_x) and shift_y as the tail (+ shift_y). Both are guaranteed
+    non-zero by the constraints, so no zero term needs dropping. -#}
+{%- macro signed(c) -%}
+{{ '+' if c > 0 else '-' }} {{ c if c > 0 else -c }}
+{%- endmacro -%}
+GRAPH CONSTRAINTS (do not alter any number):
+- Function: y = (x {{ signed(shift_x) }})^2 {{ signed(shift_y) }}
+- Base graph: y = x^2 (parabola with vertex at the origin).
+- Task: describe how the base graph y = x^2 is shifted to obtain this function —
+  the direction and magnitude along OX and along OY — and name the new vertex.
+- KEY POINT (sign inside the bracket): the term (x {{ signed(shift_x) }}) shifts the
+  graph in the OPPOSITE direction to the sign of the constant; the outer term
+  {{ signed(shift_y) }} shifts it straight up/down by its own sign.
+- Render all math as LaTeX inside $...$ (e.g. $y = (x {{ signed(shift_x) }})^2 {{ signed(shift_y) }}$).
+- Do NOT state or hint at the answer: the shift directions, the magnitudes, or the
+  coordinates of the new vertex must NOT be given to the student.

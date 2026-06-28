@@ -1,0 +1,13 @@
+{#- Render "k x + m": drop a unit coefficient, fold the sign of m into the
+    operator, and omit a zero constant. Used for both the denominator
+    (denom_b > 0) and the radicand (root_d < 0). -#}
+{%- macro lin(k, m) -%}
+{{ '' if k == 1 else k }}x
+{%- if m != 0 %} {{ '+' if m > 0 else '-' }} {{ m if m > 0 else -m }}{% endif %}
+{%- endmacro -%}
+MATH CONSTRAINTS (do not alter any number):
+- Function: f(x) = 1/({{ lin(denom_a, denom_b) }}) + sqrt({{ lin(root_c, root_d) }})
+- Task: find the domain of f(x), then explain (in theory) what the extremum points of a function are.
+- The domain requires the denominator {{ lin(denom_a, denom_b) }} != 0 and the radicand {{ lin(root_c, root_d) }} >= 0.
+- Render all math as LaTeX inside $...$ (e.g. $f(x) = \frac{1}{{ '{' }}{{ lin(denom_a, denom_b) }}{{ '}' }} + \sqrt{{ '{' }}{{ lin(root_c, root_d) }}{{ '}' }}$).
+- Do NOT state or hint at the resulting domain intervals or the answer.

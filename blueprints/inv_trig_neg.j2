@@ -1,0 +1,21 @@
+{#- One blueprint serves all four arc-functions with a NEGATIVE argument. The
+    way the minus is handled splits them into two groups:
+      odd functions (arcsin, arctg)  -> pull the minus out:  f(-x) = -f(x)
+      arccos / arcctg                -> use the rule:        f(-x) = pi - f(x)
+    Pick the human name, LaTeX command, and group; map `value` to clean LaTeX. -#}
+{%- set names = {'arcsin': 'арксинуса', 'arccos': 'арккосинуса', 'arctg': 'арктангенса', 'arcctg': 'арккотангенса'} -%}
+{%- set latex = {'arcsin': '\\arcsin', 'arccos': '\\arccos', 'arctg': '\\operatorname{arctg}', 'arcctg': '\\operatorname{arcctg}'} -%}
+{%- set vals = {'-1/2': '-\\frac{1}{2}', '-sqrt(2)/2': '-\\frac{\\sqrt{2}}{2}', '-sqrt(3)/2': '-\\frac{\\sqrt{3}}{2}', '-1': '-1'} -%}
+{%- set is_odd = func_type in ['arcsin', 'arctg'] -%}
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
+- Expression: y = {{ func_type }}({{ value }})
+- Ask the student to compute the value of the {{ names[func_type] }} of this negative
+  argument and to give the answer as an angle in RADIANS.
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
+- Method to recall: {{
+    'this function is ODD, so the minus is carried out in front of the function before the table lookup'
+    if is_odd else
+    'this function is NOT odd — get rid of the minus with the rule f(-x) = pi - f(x), then subtract the table angle from pi (bring the fractions to a common denominator)' }}.
+- Render all math as LaTeX inside $...$ (e.g. $y = {{ latex[func_type] }}\left({{ vals[value] }}\right)$).
+- Do NOT state or hint at the answer: the resulting angle must NOT be given to the student.

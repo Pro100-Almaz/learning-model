@@ -1,0 +1,35 @@
+{
+  "topic": "inv_trig_neg",
+  "display_name": "Отрицательные аргументы аркфункций",
+  "curriculum_ref": "10 класс — Обратные тригонометрические функции",
+  "constraints_template": "inv_trig_neg.j2",
+
+  "_comment": "Отработка избавления от минуса: вынос вперед для arcsin и arctg, и правило 'pi - функция' для arccos и arcctg [2, 11].",
+
+  "tag": { "name": "Отрицательные аргументы", "slug": "inv-trig-neg" },
+  "default_difficulty": 2,
+
+  "parameters": {
+    "func_type": { "type": "string", "options": ["arcsin", "arccos", "arctg", "arcctg"], "desc": "Выбор функции" },
+    "value": { "type": "string", "options": ["-1/2", "-sqrt(2)/2", "-sqrt(3)/2", "-1"], "desc": "Отрицательное табличное значение" }
+  },
+
+  "constraints": [],
+  "integer_clean": true,
+
+  "answer": {
+    "type": "inv_trig_neg_logic",
+    "desc": "Применение формулы нечетности или формулы pi-f(x), затем вычисление обыкновенной дроби [8]."
+  },
+
+  "distractors": [
+    { "id": "ignore_minus_arccos", "desc": "Ученик считает арккосинус четной функцией и просто игнорирует минус [2, 7].", "transform": { "arccos_logic": "arccos(x)" } },
+    { "id": "extract_minus_arccos", "desc": "Ученик выносит минус перед арккосинусом или арккотангенсом, забывая про pi [12].", "transform": { "arccos_logic": "-arccos(x)" } },
+    { "id": "fraction_subtraction_error", "desc": "Ошибка приведения к общему знаменателю при вычислении pi - pi/4 [8].", "transform": { "arithmetic_error": "wrong_subtraction" } }
+  ],
+
+  "narrative_settings": [
+    "расчет фазового сдвига в цепи переменного тока",
+    "отклонение маятника в противоположную сторону"
+  ]
+}

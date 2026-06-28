@@ -1,0 +1,25 @@
+{#- System:  sin(x)cos(y) = eq1_rhs ;  cos(x)sin(y) = eq2_rhs.
+    ADD the equations -> sin(x+y) = eq1_rhs + eq2_rhs (sine-of-sum identity).
+    SUBTRACT             -> sin(x-y) = eq1_rhs - eq2_rhs (sine-of-difference).
+    Then solve the linear system for x and y, keeping SEPARATE period counters. -#}
+{%- set lhsL = {'sin(x)cos(y)': '\\sin x\\cos y', 'cos(x)sin(y)': '\\cos x\\sin y'} -%}
+{%- set rhsL = {'0.5': '\\frac{1}{2}', '-0.5': '-\\frac{1}{2}', 'sqrt(3)/4': '\\frac{\\sqrt{3}}{4}'} -%}
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
+- System: $\begin{cases} {{ lhsL[eq1_lhs] }} = {{ rhsL[eq1_rhs] }} \\ {{ lhsL[eq2_lhs] }} = {{ rhsL[eq2_rhs] }} \end{cases}$
+- Ask the student to find every pair (x, y) that satisfies this system.
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
+- Task: solve the system by the ADDITION method, folding the left sides into sine of a
+  sum and sine of a difference.
+- Method to recall:
+  1) ADD the two equations: the left side becomes sin(x + y) (the sine-of-SUM formula,
+     NOT cosine) — set it equal to the sum of the right-hand sides;
+  2) SUBTRACT the second from the first: the left side becomes sin(x - y) — set it equal
+     to the difference of the right-hand sides;
+  3) solve each simplest equation; use DIFFERENT integer counters for the two families
+     of roots (e.g. n for x + y and k for x - y) — reusing one letter is a gross error;
+  4) solve the linear system: add the two results to get 2x, subtract to get 2y. When
+     dividing by 2, divide the PERIOD by 2 as well (e.g. 2*pi*k becomes pi*k).
+- Render all math as LaTeX inside $...$.
+- Do NOT state or hint at the answer: the values of x and y (the solution pairs) must
+  NOT be given to the student.

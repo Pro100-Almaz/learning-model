@@ -1,0 +1,41 @@
+{
+  "topic": "trig_sys_sub",
+  "display_name": "Системы тригонометрических уравнений: Метод подстановки",
+  "curriculum_ref": "10 класс — Системы тригонометрических уравнений",
+  "constraints_template": "trig_sys_sub.j2",
+
+  "_comment": "Решение системы { x + y = S; cos(x) + cos(y) = r }. Сумма косинусов раскладывается в произведение 2*cos((x+y)/2)*cos((x-y)/2)=r. Так как x+y=S известно, cos(S/2) — табличная константа, и уравнение сводится к cos((x-y)/2)=r/(2cos(S/2)). Параметры подобраны так, что эта дробь равна 1 (единая серия), чтобы ответ имел единый вид одной пары.",
+
+  "tag": { "name": "Системы: подстановка", "slug": "trig-sys-sub" },
+  "default_difficulty": 5,
+
+  "parameters": {
+    "linear_eq_rhs": { "type": "string", "options": ["2pi/3", "pi/2"], "desc": "Правая часть линейного уравнения x + y = ..." },
+    "trig_eq_lhs": { "type": "string", "options": ["cos(x) + cos(y)"], "desc": "Левая часть тригонометрического уравнения" },
+    "trig_eq_rhs": { "type": "string", "options": ["1", "sqrt(2)"], "desc": "Правая часть тригонометрического уравнения" }
+  },
+
+  "constraints": [
+    "not (linear_eq_rhs == '2pi/3' and trig_eq_rhs == 'sqrt(2)') // cos((x-y)/2) = sqrt(2) > 1, решений нет",
+    "not (linear_eq_rhs == 'pi/2' and trig_eq_rhs == '1') // cos((x-y)/2)=sqrt(2)/2 даёт две серии с отрицательными периодами; вынесено в отдельный более сложный вариант ради единого вида ответа"
+  ],
+  "integer_clean": true,
+
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% if linear_eq_rhs == '2pi/3' %}x = pi/3 + 2pi*k,  y = pi/3 - 2pi*k{% else %}x = pi/4 + 2pi*k,  y = pi/4 - 2pi*k{% endif %}",
+    "desc": "Раскладываем cos(x)+cos(y)=2cos((x+y)/2)cos((x-y)/2)=r. Подставляем x+y=S: cos(S/2) — табличная константа, остаётся cos((x-y)/2)=r/(2cos(S/2))=1 -> x-y=4pi*k. Линейная часть x+y=S точная (без периода). Отсюда x=S/2+2pi*k, y=S/2-2pi*k."
+  },
+
+  "distractors": [
+    { "id": "forgot_sign_flip_y", "desc": "Нашёл x, но при возврате к y не поменял знак у периода (записал y с + вместо -), из-за чего сумма x+y перестаёт равняться правой части линейного уравнения.", "transform": "{% if linear_eq_rhs == '2pi/3' %}x = pi/3 + 2pi*k,  y = pi/3 + 2pi*k{% else %}x = pi/4 + 2pi*k,  y = pi/4 + 2pi*k{% endif %}" },
+    { "id": "wrong_period_half", "desc": "Неверно разделил период: из x-y=4pi*k получил x-y=2pi*k, оставив у x и y период pi*k вместо 2pi*k.", "transform": "{% if linear_eq_rhs == '2pi/3' %}x = pi/3 + pi*k,  y = pi/3 - pi*k{% else %}x = pi/4 + pi*k,  y = pi/4 - pi*k{% endif %}" },
+    { "id": "wrong_root_for_cos1", "desc": "Перепутал, при каком угле косинус равен 1: взял (x-y)/2 = pi + 2pi*k (где cos=-1) вместо 0, добавив лишний сдвиг на pi.", "transform": "{% if linear_eq_rhs == '2pi/3' %}x = 4pi/3 + 2pi*k,  y = -2pi/3 - 2pi*k{% else %}x = 5pi/4 + 2pi*k,  y = -3pi/4 - 2pi*k{% endif %}" },
+    { "id": "dropped_period", "desc": "Записал только главные значения корней, потеряв общий член семейства (+ 2pi*k).", "transform": "{% if linear_eq_rhs == '2pi/3' %}x = pi/3,  y = pi/3{% else %}x = pi/4,  y = pi/4{% endif %}" }
+  ],
+
+  "narrative_settings": [
+    "анализ интерференции двух волн с заданной разностью фаз",
+    "расчет координат шарнирного механизма"
+  ]
+}

@@ -1,0 +1,36 @@
+{#- The ORIGINAL equation is  coefficient * sin(inner) = coefficient*value, where
+    `value` is 'a' AFTER dividing by the coefficient. Products are precomputed for all
+    8 combos to keep numbers exact. The student divides back to sin(inner)=a, checks
+    a in [-1;1] (a=6 => no solutions), solves, then expresses x. -#}
+{%- set coefL = {'2': '2', 'sqrt(2)': '\\sqrt{2}'} -%}
+{%- set innerL = {'x': 'x', 'x + pi/4': 'x + \\frac{\\pi}{4}'} -%}
+{%- set valL = {'1': '1', '1/2': '\\frac{1}{2}', '-1/2': '-\\frac{1}{2}', '6': '6'} -%}
+{%- set rhs = {
+  '2|1': '2', '2|1/2': '1', '2|-1/2': '-1', '2|6': '12',
+  'sqrt(2)|1': '\\sqrt{2}', 'sqrt(2)|1/2': '\\frac{\\sqrt{2}}{2}', 'sqrt(2)|-1/2': '-\\frac{\\sqrt{2}}{2}', 'sqrt(2)|6': '6\\sqrt{2}'
+} -%}
+{%- set is_no_solution = value == '6' -%}
+{%- set is_special = value in ['1', '0', '-1'] -%}
+{%- set is_negative = value.startswith('-') -%}
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
+- Equation: {{ coefL[coefficient] }}\sin\left({{ innerL[inner_func] }}\right) = {{ rhs[coefficient ~ '|' ~ value] }}
+- Ask the student to find every value of x that satisfies this equation (the general solution).
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
+- Task: divide both sides by the coefficient to reach sin(...) = a, then solve.
+- Method to recall: {{
+    'FIRST check the domain — a lies OUTSIDE [-1; 1], so the equation has NO solutions; do not take arcsin'
+    if is_no_solution else
+    'a is one of the special values (1, 0 or -1) — use the corresponding PARTICULAR-CASE solution, not the general (-1)^n formula'
+    if is_special else
+    'a is NEGATIVE — raise the power to (n+1): x = (-1)^(n+1) * arcsin(|a|) + pi*n (do NOT keep the power at n)'
+    if is_negative else
+    'use the general formula: argument = (-1)^n * arcsin(a) + pi*n' }}.
+{% if inner_func != 'x' and not is_no_solution -%}
+- The argument is not a bare x: isolate x by SUBTRACTING the free angle from the whole
+  expression. It is FORBIDDEN to merge that free angle into the (-1)^n * arcsin term —
+  those are unlike terms.
+{% endif -%}
+- Render all math as LaTeX inside $...$.
+- Do NOT state or hint at the answer: the solution set for x (or that it is empty) must
+  NOT be given to the student.

@@ -1,0 +1,51 @@
+{
+  "topic": "inv_trig_arithmetic",
+  "display_name": "Арифметические операции и композиции функций",
+  "curriculum_ref": "10 класс — Обратные тригонометрические функции",
+  "constraints_template": "inv_trig_arithmetic.j2",
+
+  "_comment": "Сложение/вычитание аркфункций и композиции. ПАРАМЕТРЫ ПО ТИПАМ: linear_combination использует func1/val1/coef1 + op + func2/val2/coef2; direct_composition и double_angle используют outer + func1/val1 (outer обязан соответствовать func1 по constraints). Прямая композиция sin(arcsin(x)) = x — вычислений не требует [14].",
+
+  "tag": { "name": "Композиции и выражения", "slug": "inv-trig-comp" },
+  "default_difficulty": 3,
+
+  "parameters": {
+    "expression_type": { "type": "string", "options": ["linear_combination", "direct_composition", "double_angle"], "desc": "Тип составного выражения" },
+    "func1": { "type": "string", "options": ["arcsin", "arccos", "arctg"], "desc": "Внутренняя аркфункция (1-й член)" },
+    "val1": { "type": "string", "options": ["-1", "-sqrt(3)/2", "-sqrt(2)/2", "-1/2", "0", "1/2", "sqrt(2)/2", "sqrt(3)/2", "1"], "desc": "Табличное значение 1-го члена" },
+    "coef1": { "type": "int", "min": 1, "max": 3, "desc": "Целый коэффициент 1-го члена (linear_combination)" },
+    "op": { "type": "string", "options": ["+", "-"], "desc": "Знак между членами (linear_combination)" },
+    "func2": { "type": "string", "options": ["arcsin", "arccos", "arctg"], "desc": "Аркфункция 2-го члена (linear_combination)" },
+    "val2": { "type": "string", "options": ["-1", "-sqrt(3)/2", "-sqrt(2)/2", "-1/2", "0", "1/2", "sqrt(2)/2", "sqrt(3)/2", "1"], "desc": "Табличное значение 2-го члена (linear_combination)" },
+    "coef2": { "type": "int", "min": 1, "max": 3, "desc": "Целый коэффициент 2-го члена (linear_combination)" },
+    "outer": { "type": "string", "options": ["sin", "cos", "tg"], "desc": "Внешняя тригонометрическая функция (direct_composition / double_angle)" }
+  },
+
+  "constraints": [
+    "func1 != 'arctg' or val1 in ['-1', '0', '1'] // у арктангенса табличные углы среди этих значений только для -1, 0, 1",
+    "func2 != 'arctg' or val2 in ['-1', '0', '1'] // то же для 2-го члена",
+    "expression_type == 'linear_combination' or (outer == 'sin' and func1 == 'arcsin') or (outer == 'cos' and func1 == 'arccos') or (outer == 'tg' and func1 == 'arctg') // внешняя функция обязана соответствовать внутренней аркфункции",
+    "expression_type != 'linear_combination' or not (func1 == func2 and val1 == val2 and op == '-') // избегаем тождественного нуля c1*A - c2*A"
+  ],
+
+  "integer_clean": true,
+
+  "answer": {
+    "type": "inv_trig_eval",
+    "linear_combination": "coef1 * angle(func1, val1)  op  coef2 * angle(func2, val2)  (в радианах, привести к общему знаменателю)",
+    "direct_composition": "val1  (функция и её обратная сокращаются: outer(func1(val1)) = val1, вычислять угол не нужно)",
+    "double_angle": "формула двойного угла: arcsin -> 2*val1*sqrt(1 - val1**2); arccos -> 2*val1**2 - 1; arctg -> 2*val1 / (1 - val1**2)",
+    "desc": "answer_key выбирается по expression_type из соответствующего поля выше."
+  },
+
+  "distractors": [
+    { "id": "unnecessary_calculation", "desc": "Ученик пытается вычислить угол в прямой композиции sin(arcsin(val1)) вместо мгновенного ответа val1 [14].", "transform": { "direct_composition": "angle(func1, val1)" } },
+    { "id": "wrong_sign_in_sum", "desc": "Потеря минуса: при op = '-' второй член прибавлен вместо вычитания (или коэффициент потерял знак отрицательного угла) [13].", "transform": { "linear_combination": "coef1 * angle(func1, val1) + coef2 * angle(func2, val2)" } },
+    { "id": "mixed_functions_error", "desc": "Ученик сокращает внешнюю функцию двойного угла, как прямую композицию: outer(2*func1(val1)) = val1, игнорируя двойной угол [13].", "transform": { "double_angle": "val1" } }
+  ],
+
+  "narrative_settings": [
+    "суммирование угловых отклонений в механизме",
+    "расчет итоговой траектории робота после серии поворотов"
+  ]
+}

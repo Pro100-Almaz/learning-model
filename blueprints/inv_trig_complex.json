@@ -1,0 +1,42 @@
+{
+  "topic": "inv_trig_complex",
+  "display_name": "Связь различных тригонометрических функций",
+  "curriculum_ref": "10 класс — Обратные тригонометрические функции",
+  "constraints_template": "inv_trig_complex.j2",
+
+  "_comment": "Использование тригонометрических тождеств (формула половинного аргумента для inner '1/2 * arccos'; основное тождество для arccos/arcsin) для преобразования смешанных функций. value — пифагорова дробь, дающая рациональный ответ [15].",
+
+  "tag": { "name": "Сложные преобразования", "slug": "inv-trig-complex" },
+  "default_difficulty": 4,
+
+  "parameters": {
+    "outer_func": { "type": "string", "options": ["tg", "ctg"], "desc": "Внешняя функция" },
+    "inner_func": { "type": "string", "options": ["1/2 * arccos", "arccos", "arcsin"], "desc": "Внутренняя обратная функция" },
+    "value": { "type": "string", "options": ["3/5", "4/5", "5/13", "12/13"], "desc": "Аргумент-дробь (пифагорова, 0<value<1, даёт рациональный результат)" }
+  },
+
+  "constraints": [],
+  "integer_clean": true,
+
+  "answer": {
+    "type": "inv_trig_identity_logic",
+    "formula_tg_half": "sqrt((1 - value) / (1 + value))",
+    "formula_ctg_half": "sqrt((1 + value) / (1 - value))",
+    "formula_tg_arccos": "sqrt(1 - value**2) / value",
+    "formula_ctg_arccos": "value / sqrt(1 - value**2)",
+    "formula_tg_arcsin": "value / sqrt(1 - value**2)",
+    "formula_ctg_arcsin": "sqrt(1 - value**2) / value",
+    "desc": "answer_key: выбрать формулу по паре (outer_func, inner_func). Для inner = '1/2 * arccos' применить формулу половинного аргумента tg^2(a/2) = (1 - cos a)/(1 + cos a), где cos a = value; знак положительный, т.к. a/2 лежит в I четверти. Для arccos/arcsin выразить через sin/cos и основное тождество."
+  },
+
+  "distractors": [
+    { "id": "wrong_identity", "desc": "Ученик проигнорировал множитель 1/2 и применил основное тождество к полному углу вместо формулы половинного аргумента [15].", "transform": { "formula_tg_half": "sqrt(1 - value**2) / value", "formula_ctg_half": "value / sqrt(1 - value**2)" } },
+    { "id": "wrong_root_sign", "desc": "Ученик ошибся со знаком при извлечении корня, не проверив четверть угла a/2 [17].", "transform": { "result_sign": "flipped" } },
+    { "id": "fraction_division_error", "desc": "Перепутал числитель и знаменатель при делении дробей вида (1 + value)/(1 - value) [16].", "transform": { "formula_tg_half": "sqrt((1 + value) / (1 - value))", "formula_ctg_half": "sqrt((1 - value) / (1 + value))" } }
+  ],
+
+  "narrative_settings": [
+    "оптимизация сложных волновых функций в оптике",
+    "расчет баллистической траектории с учетом аэродинамического сопротивления"
+  ]
+}

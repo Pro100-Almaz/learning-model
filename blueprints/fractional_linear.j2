@@ -1,0 +1,18 @@
+{#- Render "k x + m": drop a unit coefficient on x and fold the sign of the
+    constant m into the operator (omit it when zero). Used for both the
+    numerator (num_a, num_b) and the denominator (denom_c, denom_d). -#}
+{%- macro lin(k, m) -%}
+{{ '' if k == 1 else k }}x
+{%- if m != 0 %} {{ '+' if m > 0 else '-' }} {{ m if m > 0 else -m }}{% endif %}
+{%- endmacro -%}
+MATH CONSTRAINTS (do not alter any number):
+- Function: y = ({{ lin(num_a, num_b) }}) / ({{ lin(denom_c, denom_d) }})
+- Task: by separating the integer part of the fraction, find the vertical and the
+  horizontal asymptotes of the graph (i.e. the shifts along OX and OY).
+- The vertical asymptote comes from the denominator turning to zero: {{ lin(denom_c, denom_d) }} = 0.
+- The horizontal asymptote is the ratio of the leading coefficients of the numerator
+  and the denominator.
+- Render all math as LaTeX inside $...$
+  (e.g. $y = \frac{ '{' }{{ lin(num_a, num_b) }}{{ '}' }}{ '{' }{{ lin(denom_c, denom_d) }}{{ '}' }}$).
+- Do NOT state or hint at the answer: the equations of the vertical and horizontal
+  asymptotes must NOT be given to the student.

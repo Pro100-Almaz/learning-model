@@ -1,0 +1,40 @@
+{
+  "topic": "trig_eq_deg_red",
+  "display_name": "Решение тригонометрических уравнений: Метод понижения порядка",
+  "curriculum_ref": "10 класс — Решение тригонометрических уравнений",
+  "constraints_template": "trig_eq_deg_red.j2",
+
+  "_comment": "Применяется, когда в уравнении присутствует sin^2(x) или cos^2(x). Использование формул понижения степени позволяет избежать извлечения корня и путаницы со знаками [6-8].",
+
+  "tag": { "name": "Понижение степени", "slug": "trig-degree-reduction" },
+  "default_difficulty": 4,
+
+  "parameters": {
+    "squared_func": { "type": "string", "options": ["cos^2(x)", "sin^2(x)"], "desc": "Функция в квадрате, степень которой нужно понизить" },
+    "linear_term": { "type": "string", "options": ["cos(2x)", "none"], "desc": "Линейная часть от двойного угла, с которой будут приводиться подобные слагаемые" },
+    "rhs_value": { "type": "string", "options": ["5/4", "3/4"], "desc": "Свободный член в правой части" }
+  },
+
+  "constraints": [
+    "(squared_func == 'cos^2(x)' and linear_term == 'none' and rhs_value == '3/4') or (squared_func == 'cos^2(x)' and linear_term == 'cos(2x)' and rhs_value == '5/4') or (squared_func == 'sin^2(x)' and linear_term == 'none' and rhs_value == '3/4') or (squared_func == 'sin^2(x)' and linear_term == 'cos(2x)' and rhs_value == '3/4') // только комбинации, дающие чистое решаемое cos(2x) = ±1/2"
+  ],
+  "integer_clean": true,
+
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% set neg = squared_func == 'sin^2(x)' and linear_term == 'none' %}{% if neg %}x = ± pi/3 + pi*n{% else %}x = ± pi/6 + pi*n{% endif %}",
+    "desc": "Понижаем степень (cos^2=(1+cos2x)/2, sin^2=(1-cos2x)/2), умножаем на 2, приводим подобные -> cos(2x) = ±1/2. cos(2x)=1/2 => x=±pi/6+pin; cos(2x)=-1/2 => x=±pi/3+pin (значение -1/2 даёт только комбинация sin^2 без линейного члена)."
+  },
+
+  "distractors": [
+    { "id": "sign_error_reduction", "desc": "Перепутал знак в числителе формулы понижения (минус для cos^2 или плюс для sin^2) и получил противоположное значение cos(2x).", "transform": "{% set neg = squared_func == 'sin^2(x)' and linear_term == 'none' %}{% if neg %}x = ± pi/6 + pi*n{% else %}x = ± pi/3 + pi*n{% endif %}" },
+    { "id": "direct_root_missing_negative", "desc": "Вместо понижения степени извлёк корень и записал только положительную ветвь, потеряв вторую (-) серию решений.", "transform": "{% set neg = squared_func == 'sin^2(x)' and linear_term == 'none' %}{% if neg %}x = pi/3 + pi*n{% else %}x = pi/6 + pi*n{% endif %}" },
+    { "id": "wrong_period", "desc": "Записал период 2pin вместо pin (после понижения уравнение содержит cos(2x), период которого по x равен pin).", "transform": "{% set neg = squared_func == 'sin^2(x)' and linear_term == 'none' %}{% if neg %}x = ± pi/3 + 2pi*n{% else %}x = ± pi/6 + 2pi*n{% endif %}" },
+    { "id": "dropped_period", "desc": "Потерял общий член семейства решений (+ pin), записав лишь главные значения.", "transform": "{% set neg = squared_func == 'sin^2(x)' and linear_term == 'none' %}{% if neg %}x = ± pi/3{% else %}x = ± pi/6{% endif %}" }
+  ],
+
+  "narrative_settings": [
+    "определение мощности переменного тока (где напряжение или ток в квадрате)",
+    "кинематика вращательного движения"
+  ]
+}

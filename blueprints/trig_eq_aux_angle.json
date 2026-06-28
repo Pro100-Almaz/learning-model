@@ -1,0 +1,40 @@
+{
+  "topic": "trig_eq_aux_angle",
+  "display_name": "Решение тригонометрических уравнений: Метод вспомогательного угла",
+  "curriculum_ref": "10 класс — Решение тригонометрических уравнений",
+  "constraints_template": "trig_eq_aux_angle.j2",
+
+  "_comment": "Уравнения вида a*sin(x) + b*cos(x) = c. Находим r = sqrt(a^2+b^2), делим ОБЕ части на r, сворачиваем левую часть в sin(x+alpha) по формуле сложения, решаем простейшее sin(x+alpha)=c/r. Комбинации параметров ограничены теми, где r и alpha табличные, а |c/r|<=1 (иначе r иррационально или нет решений).",
+
+  "tag": { "name": "Вспомогательный угол", "slug": "trig-aux-angle" },
+  "default_difficulty": 5,
+
+  "parameters": {
+    "coeff_a": { "type": "string", "options": ["1", "sqrt(3)", "2"], "desc": "Коэффициент перед синусом" },
+    "coeff_b": { "type": "string", "options": ["1", "-sqrt(3)", "-2"], "desc": "Коэффициент перед косинусом" },
+    "rhs_c": { "type": "string", "options": ["sqrt(3)", "2", "1"], "desc": "Правая часть уравнения (c)" }
+  },
+
+  "constraints": [
+    "(coeff_a == '1' and coeff_b == '1' and rhs_c == '1') or (coeff_a == 'sqrt(3)' and coeff_b == '1' and rhs_c == 'sqrt(3)') or (coeff_a == '1' and coeff_b == '-sqrt(3)' and rhs_c == 'sqrt(3)') or (coeff_a == '2' and coeff_b == '-2' and rhs_c == '2') // только комбинации с табличными r и alpha и |c/r|<=1"
+  ],
+  "integer_clean": true,
+
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% if coeff_b == '1' and coeff_a == '1' %}x = 2pi*n;  x = pi/2 + 2pi*n{% elif coeff_b == '1' %}x = pi/6 + 2pi*n;  x = pi/2 + 2pi*n{% elif coeff_a == '1' %}x = 2pi/3 + 2pi*n;  x = pi + 2pi*n{% else %}x = pi/2 + 2pi*n;  x = pi + 2pi*n{% endif %}",
+    "desc": "r = sqrt(a^2+b^2). Делим обе части на r, сворачиваем в sin(x+alpha)=c/r, где cos(alpha)=a/r, sin(alpha)=b/r. (1,1,1): sin(x+pi/4)=√2/2. (√3,1,√3): sin(x+pi/6)=√3/2. (1,-√3,√3): sin(x-pi/3)=√3/2. (2,-2,2): sin(x-pi/4)=√2/2. Каждое даёт две серии (arcsin и pi-arcsin)."
+  },
+
+  "distractors": [
+    { "id": "forgot_rhs_division", "desc": "Разделил на r только левую часть, забыв разделить правую: получил sin(x+alpha)=c. При c>r это даёт 'нет решений', иначе — неверный корень.", "transform": "{% if coeff_b == '1' and coeff_a == '1' %}x = pi/4 + 2pi*n{% else %}решений нет{% endif %}" },
+    { "id": "wrong_fold_sign", "desc": "Перепутал знак вспомогательного угла при сворачивании (sin(x-alpha) вместо sin(x+alpha) или наоборот).", "transform": "{% if coeff_b == '1' and coeff_a == '1' %}x = pi/2 + 2pi*n;  x = pi + 2pi*n{% elif coeff_b == '1' %}x = pi/2 + 2pi*n;  x = 5pi/6 + 2pi*n{% elif coeff_a == '1' %}x = 2pi*n;  x = pi/3 + 2pi*n{% else %}x = 2pi*n;  x = pi/2 + 2pi*n{% endif %}" },
+    { "id": "wrong_period_pi", "desc": "Записал период pi*n вместо 2pi*n, забыв, что простейшее уравнение с синусом имеет период 2pi.", "transform": "{% if coeff_b == '1' and coeff_a == '1' %}x = pi*n;  x = pi/2 + pi*n{% elif coeff_b == '1' %}x = pi/6 + pi*n;  x = pi/2 + pi*n{% elif coeff_a == '1' %}x = 2pi/3 + pi*n;  x = pi + pi*n{% else %}x = pi/2 + pi*n;  x = pi + pi*n{% endif %}" },
+    { "id": "dropped_second_family", "desc": "Записал только серию x+alpha = arcsin(c/r) + 2pi*n, потеряв вторую ветвь pi - arcsin(c/r).", "transform": "{% if coeff_b == '1' and coeff_a == '1' %}x = 2pi*n{% elif coeff_b == '1' %}x = pi/6 + 2pi*n{% elif coeff_a == '1' %}x = 2pi/3 + 2pi*n{% else %}x = pi/2 + 2pi*n{% endif %}" }
+  ],
+
+  "narrative_settings": [
+    "нахождение суперпозиции двух гармонических колебаний с одинаковой частотой в физике",
+    "расчет амплитуды переменного тока"
+  ]
+}

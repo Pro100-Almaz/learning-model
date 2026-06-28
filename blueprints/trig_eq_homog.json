@@ -1,0 +1,39 @@
+{
+  "topic": "trig_eq_homog",
+  "display_name": "Решение однородных тригонометрических уравнений",
+  "curriculum_ref": "10 класс — Решение тригонометрических уравнений",
+  "constraints_template": "trig_eq_homog.j2",
+
+  "_comment": "Уравнения вида a*sin(x) + b*cos(x) = 0 (степень 1) или a*sin^2(x) + b*sin(x)cos(x) + c*cos^2(x) = rhs (степень 2). Делением на cos^degree(x) сводятся к уравнению относительно tg(x). Если rhs != 0, его сначала гомогенизируют умножением на (sin^2 x + cos^2 x). cos(x)=0 не является корнем во всех допустимых комбинациях, поэтому деление корректно.",
+
+  "tag": { "name": "Однородные уравнения", "slug": "trig-homogeneous" },
+  "default_difficulty": 5,
+
+  "parameters": {
+    "degree": { "type": "string", "options": ["1", "2"], "desc": "Степень однородного уравнения" },
+    "left_side": { "type": "string", "options": ["2sin(x) - 3cos(x)", "5sin^2(x) + 3sin(x)cos(x)"], "desc": "Левая часть уравнения" },
+    "rhs_value": { "type": "string", "options": ["0", "4"], "desc": "Правая часть. Если не 0, требуется предварительное применение основного тождества" }
+  },
+
+  "constraints": [
+    "(degree == '1' and left_side == '2sin(x) - 3cos(x)' and rhs_value == '0') or (degree == '2' and left_side == '5sin^2(x) + 3sin(x)cos(x)') // степень совпадает с левой частью; rhs=4 допустим только при степени 2 (однородность)"
+  ],
+  "integer_clean": true,
+
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% if degree == '1' %}x = arctan(3/2) + pi*n{% elif rhs_value == '0' %}x = pi*n;  x = arctan(-3/5) + pi*n{% else %}x = pi/4 + pi*n;  x = arctan(-4) + pi*n{% endif %}",
+    "desc": "Степень 1: делим на cos x -> tg x = 3/2 -> x = arctan(3/2) + pi*n. Степень 2, rhs=0: выносим sin x -> sin x=0 (x=pi*n) или 5tg x+3=0 (tg x=-3/5). Степень 2, rhs=4: гомогенизируем 4*(sin^2+cos^2), приводим, делим на cos^2 -> tg^2 x+3tg x-4=0 -> tg x=1 (x=pi/4+pi*n) или tg x=-4. Период тангенса — pi."
+  },
+
+  "distractors": [
+    { "id": "wrong_period_2pi", "desc": "Записал период 2pi*n вместо pi*n, забыв, что период тангенса равен pi.", "transform": "{% if degree == '1' %}x = arctan(3/2) + 2pi*n{% elif rhs_value == '0' %}x = 2pi*n;  x = arctan(-3/5) + 2pi*n{% else %}x = pi/4 + 2pi*n;  x = arctan(-4) + 2pi*n{% endif %}" },
+    { "id": "sign_error_tangent", "desc": "Ошибся со знаком при выражении тангенса (или в среднем коэффициенте квадратного уравнения), получив тангенс с противоположным знаком.", "transform": "{% if degree == '1' %}x = arctan(-3/2) + pi*n{% elif rhs_value == '0' %}x = pi*n;  x = arctan(3/5) + pi*n{% else %}x = -pi/4 + pi*n;  x = arctan(4) + pi*n{% endif %}" },
+    { "id": "forgot_arctan", "desc": "Для нетабличного значения тангенса записал само число как угол, забыв применить арктангенс.", "transform": "{% if degree == '1' %}x = 3/2 + pi*n{% elif rhs_value == '0' %}x = pi*n;  x = -3/5 + pi*n{% else %}x = pi/4 + pi*n;  x = -4 + pi*n{% endif %}" }
+  ],
+
+  "narrative_settings": [
+    "балансировка сил в механике с наклонными плоскостями",
+    "геометрическая оптика и расчет углов отражения/преломления"
+  ]
+}

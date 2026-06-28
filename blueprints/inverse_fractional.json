@@ -1,0 +1,41 @@
+{
+  "topic": "inverse_fractional",
+  "display_name": "Обратная функция для дробных выражений",
+  "curriculum_ref": "10 класс — Обратная функция",
+  "constraints_template": "inverse_fractional.j2",
+
+  "_comment": "Исходная функция y = num_k/(denom_a*x + denom_b). Обратная находится выражением x через y по правилу пропорции с последующей заменой переменных: y = (num_k - denom_b*x)/(denom_a*x). denom_a >= 2 и denom_b != 0, чтобы дистракторы (ошибка деления, ошибка знака) не совпали с верным ответом.",
+
+  "tag": { "name": "Обратная функция", "slug": "obratnaya-funkciya" },
+  "default_difficulty": 3,
+
+  "parameters": {
+    "num_k": { "type": "int", "min": 1, "max": 10, "desc": "Свободное число (числитель) исходной дроби" },
+    "denom_a": { "type": "int", "min": 2, "max": 5, "desc": "Коэффициент при x в знаменателе" },
+    "denom_b": { "type": "int", "min": -10, "max": 10, "desc": "Свободный член в знаменателе" }
+  },
+
+  "constraints": [
+    "denom_b != 0 // иначе член с x в числителе обратной функции пропадает и дистрактор знака совпадает с верным ответом"
+  ],
+
+  "integer_clean": true,
+
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% set xc = -denom_b %}y = ({{ num_k }}{% if xc == 1 %} + x{% elif xc == -1 %} - x{% elif xc > 0 %} + {{ xc }}x{% else %} - {{ -xc }}x{% endif %}) / ({{ denom_a }}x)",
+    "desc": "Из y = k/(a*x+b) по пропорции: a*x+b = k/y -> a*x = k/y - b -> x = (k - b*y)/(a*y). Меняем x и y местами: y = (k - b*x)/(a*x). Знак b меняется при переносе, делим на a, переменные меняем местами."
+  },
+
+  "distractors": [
+    { "id": "forgot_swap", "desc": "Верно выразил x через y, но забыл в конце поменять переменные x и y местами (ответ остался выражением x через y).", "transform": "{% set xc = -denom_b %}x = ({{ num_k }}{% if xc == 1 %} + y{% elif xc == -1 %} - y{% elif xc > 0 %} + {{ xc }}y{% else %} - {{ -xc }}y{% endif %}) / ({{ denom_a }}y)" },
+    { "id": "sign_error_b", "desc": "При переносе свободного члена b в другую часть не поменял его знак (оставил +b вместо -b).", "transform": "{% set xc = denom_b %}y = ({{ num_k }}{% if xc == 1 %} + x{% elif xc == -1 %} - x{% elif xc > 0 %} + {{ xc }}x{% else %} - {{ -xc }}x{% endif %}) / ({{ denom_a }}x)" },
+    { "id": "division_error", "desc": "Чтобы избавиться от коэффициента a, умножил на него вместо деления, из-за чего a попал в числитель.", "transform": "{% set xc = -denom_a*denom_b %}y = ({{ denom_a*num_k }}{% if xc == 1 %} + x{% elif xc == -1 %} - x{% elif xc > 0 %} + {{ xc }}x{% else %} - {{ -xc }}x{% endif %}) / x" }
+  ],
+
+  "narrative_settings": [
+    "пересчёт: по известной средней себестоимости найти необходимый объём выпуска",
+    "восстановление числа участников по фактической доле затрат на каждого",
+    "обратный перевод между двумя связанными величинами (например, цена ↔ количество спроса)"
+  ]
+}

@@ -1,0 +1,15 @@
+{#- Build y = x^2 + p x + q from its roots via Vieta: p = -(root1+root2),
+    q = root1*root2. Fold each sign into the operator, drop a unit
+    coefficient on the x term, and omit any zero term. -#}
+{%- set p = -(root1 + root2) -%}
+{%- set q = root1 * root2 -%}
+{%- macro term(c, suffix) -%}
+{%- if c != 0 %} {{ '+' if c > 0 else '-' }} {{ (c if c > 0 else -c) if (c|abs != 1 or suffix == '') else '' }}{{ suffix }}{% endif %}
+{%- endmacro -%}
+MATH CONSTRAINTS (do not alter any number):
+- Function: y = x^2{{ term(p, 'x') }}{{ term(q, '') }}
+- Task: investigate the parabola fully — find its zeros, the interval of increase, and the interval where y > 0.
+- The function is a quadratic with roots at x = {{ root1 }} and x = {{ root2 }}; the vertex sits at x = {{ (root1 + root2) // 2 }}.
+- The branches open upward, so the function decreases up to the vertex and increases after it; it is positive outside the roots and negative between them.
+- Render all math as LaTeX inside $...$ (e.g. $y = x^2{{ term(p, 'x') }}{{ term(q, '') }}$).
+- Do NOT state or hint at the resulting zeros, intervals, or vertex value (the answer).

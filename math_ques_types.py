@@ -1,7 +1,7 @@
 from __future__ import annotations
 from fractions import Fraction
 from typing import Any
-from math_engine import _eval
+from math_engine import _eval, render_value
 
 def compute_answer_key(blueprint: dict, spec: dict) -> Any:
     """Compute the absolute correct answer, in pure Python, from the spec.
@@ -39,5 +39,19 @@ def compute_answer_key(blueprint: dict, spec: dict) -> Any:
                 "(e.g. a % 3 == 0 and b % 2 == 0)."
             )
         return int(result)
+
+    if kind == "static_choice":
+        # Declarative/conceptual answer: the correct value(s) are spelled out
+        # literally in the blueprint under `correct` (no computation). Used for
+        # topics whose answer is a classification or a set of named properties
+        # (e.g. parity / domain / range / period), not a single computed number.
+        # May be a dict of named fields or a single string. Each value is
+        # Jinja-rendered against the spec (so a parameter-dependent answer like
+        # "{{ -denom_d }}/{{ denom_c }}" resolves), then the option machinery
+        # varies it without int-coercion.
+        correct = answer["correct"]
+        if isinstance(correct, dict):
+            return {key: render_value(val, spec) for key, val in correct.items()}
+        return render_value(correct, spec)
 
     raise ValueError(f"Unknown answer type: {kind}")

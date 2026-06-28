@@ -1,0 +1,16 @@
+{#- Render "a x + b" for the denominator: drop a unit coefficient on x and
+    fold the sign of the constant b into the operator (omit when zero). -#}
+{%- macro lin(k, m) -%}
+{{ '' if k == 1 else k }}x
+{%- if m != 0 %} {{ '+' if m > 0 else '-' }} {{ m if m > 0 else -m }}{% endif %}
+{%- endmacro -%}
+MATH CONSTRAINTS (do not alter any number):
+- Function: y = {{ num_k }} / ({{ lin(denom_a, denom_b) }})
+- Task: find the inverse function. Express x through y using the proportion rule
+  (cross-multiplication), then swap the variables x and y at the end.
+- Method: multiply both sides by the denominator WITHOUT opening the brackets (the
+  proportion rule keeps the bracket intact and avoids producing an x·y term).
+- Render all math as LaTeX inside $...$
+  (e.g. $y = \frac{ '{' }{{ num_k }}{{ '}' }}{ '{' }{{ lin(denom_a, denom_b) }}{{ '}' }}$).
+- Do NOT state or hint at the answer: the final expression of the inverse function
+  must NOT be given to the student.

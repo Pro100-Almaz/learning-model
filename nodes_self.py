@@ -99,7 +99,13 @@ def architect_node(state: GraphState) -> dict[str, Any]:
 
     blueprint_distractors = blueprint.get("distractors", [])
     answer_options = build_answer_options(
-        answer_key, blueprint_distractors, math_spec, n_options=N_ANSWER_OPTIONS
+        answer_key,
+        blueprint_distractors,
+        math_spec,
+        n_options=N_ANSWER_OPTIONS,
+        # Declarative answers carry text values; apply distractor transforms
+        # literally and skip the numeric-shift fallback.
+        literal=blueprint["answer"]["type"] == "static_choice",
     )
     # Carry the human description for only the misconceptions that actually
     # became options (some collapse to duplicates on a given roll). The Tutor

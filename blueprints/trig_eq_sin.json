@@ -1,0 +1,40 @@
+{
+  "topic": "trig_eq_sin",
+  "display_name": "Решение уравнений вида sin(x) = a с преобразованиями",
+  "curriculum_ref": "10 класс — Простейшие тригонометрические уравнения. y=sinx",
+  "constraints_template": "trig_eq_sin.j2",
+
+  "_comment": "Преобразование к виду sin(x) = a. Использование x = (-1)^n * arcsin(a) + πn. Перенос минуса в степень (n+1) при отрицательном a. Проверка ОДЗ.",
+
+  "tag": { "name": "Уравнения с синусом", "slug": "trig-eq-sin" },
+  "default_difficulty": 4,
+
+  "parameters": {
+    "coefficient": { "type": "string", "options": ["2", "sqrt(2)"], "desc": "Множитель перед синусом в исходном уравнении" },
+    "inner_func": { "type": "string", "options": ["x", "x + pi/4"], "desc": "Внутренний аргумент функции" },
+    "value": { "type": "string", "options": ["1", "1/2", "-1/2", "6"], "desc": "Значение 'a' (включает 6 для проверки на отсутствие решений)" }
+  },
+
+  "constraints": [],
+  "integer_clean": true,
+
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% set t = ' - pi/4' if inner_func == 'x + pi/4' else '' %}{% if value == '6' %}нет решений{% elif value == '1' %}x = pi/2{{ t }} + 2pi*n{% elif value == '-1/2' %}x = (-1)^(n+1) * pi/6{{ t }} + pi*n{% else %}x = (-1)^n * pi/6{{ t }} + pi*n{% endif %}",
+    "desc": "Делим на коэффициент -> sin(arg)=a. value=6 вне [-1;1] => нет решений; value=1 — частный случай pi/2+2pin; value<0 — степень (n+1); иначе общая (-1)^n*arcsin(a)+pin. Если arg = x + pi/4, вычитаем pi/4 (НЕ сливая со слагаемым (-1)^n)."
+  },
+
+  "distractors": [
+    { "id": "ignored_domain", "desc": "Ученик попытался взять арксинус от числа вне [-1; 1] (например, 6) вместо ответа 'нет решений'.", "transform": "{% set t = ' - pi/4' if inner_func == 'x + pi/4' else '' %}{% if value == '6' %}x = (-1)^n * arcsin(6){{ t }} + pi*n{% else %}{{ 1/0 }}{% endif %}" },
+    { "id": "wrong_power_sign", "desc": "При отрицательном a забыл добавить +1 к степени: оставил (-1)^n вместо (-1)^(n+1).", "transform": "{% set t = ' - pi/4' if inner_func == 'x + pi/4' else '' %}{% if value == '-1/2' %}x = (-1)^n * pi/6{{ t }} + pi*n{% else %}{{ 1/0 }}{% endif %}" },
+    { "id": "illegal_addition", "desc": "Незаконно сложил свободный угол (- pi/4) со слагаемым (-1)^n*arcsin(a), внеся его под множитель (-1)^n.", "transform": "{% if inner_func == 'x + pi/4' and (value == '1/2' or value == '-1/2') %}x = (-1)^{% if value == '-1/2' %}(n+1){% else %}n{% endif %} * (pi/6 - pi/4) + pi*n{% else %}{{ 1/0 }}{% endif %}" },
+    { "id": "pm_instead_of_power", "desc": "Применил для синуса косинусную форму с ± вместо (-1)^n.", "transform": "{% set t = ' - pi/4' if inner_func == 'x + pi/4' else '' %}{% if value == '6' %}x = ± arcsin(6){{ t }} + 2pi*n{% elif value == '1' %}x = ± pi/2{{ t }} + 2pi*n{% else %}x = ± pi/6{{ t }} + 2pi*n{% endif %}" },
+    { "id": "wrong_period", "desc": "Записал период 2pin вместо pin (период серии решений синуса равен pin).", "transform": "{% set t = ' - pi/4' if inner_func == 'x + pi/4' else '' %}{% if value == '6' %}x = (-1)^n * arcsin(6){{ t }} + 2pi*n{% elif value == '1' %}x = pi/2{{ t }} + pi*n{% elif value == '-1/2' %}x = (-1)^(n+1) * pi/6{{ t }} + 2pi*n{% else %}x = (-1)^n * pi/6{{ t }} + 2pi*n{% endif %}" },
+    { "id": "dropped_period", "desc": "Потерял общий член семейства решений (+ pin), записав лишь главное значение.", "transform": "{% set t = ' - pi/4' if inner_func == 'x + pi/4' else '' %}{% if value == '6' %}x = (-1)^n * arcsin(6){{ t }}{% elif value == '1' %}x = pi/2{{ t }}{% else %}x = (-1)^n * pi/6{{ t }}{% endif %}" }
+  ],
+
+  "narrative_settings": [
+    "моделирование амплитуды электромагнитных волн",
+    "расчет угла преломления светового луча в оптике"
+  ]
+}
