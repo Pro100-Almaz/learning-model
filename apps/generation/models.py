@@ -115,7 +115,7 @@ class GenerationStep(models.Model):
         choices=STATUS_CHOICES,
         default=STATUS_SUCCEEDED,
     )
-    message = models.CharField(max_length=300, blank=True, default="")
+    message = models.TextField(blank=True, default="")
     data = models.JSONField(default=dict, blank=True)
     question = models.ForeignKey(
         "assessments.Question",
