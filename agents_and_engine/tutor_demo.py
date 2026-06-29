@@ -1,8 +1,8 @@
 """Show the Tutor working on real wrong answers (calls Claude live).
 
-Run it with no setup:
+Run it from the project root with no setup:
 
-    .venv\\Scripts\\python.exe tutor_demo.py
+    .venv\\Scripts\\python.exe -m agents_and_engine.tutor_demo
 
 It builds a couple of wrong-answer scenarios (the same data the Architect
 persists on a Question) and runs the real Tutor path: prompt assembly ->
@@ -24,9 +24,9 @@ django.setup()
 
 from apps.assessments.models import AnswerOption, Question  # noqa: E402
 from apps.assessments.services import _build_tutor_prompt  # noqa: E402
-from maiqe.config import TUTOR_MODEL  # noqa: E402
-from maiqe.llm import chat_anthropic  # noqa: E402
-from maiqe.prompts import TUTOR_SYSTEM  # noqa: E402
+from config import TUTOR_MODEL  # noqa: E402
+from .llm import chat_anthropic  # noqa: E402
+from .prompts import TUTOR_SYSTEM  # noqa: E402
 
 EXAMPLES = [
     {

@@ -24,7 +24,7 @@ from typing import Any
 
 from langgraph.graph import END, START, StateGraph
 
-from .nodes import (
+from .nodes_self import (
     architect_node,
     critic_node,
     critic_router,

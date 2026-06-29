@@ -26,10 +26,11 @@ from __future__ import annotations
 
 from typing import Annotated, Any, TypedDict
 
-from . import config
+import config
+from . import inv_trig
 from .llm import chat_openai_structured
-from .math.question_types import compute_answer_key
-from .math.engine import (
+from .math_ques_types import compute_answer_key
+from .math_engine import (
     build_answer_options,
     build_solution,
     compute_content_hash,
@@ -98,15 +99,24 @@ def architect_node(state: GraphState) -> dict[str, Any]:
     solution = build_solution(blueprint, math_spec, answer_key)
 
     blueprint_distractors = blueprint.get("distractors", [])
-    answer_options = build_answer_options(
-        answer_key,
-        blueprint_distractors,
-        math_spec,
-        n_options=N_ANSWER_OPTIONS,
-        # Declarative answers carry text values; apply distractor transforms
-        # literally and skip the numeric-shift fallback.
-        literal=blueprint["answer"]["type"] == "static_choice",
-    )
+    answer_type = blueprint["answer"]["type"]
+    if answer_type in inv_trig.ANSWER_TYPES:
+        # Inverse-trig answers are symbolic (angles / surds); their options come
+        # from the dedicated engine, which computes each named misconception
+        # exactly and tops up with plausible wrong angles/values.
+        answer_options = inv_trig.build_options(
+            answer_type, math_spec, n_options=N_ANSWER_OPTIONS
+        )
+    else:
+        answer_options = build_answer_options(
+            answer_key,
+            blueprint_distractors,
+            math_spec,
+            n_options=N_ANSWER_OPTIONS,
+            # Declarative answers carry text values; apply distractor transforms
+            # literally and skip the numeric-shift fallback.
+            literal=answer_type == "static_choice",
+        )
     # Carry the human description for only the misconceptions that actually
     # became options (some collapse to duplicates on a given roll). The Tutor
     # maps a wrong option's tag -> this text without reloading the blueprint.

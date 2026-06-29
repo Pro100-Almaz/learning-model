@@ -94,7 +94,7 @@ class RunGenerationJobTests(APITestCase):
             ]
         )
 
-        with patch("maiqe.graph.build_graph", return_value=graph):
+        with patch("agents_and_engine.graph.build_graph", return_value=graph):
             result = run_generation_job(job.pk)
 
         job.refresh_from_db()
@@ -127,7 +127,7 @@ class RunGenerationJobTests(APITestCase):
             ]
         )
 
-        with patch("maiqe.graph.build_graph", return_value=graph):
+        with patch("agents_and_engine.graph.build_graph", return_value=graph):
             run_generation_job(job.pk)
 
         job.refresh_from_db()
@@ -150,7 +150,7 @@ class RunGenerationJobTests(APITestCase):
             ]
         )
 
-        with patch("maiqe.graph.build_graph", return_value=graph):
+        with patch("agents_and_engine.graph.build_graph", return_value=graph):
             run_generation_job(job.pk)
 
         job.refresh_from_db()
@@ -182,7 +182,7 @@ class RunGenerationJobTests(APITestCase):
                     yield {"critic": {"critic_passed": True}}
                     yield {"publisher": {"question_id": question.pk, "was_duplicate": False}}
 
-        with patch("maiqe.graph.build_graph", return_value=Graph()):
+        with patch("agents_and_engine.graph.build_graph", return_value=Graph()):
             run_generation_job(job.pk)
 
         job.refresh_from_db()
@@ -199,7 +199,7 @@ class RunGenerationJobTests(APITestCase):
         job.status = GenerationJob.STATUS_CANCELLED
         job.save(update_fields=["status"])
 
-        with patch("maiqe.graph.build_graph") as build_graph:
+        with patch("agents_and_engine.graph.build_graph") as build_graph:
             result = run_generation_job(job.pk)
 
         build_graph.assert_not_called()

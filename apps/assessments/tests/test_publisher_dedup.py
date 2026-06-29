@@ -9,8 +9,8 @@ the LLM nodes.
 import pytest
 
 from apps.assessments.models import AnswerOption, Question
-from maiqe.math.engine import compute_content_hash
-from maiqe.nodes import publisher_node
+from agents_and_engine.math_engine import compute_content_hash
+from agents_and_engine.nodes_self import publisher_node
 
 pytestmark = pytest.mark.django_db
 

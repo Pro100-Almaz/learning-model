@@ -1,7 +1,8 @@
 from __future__ import annotations
 from fractions import Fraction
 from typing import Any
-from .engine import _eval, render_value
+from . import inv_trig
+from .math_engine import _eval, render_value
 
 def compute_answer_key(blueprint: dict, spec: dict) -> Any:
     """Compute the absolute correct answer, in pure Python, from the spec.
@@ -53,5 +54,12 @@ def compute_answer_key(blueprint: dict, spec: dict) -> Any:
         if isinstance(correct, dict):
             return {key: render_value(val, spec) for key, val in correct.items()}
         return render_value(correct, spec)
+
+    if kind in inv_trig.ANSWER_TYPES:
+        # Inverse-trig topics: exact symbolic answer (a radian angle or a surd),
+        # computed in pure Python by the dedicated engine. Returned as a LaTeX
+        # fragment string, so format_answer/deterministic_review treat it as
+        # non-numeric (no false answer-leak from a symbolic pi-fraction).
+        return inv_trig.compute_answer(kind, spec)
 
     raise ValueError(f"Unknown answer type: {kind}")

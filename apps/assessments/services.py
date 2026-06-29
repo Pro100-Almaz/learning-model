@@ -431,9 +431,9 @@ def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
 
     # Lazy imports keep the LLM stack (and its API key) out of Django startup and
     # out of any request/test that never reaches the Tutor.
-    from maiqe.config import TUTOR_MODEL
-    from maiqe.llm import chat_anthropic
-    from maiqe.prompts import TUTOR_SYSTEM
+    from config import TUTOR_MODEL
+    from agents_and_engine.llm import chat_anthropic
+    from agents_and_engine.prompts import TUTOR_SYSTEM
 
     note = chat_anthropic(
         TUTOR_SYSTEM,

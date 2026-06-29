@@ -4,18 +4,18 @@ Quick preview of the text the system generates — no database needed.
 Runs Architect -> Storyteller -> Critic (the same reflection loop as graph.py,
 minus the Publisher) and prints each draft plus the Critic's verdict.
 
-Usage:
-    python preview.py                          # one of each blueprint topic
-    python preview.py quadratic_equations      # just this topic
-    python preview.py calculus_integrals 130   # topic + ENT target score
+Run from the project root (it's a package module, not a loose script):
+    python -m agents_and_engine.preview                       # one of each blueprint topic
+    python -m agents_and_engine.preview quadratic_equations   # just this topic
+    python -m agents_and_engine.preview calculus_integrals 130  # topic + ENT target score
 """
 from __future__ import annotations
 
 import sys
 
-import maiqe.config as config
-from maiqe.nodes import architect_node, critic_node, critic_router, storyteller_node
-from maiqe.state import GraphState
+import config
+from .nodes_self import architect_node, critic_node, critic_router, storyteller_node
+from .state import GraphState
 
 ALL_TOPICS = ["quadratic_equations", "arithmetic_progression", "calculus_integrals"]
 
@@ -67,5 +67,5 @@ if __name__ == "__main__":
     main()
 
 '''
-type: $env:PYTHONIOENCODING="utf-8"; python preview.py
+type: $env:PYTHONIOENCODING="utf-8"; python -m agents_and_engine.preview
 '''

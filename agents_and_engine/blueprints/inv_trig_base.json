@@ -15,7 +15,8 @@
   },
 
   "constraints": [
-    "func_type in ['arctg', 'arcctg'] or value != 'sqrt(3)' // sqrt(3) > 1 вне ОДЗ арксинуса/арккосинуса"
+    "func_type in ['arctg', 'arcctg'] or value != 'sqrt(3)' // sqrt(3) > 1 вне ОДЗ арксинуса/арккосинуса",
+    "func_type in ['arcsin', 'arccos'] or value in ['0', '1', 'sqrt(3)'] // у арктангенса/арккотангенса табличные углы только при 0, 1, sqrt(3); 1/2, sqrt(2)/2, sqrt(3)/2 — значения sin/cos, для них tg/ctg-угол не табличный"
   ],
   "integer_clean": true,
 
