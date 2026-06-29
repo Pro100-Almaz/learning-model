@@ -27,10 +27,10 @@ from __future__ import annotations
 from typing import Annotated, Any, TypedDict
 
 import config
-import inv_trig
-from llm import chat_openai_structured
-from math_ques_types import compute_answer_key
-from math_engine import (
+from . import inv_trig
+from .llm import chat_openai_structured
+from .math_ques_types import compute_answer_key
+from .math_engine import (
     build_answer_options,
     build_solution,
     compute_content_hash,
@@ -40,8 +40,8 @@ from math_engine import (
     render_constraints,
     resolve_difficulty,
 )
-from prompts import CRITIC_SYSTEM, STORYTELLER_SYSTEM
-from state import GraphState
+from .prompts import CRITIC_SYSTEM, STORYTELLER_SYSTEM
+from .state import GraphState
 
 # Every published Question carries exactly this many answer options (one correct
 # + distractors). The Architect builds them; the Publisher enforces the count.

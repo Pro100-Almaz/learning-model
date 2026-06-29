@@ -1,8 +1,8 @@
 from __future__ import annotations
 from fractions import Fraction
 from typing import Any
-import inv_trig
-from math_engine import _eval, render_value
+from . import inv_trig
+from .math_engine import _eval, render_value
 
 def compute_answer_key(blueprint: dict, spec: dict) -> Any:
     """Compute the absolute correct answer, in pure Python, from the spec.

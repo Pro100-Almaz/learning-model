@@ -11,8 +11,8 @@ Pure math -- no LLM, no DB.
 
 import random
 
-from math_engine import build_answer_options, generate_math_spec, load_blueprint
-from math_ques_types import compute_answer_key
+from agents_and_engine.math_engine import build_answer_options, generate_math_spec, load_blueprint
+from agents_and_engine.math_ques_types import compute_answer_key
 
 
 def _f_upper(spec: dict) -> int:

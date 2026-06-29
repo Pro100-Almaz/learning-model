@@ -30,7 +30,7 @@ from typing import Any
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-import inv_trig
+from . import inv_trig
 
 # ---------------------------------------------------------------------------
 # Where the topic blueprints + Jinja templates live, and the Jinja engine that
