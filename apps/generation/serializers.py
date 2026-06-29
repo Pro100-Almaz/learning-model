@@ -5,6 +5,7 @@ from __future__ import annotations
 from rest_framework import serializers
 
 from .models import GenerationJob, GenerationStep
+from ..assessments.serializers import QuestionPublicSerializer
 
 
 class GenerationJobCreateSerializer(serializers.Serializer):
@@ -84,3 +85,12 @@ class GenerationJobListSerializer(serializers.ModelSerializer):
             "failed_count",
         ]
         read_only_fields = fields
+
+class GenerationJobQuestionsSerializer(serializers.Serializer):
+    job_id = serializers.IntegerField()
+    status = serializers.CharField()
+    count = serializers.IntegerField()
+    created_count = serializers.IntegerField()
+    skipped_count = serializers.IntegerField()
+    failed_count = serializers.IntegerField()
+    questions = QuestionPublicSerializer(many=True)
