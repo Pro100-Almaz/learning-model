@@ -25,7 +25,8 @@
     "func1 != 'arctg' or val1 in ['-1', '0', '1'] // у арктангенса табличные углы среди этих значений только для -1, 0, 1",
     "func2 != 'arctg' or val2 in ['-1', '0', '1'] // то же для 2-го члена",
     "expression_type == 'linear_combination' or (outer == 'sin' and func1 == 'arcsin') or (outer == 'cos' and func1 == 'arccos') or (outer == 'tg' and func1 == 'arctg') // внешняя функция обязана соответствовать внутренней аркфункции",
-    "expression_type != 'linear_combination' or not (func1 == func2 and val1 == val2 and op == '-') // избегаем тождественного нуля c1*A - c2*A"
+    "expression_type != 'linear_combination' or not (func1 == func2 and val1 == val2 and op == '-') // избегаем тождественного нуля c1*A - c2*A",
+    "expression_type != 'double_angle' or func1 != 'arctg' // tg(2*arctg(val)) делит на (1 - val**2): при val = +-1 это деление на ноль, при val = 0 ответ тривиальный 0 — у arctg нет валидного двойного угла в этой таблице"
   ],
 
   "integer_clean": true,
