@@ -49,7 +49,7 @@ class Command(BaseCommand):
     def handle(self, *args, **opts):
         # Imported here, not at module top, so `manage.py` startup (and other
         # commands) don't pull in the LangGraph / LLM stack.
-        from graph import generate_question
+        from agents_and_engine.graph import generate_question
 
         topic = opts["topic"]
         count = opts["count"]

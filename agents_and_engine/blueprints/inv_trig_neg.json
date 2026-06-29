@@ -14,7 +14,9 @@
     "value": { "type": "string", "options": ["-1/2", "-sqrt(2)/2", "-sqrt(3)/2", "-1"], "desc": "Отрицательное табличное значение" }
   },
 
-  "constraints": [],
+  "constraints": [
+    "func_type in ['arcsin', 'arccos'] or value == '-1' // у арктангенса/арккотангенса из этого списка табличный угол есть только при -1; -1/2, -sqrt(2)/2, -sqrt(3)/2 — значения sin/cos"
+  ],
   "integer_clean": true,
 
   "answer": {

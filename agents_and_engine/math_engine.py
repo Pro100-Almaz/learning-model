@@ -30,6 +30,8 @@ from typing import Any
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+from . import inv_trig
+
 # ---------------------------------------------------------------------------
 # Where the topic blueprints + Jinja templates live, and the Jinja engine that
 # renders them. Built once at import time so we don't rebuild it per call.
@@ -219,6 +221,16 @@ def build_solution(blueprint: dict, spec: dict, answer_key: Any) -> dict[str, An
     """
     answer = blueprint["answer"]
     kind = answer["type"]
+
+    if kind in inv_trig.ANSWER_TYPES:
+        steps = inv_trig.solution_steps(kind, spec)
+        return {
+            "answer_type": kind,
+            "curriculum_ref": blueprint.get("curriculum_ref", ""),
+            "spec": dict(spec),
+            "answer_key": answer_key,
+            "steps": steps,
+        }
 
     builders = {
         "roots": _solution_roots,
