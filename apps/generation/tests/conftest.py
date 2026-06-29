@@ -26,5 +26,5 @@ def _ensure_stub(module_name: str) -> None:
         sys.modules[module_name] = MagicMock(name=module_name)
 
 
-for _name in ("langgraph", "langgraph.graph", "graph"):
+for _name in ("langgraph", "langgraph.graph", "maiqe.graph"):
     _ensure_stub(_name)

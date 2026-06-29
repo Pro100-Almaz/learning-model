@@ -45,9 +45,9 @@ def spy_anthropic(monkeypatch):
         calls.append({"system": system, "user": user, "model": model})
         return "  Белгіні шатастырып алдың.  "  # untrimmed on purpose
 
-    # get_tutor_feedback does `from llm import chat_anthropic` at call time, so
-    # patching the attribute on the llm module is what takes effect.
-    monkeypatch.setattr("llm.chat_anthropic", fake)
+    # get_tutor_feedback does `from maiqe.llm import chat_anthropic` at call time, so
+    # patching the attribute on the maiqe.llm module is what takes effect.
+    monkeypatch.setattr("maiqe.llm.chat_anthropic", fake)
     return calls
 
 

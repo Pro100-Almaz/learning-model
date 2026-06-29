@@ -65,7 +65,7 @@ def run_generation_job(self, job_id: int) -> dict[str, Any]:
     fatal_error = ""
     try:
         # Lazy: this import pulls in LangGraph + LLM clients.
-        from graph import build_graph
+        from maiqe.graph import build_graph
 
         graph = build_graph()
 

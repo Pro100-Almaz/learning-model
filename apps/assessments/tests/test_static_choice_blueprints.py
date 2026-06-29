@@ -12,8 +12,8 @@ import random
 
 import pytest
 
-from math_engine import build_answer_options, build_solution, generate_math_spec, load_blueprint
-from math_ques_types import compute_answer_key
+from maiqe.math.engine import build_answer_options, build_solution, generate_math_spec, load_blueprint
+from maiqe.math.question_types import compute_answer_key
 
 STATIC_TOPICS = [
     "trig_sin",

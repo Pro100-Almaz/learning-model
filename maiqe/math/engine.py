@@ -34,7 +34,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 # Where the topic blueprints + Jinja templates live, and the Jinja engine that
 # renders them. Built once at import time so we don't rebuild it per call.
 # ---------------------------------------------------------------------------
-BLUEPRINT_DIR = Path(__file__).parent / "blueprints"
+BLUEPRINT_DIR = Path(__file__).resolve().parent.parent / "blueprints"
 TEMPLATE_ENV = Environment(
     loader=FileSystemLoader(str(BLUEPRINT_DIR)),
     autoescape=select_autoescape(),

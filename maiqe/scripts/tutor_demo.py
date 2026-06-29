@@ -24,9 +24,9 @@ django.setup()
 
 from apps.assessments.models import AnswerOption, Question  # noqa: E402
 from apps.assessments.services import _build_tutor_prompt  # noqa: E402
-from config import TUTOR_MODEL  # noqa: E402
-from llm import chat_anthropic  # noqa: E402
-from prompts import TUTOR_SYSTEM  # noqa: E402
+from maiqe.config import TUTOR_MODEL  # noqa: E402
+from maiqe.llm import chat_anthropic  # noqa: E402
+from maiqe.prompts import TUTOR_SYSTEM  # noqa: E402
 
 EXAMPLES = [
     {

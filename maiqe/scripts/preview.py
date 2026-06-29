@@ -13,9 +13,9 @@ from __future__ import annotations
 
 import sys
 
-import config
-from nodes_self import architect_node, critic_node, critic_router, storyteller_node
-from state import GraphState
+import maiqe.config as config
+from maiqe.nodes import architect_node, critic_node, critic_router, storyteller_node
+from maiqe.state import GraphState
 
 ALL_TOPICS = ["quadratic_equations", "arithmetic_progression", "calculus_integrals"]
 

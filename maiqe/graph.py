@@ -24,14 +24,14 @@ from typing import Any
 
 from langgraph.graph import END, START, StateGraph
 
-from nodes_self import (
+from .nodes import (
     architect_node,
     critic_node,
     critic_router,
     publisher_node,
     storyteller_node,
 )
-from state import GraphState
+from .state import GraphState
 
 
 def build_graph():

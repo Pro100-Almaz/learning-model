@@ -14,7 +14,7 @@ from typing import Any
 
 from langchain_openai import ChatOpenAI
 
-from config import Config
+from .config import Config
 
 
 def _build_client(model: str, temperature: float) -> ChatOpenAI:
