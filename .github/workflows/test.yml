@@ -40,7 +40,7 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.14"]
+        python-version: ["3.13"]
         os: [ubuntu-latest]
 
     env:
