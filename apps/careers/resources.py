@@ -29,7 +29,7 @@ REQUIRED_COLUMNS = (
 )
 
 
-class UniversityImportResource(resources.Resource):
+class UniversityImportResource(resources.ModelResource):
     """Row-oriented importer that upserts University/Specialty/GrantThreshold."""
 
     university_code = fields.Field(column_name="university_code")

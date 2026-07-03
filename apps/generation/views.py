@@ -24,11 +24,11 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import GenerationJob
+from .models import GenerationJob, GenerationStep
 from .serializers import (
     GenerationJobCreateSerializer,
     GenerationJobListSerializer,
-    GenerationJobSerializer,
+    GenerationJobSerializer, GenerationJobQuestionsSerializer,
 )
 from .services import dispatch_job, iter_event_stream
 
@@ -53,7 +53,7 @@ class JobListCreateView(APIView):
     permission_classes = [IsAdminUser]
     serializer_class = GenerationJobSerializer
 
-    @extend_schema(responses=GenerationJobListSerializer(many=True))
+    @extend_schema(tags=["Generation"], responses=GenerationJobListSerializer(many=True))
     def get(self, request):
         qs = GenerationJob.objects.all().order_by("-created_at")
         if not request.user.is_staff:
@@ -62,6 +62,7 @@ class JobListCreateView(APIView):
         return Response(data)
 
     @extend_schema(
+        tags=["Generation"],
         request=GenerationJobCreateSerializer,
         responses=GenerationJobSerializer,
     )
@@ -74,6 +75,9 @@ class JobListCreateView(APIView):
             count=payload.validated_data["count"],
             target_score=payload.validated_data.get("target_score"),
         )
+        print("USER:", request.user)
+        print("IS AUTH:", request.user.is_authenticated)
+        print("AUTH:", request.auth)
         return Response(
             GenerationJobSerializer(job).data,
             status=status.HTTP_201_CREATED,
@@ -86,7 +90,7 @@ class JobDetailView(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = GenerationJobSerializer
 
-    @extend_schema(responses=GenerationJobSerializer)
+    @extend_schema(tags=["Generation"], responses=GenerationJobSerializer)
     def get(self, request, id: int):
         job = _get_visible_job(request.user, id)
         return Response(GenerationJobSerializer(job).data)
@@ -102,7 +106,7 @@ class JobStreamView(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    @extend_schema(exclude=True)
+    @extend_schema(tags=["Generation"], exclude=True)
     def get(self, request, id: int):
         job = _get_visible_job(request.user, id)
         response = StreamingHttpResponse(
@@ -121,7 +125,7 @@ class JobCancelView(APIView):
     permission_classes = [IsAdminUser]
     serializer_class = GenerationJobSerializer
 
-    @extend_schema(request=None, responses=GenerationJobSerializer)
+    @extend_schema(tags=["Generation"], request=None, responses=GenerationJobSerializer)
     def post(self, request, id: int):
         job = _get_visible_job(request.user, id)
         if job.is_terminal:
@@ -148,3 +152,36 @@ class JobCancelView(APIView):
             {"type": "job.cancelled", "job_id": job.pk, "status": job.status},
         )
         return Response(GenerationJobSerializer(job).data)
+
+
+class JobQuestionsView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = GenerationJobQuestionsSerializer
+
+    @extend_schema(
+        tags=["Generation"],
+        responses={200: GenerationJobQuestionsSerializer},
+    )
+
+    def get(self, request, id: int):
+        job = _get_visible_job(request.user, id)
+        steps = (
+            job.steps.filter(kind='publisher').select_related("question")
+            .prefetch_related("question__options")
+            .order_by("question_index", "id")
+        )
+
+        questions = []
+        for step in steps:
+            questions.append(step.question)
+        data = {
+            "job_id": id,
+            "status": job.status,
+            "count": job.count,
+            "created_count": job.created_count,
+            "skipped_count": job.skipped_count,
+            "failed_count": job.failed_count,
+            "questions": questions
+        }
+
+        return Response(GenerationJobQuestionsSerializer(data).data)
