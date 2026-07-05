@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-
+from django.db.models import Q
 
 class Question(models.Model):
     text = models.TextField()
@@ -99,16 +99,29 @@ class TestQuestion(models.Model):
 
 
 class TestAttempt(models.Model):
+    # Where this attempt came from. Test-based flows leave the default; the
+    # chapter ladder (07_Chapter_Ladder_Spec.md) picks questions dynamically, so
+    # its attempts carry source="ladder" with a NULL test (no synthetic Test row).
+    SOURCE_CHOICES = [
+        ("test", "Test"),
+        ("ladder", "Chapter ladder"),
+    ]
+
     student = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="attempts",
     )
+    # Nullable so a ladder attempt (dynamic question set) needs no predefined
+    # Test. Guarded in services.finish_attempt / _trigger_roadmap_hooks.
     test = models.ForeignKey(
         Test,
+        null=True,
+        blank=True,
         on_delete=models.CASCADE,
         related_name="attempts",
     )
+    source = models.CharField(max_length=20, choices=SOURCE_CHOICES, default="test")
     started_at = models.DateTimeField(auto_now_add=True)
     finished_at = models.DateTimeField(null=True, blank=True)
     score = models.FloatField(null=True, blank=True)
@@ -141,3 +154,42 @@ class AttemptAnswer(models.Model):
 
     def __str__(self) -> str:
         return f"Ans<{self.pk}> attempt={self.attempt_id} q={self.question_id}"
+
+
+class TutorNote(models.Model):
+    """A cached Tutor 'margin note' for one wrong answer.
+
+    The note depends only on the question and which wrong option was chosen — not
+    on the individual student — so one row is shared across every student who
+    picks that option. This is the durable replacement for the old process-local
+    cache: it survives restarts, is shared across workers, and makes the notes
+    queryable. Written/read exclusively by ``services.get_tutor_feedback``.
+    """
+
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+        related_name="tutor_notes",
+    )
+    selected_option = models.ForeignKey(
+        AnswerOption,
+        on_delete=models.CASCADE,
+        related_name="tutor_notes",
+        null = True,
+        blank = True,
+    )
+    note = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("question", "selected_option")
+        constraints = [
+            models.UniqueConstraint(
+                fields = ["question"],
+                condition = Q(selected_option__isnull=True),
+                name = "unique_tutor_explanation_per_question",
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f"TutorNote<{self.pk}> q={self.question_id} opt={self.selected_option_id}"

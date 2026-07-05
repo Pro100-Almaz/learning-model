@@ -132,3 +132,75 @@ def compute_recommendations(user) -> list[dict]:
             }
         )
     return recommendations
+
+
+_LADDER_VERDICTS = ("gap", "solid", "mastered")
+
+
+def compute_ladder_verdict_distribution(module=None) -> list[dict]:
+    """Per-module, per-topic distribution of chapter-ladder verdicts.
+
+    The calibration feedback loop from ``07_Chapter_Ladder_Spec.md``: across all
+    completed ``ChapterLadderSession``s, what fraction of students land
+    ``gap`` / ``solid`` / ``mastered`` on each topic. A topic that is ~100% gap is
+    either genuinely hard or its medium rung is mistuned; ~100% mastered means the
+    rungs are too easy.
+
+    Pass a ``Module`` to scope to one chapter. Returns a list of
+    ``{module_id, module_title, topics: [{tag_id, tag_slug, tag_name, counts,
+    total, fractions}]}``, ordered by module then topic slug.
+    """
+    # Imported here (not at module top) so analytics stays importable without the
+    # roadmap app and to avoid an app-loading cycle.
+    from apps.content.models import Tag
+    from apps.roadmap.models import ChapterLadderSession
+
+    sessions = ChapterLadderSession.objects.filter(is_complete=True).select_related("module")
+    if module is not None:
+        sessions = sessions.filter(module=module)
+
+    per_module: dict[int, dict] = {}
+    for session in sessions:
+        state = session.state or {}
+        bucket = per_module.setdefault(
+            session.module_id,
+            {"module_id": session.module_id, "module_title": session.module.title, "topics": {}},
+        )
+        for tag_id_str, topic_state in state.get("per_topic", {}).items():
+            verdict = topic_state.get("verdict")
+            if verdict not in _LADDER_VERDICTS:
+                continue
+            counts = bucket["topics"].setdefault(int(tag_id_str), {v: 0 for v in _LADDER_VERDICTS})
+            counts[verdict] += 1
+
+    all_tag_ids = {tid for bucket in per_module.values() for tid in bucket["topics"]}
+    tags = {t.id: t for t in Tag.objects.filter(id__in=all_tag_ids)}
+
+    result: list[dict] = []
+    for bucket in per_module.values():
+        topics = []
+        for tag_id, counts in bucket["topics"].items():
+            total = sum(counts.values())
+            tag = tags.get(tag_id)
+            topics.append(
+                {
+                    "tag_id": tag_id,
+                    "tag_slug": tag.slug if tag else None,
+                    "tag_name": tag.name if tag else None,
+                    "counts": counts,
+                    "total": total,
+                    "fractions": {
+                        v: round(counts[v] / total, 3) if total else 0.0 for v in _LADDER_VERDICTS
+                    },
+                }
+            )
+        topics.sort(key=lambda t: t["tag_slug"] or "")
+        result.append(
+            {
+                "module_id": bucket["module_id"],
+                "module_title": bucket["module_title"],
+                "topics": topics,
+            }
+        )
+    result.sort(key=lambda m: m["module_id"])
+    return result

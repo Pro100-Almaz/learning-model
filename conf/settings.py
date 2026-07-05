@@ -162,7 +162,7 @@ REST_FRAMEWORK = {
         "anon": "100/day",
         "answer": "120/minute",
         # The Tutor makes a paid LLM call on a cache miss; keep it modest.
-        "tutor": "30/minute",
+        "tutor": "10/minute",
     },
 }
 
@@ -195,6 +195,18 @@ ENT_CONFIG = {
     ],
     "max_total_score": 140,
 }
+
+# -----------------------------------------------------------------------------
+# Chapter ladder (07_Chapter_Ladder_Spec.md) — per-chapter placement.
+# -----------------------------------------------------------------------------
+# Gate the whole flow; off => existing chapter entry, endpoints return 409.
+CHAPTER_LADDER_ENABLED = env.bool("CHAPTER_LADDER_ENABLED", default=True)
+# Asymmetric confirm of the verdict-deciding *correct* (skip-granting) answer.
+LADDER_CONFIRM = env.bool("LADDER_CONFIRM", default=True)
+# Rung the ladder starts on (2 = medium — most signal per question).
+LADDER_START_RUNG = env.int("LADDER_START_RUNG", default=2)
+# Shared switch (reserved for the global roadmap) for reading the mastery model.
+ROADMAP_USE_MASTERY = env.bool("ROADMAP_USE_MASTERY", default=True)
 
 # TODO ⚡ Update the settings for the DRF Spectacular
 SPECTACULAR_SETTINGS = {

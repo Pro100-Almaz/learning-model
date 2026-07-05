@@ -9,6 +9,8 @@
 
 from __future__ import annotations
 
+from django.conf import settings
+from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -16,9 +18,15 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.content.models import Module
+
+from . import ladder as ladder_service
 from . import services
+from .models import ChapterLadderSession
 from .serializers import (
     DiagnosticInfoSerializer,
+    LadderNextInputSerializer,
+    LadderStepSerializer,
     RoadmapSerializer,
 )
 
@@ -156,3 +164,64 @@ class RoadmapRegenerateView(APIView):
                 status=status.HTTP_409_CONFLICT,
             )
         return Response(RoadmapSerializer(_build_roadmap_payload(roadmap)).data)
+
+
+def _ladder_step_response(session: ChapterLadderSession) -> Response:
+    """Shape a ladder session into the next-question-or-plan step payload."""
+    question = None if session.is_complete else ladder_service.next_question(session)
+    if question is None:
+        payload = {
+            "session_id": session.pk,
+            "is_complete": True,
+            "question": None,
+            "plan": ladder_service.chapter_plan(session),
+        }
+    else:
+        payload = {
+            "session_id": session.pk,
+            "is_complete": False,
+            "question": question,
+            "plan": None,
+        }
+    return Response(LadderStepSerializer(payload).data)
+
+
+class ChapterLadderStartView(APIView):
+    """POST /api/v1/roadmap/chapter/<module_id>/ladder/start/ — begin placement."""
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = LadderStepSerializer
+
+    @extend_schema(request=None, responses=LadderStepSerializer)
+    def post(self, request: Request, module_id: int) -> Response:
+        if not settings.CHAPTER_LADDER_ENABLED:
+            return Response(
+                {"detail": "chapter ladder is disabled", "code": "ladder_disabled"},
+                status=status.HTTP_409_CONFLICT,
+            )
+        module = get_object_or_404(Module, pk=module_id)
+        session = ladder_service.start_ladder(request.user, module)
+        return _ladder_step_response(session)
+
+
+class ChapterLadderNextView(APIView):
+    """POST /api/v1/roadmap/chapter/ladder/next/ — record an answer, get next step."""
+
+    permission_classes = [IsAuthenticated]
+    serializer_class = LadderStepSerializer
+
+    @extend_schema(request=LadderNextInputSerializer, responses=LadderStepSerializer)
+    def post(self, request: Request) -> Response:
+        payload = LadderNextInputSerializer(data=request.data)
+        payload.is_valid(raise_exception=True)
+        session = get_object_or_404(
+            ChapterLadderSession,
+            pk=payload.validated_data["session_id"],
+            student=request.user,
+        )
+        ladder_service.record_answer(
+            session,
+            question_id=payload.validated_data["question_id"],
+            option_id=payload.validated_data["option_id"],
+        )
+        return _ladder_step_response(session)
