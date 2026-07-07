@@ -3,7 +3,7 @@
 Usage::
 
     python manage.py generate_questions --topic calculus_integrals --count 5
-    python manage.py generate_questions --topic calculus_integrals --count 5 --target-score 120
+    python manage.py generate_questions --topic calculus_integrals --count 5 --target-score 30
 
 Runs the full generation graph (Architect -> Storyteller -> Critic ->
 Publisher) once per question and persists each approved one as an
@@ -13,13 +13,13 @@ so re-runs top the bank up rather than duplicating it.
 
 Needs ``OPENAI_API_KEY`` in the environment (the Storyteller and Critic call
 an LLM). The Architect and Publisher are pure Python; only the two middle
-agents cost tokens. ``--target-score`` (0-140, the student's ENT target) raises
-difficulty; omit it for the blueprint's default.
+agents cost tokens. ``--target-score`` (0-40, the student's intended
+profile-subject score) raises difficulty; omit it for the blueprint's default.
 """
 
 from __future__ import annotations
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 from apps.assessments.models import Question
 
@@ -43,19 +43,29 @@ class Command(BaseCommand):
             "--target-score",
             type=int,
             default=None,
-            help="Student ENT target 0-140; higher => harder. Omit for the blueprint default.",
+            help="Intended profile-subject score 0-40; higher => harder. Omit for the blueprint default.",
         )
 
     def handle(self, *args, **opts):
-        # Imported here, not at module top, so `manage.py` startup (and other
-        # commands) don't pull in the LangGraph / LLM stack.
-        from agents_and_engine.graph import generate_question
+        # math_engine is light (jinja only); import it first so a bad
+        # --target-score fails fast, before the heavy LangGraph / LLM stack.
+        from agents_and_engine.math_engine import PROFILE_SUBJECT_MAX_SCORE
 
         topic = opts["topic"]
         count = opts["count"]
         profile = {}
         if opts["target_score"] is not None:
-            profile = {"target_score": opts["target_score"]}
+            score = opts["target_score"]
+            if not (0 <= score <= PROFILE_SUBJECT_MAX_SCORE):
+                raise CommandError(
+                    f"Please enter a valid profile-subject score between 0 and "
+                    f"{PROFILE_SUBJECT_MAX_SCORE} (got {score})."
+                )
+            profile = {"target_score": score}
+
+        # Imported here, not at module top, so `manage.py` startup (and other
+        # commands) don't pull in the LangGraph / LLM stack.
+        from agents_and_engine.graph import generate_question
 
         created = skipped = failed = 0
         for i in range(1, count + 1):
