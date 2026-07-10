@@ -48,6 +48,8 @@ class GenerationJob(models.Model):
     )
     topic = models.CharField(max_length=80)
     count = models.PositiveIntegerField()
+    # Intended score for the profile subject (профильная математика), 0-40 —
+    # drives generated difficulty. Not the ENT total (see math_engine).
     target_score = models.PositiveIntegerField(null=True, blank=True)
     status = models.CharField(
         max_length=20,

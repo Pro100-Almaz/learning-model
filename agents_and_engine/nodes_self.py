@@ -82,7 +82,7 @@ def architect_node(state: GraphState) -> dict[str, Any]:
 
     Steps:
       1. Load the blueprint JSON for the requested topic.
-      2. Decide difficulty from the student's ENT target score.
+      2. Decide difficulty from the student's intended profile-subject score.
       3. Roll random-but-valid numbers at that difficulty.
       4. Compute the correct answer natively.
       5. Render the numbers into the Jinja template -> rigid text spec.

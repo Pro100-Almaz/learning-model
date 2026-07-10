@@ -178,9 +178,45 @@
   },
   "hotPaths": [
     {
+      "path": "plan/07_Chapter_Ladder_Spec.md",
+      "accessCount": 10,
+      "lastAccessed": 1782815746328,
+      "type": "file"
+    },
+    {
+      "path": "apps/assessments/models.py",
+      "accessCount": 2,
+      "lastAccessed": 1782815380655,
+      "type": "file"
+    },
+    {
+      "path": "plan/stocking_questions_guide.md",
+      "accessCount": 2,
+      "lastAccessed": 1782818168681,
+      "type": "file"
+    },
+    {
       "path": "pyproject.toml",
       "accessCount": 1,
       "lastAccessed": 1782725558233,
+      "type": "file"
+    },
+    {
+      "path": "plan/06_Roadmap_Engine_Spec.md",
+      "accessCount": 1,
+      "lastAccessed": 1782811415941,
+      "type": "file"
+    },
+    {
+      "path": "apps/content/models.py",
+      "accessCount": 1,
+      "lastAccessed": 1782811852852,
+      "type": "file"
+    },
+    {
+      "path": "plan/code_assumption_for_roadmap.md",
+      "accessCount": 1,
+      "lastAccessed": 1782816040886,
       "type": "file"
     }
   ],

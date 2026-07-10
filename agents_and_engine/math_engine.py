@@ -42,12 +42,14 @@ TEMPLATE_ENV = Environment(
     autoescape=select_autoescape(),
 )
 
-# Difficulty (Question.difficulty is 1-3) chosen from the student's ENT target
-# score. Thresholds are on the 0-140 ENT scale (ENT_CONFIG.max_total_score=140).
+# Difficulty (Question.difficulty is 1-3) chosen from the student's intended
+# score for the profile subject (профильная математика), NOT the overall ENT
+# total. Thresholds are on the 0-40 profile-subject scale.
 # A student aiming high gets harder problems.
+PROFILE_SUBJECT_MAX_SCORE = 40
 DIFFICULTY_BY_TARGET = [
-    (120, 3),   # target >= 120  -> hard
-    (90, 2),    # target >=  90  -> medium
+    (28, 3),   # target >= 28  -> hard
+    (18, 2),    # target >=  18  -> medium
     (0, 1),     # everyone else  -> easy
 ]
 
@@ -113,16 +115,28 @@ def compute_content_hash(topic: str, math_spec: dict[str, Any]) -> str:
 # Difficulty
 # ---------------------------------------------------------------------------
 def resolve_difficulty(profile: dict, blueprint: dict) -> int:
-    """Pick a 1-3 difficulty from the student's ENT target score.
+    """Pick a 1-3 difficulty from the student's intended profile-subject score.
 
-    `profile` is the dict form of accounts.StudentProfile. If there's no score
-    to go on, use the blueprint's declared default.
+    `profile` is the dict form of accounts.StudentProfile; `target_score` here
+    is the intended score for the profile subject (0-40), not the ENT total.
+    If there's no score to go on, use the blueprint's declared default.
     """
+    default = int(blueprint.get("default_difficulty", 1))
     target = profile.get("target_score")
     if target is None:
-        return int(blueprint.get("default_difficulty", 1))
+        return default
 
-    target = min(int(target), 140)  # clamp to the ENT max (ENT_CONFIG)
+    # A score outside the valid 0..PROFILE_SUBJECT_MAX_SCORE band (or a
+    # non-number) is not a usable signal. The API serializer and CLI reject such
+    # input up front with a message; this guards direct/programmatic calls by
+    # falling back to the blueprint default rather than silently clamping.
+    try:
+        target = int(target)
+    except (TypeError, ValueError):
+        return default
+    if not (0 <= target <= PROFILE_SUBJECT_MAX_SCORE):
+        return default
+
     for threshold, level in DIFFICULTY_BY_TARGET:
         if target >= threshold:
             return level

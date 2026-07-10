@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from rest_framework import serializers
 
+from apps.assessments.serializers import QuestionPublicSerializer
 from apps.content.models import Tag
 
 
@@ -66,3 +67,51 @@ class DiagnosticInfoSerializer(serializers.Serializer):
     attempt_id = serializers.IntegerField(allow_null=True)
     completed = serializers.BooleanField()
     score = serializers.FloatField(allow_null=True)
+
+
+# --- Chapter ladder (07_Chapter_Ladder_Spec.md) --------------------------
+
+
+class _LadderLessonSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    title = serializers.CharField()
+    order = serializers.IntegerField()
+
+
+class LadderTopicPlanSerializer(serializers.Serializer):
+    """One topic's placement verdict and its branch payload."""
+
+    tag_id = serializers.IntegerField()
+    tag_slug = serializers.CharField()
+    tag_name = serializers.CharField()
+    verdict = serializers.CharField(allow_null=True)
+    degraded = serializers.BooleanField()
+    # Populated only for a ``gap`` verdict (soft fail → this topic's lessons).
+    lessons = _LadderLessonSerializer(many=True)
+    # Populated only for a ``mastered`` verdict (offer the hard problems).
+    hard_question_ids = serializers.ListField(child=serializers.IntegerField())
+
+
+class LadderPlanSerializer(serializers.Serializer):
+    module_id = serializers.IntegerField()
+    topics = LadderTopicPlanSerializer(many=True)
+
+
+class LadderStepSerializer(serializers.Serializer):
+    """One ladder step: the next question, or the final plan when complete.
+
+    ``question`` is a leak-free ``QuestionPublicSerializer`` payload (no
+    correctness), reused from the assessment flow. Exactly one of
+    ``question`` / ``plan`` is non-null.
+    """
+
+    session_id = serializers.IntegerField()
+    is_complete = serializers.BooleanField()
+    question = QuestionPublicSerializer(allow_null=True)
+    plan = LadderPlanSerializer(allow_null=True)
+
+
+class LadderNextInputSerializer(serializers.Serializer):
+    session_id = serializers.IntegerField()
+    question_id = serializers.IntegerField()
+    option_id = serializers.IntegerField()

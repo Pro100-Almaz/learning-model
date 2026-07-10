@@ -259,13 +259,13 @@ class JobEndpointTests(APITestCase):
             delay.return_value.id = "task-123"
             resp = self.client.post(
                 "/api/v1/generation/jobs/",
-                {"topic": "quadratic_equations", "count": 2, "target_score": 120},
+                {"topic": "quadratic_equations", "count": 2, "target_score": 30},
                 format="json",
             )
         self.assertEqual(resp.status_code, http_status.HTTP_201_CREATED)
         self.assertEqual(resp.data["topic"], "quadratic_equations")
         self.assertEqual(resp.data["count"], 2)
-        self.assertEqual(resp.data["target_score"], 120)
+        self.assertEqual(resp.data["target_score"], 30)
         self.assertEqual(resp.data["status"], "pending")
         self.assertEqual(resp.data["celery_task_id"], "task-123")
 
