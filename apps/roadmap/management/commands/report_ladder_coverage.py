@@ -1,4 +1,4 @@
-    """Report question-bank coverage for the chapter ladder (07 §"Bank coverage").
+"""Report question-bank coverage for the chapter ladder (07 §"Bank coverage").
 
 The ladder needs questions at >=1 difficulty per topic, ideally all three rungs
 (easy=1, medium=2, hard=3). This read-only report shows, per module and per

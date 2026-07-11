@@ -72,13 +72,16 @@ class ProfileView(APIView):
         serializer.is_valid(raise_exception=True)
 
         expected_scores = serializer.validated_data.pop("expected_scores", None)
-        # M2M can't be set via setattr before the row exists / must use .set().
+        # M2M can't be assigned via setattr — pop it out and use .set() below.
+        # subjects = serializer.validated_data.pop("subjects", None)
+        subjects = None
+        if expected_scores is not None:
+            subjects = [e["subject"] for e in expected_scores if e.get("subject", False)]
 
         for field, value in serializer.validated_data.items():
             setattr(profile, field, value)
         profile.save()
 
-        subjects = [e["subject"] for e in expected_scores]
         if subjects is not None:
             profile.subjects.set(subjects)
 

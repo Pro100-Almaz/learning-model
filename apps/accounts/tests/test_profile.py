@@ -51,9 +51,16 @@ class ProfileViewTests(APITestCase):
         Subject.objects.create(name="Профильная математика", slug="profile_math")
         Subject.objects.create(name="Мат. грамотность", slug="math_literacy")
 
+        # Studied subjects are derived from the expected_scores payload;
+        # each entry's "subject" is the subject slug.
         response = self.client.patch(
             self.url,
-            {"subjects": ["profile_math", "math_literacy"]},
+            {
+                "expected_scores": [
+                    {"subject": "profile_math", "score": 30},
+                    {"subject": "math_literacy", "score": 25},
+                ]
+            },
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)

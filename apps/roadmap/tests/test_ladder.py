@@ -16,7 +16,7 @@ from rest_framework.test import APITestCase
 
 from apps.analytics.services import compute_ladder_verdict_distribution
 from apps.assessments.models import AnswerOption, Question, TestAttempt
-from apps.content.models import Lesson, Module, Tag
+from apps.content.models import ClassGrade, Lesson, Module, Subject, Tag
 from apps.roadmap import ladder
 from apps.roadmap.models import ChapterLadderSession, Roadmap, StudentTopicMastery
 from apps.users.models import CustomUser as User
@@ -49,7 +49,13 @@ def _add_topic(module: Module, *, rungs=(1, 2, 3), n_per=3, lessons=2) -> Tag:
 
 
 def _make_module(**topic_kwargs) -> tuple[Module, Tag]:
-    module = Module.objects.create(title=_uniq("mod"), slug=_uniq("mod"), subject="profile_math")
+    subject, _ = Subject.objects.get_or_create(
+        slug="profile_math", defaults={"name": "Профильная математика"}
+    )
+    grade, _ = ClassGrade.objects.get_or_create(grade=11, subject=subject)
+    module = Module.objects.create(
+        title=_uniq("mod"), slug=_uniq("mod"), class_grade=grade
+    )
     tag = _add_topic(module, **topic_kwargs)
     return module, tag
 
@@ -248,7 +254,13 @@ class LadderPlanTests(APITestCase):
         self.user = User.objects.create_user(email=_uniq("u") + "@x.io", password="x")
 
     def test_soft_fail_gap_gets_lessons_solid_sibling_does_not(self):
-        module = Module.objects.create(title=_uniq("mod"), slug=_uniq("mod"), subject="profile_math")
+        subject, _ = Subject.objects.get_or_create(
+            slug="profile_math", defaults={"name": "Профильная математика"}
+        )
+        grade, _ = ClassGrade.objects.get_or_create(grade=11, subject=subject)
+        module = Module.objects.create(
+            title=_uniq("mod"), slug=_uniq("mod"), class_grade=grade
+        )
         gap_tag = _add_topic(module)     # first topic
         solid_tag = _add_topic(module)   # second topic
         # Topic 1 → gap (medium✗, easy✗); topic 2 → solid (medium✓, hard✗).
