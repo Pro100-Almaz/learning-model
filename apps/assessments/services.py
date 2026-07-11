@@ -377,8 +377,9 @@ def _build_tutor_prompt(question: Question, option: AnswerOption) -> str:
 
     return (
         f"PROBLEM:\n{question.text}\n\n"
-        f"WORKED SOLUTION (correct; for your reasoning only):\n{steps_text}\n\n"
-        f"CORRECT ANSWER (never reveal to the student): "
+        f"WORKED SOLUTION (correct; use it to structure your explanation):\n"
+        f"{steps_text}\n\n"
+        f"CORRECT ANSWER (reveal and explain this to the student): "
         f"{solution.get('answer_key', '(unknown)')}\n\n"
         f"STUDENT'S WRONG ANSWER: {option.text}\n\n"
         f"THE STUDENT'S LIKELY MISTAKE: {mistake}"
@@ -417,11 +418,12 @@ def _build_explanation_prompt(question: Question) -> str:
 def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
     """Return on-demand Tutor feedback for one question in a finished attempt.
 
-    Three modes: a diagnosis 'margin note' for a wrong answer (hides the answer),
-    a worked explanation for a skipped question (reveals it), or a short recap for
-    a correct answer that confirms the method (reveals it). Review-only: the
-    attempt must be completed — we never reveal that an answer was wrong mid-test
-    (correctness on mocks is withheld until /finish/). Raises the 4xx-shaped
+    Three modes: a diagnosis for a wrong answer (names the specific mistake, then
+    teaches the full solution and reveals the answer), a worked explanation for a
+    skipped question (reveals it), or a short recap for a correct answer that
+    confirms the method (reveals it). Review-only: the attempt must be completed —
+    we never reveal that an answer was wrong mid-test (correctness on mocks is
+    withheld until /finish/). Raises the 4xx-shaped
     errors the view surfaces. Cached per (question, option) — the explanation
     note lives on the NULL-option row — so repeated requests don't re-bill the LLM.
     """
@@ -453,7 +455,7 @@ def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
     # in the cache key (which option, if any), the system prompt, and the builder.
     #   - no row, or row with no option picked  -> explanation (reveal + teach)
     #   - correct answer                        -> recap (confirm the method, reveal answer)
-    #   - a real wrong option                   -> diagnosis (nudge, hide answer)
+    #   - a real wrong option                   -> diagnosis (name mistake, full solution, reveal)
     if answer is not None and answer.is_correct:
         # Recap mode: the student got it right (possibly by guessing), so confirm
         # the method with a short note that also states the answer. Cached per
@@ -521,8 +523,10 @@ def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
         )
         return row.note
 
-    # Diagnosis mode. Durable cache: the note depends only on (question, option),
-    # so one row is reused across every student who picks that option.
+    # Diagnosis mode. Names the student's specific mistake and then teaches the
+    # full correct solution through to the answer (review-only, so revealing is
+    # fine). Durable cache: the note depends only on (question, option), so one
+    # row is reused across every student who picks that option.
     from agents_and_engine.prompts import TUTOR_SYSTEM
 
     cached = (
@@ -537,6 +541,7 @@ def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
         TUTOR_SYSTEM,
         _build_tutor_prompt(question, option),
         model=TUTOR_MODEL,
+        max_tokens=600,
     ).strip()
 
     # get_or_create so a concurrent request that generated first wins and we

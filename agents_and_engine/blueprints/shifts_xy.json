@@ -14,6 +14,12 @@
     "shift_y": { "type": "int", "min": -5, "max": 5, "desc": "Сдвиг по оси OY (хвост функции)" }
   },
 
+  "difficulty_overrides": {
+    "1": { "shift_x": { "min": -2, "max": 2 }, "shift_y": { "min": -2, "max": 2 } },
+    "2": { "shift_x": { "min": -3, "max": 3 }, "shift_y": { "min": -3, "max": 3 } },
+    "3": { "shift_x": { "min": -5, "max": 5 }, "shift_y": { "min": -5, "max": 5 } }
+  },
+
   "constraints": [
     "shift_x != 0 // Должен быть сдвиг по X",
     "shift_y != 0 // Должен быть сдвиг по Y"

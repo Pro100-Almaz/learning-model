@@ -7,7 +7,7 @@
   "_comment": "Применяется, когда в уравнении присутствует sin^2(x) или cos^2(x). Использование формул понижения степени позволяет избежать извлечения корня и путаницы со знаками [6-8].",
 
   "tag": { "name": "Понижение степени", "slug": "trig-degree-reduction" },
-  "default_difficulty": 4,
+  "default_difficulty": 3,
 
   "parameters": {
     "squared_func": { "type": "string", "options": ["cos^2(x)", "sin^2(x)"], "desc": "Функция в квадрате, степень которой нужно понизить" },

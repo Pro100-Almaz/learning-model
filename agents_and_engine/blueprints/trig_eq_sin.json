@@ -4,15 +4,20 @@
   "curriculum_ref": "10 класс — Простейшие тригонометрические уравнения. y=sinx",
   "constraints_template": "trig_eq_sin.j2",
 
-  "_comment": "Преобразование к виду sin(x) = a. Использование x = (-1)^n * arcsin(a) + πn. Перенос минуса в степень (n+1) при отрицательном a. Проверка ОДЗ.",
+  "_comment": "Преобразование к виду sin(k*x) = a. x = (-1)^n * arcsin(a)/k + pi*n/k; при a<0 степень (n+1); a=1 частный случай pi/(2k)+2*pi*n/k; a=6 => нет решений. ЧАСТОТА k (freq) — числовой рычаг сложности. Дистракторы ВАРЬИРУЮТ и угол (wrong_table_value — неверное табличное значение; angle_not_divided — не поделил угол на k), а не только ± и период, чтобы ответ нельзя было угадать по общему коэффициенту. difficulty_overrides ограничивают k (база max=3 = уровень 3).",
 
   "tag": { "name": "Уравнения с синусом", "slug": "trig-eq-sin" },
-  "default_difficulty": 4,
+  "default_difficulty": 3,
 
   "parameters": {
-    "coefficient": { "type": "string", "options": ["2", "sqrt(2)"], "desc": "Множитель перед синусом в исходном уравнении" },
-    "inner_func": { "type": "string", "options": ["x", "x + pi/4"], "desc": "Внутренний аргумент функции" },
+    "coefficient": { "type": "string", "options": ["2", "sqrt(2)"], "desc": "Множитель перед синусом (сокращается, на ответ не влияет)" },
+    "freq": { "type": "int", "min": 1, "max": 3, "desc": "Частота k в sin(k*x): числовой рычаг сложности (делит угол и период на k)" },
     "value": { "type": "string", "options": ["1", "1/2", "-1/2", "6"], "desc": "Значение 'a' (включает 6 для проверки на отсутствие решений)" }
+  },
+
+  "difficulty_overrides": {
+    "1": { "freq": { "max": 1 } },
+    "2": { "freq": { "max": 2 } }
   },
 
   "constraints": [],
@@ -20,17 +25,19 @@
 
   "answer": {
     "type": "static_choice",
-    "correct": "{% set t = ' - pi/4' if inner_func == 'x + pi/4' else '' %}{% if value == '6' %}нет решений{% elif value == '1' %}x = pi/2{{ t }} + 2pi*n{% elif value == '-1/2' %}x = (-1)^(n+1) * pi/6{{ t }} + pi*n{% else %}x = (-1)^n * pi/6{{ t }} + pi*n{% endif %}",
-    "desc": "Делим на коэффициент -> sin(arg)=a. value=6 вне [-1;1] => нет решений; value=1 — частный случай pi/2+2pin; value<0 — степень (n+1); иначе общая (-1)^n*arcsin(a)+pin. Если arg = x + pi/4, вычитаем pi/4 (НЕ сливая со слагаемым (-1)^n)."
+    "correct": "{% set ns = value == '6' %}{% set sp = value == '1' %}{% set neg = value == '-1/2' %}{% set pw = '(n+1)' if neg else 'n' %}{% if ns %}{% set ang = 'arcsin(6)' if freq == 1 else 'arcsin(6)/' ~ freq %}{% elif sp %}{% set ang = 'pi/' ~ (2 * freq) %}{% else %}{% set ang = 'pi/' ~ (6 * freq) %}{% endif %}{% set per_sin = 'pi*n' if freq == 1 else 'pi*n/' ~ freq %}{% if freq % 2 == 0 %}{% set pd = freq // 2 %}{% set per_cos = 'pi*n' if pd == 1 else 'pi*n/' ~ pd %}{% else %}{% set per_cos = '2pi*n' if freq == 1 else '2pi*n/' ~ freq %}{% endif %}{% if ns %}нет решений{% elif sp %}x = {{ ang }} + {{ per_cos }}{% else %}x = (-1)^{{ pw }} * {{ ang }} + {{ per_sin }}{% endif %}",
+    "desc": "Делим на коэффициент -> sin(k*x)=a. a=6 => нет решений; a=1 частный случай k*x=pi/2+2*pi*n; a<0 степень (n+1); иначе (-1)^n*arcsin(a)+pi*n. Затем делим весь результат (угол И период) на k."
   },
 
   "distractors": [
-    { "id": "ignored_domain", "desc": "Ученик попытался взять арксинус от числа вне [-1; 1] (например, 6) вместо ответа 'нет решений'.", "transform": "{% set t = ' - pi/4' if inner_func == 'x + pi/4' else '' %}{% if value == '6' %}x = (-1)^n * arcsin(6){{ t }} + pi*n{% else %}{{ 1/0 }}{% endif %}" },
-    { "id": "wrong_power_sign", "desc": "При отрицательном a забыл добавить +1 к степени: оставил (-1)^n вместо (-1)^(n+1).", "transform": "{% set t = ' - pi/4' if inner_func == 'x + pi/4' else '' %}{% if value == '-1/2' %}x = (-1)^n * pi/6{{ t }} + pi*n{% else %}{{ 1/0 }}{% endif %}" },
-    { "id": "illegal_addition", "desc": "Незаконно сложил свободный угол (- pi/4) со слагаемым (-1)^n*arcsin(a), внеся его под множитель (-1)^n.", "transform": "{% if inner_func == 'x + pi/4' and (value == '1/2' or value == '-1/2') %}x = (-1)^{% if value == '-1/2' %}(n+1){% else %}n{% endif %} * (pi/6 - pi/4) + pi*n{% else %}{{ 1/0 }}{% endif %}" },
-    { "id": "pm_instead_of_power", "desc": "Применил для синуса косинусную форму с ± вместо (-1)^n.", "transform": "{% set t = ' - pi/4' if inner_func == 'x + pi/4' else '' %}{% if value == '6' %}x = ± arcsin(6){{ t }} + 2pi*n{% elif value == '1' %}x = ± pi/2{{ t }} + 2pi*n{% else %}x = ± pi/6{{ t }} + 2pi*n{% endif %}" },
-    { "id": "wrong_period", "desc": "Записал период 2pin вместо pin (период серии решений синуса равен pin).", "transform": "{% set t = ' - pi/4' if inner_func == 'x + pi/4' else '' %}{% if value == '6' %}x = (-1)^n * arcsin(6){{ t }} + 2pi*n{% elif value == '1' %}x = pi/2{{ t }} + pi*n{% elif value == '-1/2' %}x = (-1)^(n+1) * pi/6{{ t }} + 2pi*n{% else %}x = (-1)^n * pi/6{{ t }} + 2pi*n{% endif %}" },
-    { "id": "dropped_period", "desc": "Потерял общий член семейства решений (+ pin), записав лишь главное значение.", "transform": "{% set t = ' - pi/4' if inner_func == 'x + pi/4' else '' %}{% if value == '6' %}x = (-1)^n * arcsin(6){{ t }}{% elif value == '1' %}x = pi/2{{ t }}{% else %}x = (-1)^n * pi/6{{ t }}{% endif %}" }
+    { "id": "wrong_table_value", "desc": "Неверно определил табличное значение арксинуса (перепутал 1/2 с sqrt(2)/2), взяв не тот главный угол.", "transform": "{% set ns = value == '6' %}{% set sp = value == '1' %}{% set neg = value == '-1/2' %}{% set pw = '(n+1)' if neg else 'n' %}{% set per_sin = 'pi*n' if freq == 1 else 'pi*n/' ~ freq %}{% if freq % 2 == 0 %}{% set pd = freq // 2 %}{% set per_cos = 'pi*n' if pd == 1 else 'pi*n/' ~ pd %}{% else %}{% set per_cos = '2pi*n' if freq == 1 else '2pi*n/' ~ freq %}{% endif %}{% if ns %}{{ 1/0 }}{% elif sp %}x = {{ 'pi/' ~ (3 * freq) }} + {{ per_cos }}{% else %}x = (-1)^{{ pw }} * {{ 'pi/' ~ (4 * freq) }} + {{ per_sin }}{% endif %}" },
+    { "id": "angle_not_divided", "desc": "Поделил на k период, но забыл поделить сам главный угол (оставил arcsin(a) вместо arcsin(a)/k).", "transform": "{% set ns = value == '6' %}{% set sp = value == '1' %}{% set neg = value == '-1/2' %}{% set pw = '(n+1)' if neg else 'n' %}{% set per_sin = 'pi*n' if freq == 1 else 'pi*n/' ~ freq %}{% if freq % 2 == 0 %}{% set pd = freq // 2 %}{% set per_cos = 'pi*n' if pd == 1 else 'pi*n/' ~ pd %}{% else %}{% set per_cos = '2pi*n' if freq == 1 else '2pi*n/' ~ freq %}{% endif %}{% if freq > 1 and not ns %}{% if sp %}x = pi/2 + {{ per_cos }}{% else %}x = (-1)^{{ pw }} * pi/6 + {{ per_sin }}{% endif %}{% else %}{{ 1/0 }}{% endif %}" },
+    { "id": "ignored_domain", "desc": "Ученик взял арксинус от числа вне [-1; 1] (например, 6) вместо ответа 'нет решений'.", "transform": "{% set ns = value == '6' %}{% set per_sin = 'pi*n' if freq == 1 else 'pi*n/' ~ freq %}{% if ns %}{% set ang = 'arcsin(6)' if freq == 1 else 'arcsin(6)/' ~ freq %}x = (-1)^n * {{ ang }} + {{ per_sin }}{% else %}{{ 1/0 }}{% endif %}" },
+    { "id": "wrong_power_sign", "desc": "При отрицательном a забыл добавить +1 к степени: оставил (-1)^n вместо (-1)^(n+1).", "transform": "{% set neg = value == '-1/2' %}{% set per_sin = 'pi*n' if freq == 1 else 'pi*n/' ~ freq %}{% if neg %}x = (-1)^n * {{ 'pi/' ~ (6 * freq) }} + {{ per_sin }}{% else %}{{ 1/0 }}{% endif %}" },
+    { "id": "wrong_division", "desc": "Выражая x из k*x, разделил на k только главный угол, но забыл разделить период.", "transform": "{% set ns = value == '6' %}{% set sp = value == '1' %}{% set neg = value == '-1/2' %}{% set pw = '(n+1)' if neg else 'n' %}{% if ns %}{% set ang = 'arcsin(6)' if freq == 1 else 'arcsin(6)/' ~ freq %}{% elif sp %}{% set ang = 'pi/' ~ (2 * freq) %}{% else %}{% set ang = 'pi/' ~ (6 * freq) %}{% endif %}{% if freq > 1 %}{% if sp %}x = {{ ang }} + 2pi*n{% else %}x = (-1)^{{ pw }} * {{ ang }} + pi*n{% endif %}{% else %}{{ 1/0 }}{% endif %}" },
+    { "id": "pm_instead_of_power", "desc": "Применил для синуса косинусную форму с ± вместо (-1)^n.", "transform": "{% set ns = value == '6' %}{% set sp = value == '1' %}{% if ns %}{% set ang = 'arcsin(6)' if freq == 1 else 'arcsin(6)/' ~ freq %}{% elif sp %}{% set ang = 'pi/' ~ (2 * freq) %}{% else %}{% set ang = 'pi/' ~ (6 * freq) %}{% endif %}{% if freq % 2 == 0 %}{% set pd = freq // 2 %}{% set per_cos = 'pi*n' if pd == 1 else 'pi*n/' ~ pd %}{% else %}{% set per_cos = '2pi*n' if freq == 1 else '2pi*n/' ~ freq %}{% endif %}x = ± {{ ang }} + {{ per_cos }}" },
+    { "id": "wrong_period", "desc": "Записал период 2*pi*n вместо pi*n (период серии решений синуса равен pi*n).", "transform": "{% set ns = value == '6' %}{% set sp = value == '1' %}{% set neg = value == '-1/2' %}{% set pw = '(n+1)' if neg else 'n' %}{% if ns %}{% set ang = 'arcsin(6)' if freq == 1 else 'arcsin(6)/' ~ freq %}{% elif sp %}{% set ang = 'pi/' ~ (2 * freq) %}{% else %}{% set ang = 'pi/' ~ (6 * freq) %}{% endif %}{% set per_sin = 'pi*n' if freq == 1 else 'pi*n/' ~ freq %}{% if freq % 2 == 0 %}{% set pd = freq // 2 %}{% set per_cos = 'pi*n' if pd == 1 else 'pi*n/' ~ pd %}{% else %}{% set per_cos = '2pi*n' if freq == 1 else '2pi*n/' ~ freq %}{% endif %}{% if sp %}x = {{ ang }} + {{ per_sin }}{% else %}x = (-1)^{{ pw }} * {{ ang }} + {{ per_cos }}{% endif %}" },
+    { "id": "dropped_period", "desc": "Потерял общий член семейства решений, записав лишь главное значение.", "transform": "{% set ns = value == '6' %}{% set sp = value == '1' %}{% set neg = value == '-1/2' %}{% set pw = '(n+1)' if neg else 'n' %}{% if ns %}{% set ang = 'arcsin(6)' if freq == 1 else 'arcsin(6)/' ~ freq %}{% elif sp %}{% set ang = 'pi/' ~ (2 * freq) %}{% else %}{% set ang = 'pi/' ~ (6 * freq) %}{% endif %}{% if sp %}x = {{ ang }}{% else %}x = (-1)^{{ pw }} * {{ ang }}{% endif %}" }
   ],
 
   "narrative_settings": [

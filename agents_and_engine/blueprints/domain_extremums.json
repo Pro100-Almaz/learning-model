@@ -16,6 +16,12 @@
     "root_d": { "type": "int", "min": -12, "max": -2, "desc": "Свободный член под корнем" }
   },
 
+  "difficulty_overrides": {
+    "1": { "denom_b": { "max": 4 }, "root_d": { "min": -4 } },
+    "2": { "denom_b": { "max": 7 }, "root_d": { "min": -8 } },
+    "3": { "denom_b": { "max": 10 }, "root_d": { "min": -12 } }
+  },
+
   "constraints": [
     "denom_b % denom_a == 0 // Исключенная точка знаменателя - целое число",
     "root_d % root_c == 0 // Граница подкоренного выражения - целое число"

@@ -7,7 +7,7 @@
   "_comment": "Уравнения вида a*sin(x) + b*cos(x) = c. Находим r = sqrt(a^2+b^2), делим ОБЕ части на r, сворачиваем левую часть в sin(x+alpha) по формуле сложения, решаем простейшее sin(x+alpha)=c/r. Комбинации параметров ограничены теми, где r и alpha табличные, а |c/r|<=1 (иначе r иррационально или нет решений).",
 
   "tag": { "name": "Вспомогательный угол", "slug": "trig-aux-angle" },
-  "default_difficulty": 5,
+  "default_difficulty": 3,
 
   "parameters": {
     "coeff_a": { "type": "string", "options": ["1", "sqrt(3)", "2"], "desc": "Коэффициент перед синусом" },

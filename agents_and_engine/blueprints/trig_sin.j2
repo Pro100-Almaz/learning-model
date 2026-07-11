@@ -1,13 +1,14 @@
+{%- set innerLatex = 'x' if freq == 1 else (freq ~ 'x') -%}
 PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
-- Function: y = sin(x)
-- Ask the student to state the basic properties of the sine function from its graph —
-  domain, range, parity (even/odd), and period — and to find the value of y = sin(x) at
-  the control point x = {{ point_x }}.
+- Function: y = sin({{ innerLatex }})
+- Ask the student to state the basic properties of this sine function from its graph —
+  domain, range, parity (even/odd), and period.
 
 === INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
 - Key facts to recall: the sine is defined for all x, its graph never leaves a bounded
   horizontal strip, it is symmetric about the origin, and its wave repeats after a fixed
-  interval.
-- Render all math as LaTeX inside $...$ (e.g. $y = \sin x$ and $x = {{ point_x | replace('pi', '\\pi') }}$).
-- Do NOT state or hint at the answer: the domain, range, parity, period, or the value
-  of sin at x = {{ point_x }} must NOT be given to the student.
+  interval; a coefficient k inside the function compresses the graph, dividing the period
+  by k.
+- Render all math as LaTeX inside $...$ (e.g. $y = \sin\left({{ innerLatex }}\right)$).
+- Do NOT state or hint at the answer: the domain, range, parity, or period must NOT be
+  given to the student.

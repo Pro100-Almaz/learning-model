@@ -17,7 +17,8 @@
 
   "difficulty_overrides": {
     "1": { "a": { "max": 1 }, "r1": { "min": -5, "max": 5 }, "r2": { "min": -5, "max": 5 } },
-    "2": { "a": { "max": 2 } }
+    "2": { "a": { "max": 2 } },
+    "3": { "a": { "max": 3 }, "r1": { "min": -9, "max": 9 }, "r2": { "min": -9, "max": 9 } }
   },
 
   "derived": {

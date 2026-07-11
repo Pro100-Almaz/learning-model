@@ -123,7 +123,7 @@ def test_returns_note_and_feeds_misconception_to_model(student, setup, spy_anthr
 
     assert note == "Белгіні шатастырып алдың."  # trimmed by the service
     assert len(spy_anthropic) == 1
-    # Diagnosis mode must use the non-revealing persona (not the explainer).
+    # Diagnosis mode uses the mistake-focused, full-solution persona.
     assert spy_anthropic[0]["system"] == TUTOR_SYSTEM
     prompt = spy_anthropic[0]["user"]
     # The specific misconception description must reach the model...

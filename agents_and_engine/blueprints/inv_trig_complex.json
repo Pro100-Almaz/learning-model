@@ -7,7 +7,7 @@
   "_comment": "Использование тригонометрических тождеств (формула половинного аргумента для inner '1/2 * arccos'; основное тождество для arccos/arcsin) для преобразования смешанных функций. value — пифагорова дробь, дающая рациональный ответ [15].",
 
   "tag": { "name": "Сложные преобразования", "slug": "inv-trig-complex" },
-  "default_difficulty": 4,
+  "default_difficulty": 3,
 
   "parameters": {
     "outer_func": { "type": "string", "options": ["tg", "ctg"], "desc": "Внешняя функция" },

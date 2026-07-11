@@ -1,17 +1,20 @@
 {#- One blueprint serves both functions: func_type selects "tg" or "ctg".
-    Pick the human name and the LaTeX command accordingly. -#}
+    freq is the inner coefficient k in tg(k*x)/ctg(k*x). Pick the human name and
+    the LaTeX command accordingly; render the argument as x or k*x. -#}
 {%- set name = 'тангенса' if func_type == 'tg' else 'котангенса' -%}
 {%- set latex = '\\tan' if func_type == 'tg' else '\\cot' -%}
+{%- set innerLatex = 'x' if freq == 1 else (freq ~ 'x') -%}
 PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
-- Function: y = {{ func_type }}(x)
-- Ask the student to state the properties of the {{ name }} function from its graph — its
+- Function: y = {{ func_type }}({{ innerLatex }})
+- Ask the student to state the properties of this {{ name }} function from its graph — its
   domain (the punctured points / ОДЗ where the function does not exist), its range,
   parity (even/odd), and period.
 
 === INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
 - Key facts to recall: the graph has vertical asymptotes at the points where the function
-  is undefined and repeats with a SHORTER period than sine and cosine; it is unbounded
-  along OY and symmetric about the origin.
-- Render all math as LaTeX inside $...$ (e.g. $y = {{ latex }} x$).
+  is undefined and repeats with a SHORTER period than sine and cosine; a coefficient k
+  inside compresses the graph, dividing the period and the spacing of the punctured points
+  by k. It is unbounded along OY and symmetric about the origin.
+- Render all math as LaTeX inside $...$ (e.g. $y = {{ latex }}\left({{ innerLatex }}\right)$).
 - Do NOT state or hint at the answer: the punctured points / domain, range, parity, or
-  period of the {{ name }} function must NOT be given to the student.
+  period of the function must NOT be given to the student.

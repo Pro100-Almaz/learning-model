@@ -19,7 +19,8 @@
 
   "difficulty_overrides": {
     "1": { "upper": { "max": 5 } },
-    "2": { "upper": { "max": 6 } }
+    "2": { "upper": { "max": 6 } },
+    "3": { "upper": { "max": 8 } }
   },
 
   "constraints": [
