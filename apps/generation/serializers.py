@@ -13,8 +13,10 @@ class GenerationJobCreateSerializer(serializers.Serializer):
 
     topic = serializers.CharField(max_length=80)
     count = serializers.IntegerField(min_value=1, max_value=20)
+    # Intended score for the profile subject (профильная математика), 0-40 —
+    # NOT the ENT total. Higher => harder generated questions.
     target_score = serializers.IntegerField(
-        min_value=0, max_value=140, required=False, allow_null=True
+        min_value=0, max_value=40, required=False, allow_null=True
     )
 
 

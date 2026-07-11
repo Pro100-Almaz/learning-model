@@ -7,7 +7,7 @@ minus the Publisher) and prints each draft plus the Critic's verdict.
 Run from the project root (it's a package module, not a loose script):
     python -m agents_and_engine.preview                       # one of each blueprint topic
     python -m agents_and_engine.preview quadratic_equations   # just this topic
-    python -m agents_and_engine.preview calculus_integrals 130  # topic + ENT target score
+    python -m agents_and_engine.preview calculus_integrals 30  # topic + intended profile-subject score (0-40)
 """
 from __future__ import annotations
 

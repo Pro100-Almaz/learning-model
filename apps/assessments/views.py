@@ -126,11 +126,12 @@ class AttemptReviewView(APIView):
 
 
 class AttemptTutorView(APIView):
-    """POST /api/v1/attempts/{id}/tutor/ — on-demand help for one wrong answer.
+    """POST /api/v1/attempts/{id}/tutor/ — on-demand help for one question.
 
     The student opts in (this never fires automatically). Review-only: the
-    attempt must be finished. Returns a short 'margin note' that names the
-    mistake without revealing the answer.
+    attempt must be finished. For a wrong answer it returns a short 'margin note'
+    that names the mistake without revealing the answer; for a skipped question
+    it returns a worked explanation that reveals the answer.
     """
 
     permission_classes = [IsAuthenticated]

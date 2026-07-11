@@ -11,6 +11,10 @@ import logging
 from dataclasses import dataclass
 from typing import Optional
 
+from config import TUTOR_MODEL
+from agents_and_engine.llm import chat_anthropic
+from agents_and_engine.prompts import TUTOR_RECAP_SYSTEM
+
 from django.db import IntegrityError, transaction
 from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
@@ -26,6 +30,7 @@ from apps.assessments.models import (
     Test,
     TestQuestion,
     TestAttempt,
+    TutorNote,
 )
 
 logger = logging.getLogger("apps.assessments")
@@ -115,6 +120,10 @@ def _trigger_roadmap_hooks(attempt: TestAttempt) -> None:
     Lazy import to keep assessments standalone and to avoid an app-loading
     cycle. Failures here must never break the attempt finish flow.
     """
+    # Ladder attempts own their mastery writes (roadmap.ladder updates inline per
+    # answer) and have no Test — skip the global roadmap path entirely for them.
+    if attempt.test_id is None or attempt.source == "ladder":
+        return
     try:
         from apps.roadmap import services as roadmap_services
     except Exception:  # pragma: no cover - roadmap optional at runtime
@@ -136,7 +145,11 @@ def finish_attempt(attempt: TestAttempt) -> TestAttempt:
     if attempt.is_completed:
         return attempt
 
-    total_count = attempt.test.questions.count()
+    # Ladder attempts have no Test; score off the answers actually recorded.
+    if attempt.test_id is not None:
+        total_count = attempt.test.questions.count()
+    else:
+        total_count = attempt.answers.count()
     correct_count = attempt.answers.filter(is_correct=True).count()
     if total_count > 0:
         score = round((correct_count / total_count) * 100, 1)
@@ -334,16 +347,6 @@ def publish_generated_question(
 # Tutor (Agent 5) — on-demand, review-only feedback for a wrong answer
 # ---------------------------------------------------------------------------
 
-# Process-local cache of generated notes, keyed by (question_id, option_id). The
-# note depends on the question and which wrong option was chosen — not on the
-# individual student — so it is safe to share across students. This is a
-# deliberate placeholder: it is ephemeral (cleared on restart, not shared across
-# worker processes), so the same note may occasionally regenerate. Swap it for
-# Django's cache or a TutorNote model later; get_tutor_feedback is the only
-# caller, so nothing else changes.
-_TUTOR_CACHE: dict[tuple[int, int], str] = {}
-
-
 def _build_tutor_prompt(question: Question, option: AnswerOption) -> str:
     """Assemble the Tutor's user message from the data the Architect persisted.
 
@@ -382,13 +385,45 @@ def _build_tutor_prompt(question: Question, option: AnswerOption) -> str:
     )
 
 
-def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
-    """Return an on-demand 'margin note' for one wrong answer in a finished attempt.
+def _build_explanation_prompt(question: Question) -> str:
+    """Assemble the Tutor's user message for a SKIPPED question.
 
-    Review-only: the attempt must be completed — we never reveal that an answer
-    was wrong mid-test (correctness on mocks is withheld until /finish/). Raises
-    the 4xx-shaped errors the view surfaces. Cached per (question, option) so
-    repeated requests don't re-bill the LLM.
+    No student answer and no misconception apply here — the student never
+    attempted the problem. We hand over the worked steps and the answer key so
+    the model can teach the full method and reveal the answer. Degrades the same
+    way as `_build_tutor_prompt`: with no `solution` on file we tell the model to
+    solve it from scratch and show its steps.
+    """
+    solution = question.solution or {}
+    steps = solution.get("steps", [])
+
+    steps_text = (
+        "\n".join(
+            f"{i}. {s.get('label', '')}: {s.get('detail', '')}"
+            for i, s in enumerate(steps, 1)
+        )
+        or "(no worked solution on file — solve it from scratch and show your steps)"
+    )
+
+    return (
+        f"PROBLEM:\n{question.text}\n\n"
+        f"WORKED SOLUTION (correct; use it to structure your explanation):\n"
+        f"{steps_text}\n\n"
+        f"CORRECT ANSWER (reveal and explain this to the student): "
+        f"{solution.get('answer_key', '(unknown)')}"
+    )
+
+
+def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
+    """Return on-demand Tutor feedback for one question in a finished attempt.
+
+    Three modes: a diagnosis 'margin note' for a wrong answer (hides the answer),
+    a worked explanation for a skipped question (reveals it), or a short recap for
+    a correct answer that confirms the method (reveals it). Review-only: the
+    attempt must be completed — we never reveal that an answer was wrong mid-test
+    (correctness on mocks is withheld until /finish/). Raises the 4xx-shaped
+    errors the view surfaces. Cached per (question, option) — the explanation
+    note lives on the NULL-option row — so repeated requests don't re-bill the LLM.
     """
     if not attempt.is_completed:
         raise ValidationError(
@@ -405,35 +440,98 @@ def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
             {"detail": "question not in test", "code": "question_not_in_test"}
         ) from exc
 
+    # A missing row means the student skipped the question entirely — that is a
+    # valid case (explanation mode), not an error.
     try:
         answer = AttemptAnswer.objects.select_related("selected_option").get(
             attempt=attempt, question=question
         )
-    except AttemptAnswer.DoesNotExist as exc:
-        raise ValidationError(
-            {"detail": "no answer recorded for this question", "code": "not_answered"}
-        ) from exc
+    except AttemptAnswer.DoesNotExist:
+        answer = None
 
-    if answer.is_correct:
-        raise ValidationError(
-            {"detail": "this answer was correct; no feedback needed", "code": "answer_correct"}
+    # Decision tree. All three modes share the same LLM plumbing; they differ only
+    # in the cache key (which option, if any), the system prompt, and the builder.
+    #   - no row, or row with no option picked  -> explanation (reveal + teach)
+    #   - correct answer                        -> recap (confirm the method, reveal answer)
+    #   - a real wrong option                   -> diagnosis (nudge, hide answer)
+    if answer is not None and answer.is_correct:
+        # Recap mode: the student got it right (possibly by guessing), so confirm
+        # the method with a short note that also states the answer. Cached per
+        # (question, correct-option) like diagnosis mode; record_answer always
+        # sets the option, so this is a real (non-null) key.
+        option = answer.selected_option
+
+        from config import TUTOR_MODEL
+        from agents_and_engine.llm import chat_anthropic
+        from agents_and_engine.prompts import TUTOR_RECAP_SYSTEM
+
+        cached = (
+            TutorNote.objects.filter(question=question, selected_option=option)
+            .values_list("note", flat=True)
+            .first()
         )
+        if cached is not None:
+            return cached
 
-    option = answer.selected_option
-    if option is None:
-        raise ValidationError(
-            {"detail": "no option was selected", "code": "no_option"}
+        note = chat_anthropic(
+            TUTOR_RECAP_SYSTEM,
+            _build_explanation_prompt(question),
+            model=TUTOR_MODEL,
+            max_tokens=250,
+        ).strip()
+
+        row, _ = TutorNote.objects.get_or_create(
+            question=question,
+            selected_option=option,
+            defaults={"note": note},
         )
+        return row.note
 
-    cache_key = (question.pk, option.pk)
-    if cache_key in _TUTOR_CACHE:
-        return _TUTOR_CACHE[cache_key]
+    option = answer.selected_option if answer is not None else None
 
     # Lazy imports keep the LLM stack (and its API key) out of Django startup and
     # out of any request/test that never reaches the Tutor.
     from config import TUTOR_MODEL
     from agents_and_engine.llm import chat_anthropic
+
+    if option is None:
+        # Explanation mode: one note per question, stored on the NULL-option row
+        # (guarded by the partial unique constraint). Read via IS NULL.
+        from agents_and_engine.prompts import TUTOR_EXPLANATION_SYSTEM
+
+        cached = (
+            TutorNote.objects.filter(question=question, selected_option__isnull=True)
+            .values_list("note", flat=True)
+            .first()
+        )
+        if cached is not None:
+            return cached
+
+        note = chat_anthropic(
+            TUTOR_EXPLANATION_SYSTEM,
+            _build_explanation_prompt(question),
+            model=TUTOR_MODEL,
+            max_tokens=600,
+        ).strip()
+
+        row, _ = TutorNote.objects.get_or_create(
+            question=question,
+            selected_option=None,
+            defaults={"note": note},
+        )
+        return row.note
+
+    # Diagnosis mode. Durable cache: the note depends only on (question, option),
+    # so one row is reused across every student who picks that option.
     from agents_and_engine.prompts import TUTOR_SYSTEM
+
+    cached = (
+        TutorNote.objects.filter(question=question, selected_option=option)
+        .values_list("note", flat=True)
+        .first()
+    )
+    if cached is not None:
+        return cached
 
     note = chat_anthropic(
         TUTOR_SYSTEM,
@@ -441,8 +539,14 @@ def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
         model=TUTOR_MODEL,
     ).strip()
 
-    _TUTOR_CACHE[cache_key] = note
-    return note
+    # get_or_create so a concurrent request that generated first wins and we
+    # don't violate the (question, option) uniqueness; return the stored note.
+    row, _ = TutorNote.objects.get_or_create(
+        question=question,
+        selected_option=option,
+        defaults={"note": note},
+    )
+    return row.note
 
 
 # ---------------------------------------------------------------------------

@@ -107,7 +107,12 @@ class TutorRequestInputSerializer(serializers.Serializer):
 
 
 class TutorFeedbackSerializer(serializers.Serializer):
-    """Tutor output — only the note. Never exposes the misconception or answer."""
+    """Tutor output — only the note text.
+
+    In diagnosis mode (wrong answer) the note never exposes the misconception or
+    answer; in explanation mode (skipped question) it intentionally reveals and
+    explains the answer.
+    """
 
     feedback = serializers.CharField()
 
