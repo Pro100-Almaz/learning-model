@@ -11,7 +11,7 @@ import pytest
 
 from apps.assessments.models import Question, Test, TestQuestion
 from apps.assessments.services import publish_generated_question
-from apps.content.models import Lesson, Module, Tag
+from apps.content.models import ClassGrade, Lesson, Module, Subject, Tag
 
 pytestmark = pytest.mark.django_db
 
@@ -39,7 +39,11 @@ def _publish(content_hash, *, tag_slug="integraly"):
 
 
 def _integrals_lesson():
-    module = Module.objects.create(title="Calculus", slug="calc", subject="profile_math")
+    subject, _ = Subject.objects.get_or_create(
+        slug="profile_math", defaults={"name": "Профильная математика"}
+    )
+    grade, _ = ClassGrade.objects.get_or_create(grade=11, subject=subject)
+    module = Module.objects.create(title="Calculus", slug="calc", class_grade=grade)
     tag = Tag.objects.create(name="Интегралы", slug="integraly")
     lesson = Lesson.objects.create(
         module=module, title="Интегралы: основы", video_url="https://x", tag=tag, order=1

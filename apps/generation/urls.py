@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import JobCancelView, JobDetailView, JobListCreateView, JobStreamView, JobQuestionsView
+from apps.generation.views import JobCancelView, JobDetailView, JobListCreateView, JobStreamView, JobQuestionsView
 
 app_name = "generation"
 

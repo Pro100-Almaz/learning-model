@@ -1,12 +1,42 @@
 [
   {
+    "model": "content.subject",
+    "pk": 1,
+    "fields": {"name": "Математика", "slug": "math"}
+  },
+  {
+    "model": "content.subject",
+    "pk": 2,
+    "fields": {"name": "Математическая грамотность", "slug": "math-literacy"}
+  },
+  {
+    "model": "content.subject",
+    "pk": 3,
+    "fields": {"name": "История Казахстана", "slug": "history-of-kazakhstan"}
+  },
+  {
+    "model": "content.subject",
+    "pk": 4,
+    "fields": {"name": "Грамотность чтения", "slug": "reading-literacy"}
+  },
+  {
+    "model": "content.subject",
+    "pk": 5,
+    "fields": {"name": "Профильный предмет 2", "slug": "profile-subject-2"}
+  },
+  {
+    "model": "content.classgrade",
+    "pk": 1,
+    "fields": {"grade": 11, "subject": 1}
+  },
+  {
     "model": "content.module",
     "pk": 1,
     "fields": {
       "title": "Алгебра",
       "slug": "algebra",
       "order": 1,
-      "subject": "profile_math"
+      "class_grade": 1
     }
   },
   {
@@ -16,7 +46,7 @@
       "title": "Геометрия",
       "slug": "geometry",
       "order": 2,
-      "subject": "profile_math"
+      "class_grade": 1
     }
   },
 

@@ -8,7 +8,9 @@ from __future__ import annotations
 
 from rest_framework import serializers
 
-from .models import ExpectedScore, StudentProfile
+from apps.content.models import Subject
+
+from apps.accounts.models import ExpectedScore, StudentProfile
 
 
 class AuthUserSerializer(serializers.Serializer):
@@ -35,6 +37,9 @@ class AuthUserSerializer(serializers.Serializer):
 class ExpectedScoreSerializer(serializers.ModelSerializer):
     """ExpectedScore I/O — exposes only subject + score per openapi."""
 
+    subject = serializers.SlugRelatedField(
+        slug_field="slug", queryset=Subject.objects.all()
+    )
     score = serializers.IntegerField(min_value=0)
 
     class Meta:
@@ -67,6 +72,12 @@ class StudentProfileUpdateSerializer(serializers.ModelSerializer):
     """
 
     expected_scores = ExpectedScoreSerializer(many=True, required=False)
+    subjects = serializers.SlugRelatedField(
+        slug_field="slug",
+        many=True,
+        required=False,
+        queryset=Subject.objects.all(),
+    )
     target_score = serializers.IntegerField(
         min_value=0, allow_null=True, required=False
     )
@@ -77,6 +88,7 @@ class StudentProfileUpdateSerializer(serializers.ModelSerializer):
             "target_university",
             "target_specialty",
             "target_score",
+            "subjects",
             "expected_scores",
         )
         extra_kwargs = {

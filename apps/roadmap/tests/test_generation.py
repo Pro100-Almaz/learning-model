@@ -25,7 +25,7 @@ from apps.assessments.models import (
     TestQuestion,
 )
 from apps.assessments.services import finish_attempt
-from apps.content.models import Lesson, Module, Tag
+from apps.content.models import ClassGrade, Lesson, Module, Subject, Tag
 from apps.roadmap.models import Roadmap, RoadmapItem
 from apps.roadmap.services import (
     generate_roadmap_for_student,
@@ -82,8 +82,12 @@ def _make_attempt(*, user, test, answer_results, completed=True):
 class GenerationTests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(email="s@e.com", password="pw")
+        subject, _ = Subject.objects.get_or_create(
+            slug="profile_math", defaults={"name": "Профильная математика"}
+        )
+        grade, _ = ClassGrade.objects.get_or_create(grade=11, subject=subject)
         self.module = Module.objects.create(
-            title="Алгебра", slug="algebra", order=0, subject="profile_math"
+            title="Алгебра", slug="algebra", order=0, class_grade=grade
         )
         self.t_log = Tag.objects.create(name="Логарифмы", slug="logarithms")
         self.t_trig = Tag.objects.create(name="Тригонометрия", slug="trig")
@@ -212,8 +216,12 @@ class GenerationTests(APITestCase):
 class StatusUpdateTests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(email="s@e.com", password="pw")
+        subject, _ = Subject.objects.get_or_create(
+            slug="profile_math", defaults={"name": "Профильная математика"}
+        )
+        grade, _ = ClassGrade.objects.get_or_create(grade=11, subject=subject)
         self.module = Module.objects.create(
-            title="Алгебра", slug="algebra", order=0, subject="profile_math"
+            title="Алгебра", slug="algebra", order=0, class_grade=grade
         )
         self.tag = Tag.objects.create(name="Логарифмы", slug="logarithms")
         self.lesson = Lesson.objects.create(
@@ -292,8 +300,12 @@ class StatusUpdateTests(APITestCase):
 class EndpointTests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(email="s@e.com", password="pw")
+        subject, _ = Subject.objects.get_or_create(
+            slug="profile_math", defaults={"name": "Профильная математика"}
+        )
+        grade, _ = ClassGrade.objects.get_or_create(grade=11, subject=subject)
         self.module = Module.objects.create(
-            title="Алгебра", slug="algebra", order=0, subject="profile_math"
+            title="Алгебра", slug="algebra", order=0, class_grade=grade
         )
         self.tag = Tag.objects.create(name="Логарифмы", slug="logarithms")
         self.lesson = Lesson.objects.create(

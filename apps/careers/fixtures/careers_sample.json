@@ -52,7 +52,7 @@
       "university": 1,
       "name": "Software Engineering",
       "code": "6B061",
-      "required_subjects": ["profile_math", "Математическая грамотность"]
+      "required_subjects": ["math"]
     }
   },
   {
@@ -62,7 +62,7 @@
       "university": 1,
       "name": "Прикладная математика",
       "code": "6B054",
-      "required_subjects": ["profile_math", "Математическая грамотность"]
+      "required_subjects": ["math"]
     }
   },
 
@@ -73,7 +73,7 @@
       "university": 2,
       "name": "Information Systems",
       "code": "6B06",
-      "required_subjects": ["profile_math", "Математическая грамотность"]
+      "required_subjects": ["math"]
     }
   },
   {
@@ -83,7 +83,7 @@
       "university": 2,
       "name": "Big Data Analysis",
       "code": "6B062",
-      "required_subjects": ["profile_math", "Математическая грамотность"]
+      "required_subjects": ["math"]
     }
   },
 
@@ -94,7 +94,7 @@
       "university": 3,
       "name": "Computer Science",
       "code": "6B063",
-      "required_subjects": ["profile_math", "Математическая грамотность"]
+      "required_subjects": ["math"]
     }
   },
   {
@@ -104,7 +104,7 @@
       "university": 3,
       "name": "Mathematics",
       "code": "6B055",
-      "required_subjects": ["profile_math", "Математическая грамотность"]
+      "required_subjects": ["math"]
     }
   },
 
@@ -115,7 +115,7 @@
       "university": 4,
       "name": "Информатика",
       "code": "6B064",
-      "required_subjects": ["profile_math", "Математическая грамотность"]
+      "required_subjects": ["math"]
     }
   },
   {
@@ -125,7 +125,7 @@
       "university": 4,
       "name": "Математика и информатика",
       "code": "6B056",
-      "required_subjects": ["profile_math", "Математическая грамотность"]
+      "required_subjects": ["math"]
     }
   },
 
@@ -136,7 +136,7 @@
       "university": 5,
       "name": "IT-менеджмент",
       "code": "6B07",
-      "required_subjects": ["profile_math", "Математическая грамотность"]
+      "required_subjects": ["math"]
     }
   },
   {
@@ -146,7 +146,7 @@
       "university": 5,
       "name": "Кибербезопасность",
       "code": "6B068",
-      "required_subjects": ["profile_math", "Математическая грамотность"]
+      "required_subjects": ["math"]
     }
   },
 

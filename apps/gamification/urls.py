@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import GamificationMeView
+from apps.gamification.views import GamificationMeView
 
 app_name = "gamification"
 

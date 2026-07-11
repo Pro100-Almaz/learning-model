@@ -17,8 +17,8 @@ from rest_framework.views import APIView
 
 from apps.careers.models import Specialty, University
 
-from . import services
-from .serializers import (
+from apps.accounts import services
+from apps.accounts.serializers import (
     AuthUserSerializer,
     OnboardingSpecialtySerializer,
     OnboardingUniversitySerializer,
@@ -51,7 +51,7 @@ class ProfileView(APIView):
         return (
             services.ensure_profile(self.request.user).__class__.objects
             .select_related("target_university", "target_specialty")
-            .prefetch_related("expected_scores")
+            .prefetch_related("subjects", "expected_scores__subject")
         )
 
     @extend_schema(responses=StudentProfileSerializer)
@@ -72,9 +72,15 @@ class ProfileView(APIView):
         serializer.is_valid(raise_exception=True)
 
         expected_scores = serializer.validated_data.pop("expected_scores", None)
+        # M2M can't be set via setattr before the row exists / must use .set().
+
         for field, value in serializer.validated_data.items():
             setattr(profile, field, value)
         profile.save()
+
+        subjects = [e["subject"] for e in expected_scores]
+        if subjects is not None:
+            profile.subjects.set(subjects)
 
         if expected_scores is not None:
             services.upsert_expected_scores(profile, expected_scores)

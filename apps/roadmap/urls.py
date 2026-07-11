@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import DiagnosticInfoView, RoadmapRegenerateView, RoadmapView
+from apps.roadmap.views import DiagnosticInfoView, RoadmapRegenerateView, RoadmapView
 
 app_name = "roadmap"
 

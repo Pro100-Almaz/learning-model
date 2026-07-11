@@ -15,7 +15,7 @@ from __future__ import annotations
 from import_export import fields, resources
 from import_export.results import RowResult
 
-from .models import GrantThreshold, Specialty, University
+from apps.careers.models import GrantThreshold, Specialty, University
 
 
 REQUIRED_COLUMNS = (

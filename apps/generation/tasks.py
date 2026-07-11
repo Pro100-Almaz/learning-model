@@ -28,8 +28,8 @@ from typing import Any
 from celery import shared_task
 from django.utils import timezone
 
-from . import services
-from .models import GenerationJob, GenerationStep
+from apps.generation import services
+from apps.generation.models import GenerationJob, GenerationStep
 
 logger = logging.getLogger("apps.generation")
 

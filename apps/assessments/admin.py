@@ -10,7 +10,7 @@ from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.forms.models import BaseInlineFormSet
 
-from .models import (
+from apps.assessments.models import (
     AnswerOption,
     AttemptAnswer,
     Question,

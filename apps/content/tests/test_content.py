@@ -17,7 +17,7 @@ from rest_framework.test import APITestCase
 
 from apps.assessments.models import Test as AssessmentTest
 from apps.assessments.models import TestAttempt as AssessmentAttempt
-from apps.content.models import Lesson, Module
+from apps.content.models import ClassGrade, Lesson, Module, Subject
 
 
 class ModuleListTests(APITestCase):
@@ -28,17 +28,21 @@ class ModuleListTests(APITestCase):
             password="testpassword123",
         )
         cls.url = reverse("v1:modules:module-list")
+        cls.subject = Subject.objects.create(
+            name="Профильная математика", slug="profile_math"
+        )
+        cls.grade = ClassGrade.objects.create(grade=11, subject=cls.subject)
         cls.module_a = Module.objects.create(
             title="Алгебра",
             slug="algebra",
             order=1,
-            subject="profile_math",
+            class_grade=cls.grade,
         )
         cls.module_b = Module.objects.create(
             title="Геометрия",
             slug="geometry",
             order=2,
-            subject="profile_math",
+            class_grade=cls.grade,
         )
         Lesson.objects.create(
             module=cls.module_a,
@@ -67,7 +71,15 @@ class ModuleListTests(APITestCase):
         self.assertEqual(len(response.data), 2)
 
         first = response.data[0]
-        expected_keys = {"id", "title", "slug", "order", "subject", "lesson_count"}
+        expected_keys = {
+            "id",
+            "title",
+            "slug",
+            "order",
+            "subject",
+            "class_grade",
+            "lesson_count",
+        }
         self.assertEqual(set(first.keys()), expected_keys)
 
         # Ordered by `order`
@@ -75,6 +87,31 @@ class ModuleListTests(APITestCase):
         self.assertEqual(first["lesson_count"], 2)
         self.assertEqual(response.data[1]["slug"], "geometry")
         self.assertEqual(response.data[1]["lesson_count"], 0)
+
+    def test_list_filters_by_subject_and_class_grade(self):
+        # A module in a different subject + grade that must be filtered out.
+        other_subject = Subject.objects.create(
+            name="Мат. грамотность", slug="math_literacy"
+        )
+        other_grade = ClassGrade.objects.create(grade=10, subject=other_subject)
+        Module.objects.create(
+            title="Функции",
+            slug="functions",
+            order=3,
+            class_grade=other_grade,
+        )
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(
+            self.url, {"subject": "profile_math", "class_grade": 11}
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        slugs = {row["slug"] for row in response.data}
+        self.assertEqual(slugs, {"algebra", "geometry"})
+
+        # Filtering by the other grade returns only the grade-10 module.
+        response = self.client.get(self.url, {"class_grade": 10})
+        self.assertEqual([r["slug"] for r in response.data], ["functions"])
 
 
 class ModuleDetailTests(APITestCase):
@@ -84,11 +121,15 @@ class ModuleDetailTests(APITestCase):
             email="student@example.com",
             password="testpassword123",
         )
+        cls.subject = Subject.objects.create(
+            name="Профильная математика", slug="profile_math"
+        )
+        cls.grade = ClassGrade.objects.create(grade=11, subject=cls.subject)
         cls.module = Module.objects.create(
             title="Алгебра",
             slug="algebra",
             order=1,
-            subject="profile_math",
+            class_grade=cls.grade,
         )
         cls.lesson_done = Lesson.objects.create(
             module=cls.module,
@@ -128,6 +169,7 @@ class ModuleDetailTests(APITestCase):
             "slug",
             "order",
             "subject",
+            "class_grade",
             "lesson_count",
             "lessons",
         }
@@ -174,11 +216,15 @@ class LessonDetailTests(APITestCase):
             email="student@example.com",
             password="testpassword123",
         )
+        cls.subject = Subject.objects.create(
+            name="Профильная математика", slug="profile_math"
+        )
+        cls.grade = ClassGrade.objects.create(grade=11, subject=cls.subject)
         cls.module = Module.objects.create(
             title="Алгебра",
             slug="algebra",
             order=1,
-            subject="profile_math",
+            class_grade=cls.grade,
         )
         cls.lesson = Lesson.objects.create(
             module=cls.module,

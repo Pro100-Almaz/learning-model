@@ -7,7 +7,7 @@ Mounted under ``/api/v1/profile/`` in ``conf/urls.py``:
 
 from django.urls import path
 
-from .views import OnboardingOptionsView, ProfileView
+from apps.accounts.views import OnboardingOptionsView, ProfileView
 
 app_name = "accounts"
 

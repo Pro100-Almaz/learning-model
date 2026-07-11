@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from rest_framework import serializers
 
-from .models import GenerationJob, GenerationStep
-from ..assessments.serializers import QuestionPublicSerializer
+from apps.generation.models import GenerationJob, GenerationStep
+from apps.assessments.serializers import QuestionPublicSerializer
 
 
 class GenerationJobCreateSerializer(serializers.Serializer):

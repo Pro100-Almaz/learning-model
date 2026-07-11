@@ -13,8 +13,8 @@ The user-facing login UI is hosted by Clerk. Our backend only needs:
 
 from django.urls import path
 
-from .views import AuthMeView
-from .webhooks import ClerkWebhookView
+from apps.accounts.views import AuthMeView
+from apps.accounts.webhooks import ClerkWebhookView
 
 urlpatterns = [
     path("me/", AuthMeView.as_view(), name="auth-me"),

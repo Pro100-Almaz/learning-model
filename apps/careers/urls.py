@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import GrantCalculateView, UniversityListView
+from apps.careers.views import GrantCalculateView, UniversityListView
 
 app_name = "careers"
 

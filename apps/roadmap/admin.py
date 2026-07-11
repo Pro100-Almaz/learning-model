@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Roadmap, RoadmapItem
+from apps.roadmap.models import Roadmap, RoadmapItem
 
 
 class RoadmapItemInline(admin.TabularInline):

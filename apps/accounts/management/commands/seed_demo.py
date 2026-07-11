@@ -29,6 +29,7 @@ from apps.assessments.models import (
     TestAttempt,
 )
 from apps.careers.models import Specialty, University
+from apps.content.models import Subject
 
 
 DEMO_EMAIL = "demo@ent.kz"
@@ -38,14 +39,10 @@ TARGET_UNIVERSITY_CODE = "ENU"          # ЕНУ им. Гумилёва
 TARGET_SPECIALTY_CODE = "6B061"         # Software Engineering
 TARGET_SCORE = 115
 
-# Other-subject expected scores. Subject names must align with the
-# ``ENT_CONFIG["other_subjects"]`` list in settings so the grant
-# calculator can sum them up.
 EXPECTED_SCORES: tuple[tuple[str, int], ...] = (
-    ("История Казахстана", 25),
-    ("Грамотность чтения", 25),
-    ("Математическая грамотность", 22),
-    ("Профильный предмет 2", 18),
+    ("history-of-kazakhstan", 15),
+    ("reading-literacy", 15),
+    ("math-literacy", 12),
 )
 
 # The mock test seeded by the content fixture.
@@ -114,7 +111,13 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Profile set with target ЕНУ / SE."))
 
         # --- expected scores (upsert) -----------------------------------
-        for subject, score in EXPECTED_SCORES:
+        for subject_slug, score in EXPECTED_SCORES:
+            try:
+                subject = Subject.objects.get(slug=subject_slug)
+            except Subject.DoesNotExist as exc:
+                raise CommandError(
+                    f"Subject {subject_slug!r} missing — run `migrate`/`seed` first."
+                ) from exc
             ExpectedScore.objects.update_or_create(
                 profile=profile,
                 subject=subject,

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import GrantThreshold, Specialty, University
+from apps.careers.models import GrantThreshold, Specialty, University
 
 
 class SpecialtySerializer(serializers.ModelSerializer):

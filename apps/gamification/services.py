@@ -16,7 +16,7 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 
-from .models import Streak, StudentProgress, XPEvent
+from apps.gamification.models import Streak, StudentProgress, XPEvent
 
 
 # ---------------------------------------------------------------------------

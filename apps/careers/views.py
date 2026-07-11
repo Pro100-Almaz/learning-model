@@ -5,9 +5,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import GrantThreshold, Specialty, University
-from .serializers import GrantCalcResultSerializer, UniversitySerializer
-from .services import NoMockError, calculate_grant
+from apps.careers.models import GrantThreshold, Specialty, University
+from apps.careers.serializers import GrantCalcResultSerializer, UniversitySerializer
+from apps.careers.services import NoMockError, calculate_grant
 
 
 class UniversityListView(APIView):

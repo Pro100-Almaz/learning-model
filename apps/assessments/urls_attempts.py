@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import (
+from apps.assessments.views import (
     AttemptAnswerView,
     AttemptCreateView,
     AttemptFinishView,

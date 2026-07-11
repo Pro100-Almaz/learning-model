@@ -13,7 +13,7 @@ from django.db.models import Max
 
 from apps.assessments.models import TestAttempt
 
-from .models import Specialty
+from apps.careers.models import Specialty
 
 User = get_user_model()
 

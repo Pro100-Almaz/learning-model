@@ -74,7 +74,7 @@ def get_latest_mock_attempt(student):
 
 def get_active_roadmap(student):
     """The student's currently-active Roadmap, or None."""
-    from .models import Roadmap
+    from apps.roadmap.models import Roadmap
 
     return (
         Roadmap.objects.filter(student=student, is_active=True)
@@ -162,7 +162,7 @@ def generate_roadmap_for_student(student, source_attempt=None, source: str = "di
     from apps.assessments.models import Test as AssessmentsTest
     from apps.content.models import Lesson, Tag
 
-    from .models import Roadmap, RoadmapItem
+    from apps.roadmap.models import Roadmap, RoadmapItem
 
     # 1. Resolve source attempt.
     if source_attempt is None:

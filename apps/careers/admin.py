@@ -1,8 +1,8 @@
 from django.contrib import admin
 from import_export.admin import ImportExportMixin
 
-from .models import GrantThreshold, Specialty, University
-from .resources import UniversityImportResource
+from apps.careers.models import GrantThreshold, Specialty, University
+from apps.careers.resources import UniversityImportResource
 
 
 class SpecialtyInline(admin.TabularInline):
