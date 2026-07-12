@@ -14,6 +14,12 @@
     "coef_x": { "type": "float", "options": [0.5, 2, 3], "desc": "Внутренний множитель (деформация по X)" }
   },
 
+  "difficulty_overrides": {
+    "1": { "coef_y": { "options": [2, 3] }, "coef_x": { "options": [2, 3] } },
+    "2": { "coef_y": { "options": [0.5, 2] }, "coef_x": { "options": [0.5, 2] } },
+    "3": { "coef_y": { "options": [0.5, 2, 3] }, "coef_x": { "options": [0.5, 2, 3] } }
+  },
+
   "constraints": [
     "coef_y != 1",
     "coef_x != 1"

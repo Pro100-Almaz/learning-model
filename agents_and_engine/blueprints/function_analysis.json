@@ -16,6 +16,12 @@
     "x_min": { "type": "int", "min": 1, "max": 4, "desc": "Точка минимума (x)" }
   },
 
+  "difficulty_overrides": {
+    "1": { "zero_1": { "min": -2 }, "zero_2": { "max": 2 }, "x_max": { "min": -1 }, "x_min": { "max": 2 } },
+    "2": { "zero_1": { "min": -3 }, "zero_2": { "max": 3 }, "x_max": { "min": -2 }, "x_min": { "max": 3 } },
+    "3": { "zero_1": { "min": -5 }, "zero_2": { "max": 5 }, "x_max": { "min": -4 }, "x_min": { "max": 4 } }
+  },
+
   "constraints": [
     "zero_1 < x_max // Экстремум должен лежать между нулями или за ними логично",
     "x_max < x_min // Сначала график достигает максимума, потом минимума"

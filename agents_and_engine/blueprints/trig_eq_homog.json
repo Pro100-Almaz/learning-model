@@ -7,7 +7,7 @@
   "_comment": "Уравнения вида a*sin(x) + b*cos(x) = 0 (степень 1) или a*sin^2(x) + b*sin(x)cos(x) + c*cos^2(x) = rhs (степень 2). Делением на cos^degree(x) сводятся к уравнению относительно tg(x). Если rhs != 0, его сначала гомогенизируют умножением на (sin^2 x + cos^2 x). cos(x)=0 не является корнем во всех допустимых комбинациях, поэтому деление корректно.",
 
   "tag": { "name": "Однородные уравнения", "slug": "trig-homogeneous" },
-  "default_difficulty": 5,
+  "default_difficulty": 3,
 
   "parameters": {
     "degree": { "type": "string", "options": ["1", "2"], "desc": "Степень однородного уравнения" },

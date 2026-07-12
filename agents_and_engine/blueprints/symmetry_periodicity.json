@@ -15,6 +15,12 @@
     "poly_power2": { "type": "int", "min": 3, "max": 7, "step": 2, "desc": "Нечетная степень икса" }
   },
 
+  "difficulty_overrides": {
+    "1": { "k": { "max": 3 } },
+    "2": { "k": { "max": 4 } },
+    "3": { "k": { "max": 6 } }
+  },
+
   "constraints": [],
 
   "integer_clean": false,

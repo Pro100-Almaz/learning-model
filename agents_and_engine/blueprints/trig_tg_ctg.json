@@ -4,13 +4,19 @@
   "curriculum_ref": "10 класс — Тригонометрические функции",
   "constraints_template": "trig_tg_ctg.j2",
 
-  "_comment": "Нахождение выколотых точек (ОДЗ) и периода. Тангенс не существует в точках pi/2 + pi*k, а котангенс в pi*k [3, 10].",
+  "_comment": "Свойства y = tg(k*x) / ctg(k*x): выколотые точки (ОДЗ) и период. Для tg ОДЗ k*x != pi/2 + pi*n => x != pi/(2k) + pi*n/k; для ctg x != pi*n/k. Период pi/k. ЧАСТОТА k (freq) — числовой рычаг сложности (делит период и шаг ОДЗ на k). Область значений (-inf,+inf) и нечётность от k не зависят. difficulty_overrides ограничивают k (база max=3 = уровень 3).",
 
   "tag": { "name": "Тангенс и Котангенс", "slug": "tg-i-ctg" },
   "default_difficulty": 2,
 
   "parameters": {
-    "func_type": { "type": "string", "options": ["tg", "ctg"], "desc": "Выбор функции для генерации вопроса" }
+    "func_type": { "type": "string", "options": ["tg", "ctg"], "desc": "Выбор функции для генерации вопроса" },
+    "freq": { "type": "int", "min": 1, "max": 3, "desc": "Частота k в tg(k*x)/ctg(k*x): числовой рычаг сложности (период pi/k, шаг ОДЗ делится на k)" }
+  },
+
+  "difficulty_overrides": {
+    "1": { "freq": { "max": 1 } },
+    "2": { "freq": { "max": 2 } }
   },
 
   "constraints": [],
@@ -19,18 +25,18 @@
   "answer": {
     "type": "static_choice",
     "correct": {
-      "ОДЗ": "{{ 'x != pi/2 + pi*k' if func_type == 'tg' else 'x != pi*k' }}",
+      "ОДЗ": "{% if func_type == 'tg' %}{% if freq == 1 %}x != pi/2 + pi*n{% else %}x != pi/{{ 2 * freq }} + pi*n/{{ freq }}{% endif %}{% else %}{% if freq == 1 %}x != pi*n{% else %}x != pi*n/{{ freq }}{% endif %}{% endif %}",
       "область_значений": "(-inf, +inf)",
       "четность": "нечетная",
-      "период": "pi"
+      "период": "{% if freq == 1 %}pi{% else %}pi/{{ freq }}{% endif %}"
     },
-    "desc": "Свойства выбранной функции (func_type). ОДЗ зависит от func_type. answer_key = correct."
+    "desc": "Свойства y = func_type(k*x). ОДЗ и период зависят от func_type и k; область значений и чётность — нет. answer_key = correct."
   },
 
   "distractors": [
-    { "id": "swapped_domains", "desc": "Ученик перепутал ограничения тангенса и котангенса местами.", "transform": { "ОДЗ": "{{ 'x != pi*k' if func_type == 'tg' else 'x != pi/2 + pi*k' }}" } },
-    { "id": "limited_range", "desc": "По аналогии с синусом и косинусом ученик решил, что тангенс ограничен по оси Y.", "transform": { "область_значений": "[-1, 1]" } },
-    { "id": "wrong_period_tg", "desc": "Ученик указал стандартный период 2*pi вместо укороченного периода pi.", "transform": { "период": "2*pi" } }
+    { "id": "swapped_domains", "desc": "Ученик перепутал ограничения тангенса и котангенса местами.", "transform": { "ОДЗ": "{% if func_type == 'tg' %}{% if freq == 1 %}x != pi*n{% else %}x != pi*n/{{ freq }}{% endif %}{% else %}{% if freq == 1 %}x != pi/2 + pi*n{% else %}x != pi/{{ 2 * freq }} + pi*n/{{ freq }}{% endif %}{% endif %}" } },
+    { "id": "limited_range", "desc": "По аналогии с синусом и косинусом ученик решил, что функция ограничена по оси Y.", "transform": { "область_значений": "[-1, 1]" } },
+    { "id": "wrong_period_tg", "desc": "Ученик взял период 2*pi вместо укороченного pi (после сжатия — 2*pi/k вместо pi/k).", "transform": { "период": "{% if freq == 1 %}2*pi{% else %}2*pi/{{ freq }}{% endif %}" } }
   ],
 
   "narrative_settings": [

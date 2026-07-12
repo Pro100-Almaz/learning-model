@@ -4,15 +4,20 @@
   "curriculum_ref": "10 класс — Простейшие тригонометрические уравнения. y=cosx",
   "constraints_template": "trig_eq_cos.j2",
 
-  "_comment": "Преобразование линейных уравнений к виду cos(x) = a. Использование формулы x = ±arccos(a) + 2πn, обработка отрицательного a через (π - arccos(a)) и применение частных случаев.",
+  "_comment": "Преобразование линейных уравнений к виду cos(k*x) = a. Формула x = ±arccos(a)/k + 2*pi*n/k; для a<0 arccos(a)=pi-arccos(|a|). ЧАСТОТА k (freq) — числовой рычаг сложности. Дистракторы ВАРЬИРУЮТ и сам угол (wrong_table_value — неверное табличное значение; angle_not_divided — не поделил угол на k), а не только знак ± и период, чтобы ответ нельзя было угадать по общему коэффициенту. difficulty_overrides ограничивают k (база max=3 = уровень 3).",
 
   "tag": { "name": "Уравнения с косинусом", "slug": "trig-eq-cos" },
-  "default_difficulty": 4,
+  "default_difficulty": 3,
 
   "parameters": {
-    "coefficient": { "type": "string", "options": ["2", "sqrt(2)"], "desc": "Множитель перед косинусом в исходном уравнении" },
-    "inner_func": { "type": "string", "options": ["x", "2x"], "desc": "Внутренний аргумент функции" },
-    "value": { "type": "string", "options": ["sqrt(2)/2", "-sqrt(2)/2", "0.7"], "desc": "Правая часть после преобразований, значение 'a'" }
+    "coefficient": { "type": "string", "options": ["2", "sqrt(2)"], "desc": "Множитель перед косинусом (сокращается, на ответ не влияет)" },
+    "freq": { "type": "int", "min": 1, "max": 3, "desc": "Частота k в cos(k*x): числовой рычаг сложности (делит угол и период на k)" },
+    "value": { "type": "string", "options": ["sqrt(2)/2", "-sqrt(2)/2", "0.7"], "desc": "Правая часть после деления на коэффициент, значение 'a'" }
+  },
+
+  "difficulty_overrides": {
+    "1": { "freq": { "max": 1 } },
+    "2": { "freq": { "max": 2 } }
   },
 
   "constraints": [],
@@ -20,16 +25,18 @@
 
   "answer": {
     "type": "static_choice",
-    "correct": "{% set A = 'pi/4' if value == 'sqrt(2)/2' else '3pi/4' if value == '-sqrt(2)/2' else 'arccos(0.7)' %}{% set Ah = 'pi/8' if value == 'sqrt(2)/2' else '3pi/8' if value == '-sqrt(2)/2' else 'arccos(0.7)/2' %}{% if inner_func == '2x' %}x = ± {{ Ah }} + pi*n{% else %}x = ± {{ A }} + 2pi*n{% endif %}",
-    "desc": "Делим на коэффициент -> cos(arg)=a, затем arg = ±arccos(a) + 2pin. Для a<0 используем arccos(a)=pi-arccos(|a|) (для -sqrt(2)/2 это 3pi/4). Из arg выражаем x: при 2x делим ВСЁ (включая период) на 2 -> +pin."
+    "correct": "{% set nt = value == '0.7' %}{% set neg = value == '-sqrt(2)/2' %}{% if nt %}{% set ang = 'arccos(0.7)' if freq == 1 else 'arccos(0.7)/' ~ freq %}{% else %}{% set c = 3 if neg else 1 %}{% set d = 4 * freq %}{% if c == 3 and d % 3 == 0 %}{% set c = 1 %}{% set d = d // 3 %}{% endif %}{% set ang = ('pi/' ~ d) if c == 1 else (c ~ 'pi/' ~ d) %}{% endif %}{% if freq % 2 == 0 %}{% set pd = freq // 2 %}{% set per = 'pi*n' if pd == 1 else 'pi*n/' ~ pd %}{% else %}{% set per = '2pi*n' if freq == 1 else '2pi*n/' ~ freq %}{% endif %}x = ± {{ ang }} + {{ per }}",
+    "desc": "Делим на коэффициент -> cos(k*x)=a, затем k*x = ±arccos(a) + 2*pi*n. Для a<0 arccos(a)=pi-arccos(|a|). Выражаем x, деля весь результат (угол И период) на k."
   },
 
   "distractors": [
-    { "id": "wrong_negative_transform", "desc": "При отрицательном a вынес минус перед арккосинусом вместо формулы arccos(a) = pi - arccos(|a|), получив угол pi/4 вместо 3pi/4.", "transform": "{% if value == '-sqrt(2)/2' %}{% if inner_func == '2x' %}x = ± pi/8 + pi*n{% else %}x = ± pi/4 + 2pi*n{% endif %}{% else %}{{ 1/0 }}{% endif %}" },
-    { "id": "wrong_division", "desc": "Выражая x из 2x, разделил на 2 только главный угол, но забыл разделить период (оставил 2pin вместо pin).", "transform": "{% set Ah = 'pi/8' if value == 'sqrt(2)/2' else '3pi/8' if value == '-sqrt(2)/2' else 'arccos(0.7)/2' %}{% if inner_func == '2x' %}x = ± {{ Ah }} + 2pi*n{% else %}{{ 1/0 }}{% endif %}" },
-    { "id": "dropped_pm_sign", "desc": "Записал только одно семейство решений (+), потеряв вторую ветвь (-) формулы ±arccos.", "transform": "{% set A = 'pi/4' if value == 'sqrt(2)/2' else '3pi/4' if value == '-sqrt(2)/2' else 'arccos(0.7)' %}{% set Ah = 'pi/8' if value == 'sqrt(2)/2' else '3pi/8' if value == '-sqrt(2)/2' else 'arccos(0.7)/2' %}{% if inner_func == '2x' %}x = {{ Ah }} + pi*n{% else %}x = {{ A }} + 2pi*n{% endif %}" },
-    { "id": "wrong_period", "desc": "Перепутал период косинуса: записал pin вместо 2pin (период серии решений косинуса равен 2pin).", "transform": "{% set A = 'pi/4' if value == 'sqrt(2)/2' else '3pi/4' if value == '-sqrt(2)/2' else 'arccos(0.7)' %}{% set Ah = 'pi/8' if value == 'sqrt(2)/2' else '3pi/8' if value == '-sqrt(2)/2' else 'arccos(0.7)/2' %}{% if inner_func == '2x' %}x = ± {{ Ah }} + 2pi*n{% else %}x = ± {{ A }} + pi*n{% endif %}" },
-    { "id": "dropped_period", "desc": "Потерял общий член семейства решений (+ 2pin), записав лишь главные значения.", "transform": "{% set A = 'pi/4' if value == 'sqrt(2)/2' else '3pi/4' if value == '-sqrt(2)/2' else 'arccos(0.7)' %}{% set Ah = 'pi/8' if value == 'sqrt(2)/2' else '3pi/8' if value == '-sqrt(2)/2' else 'arccos(0.7)/2' %}{% if inner_func == '2x' %}x = ± {{ Ah }}{% else %}x = ± {{ A }}{% endif %}" }
+    { "id": "wrong_table_value", "desc": "Неверно определил табличное значение арккосинуса (перепутал sqrt(2)/2 с 1/2 или sqrt(3)/2), взяв не тот главный угол.", "transform": "{% set nt = value == '0.7' %}{% set neg = value == '-sqrt(2)/2' %}{% if nt %}{% set awrong = 'arcsin(0.7)' if freq == 1 else 'arcsin(0.7)/' ~ freq %}{% elif neg %}{% set awrong = 'pi/' ~ (6 * freq) %}{% else %}{% set awrong = 'pi/' ~ (3 * freq) %}{% endif %}{% if freq % 2 == 0 %}{% set pd = freq // 2 %}{% set per = 'pi*n' if pd == 1 else 'pi*n/' ~ pd %}{% else %}{% set per = '2pi*n' if freq == 1 else '2pi*n/' ~ freq %}{% endif %}x = ± {{ awrong }} + {{ per }}" },
+    { "id": "angle_not_divided", "desc": "Поделил на k период, но забыл поделить сам главный угол (оставил arccos(a) вместо arccos(a)/k).", "transform": "{% set nt = value == '0.7' %}{% set neg = value == '-sqrt(2)/2' %}{% if nt %}{% set afull = 'arccos(0.7)' %}{% elif neg %}{% set afull = '3pi/4' %}{% else %}{% set afull = 'pi/4' %}{% endif %}{% if freq % 2 == 0 %}{% set pd = freq // 2 %}{% set per = 'pi*n' if pd == 1 else 'pi*n/' ~ pd %}{% else %}{% set per = '2pi*n' if freq == 1 else '2pi*n/' ~ freq %}{% endif %}{% if freq > 1 %}x = ± {{ afull }} + {{ per }}{% else %}{{ 1/0 }}{% endif %}" },
+    { "id": "wrong_negative_transform", "desc": "При отрицательном a вынес минус перед арккосинусом вместо формулы arccos(a) = pi - arccos(|a|), получив pi/(4k) вместо 3pi/(4k).", "transform": "{% set neg = value == '-sqrt(2)/2' %}{% if freq % 2 == 0 %}{% set pd = freq // 2 %}{% set per = 'pi*n' if pd == 1 else 'pi*n/' ~ pd %}{% else %}{% set per = '2pi*n' if freq == 1 else '2pi*n/' ~ freq %}{% endif %}{% if neg %}x = ± {{ 'pi/' ~ (4 * freq) }} + {{ per }}{% else %}{{ 1/0 }}{% endif %}" },
+    { "id": "wrong_division", "desc": "Выражая x из k*x, разделил на k только главный угол, но забыл разделить период (оставил 2*pi*n).", "transform": "{% set nt = value == '0.7' %}{% set neg = value == '-sqrt(2)/2' %}{% if nt %}{% set ang = 'arccos(0.7)/' ~ freq %}{% else %}{% set c = 3 if neg else 1 %}{% set d = 4 * freq %}{% if c == 3 and d % 3 == 0 %}{% set c = 1 %}{% set d = d // 3 %}{% endif %}{% set ang = ('pi/' ~ d) if c == 1 else (c ~ 'pi/' ~ d) %}{% endif %}{% if freq > 1 %}x = ± {{ ang }} + 2pi*n{% else %}{{ 1/0 }}{% endif %}" },
+    { "id": "dropped_pm_sign", "desc": "Записал только одно семейство решений (+), потеряв вторую ветвь (-) формулы ±arccos.", "transform": "{% set nt = value == '0.7' %}{% set neg = value == '-sqrt(2)/2' %}{% if nt %}{% set ang = 'arccos(0.7)' if freq == 1 else 'arccos(0.7)/' ~ freq %}{% else %}{% set c = 3 if neg else 1 %}{% set d = 4 * freq %}{% if c == 3 and d % 3 == 0 %}{% set c = 1 %}{% set d = d // 3 %}{% endif %}{% set ang = ('pi/' ~ d) if c == 1 else (c ~ 'pi/' ~ d) %}{% endif %}{% if freq % 2 == 0 %}{% set pd = freq // 2 %}{% set per = 'pi*n' if pd == 1 else 'pi*n/' ~ pd %}{% else %}{% set per = '2pi*n' if freq == 1 else '2pi*n/' ~ freq %}{% endif %}x = {{ ang }} + {{ per }}" },
+    { "id": "wrong_period", "desc": "Перепутал период косинуса: взял базовый pi*n вместо 2*pi*n (после деления на k это pi*n/k вместо 2*pi*n/k).", "transform": "{% set nt = value == '0.7' %}{% set neg = value == '-sqrt(2)/2' %}{% if nt %}{% set ang = 'arccos(0.7)' if freq == 1 else 'arccos(0.7)/' ~ freq %}{% else %}{% set c = 3 if neg else 1 %}{% set d = 4 * freq %}{% if c == 3 and d % 3 == 0 %}{% set c = 1 %}{% set d = d // 3 %}{% endif %}{% set ang = ('pi/' ~ d) if c == 1 else (c ~ 'pi/' ~ d) %}{% endif %}{% set per_wrong = 'pi*n' if freq == 1 else 'pi*n/' ~ freq %}x = ± {{ ang }} + {{ per_wrong }}" },
+    { "id": "dropped_period", "desc": "Потерял общий член семейства решений (+ период), записав лишь главные значения.", "transform": "{% set nt = value == '0.7' %}{% set neg = value == '-sqrt(2)/2' %}{% if nt %}{% set ang = 'arccos(0.7)' if freq == 1 else 'arccos(0.7)/' ~ freq %}{% else %}{% set c = 3 if neg else 1 %}{% set d = 4 * freq %}{% if c == 3 and d % 3 == 0 %}{% set c = 1 %}{% set d = d // 3 %}{% endif %}{% set ang = ('pi/' ~ d) if c == 1 else (c ~ 'pi/' ~ d) %}{% endif %}x = ± {{ ang }}" }
   ],
 
   "narrative_settings": [

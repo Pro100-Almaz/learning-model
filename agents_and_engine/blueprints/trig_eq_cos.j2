@@ -1,10 +1,9 @@
-{#- The ORIGINAL equation is  coefficient * cos(inner) = coefficient*value.
+{#- The ORIGINAL equation is  coefficient * cos(freq*x) = coefficient*value.
     `value` is the RHS AFTER dividing by the coefficient (the 'a' in cos = a), so the
-    original RHS is the product coefficient*value — precomputed below for all 8 combos
-    to keep the rendered numbers exact. The student must divide back to cos(inner)=a,
-    solve, then express x from the inner argument. -#}
+    original RHS is the product coefficient*value — precomputed below for all combos
+    to keep the rendered numbers exact. The student must divide back to cos(freq*x)=a,
+    solve, then express x by dividing the angle AND the period by freq. -#}
 {%- set coefL = {'2': '2', 'sqrt(2)': '\\sqrt{2}'} -%}
-{%- set innerL = {'x': 'x', '2x': '2x', 'x/3 - pi/6': '\\frac{x}{3} - \\frac{\\pi}{6}'} -%}
 {%- set valL = {'1': '1', 'sqrt(2)/2': '\\frac{\\sqrt{2}}{2}', '-sqrt(2)/2': '-\\frac{\\sqrt{2}}{2}', '0.7': '0{,}7'} -%}
 {%- set rhs = {
   '2|1': '2', '2|sqrt(2)/2': '\\sqrt{2}', '2|-sqrt(2)/2': '-\\sqrt{2}', '2|0.7': '1{,}4',
@@ -12,8 +11,9 @@
 } -%}
 {%- set is_special = value in ['1', '0', '-1'] -%}
 {%- set is_negative = value.startswith('-') -%}
+{%- set innerLatex = 'x' if freq == 1 else (freq ~ 'x') -%}
 PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
-- Equation: {{ coefL[coefficient] }}\cos\left({{ innerL[inner_func] }}\right) = {{ rhs[coefficient ~ '|' ~ value] }}
+- Equation: {{ coefL[coefficient] }}\cos\left({{ innerLatex }}\right) = {{ rhs[coefficient ~ '|' ~ value] }}
 - Ask the student to find every value of x that satisfies this equation (the general solution).
 
 === INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
@@ -25,10 +25,9 @@ PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly
     'a is NEGATIVE — get the argument from x = ±(pi - arccos(|a|)) + 2*pi*n, NOT by pulling a minus out in front of arccos'
     if is_negative else
     'use the general formula: argument = ±arccos(a) + 2*pi*n' }}.
-{% if inner_func != 'x' -%}
-- The argument is not a bare x: after solving for the argument, express x by MULTIPLYING
-  by the reciprocal of the inner coefficient (do NOT divide the whole right-hand side as
-  a single fraction).
+{% if freq != 1 -%}
+- The argument is not a bare x: after solving for the argument, divide the WHOLE solution
+  (both the angle and the period 2*pi*n) by the inner coefficient k={{ freq }}.
 {% endif -%}
 - Render all math as LaTeX inside $...$.
 - Do NOT state or hint at the answer: the solution set for x must NOT be given to the student.
