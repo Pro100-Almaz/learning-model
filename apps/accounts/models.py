@@ -23,6 +23,11 @@ class StudentProfile(models.Model):
         related_name="target_profiles",
     )
     target_score = models.PositiveIntegerField(null=True, blank=True)
+    subjects = models.ManyToManyField(
+        "content.Subject",
+        related_name="students",
+        blank=True,
+    )
     onboarding_completed = models.BooleanField(default=False)
 
     def __str__(self) -> str:
@@ -35,7 +40,11 @@ class ExpectedScore(models.Model):
         on_delete=models.CASCADE,
         related_name="expected_scores",
     )
-    subject = models.CharField(max_length=64)
+    subject = models.ForeignKey(
+        "content.Subject",
+        on_delete=models.CASCADE,
+        related_name="expected_scores",
+    )
     score = models.PositiveIntegerField()
 
     class Meta:

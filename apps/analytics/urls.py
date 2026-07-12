@@ -5,7 +5,7 @@ Mounted under /api/v1/analytics/ by conf/urls.py.
 
 from django.urls import path
 
-from .views import RecommendationsView, TagStatsView
+from apps.analytics.views import RecommendationsView, TagStatsView
 
 app_name = "analytics"
 

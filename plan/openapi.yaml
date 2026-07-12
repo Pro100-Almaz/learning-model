@@ -179,6 +179,17 @@ paths:
     get:
       tags: [Content]
       summary: List modules
+      parameters:
+        - name: subject
+          in: query
+          required: false
+          description: Filter by subject slug (e.g. profile_math)
+          schema: { type: string }
+        - name: class_grade
+          in: query
+          required: false
+          description: Filter by class grade (e.g. 11)
+          schema: { type: integer }
       responses:
         "200":
           description: OK
@@ -475,6 +486,10 @@ components:
         target_university: { type: [integer, "null"] }
         target_specialty: { type: [integer, "null"] }
         target_score: { type: [integer, "null"] }
+        subjects:
+          type: array
+          description: Subject slugs the student is studying
+          items: { type: string }
         onboarding_completed: { type: boolean }
         expected_scores:
           type: array
@@ -486,6 +501,10 @@ components:
         target_university: { type: [integer, "null"] }
         target_specialty: { type: [integer, "null"] }
         target_score: { type: [integer, "null"] }
+        subjects:
+          type: array
+          description: Subject slugs the student is studying
+          items: { type: string }
         expected_scores:
           type: array
           items: { $ref: "#/components/schemas/ExpectedScore" }
@@ -505,6 +524,7 @@ components:
         slug: { type: string }
         order: { type: integer }
         subject: { type: string, enum: [math_literacy, profile_math] }
+        class_grade: { type: integer }
         lesson_count: { type: integer }
 
     ModuleDetail:

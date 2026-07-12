@@ -23,7 +23,7 @@ from rest_framework.exceptions import NotFound, ValidationError
 
 from apps.content.models import Lesson, Tag
 
-from .models import (
+from apps.assessments.models import (
     AnswerOption,
     AttemptAnswer,
     Question,

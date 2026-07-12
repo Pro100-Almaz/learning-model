@@ -59,6 +59,9 @@ class AnswerOption(models.Model):
 
 
 class Test(models.Model):
+    # Not a pytest test case — silence its Test*-name collection warning.
+    __test__ = False
+
     TYPE_CHOICES = [
         ("micro", "Micro"),
         ("mock", "Mock"),
@@ -86,6 +89,9 @@ class Test(models.Model):
 
 
 class TestQuestion(models.Model):
+    # Not a pytest test case — silence its Test*-name collection warning.
+    __test__ = False
+
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     order = models.PositiveIntegerField(default=0)
@@ -102,6 +108,10 @@ class TestAttempt(models.Model):
     # Where this attempt came from. Test-based flows leave the default; the
     # chapter ladder (07_Chapter_Ladder_Spec.md) picks questions dynamically, so
     # its attempts carry source="ladder" with a NULL test (no synthetic Test row).
+
+    # Not a pytest test case — silence its Test*-name collection warning.
+    __test__ = False
+
     SOURCE_CHOICES = [
         ("test", "Test"),
         ("ladder", "Chapter ladder"),

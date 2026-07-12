@@ -9,6 +9,7 @@ from rest_framework.test import APITestCase
 
 from apps.accounts.models import ExpectedScore, StudentProfile
 from apps.careers.models import GrantThreshold, Specialty, University
+from apps.content.models import Subject
 
 
 class ProfileViewTests(APITestCase):
@@ -20,6 +21,9 @@ class ProfileViewTests(APITestCase):
             first_name="Aigerim",
         )
         cls.url = reverse("v1:accounts:profile")
+        # Subjects the expected-score payloads reference (by slug).
+        Subject.objects.create(name="История Казахстана", slug="history-of-kazakhstan")
+        Subject.objects.create(name="Грамотность чтения", slug="reading-literacy")
         cls.uni = University.objects.create(
             name="KBTU", city="Almaty", code="kbtu"
         )
@@ -40,6 +44,35 @@ class ProfileViewTests(APITestCase):
         self.assertIn("expected_scores", body)
         self.assertFalse(body["onboarding_completed"])
         self.assertEqual(body["expected_scores"], [])
+        self.assertEqual(body["subjects"], [])
+
+    def test_patch_sets_studied_subjects(self):
+        self.client.force_authenticate(self.user)
+        Subject.objects.create(name="Профильная математика", slug="profile_math")
+        Subject.objects.create(name="Мат. грамотность", slug="math_literacy")
+
+        # Studied subjects are derived from the expected_scores payload;
+        # each entry's "subject" is the subject slug.
+        response = self.client.patch(
+            self.url,
+            {
+                "expected_scores": [
+                    {"subject": "profile_math", "score": 30},
+                    {"subject": "math_literacy", "score": 25},
+                ]
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            sorted(response.json()["subjects"]),
+            ["math_literacy", "profile_math"],
+        )
+        profile = StudentProfile.objects.get(user=self.user)
+        self.assertEqual(
+            set(profile.subjects.values_list("slug", flat=True)),
+            {"profile_math", "math_literacy"},
+        )
 
     def test_patch_updates_targets_and_flips_onboarding(self):
         self.client.force_authenticate(self.user)
@@ -48,8 +81,8 @@ class ProfileViewTests(APITestCase):
             "target_specialty": self.spec.id,
             "target_score": 120,
             "expected_scores": [
-                {"subject": "История Казахстана", "score": 18},
-                {"subject": "Грамотность чтения", "score": 17},
+                {"subject": "history-of-kazakhstan", "score": 18},
+                {"subject": "reading-literacy", "score": 17},
             ],
         }
         response = self.client.patch(self.url, payload, format="json")
@@ -64,10 +97,10 @@ class ProfileViewTests(APITestCase):
         subjects = set(
             ExpectedScore.objects.filter(
                 profile__user=self.user
-            ).values_list("subject", flat=True)
+            ).values_list("subject__slug", flat=True)
         )
         self.assertEqual(
-            subjects, {"История Казахстана", "Грамотность чтения"}
+            subjects, {"history-of-kazakhstan", "reading-literacy"}
         )
 
     def test_patch_partial_does_not_flip_onboarding(self):
@@ -85,8 +118,8 @@ class ProfileViewTests(APITestCase):
             self.url,
             {
                 "expected_scores": [
-                    {"subject": "История Казахстана", "score": 18},
-                    {"subject": "Грамотность чтения", "score": 17},
+                    {"subject": "history-of-kazakhstan", "score": 18},
+                    {"subject": "reading-literacy", "score": 17},
                 ]
             },
             format="json",
@@ -96,7 +129,7 @@ class ProfileViewTests(APITestCase):
             self.url,
             {
                 "expected_scores": [
-                    {"subject": "История Казахстана", "score": 19},
+                    {"subject": "history-of-kazakhstan", "score": 19},
                 ]
             },
             format="json",
@@ -105,9 +138,9 @@ class ProfileViewTests(APITestCase):
         subjects = list(
             ExpectedScore.objects.filter(
                 profile__user=self.user
-            ).values_list("subject", "score")
+            ).values_list("subject__slug", "score")
         )
-        self.assertEqual(subjects, [("История Казахстана", 19)])
+        self.assertEqual(subjects, [("history-of-kazakhstan", 19)])
 
     def test_get_requires_auth(self):
         response = self.client.get(self.url)

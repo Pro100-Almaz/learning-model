@@ -1,10 +1,9 @@
-"""Tests for the content app endpoints (T-101).
+"""Tests for the content app endpoints.
 
-Covers:
-- GET /api/v1/modules/        : list shape + lesson_count
-- GET /api/v1/modules/{id}/   : detail with nested lessons[] + completion
-- GET /api/v1/lessons/{id}/   : detail with micro_test_id resolved
-- 404 envelope on missing lesson
+Aligned with the mobile-reworked contract on the `endpoints` branch:
+- GET /api/v1/classes/{class_grade_id}/ : modules for a class grade
+- GET /api/v1/modules/{module_id}/      : lessons for a module (flat list)
+- GET /api/v1/lessons/{lesson_id}/      : full lesson detail + micro_test_id
 - Auth enforcement
 """
 
@@ -16,8 +15,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from apps.assessments.models import Test as AssessmentTest
-from apps.assessments.models import TestAttempt as AssessmentAttempt
-from apps.content.models import Lesson, Module
+from apps.content.models import ClassGrade, Lesson, Module, Subject
 
 
 class ModuleListTests(APITestCase):
@@ -27,18 +25,24 @@ class ModuleListTests(APITestCase):
             email="student@example.com",
             password="testpassword123",
         )
-        cls.url = reverse("v1:modules:module-list")
+        cls.subject = Subject.objects.create(
+            name="Профильная математика", slug="profile_math"
+        )
+        cls.grade = ClassGrade.objects.create(grade=11, subject=cls.subject)
+        cls.url = reverse(
+            "v1:classes:module-list", kwargs={"class_grade_id": cls.grade.id}
+        )
         cls.module_a = Module.objects.create(
             title="Алгебра",
             slug="algebra",
             order=1,
-            subject="profile_math",
+            class_grade=cls.grade,
         )
         cls.module_b = Module.objects.create(
             title="Геометрия",
             slug="geometry",
             order=2,
-            subject="profile_math",
+            class_grade=cls.grade,
         )
         Lesson.objects.create(
             module=cls.module_a,
@@ -67,104 +71,117 @@ class ModuleListTests(APITestCase):
         self.assertEqual(len(response.data), 2)
 
         first = response.data[0]
-        expected_keys = {"id", "title", "slug", "order", "subject", "lesson_count"}
+        expected_keys = {
+            "id",
+            "title",
+            "slug",
+            "order",
+            "class_grade_id",
+            "lessons",
+            "description",
+            "done",
+            "progress",
+        }
         self.assertEqual(set(first.keys()), expected_keys)
 
-        # Ordered by `order`
+        # Ordered by `order`; `lessons` is the denormalized lesson count.
         self.assertEqual(first["slug"], "algebra")
-        self.assertEqual(first["lesson_count"], 2)
+        self.assertEqual(first["lessons"], 2)
         self.assertEqual(response.data[1]["slug"], "geometry")
-        self.assertEqual(response.data[1]["lesson_count"], 0)
+        self.assertEqual(response.data[1]["lessons"], 0)
+
+    def test_list_filters_by_class_grade(self):
+        # A module in a different subject + grade that must be filtered out.
+        other_subject = Subject.objects.create(
+            name="Мат. грамотность", slug="math_literacy"
+        )
+        other_grade = ClassGrade.objects.create(grade=10, subject=other_subject)
+        Module.objects.create(
+            title="Функции",
+            slug="functions",
+            order=3,
+            class_grade=other_grade,
+        )
+        self.client.force_authenticate(user=self.user)
+
+        # This grade returns only its own modules.
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        slugs = {row["slug"] for row in response.data}
+        self.assertEqual(slugs, {"algebra", "geometry"})
+
+        # The other grade returns only the grade-10 module.
+        other_url = reverse(
+            "v1:classes:module-list", kwargs={"class_grade_id": other_grade.id}
+        )
+        response = self.client.get(other_url)
+        self.assertEqual([r["slug"] for r in response.data], ["functions"])
 
 
-class ModuleDetailTests(APITestCase):
+class ModuleLessonsListTests(APITestCase):
+    """GET /api/v1/modules/{module_id}/ returns the module's lessons."""
+
     @classmethod
     def setUpTestData(cls):
         cls.user = get_user_model().objects.create_user(
             email="student@example.com",
             password="testpassword123",
         )
+        cls.subject = Subject.objects.create(
+            name="Профильная математика", slug="profile_math"
+        )
+        cls.grade = ClassGrade.objects.create(grade=11, subject=cls.subject)
         cls.module = Module.objects.create(
             title="Алгебра",
             slug="algebra",
             order=1,
-            subject="profile_math",
+            class_grade=cls.grade,
         )
-        cls.lesson_done = Lesson.objects.create(
+        cls.lesson_first = Lesson.objects.create(
             module=cls.module,
             title="Логарифмы",
             video_url="https://youtu.be/abc",
             duration_sec=300,
             order=1,
         )
-        cls.lesson_pending = Lesson.objects.create(
+        cls.lesson_second = Lesson.objects.create(
             module=cls.module,
             title="Степени",
             video_url="https://youtu.be/def",
             duration_sec=420,
             order=2,
         )
-        # Micro-test on lesson_done that the student already completed
-        cls.micro_test = AssessmentTest.objects.create(
-            type="micro",
-            title="Микро тест: Логарифмы",
-            lesson=cls.lesson_done,
-        )
-        AssessmentAttempt.objects.create(
-            student=cls.user,
-            test=cls.micro_test,
-            is_completed=True,
-        )
 
-    def test_detail_returns_module_with_lessons(self):
+    def test_returns_lessons_for_module(self):
         self.client.force_authenticate(user=self.user)
-        url = reverse("v1:modules:module-detail", kwargs={"id": self.module.id})
+        url = reverse("v1:modules:module-detail", kwargs={"module_id": self.module.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(response.data, list)
+        self.assertEqual(len(response.data), 2)
 
-        expected_keys = {
-            "id",
-            "title",
-            "slug",
-            "order",
-            "subject",
-            "lesson_count",
-            "lessons",
-        }
-        self.assertEqual(set(response.data.keys()), expected_keys)
-        self.assertEqual(response.data["lesson_count"], 2)
-
-        lessons = response.data["lessons"]
-        self.assertEqual(len(lessons), 2)
-        for lesson in lessons:
+        for lesson in response.data:
             self.assertEqual(
                 set(lesson.keys()),
-                {"id", "title", "order", "duration_sec", "completed"},
+                {"id", "title", "duration_sec", "module_id", "status", "progress"},
             )
 
-        # lesson_done is completed; lesson_pending is not
-        by_id = {item["id"]: item for item in lessons}
-        self.assertTrue(by_id[self.lesson_done.id]["completed"])
-        self.assertFalse(by_id[self.lesson_pending.id]["completed"])
+        # Ordered by `order`.
+        self.assertEqual(response.data[0]["id"], self.lesson_first.id)
+        self.assertEqual(response.data[1]["id"], self.lesson_second.id)
+        self.assertEqual(response.data[0]["module_id"], self.module.id)
 
-    def test_detail_completion_isolated_per_user(self):
-        other = get_user_model().objects.create_user(
-            email="other@example.com",
-            password="testpassword123",
-        )
-        self.client.force_authenticate(user=other)
-        url = reverse("v1:modules:module-detail", kwargs={"id": self.module.id})
+    def test_unknown_module_returns_empty_list(self):
+        self.client.force_authenticate(user=self.user)
+        url = reverse("v1:modules:module-detail", kwargs={"module_id": 99999})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        for lesson in response.data["lessons"]:
-            self.assertFalse(lesson["completed"])
+        self.assertEqual(response.data, [])
 
-    def test_detail_missing_module_404(self):
-        self.client.force_authenticate(user=self.user)
-        url = reverse("v1:modules:module-detail", kwargs={"id": 99999})
+    def test_requires_auth(self):
+        url = reverse("v1:modules:module-detail", kwargs={"module_id": self.module.id})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        self.assertIn("detail", response.data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class LessonDetailTests(APITestCase):
@@ -174,11 +191,15 @@ class LessonDetailTests(APITestCase):
             email="student@example.com",
             password="testpassword123",
         )
+        cls.subject = Subject.objects.create(
+            name="Профильная математика", slug="profile_math"
+        )
+        cls.grade = ClassGrade.objects.create(grade=11, subject=cls.subject)
         cls.module = Module.objects.create(
             title="Алгебра",
             slug="algebra",
             order=1,
-            subject="profile_math",
+            class_grade=cls.grade,
         )
         cls.lesson = Lesson.objects.create(
             module=cls.module,
@@ -210,7 +231,7 @@ class LessonDetailTests(APITestCase):
 
     def test_lesson_detail_returns_micro_test_id(self):
         self.client.force_authenticate(user=self.user)
-        url = reverse("v1:lessons:lesson-detail", kwargs={"id": self.lesson.id})
+        url = reverse("v1:lessons:lesson-detail", kwargs={"lesson_id": self.lesson.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
@@ -218,11 +239,15 @@ class LessonDetailTests(APITestCase):
             {
                 "id",
                 "title",
+                "duration_sec",
+                "module_id",
+                "status",
+                "progress",
                 "description",
                 "video_url",
                 "video_provider",
-                "duration_sec",
                 "micro_test_id",
+                "tag",
             },
         )
         self.assertEqual(response.data["micro_test_id"], self.micro_test.id)
@@ -231,7 +256,7 @@ class LessonDetailTests(APITestCase):
     def test_lesson_detail_micro_test_id_null_when_absent(self):
         self.client.force_authenticate(user=self.user)
         url = reverse(
-            "v1:lessons:lesson-detail", kwargs={"id": self.lesson_no_test.id}
+            "v1:lessons:lesson-detail", kwargs={"lesson_id": self.lesson_no_test.id}
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -239,14 +264,12 @@ class LessonDetailTests(APITestCase):
 
     def test_lesson_detail_404_shape(self):
         self.client.force_authenticate(user=self.user)
-        url = reverse("v1:lessons:lesson-detail", kwargs={"id": 99999})
+        url = reverse("v1:lessons:lesson-detail", kwargs={"lesson_id": 99999})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        # Error envelope: contract says { "detail": "...", "code": "..." } but
-        # DRF's default 404 ships at least "detail" — that's what's wired here.
         self.assertIn("detail", response.data)
 
     def test_lesson_detail_requires_auth(self):
-        url = reverse("v1:lessons:lesson-detail", kwargs={"id": self.lesson.id})
+        url = reverse("v1:lessons:lesson-detail", kwargs={"lesson_id": self.lesson.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

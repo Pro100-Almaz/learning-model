@@ -5,8 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import RecommendationSerializer, TagStatSerializer
-from .services import compute_recommendations, compute_tag_stats
+from apps.analytics.serializers import RecommendationSerializer, TagStatSerializer
+from apps.analytics.services import compute_recommendations, compute_tag_stats
 
 
 class TagStatsView(APIView):

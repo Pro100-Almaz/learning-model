@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import TestDetailView
+from apps.assessments.views import TestDetailView
 
 app_name = "tests"
 

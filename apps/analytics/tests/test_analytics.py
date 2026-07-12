@@ -21,16 +21,20 @@ from apps.assessments.models import (
     TestAttempt,
     TestQuestion,
 )
-from apps.content.models import Lesson, Module, Tag
+from apps.content.models import ClassGrade, Lesson, Module, Subject, Tag
 from apps.users.models import CustomUser as User
 
 
 def _make_module(order: int = 0) -> Module:
+    subject, _ = Subject.objects.get_or_create(
+        slug="profile_math", defaults={"name": "Профильная математика"}
+    )
+    grade, _ = ClassGrade.objects.get_or_create(grade=11, subject=subject)
     return Module.objects.create(
         title=f"Module {order}",
         slug=f"module-{order}",
         order=order,
-        subject="profile_math",
+        class_grade=grade,
     )
 
 

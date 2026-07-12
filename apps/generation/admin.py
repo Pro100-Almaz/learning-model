@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import GenerationJob, GenerationStep
+from apps.generation.models import GenerationJob, GenerationStep
 
 
 class GenerationStepInline(admin.TabularInline):
