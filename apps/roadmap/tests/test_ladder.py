@@ -70,6 +70,25 @@ def _drive(student, module, outcomes):
     return session, served
 
 
+def _drive_moves(student, module, moves):
+    """Like ``_drive`` but each move is ``1`` (correct), ``0`` (wrong), or the
+    string ``"idk"`` ("I don't know"). Stops when the ladder resolves or ``moves``
+    runs out; returns ``(session, served_difficulties)``."""
+    session = ladder.start_ladder(student, module)
+    served = []
+    for move in moves:
+        question = ladder.next_question(session)
+        if question is None:
+            break
+        served.append(question.difficulty)
+        if move == "idk":
+            ladder.record_answer(session, question.id, dont_know=True)
+        else:
+            option = question.options.filter(is_correct=(move == 1)).first()
+            ladder.record_answer(session, question.id, option.id)
+    return session, served
+
+
 def _verdict(session, tag) -> str:
     return session.state["per_topic"][str(tag.id)]["verdict"]
 
@@ -171,6 +190,50 @@ class LadderStateMachineTests(APITestCase):
         session, _ = _drive(self.user, module, [1, 0])
         self.assertTrue(session.is_complete)
         self.assertIsNone(ladder.next_question(session))
+
+
+class LadderDontKnowTests(APITestCase):
+    """"I don't know" abstention — steps down like a wrong answer (the verdict
+    falls out of the same rung machine) but leaves the student's theta untouched."""
+
+    def setUp(self):
+        self.user = User.objects.create_user(email=_uniq("u") + "@x.io", password="x")
+
+    @override_settings(LADDER_CONFIRM=False)
+    def test_idk_at_hard_accepts_solid(self):
+        module, tag = _make_module()
+        # medium✓ steps up to hard; "I don't know" there → accept the cleared level.
+        session, served = _drive_moves(self.user, module, [1, "idk"])
+        self.assertEqual(served, [2, 3])
+        self.assertEqual(_verdict(session, tag), "solid")
+
+    def test_idk_at_medium_serves_easy_next(self):
+        module, tag = _make_module()
+        # "I don't know" at the medium start rung steps down and poses easy.
+        session, served = _drive_moves(self.user, module, ["idk", 1])
+        self.assertEqual(served, [2, 1])
+
+    def test_idk_at_easy_is_a_gap(self):
+        module, tag = _make_module()
+        # medium abstain → easy; abstain again at the bottom rung → gap.
+        session, served = _drive_moves(self.user, module, ["idk", "idk"])
+        self.assertEqual(served, [2, 1])
+        self.assertEqual(_verdict(session, tag), "gap")
+
+    @override_settings(LADDER_CONFIRM=False)
+    def test_idk_does_not_move_theta(self):
+        module, tag = _make_module()
+        # medium✓ writes one mastery update; the hard "I don't know" writes none.
+        _drive_moves(self.user, module, [1, "idk"])
+        row = StudentTopicMastery.objects.get(student=self.user, tag=tag)
+        self.assertEqual(row.n_observations, 1)
+
+    def test_idk_records_an_answer_with_no_option(self):
+        module, tag = _make_module()
+        session, _ = _drive_moves(self.user, module, ["idk", "idk"])
+        ans = session.attempt.answers.order_by("id").first()
+        self.assertIsNone(ans.selected_option)
+        self.assertFalse(ans.is_correct)
 
 
 class LadderSkipOnPriorTests(APITestCase):
@@ -345,3 +408,45 @@ class LadderEndpointTests(APITestCase):
             format="json",
         )
         self.assertEqual(resp2.status_code, 400)
+
+    def test_next_accepts_dont_know_without_option(self):
+        module, tag = _make_module()
+        data = self.client.post(self._start_url(module)).json()
+        q = Question.objects.get(pk=data["question"]["id"])  # medium start rung
+        resp = self.client.post(
+            self.NEXT_URL,
+            {"session_id": data["session_id"], "question_id": q.id, "dont_know": True},
+            format="json",
+        )
+        self.assertEqual(resp.status_code, 200)
+        # Abstaining at medium steps down: the next question is easy (d1).
+        next_q = Question.objects.get(pk=resp.json()["question"]["id"])
+        self.assertEqual(next_q.difficulty, 1)
+
+    def test_next_rejects_dont_know_with_option(self):
+        module, tag = _make_module()
+        data = self.client.post(self._start_url(module)).json()
+        q = Question.objects.get(pk=data["question"]["id"])
+        option = q.options.filter(is_correct=True).first()
+        resp = self.client.post(
+            self.NEXT_URL,
+            {
+                "session_id": data["session_id"],
+                "question_id": q.id,
+                "option_id": option.id,
+                "dont_know": True,
+            },
+            format="json",
+        )
+        self.assertEqual(resp.status_code, 400)
+
+    def test_next_rejects_neither_option_nor_dont_know(self):
+        module, tag = _make_module()
+        data = self.client.post(self._start_url(module)).json()
+        q = Question.objects.get(pk=data["question"]["id"])
+        resp = self.client.post(
+            self.NEXT_URL,
+            {"session_id": data["session_id"], "question_id": q.id},
+            format="json",
+        )
+        self.assertEqual(resp.status_code, 400)

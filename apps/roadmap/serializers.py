@@ -112,6 +112,26 @@ class LadderStepSerializer(serializers.Serializer):
 
 
 class LadderNextInputSerializer(serializers.Serializer):
+    """One ladder answer: either a chosen option, or an "I don't know" abstention.
+
+    Exactly one of ``option_id`` / ``dont_know`` must be supplied. ``dont_know``
+    steps the ladder down like a wrong answer (the verdict falls out of the same
+    rung machine) but does not move the student's mastery ``theta``.
+    """
+
     session_id = serializers.IntegerField()
     question_id = serializers.IntegerField()
-    option_id = serializers.IntegerField()
+    option_id = serializers.IntegerField(required=False)
+    dont_know = serializers.BooleanField(required=False, default=False)
+
+    def validate(self, attrs):
+        if attrs.get("dont_know"):
+            if attrs.get("option_id") is not None:
+                raise serializers.ValidationError(
+                    {"option_id": "omit option_id when dont_know is true"}
+                )
+        elif attrs.get("option_id") is None:
+            raise serializers.ValidationError(
+                {"option_id": "required unless dont_know is true"}
+            )
+        return attrs

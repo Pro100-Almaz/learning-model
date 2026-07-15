@@ -1,36 +1,19 @@
-'''
-Structures of the output for agent 1
-'''
-
-from __future__ import annotations
 from pydantic import BaseModel, Field
+from typing import Optional
 
-class HarvestedSource(BaseModel):
-    url: str
-    raw_text: str
-    fetched_at: str = Field(description = "ISO-8601 UTC timestamp of the fetch")
-    reachable: bool = Field(description = "True only if the fetch returned page content; False for dead link/timeout/empty.")
+class WebSearch(BaseModel):
+    ubt_score: Optional[int] = Field(ge = 0, le = 140, default = None, description = "The minimum threshold score required for this profession on the "
+                                                                     "Kazakhstan Unified National Testing (ҰБТ/UNT). Must be a valid whole number "
+                                                                     "between 0 and 140. Set to null if a specific score threshold is not defined.")
 
-class HarvestResult(BaseModel):
-    specialty_code: str
-    sources: list[HarvestedSource]
+    subjects: list[str] = Field(default_factory = list, description = "A structured list of elective high school subjects (e.g., ['Mathematics', 'Physics']) "
+                                                                           "required or highly recommended to qualify for this profession's academic track. "
+                                                                           "Defaults to an empty list.")
 
-class Provenance(BaseModel):
-    value: str | float | None = Field(description = "The extracted value, or Null if absent")
-    as_of: int | None = Field(description = "Year the value applies to, None if absent")
-    carried_forward: bool = Field(default = False, description = "Always False at extraction")
+    universities: list[str] = Field(default_factory = list, description = "A list of accredited higher education institutions (universities or academies) "
+                                                                               "offering specialized degree programs or majors corresponding to this profession. "
+                                                                               "Defaults to an empty list.")
 
-class University(BaseModel):
-    name: Provenance
-    passing_score: Provenance
-    tuition: Provenance
-
-class SpecialtyDocument(BaseModel):
-    specialty_code: str
-    field: Provenance
-    subject_combination: Provenance
-    threshold: Provenance
-    universities: list[University]
-    professions: list[Provenance]
-    source_year_confidence: str = Field(description = "'low' when year is inferred, else 'high'")
-
+    sources: list[str] = Field(default_factory = list, description = "A collection of exact, fully qualified URLs or reliable reference names "
+                                                                          "visited by the search agent while looking up details for this profession. "
+                                                                          "Used for validation and citation back-tracking. Defaults to an empty list.")

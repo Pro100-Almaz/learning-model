@@ -1,61 +1,115 @@
-from __future__ import annotations
+"""Prompts that steer the two web-harvesting agents.
 
-HARVESTER_SYSTEM = (
-      "You research ONE Kazakhstani higher-education specialty. Use only the "
-      "`web_search` and `fetch_url` tools provided — never rely on prior "
-      "knowledge for facts.\n"
-      "- You may fetch ONLY from the allowlisted hosts you are given. Never fetch "
-      "any other host; the fetch tool will refuse it anyway.\n"
-      "- Find, for the CURRENT admission cycle: the ҰБТ/UNT subject-combination, "
-      "the threshold score, the state-grant (грант) count, and the universities "
-      "that offer the specialty (with passing score and tuition).\n"
-      "- Capture the RAW page text of each source. Do NOT summarize, translate, "
-      "reformat, or interpret it — later stages handle that.\n"
-      "- Prefer Tier-1 official sources; use university sites to fill gaps.\n"
-      "- Report each source with its URL and whether the fetch returned content."
-  )
+This module holds only *behaviour* — role, grounding rules, and how each agent
+should act. The *structure* of the extractor's output lives in ``schemas.py``
+(the ``WebSearch`` model); we deliberately do not restate that JSON shape here,
+so the schema stays the single source of truth.
 
-def build_harvester_prompt(specialty_code: str, allowed: frozenset[str]) -> str:
-    hosts = ", ".join(sorted(allowed))
+Design:
+  * The system prompts are static constants (reusable, testable, cache-friendly).
+  * The per-profession variable parts (name, national code, fetched page text)
+    are injected at call time via the ``build_*_input`` helpers, which produce
+    the user message the agent code in ``agents_web.py`` sends alongside the
+    system prompt.
+
+Trust is NOT decided by either agent. Neither prompt asks the model to judge a
+source's credibility — that is a code policy enforced in ``trust.py``.
+"""
+
+# ---------------------------------------------------------------------------
+# Agent 1 — Search
+# ---------------------------------------------------------------------------
+SEARCH_SYSTEM_PROMPT = """\
+You are a research assistant that locates OFFICIAL sources of information about \
+a single profession in the Republic of Kazakhstan.
+
+For the profession you are given, your goal is to find web pages that state:
+  1. the ҰБТ / ЕНТ (Unified National Testing) entry threshold score for admission,
+  2. the profile / elective subjects required to enter this field of study,
+  3. the Kazakhstani universities or academies that offer programs for it.
+
+Rules:
+  - Use the web search tool. Do NOT answer from prior knowledge, and never \
+invent or guess a URL — only return links that actually appear in your search \
+results.
+  - Strongly prefer authoritative sources: the national testing centre \
+(testcenter.kz), government education portals (*.gov.kz, egov.kz), and the \
+official websites of real universities. Prefer these over blogs, forums, essay \
+mills, or commercial "career advice" aggregators.
+  - Kazakhstani sources are written in Kazakh and Russian; search and read in \
+those languages as well as English.
+  - Return a short, focused set of the most relevant candidate URLs (roughly the \
+best 3–6), not an exhaustive dump. Favour pages that clearly contain the score, \
+subjects, or university lists above.
+
+Return the candidate URLs you found. Downstream code will decide which of them \
+are trusted — your job is only to surface good official candidates.
+"""
+
+# ---------------------------------------------------------------------------
+# Agent 2 — Extractor
+# ---------------------------------------------------------------------------
+EXTRACTOR_SYSTEM_PROMPT = """\
+You extract structured facts about a single Kazakhstani profession from web \
+page text that is provided to you. You work ONLY from the supplied page \
+content — you are not browsing and you have no outside knowledge to add.
+
+Extract:
+  - the ҰБТ / ЕНТ entry threshold score,
+  - the required profile / elective subjects,
+  - the universities or academies that offer programs for this profession.
+
+Grounding rules (follow exactly):
+  - Every value MUST be supported by the supplied page text. If a fact is not \
+stated in the provided pages, leave it empty — return null for the score and an \
+empty list for subjects/universities. NEVER guess, infer, average, or estimate \
+a missing value.
+  - The score is a whole number on the ҰБТ scale (0–140). If the pages give a \
+range or several years, use the most clearly stated current admission threshold; \
+if none is clearly stated, return null.
+  - Include only subjects and universities that are explicitly named in the \
+pages. Do not add "obvious" ones from your own knowledge.
+  - In the ``sources`` field, list the EXACT URLs of the pages you actually drew \
+these facts from — nothing you did not use, and no invented links.
+  - The pages are mostly in Kazakh and Russian. Read them in any language. \
+Report subject and university names in Russian, using their standard official \
+names.
+
+Do NOT rate how trustworthy any source is and do NOT output a confidence level; \
+credibility is decided elsewhere. Report only the facts and the URLs you used.
+"""
+
+
+# ---------------------------------------------------------------------------
+# Per-profession user-message builders
+# ---------------------------------------------------------------------------
+def build_search_input(name: str, national_code: str) -> str:
+    """User message for the search agent: which profession to research."""
     return (
-        f"Research specialty: {specialty_code} "
-        f"You may only fetch from these hosts: {hosts} "
-        f"Find the current-cycle subject-combination, threshold score, "
-        f"grant count, and the universities that offer the specialty (with passing score)"
-    )
-
-EXTRACTOR_SYSTEM = (
-    "You convert RAW Kazakhstani university-admission source text into ONE "
-    "structured specialty document. Use ONLY the text provided — never add "
-    "facts from prior knowledge.\n"
-    "- Wrap EVERY value in the provenance envelope {value, as_of, carried_forward}. "
-    "Set carried_forward to false always. Set as_of to the year the value applies to.\n"
-    "- Read the year from the document's OWN title/headers. If you had to infer it, "
-    "set source_year_confidence to \"low\"; otherwise \"high\".\n"
-    "- Bilingual rule: Kazakh is canonical, Russian goes in parentheses. If only "
-    "ONE language is present, store it as-is and flag the missing side. "
-    "NEVER machine-translate.\n"
-    "- If a field is absent in the sources, set its value to null. Do NOT guess."
-)
-
-def build_extractor_prompt(specialty_code: str, sources: list) -> str:
-    blocks = "\n\n".join(
-        f"SOURCE: {s.url}\n{s.raw_text}" for s in sources if s.reachable
-    )
-    return (
-        f"Specialty code: {specialty_code}\n"
-        f"Extract field, subject_combination, threshold, grants, universities[] "
-        f"(name, passing_score, tuition) and professions[] from these sources: \n\n"
-        f"{blocks}"
+        f"Find official sources about this Kazakhstani profession.\n"
+        f"Profession: {name}\n"
+        f"National classifier code: {national_code}\n\n"
+        f"Locate pages stating its ҰБТ entry score, required profile subjects, "
+        f"and the universities that offer it."
     )
 
 
+def build_extractor_input(
+    name: str,
+    national_code: str,
+    pages: list[tuple[str, str]],
+) -> str:
+    """User message for the extractor agent.
 
-
-'''
-  If you'd rather lean fully on OpenAI JSON responses for Agent 1 too, there's a middle path: OpenAI's
-  Responses API offers a built-in web_search tool plus JSON structured output in the same call. The
-  catch is the allowlist — with the built-in search you don't control which URLs it fetches, so you'd
-  have to gate/verify hosts after the fact rather than before fetching (which is what Part 1 asks
-  for). That's the trade-off to weigh: less code vs. weaker pre-fetch enforcement.
-'''
+    ``pages`` is a list of ``(url, page_text)`` pairs — the already-fetched,
+    already-trust-filtered sources. Each page is labelled with its URL so the
+    agent can cite the exact URLs it used in the ``sources`` field.
+    """
+    header = (
+        f"Extract the facts for this profession using ONLY the page content below.\n"
+        f"Profession: {name}\n"
+        f"National classifier code: {national_code}\n\n"
+        f"===== SOURCE PAGES ====="
+    )
+    blocks = [f"\n--- SOURCE URL: {url} ---\n{text}" for url, text in pages]
+    return header + "".join(blocks)
