@@ -5,8 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from . import services
-from .serializers import GamificationSerializer
+from apps.gamification import services
+from apps.gamification.serializers import GamificationSerializer
 
 
 class GamificationMeView(APIView):

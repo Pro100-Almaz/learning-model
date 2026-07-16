@@ -3,7 +3,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.throttling import AnonRateThrottle
 
-from .tasks import test_task
+from apps.core.tasks import test_task
 
 
 class PingRateThrottle(AnonRateThrottle):

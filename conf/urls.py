@@ -31,6 +31,8 @@ urlpatterns = [
                     path("core/", include("apps.core.urls")),
                     path("auth/", include("apps.accounts.auth_urls")),
                     path("profile/", include("apps.accounts.urls")),
+                    path("subjects/", include("apps.content.urls_subjects")),
+                    path("classes/", include("apps.content.urls_classes")),
                     path("modules/", include("apps.content.urls_modules")),
                     path("lessons/", include("apps.content.urls_lessons")),
                     path("tests/", include("apps.assessments.urls_tests")),

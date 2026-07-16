@@ -1,16 +1,35 @@
 from django.db import models
 
 
-class Module(models.Model):
-    SUBJECT_CHOICES = [
-        ("math_literacy", "Мат. грамотность"),
-        ("profile_math", "Профильная математика"),
-    ]
+class Subject(models.Model):
+    name = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=50, unique=True)
 
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class ClassGrade(models.Model):
+    grade = models.PositiveIntegerField()
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="classes")
+
+    def __str__(self) -> str:
+        return str(self.grade)
+
+
+class Module(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     order = models.PositiveIntegerField(default=0)
-    subject = models.CharField(max_length=20, choices=SUBJECT_CHOICES)
+    description = models.TextField(null=True, blank=True)
+    class_grade = models.ForeignKey(
+        "content.ClassGrade",
+        on_delete=models.CASCADE,
+        related_name="modules",
+    )
 
     class Meta:
         ordering = ["order"]
@@ -62,6 +81,10 @@ class Lesson(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=80, unique=True)
     slug = models.SlugField(unique=True)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["name"]
 
     def __str__(self) -> str:
         return self.name

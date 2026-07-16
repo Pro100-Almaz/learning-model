@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Streak, StudentProgress, XPEvent
+from apps.gamification.models import Streak, StudentProgress, XPEvent
 
 
 @admin.register(XPEvent)

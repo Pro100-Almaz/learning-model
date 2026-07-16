@@ -2,7 +2,7 @@
 
 from django.contrib import admin
 
-from .models import ExpectedScore, StudentProfile
+from apps.accounts.models import ExpectedScore, StudentProfile
 
 
 class ExpectedScoreInline(admin.TabularInline):
@@ -20,10 +20,11 @@ class StudentProfileAdmin(admin.ModelAdmin):
         "target_score",
         "onboarding_completed",
     )
-    list_filter = ("onboarding_completed",)
+    list_filter = ("onboarding_completed", "subjects")
     search_fields = ("user__email",)
     autocomplete_fields = ()
     raw_id_fields = ("user", "target_university", "target_specialty")
+    filter_horizontal = ("subjects",)
     inlines = [ExpectedScoreInline]
 
 
@@ -31,4 +32,6 @@ class StudentProfileAdmin(admin.ModelAdmin):
 class ExpectedScoreAdmin(admin.ModelAdmin):
     list_display = ("id", "profile", "subject", "score")
     list_filter = ("subject",)
-    search_fields = ("subject", "profile__user__email")
+    search_fields = ("subject__name", "subject__slug", "profile__user__email")
+    list_select_related = ("subject", "profile")
+    autocomplete_fields = ("subject",)

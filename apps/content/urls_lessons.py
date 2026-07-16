@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .views import LessonDetailView
+from apps.content.views import LessonDetailView
 
 app_name = "lessons"
 
 urlpatterns = [
-    path("<int:id>/", LessonDetailView.as_view(), name="lesson-detail"),
+    path("<int:lesson_id>/", LessonDetailView.as_view(), name="lesson-detail"),
 ]

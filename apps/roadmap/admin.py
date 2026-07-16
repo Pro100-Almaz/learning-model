@@ -2,7 +2,7 @@ from collections import Counter
 
 from django.contrib import admin
 
-from .models import ChapterLadderSession, Roadmap, RoadmapItem
+from apps.roadmap.models import ChapterLadderSession, Roadmap, RoadmapItem
 
 
 class RoadmapItemInline(admin.TabularInline):

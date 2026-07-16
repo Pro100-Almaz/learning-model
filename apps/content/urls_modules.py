@@ -1,10 +1,9 @@
 from django.urls import path
 
-from .views import ModuleDetailView, ModuleListView
+from apps.content.views import LessonsListView
 
 app_name = "modules"
 
 urlpatterns = [
-    path("", ModuleListView.as_view(), name="module-list"),
-    path("<int:id>/", ModuleDetailView.as_view(), name="module-detail"),
+    path("<int:module_id>/", LessonsListView.as_view(), name="module-detail"),
 ]

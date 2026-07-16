@@ -8,23 +8,44 @@ from __future__ import annotations
 
 from rest_framework import serializers
 
-from .models import Lesson, Module, Tag
+from apps.content.models import Lesson, Module, Tag, Subject, ClassGrade
 
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ["id", "name", "slug"]
+        fields = ["id", "name", "slug", "description"]
 
 
 class ModuleSerializer(serializers.ModelSerializer):
     """List shape: includes a denormalized lesson_count."""
 
-    lesson_count = serializers.IntegerField(read_only=True)
+    lessons = serializers.SerializerMethodField()
+    done = serializers.SerializerMethodField()
+    progress = serializers.SerializerMethodField()
 
     class Meta:
         model = Module
-        fields = ["id", "title", "slug", "order", "subject", "lesson_count"]
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "order",
+            "class_grade_id",
+            "lessons",
+            "description",
+            "done",
+            "progress"
+        ]
+
+    def get_lessons(self, obj: Module):
+        return obj.lessons.count()
+
+    def get_done(self, obj: Module):
+        return 1
+
+    def get_progress(self, obj: Module):
+        return 43
 
 
 class LessonSummarySerializer(serializers.ModelSerializer):
@@ -50,6 +71,10 @@ class ModuleDetailSerializer(serializers.ModelSerializer):
 
     lesson_count = serializers.IntegerField(read_only=True)
     lessons = serializers.SerializerMethodField()
+    subject = serializers.SlugRelatedField(
+        slug_field="slug", source="class_grade.subject", read_only=True
+    )
+    class_grade = serializers.SlugRelatedField(slug_field="grade", read_only=True)
 
     class Meta:
         model = Module
@@ -59,6 +84,7 @@ class ModuleDetailSerializer(serializers.ModelSerializer):
             "slug",
             "order",
             "subject",
+            "class_grade",
             "lesson_count",
             "lessons",
         ]
@@ -72,21 +98,47 @@ class ModuleDetailSerializer(serializers.ModelSerializer):
         ).data
 
 
-class LessonSerializer(serializers.ModelSerializer):
-    """Full lesson detail. micro_test_id resolved via services."""
+class LessonBaseSerializer(serializers.ModelSerializer):
+    """Minimal lesson shape: id, title, duration_sec.
 
-    micro_test_id = serializers.SerializerMethodField()
+    Use this wherever a lightweight lesson reference is needed. Fuller
+    serializers extend it by appending to Meta.fields.
+    """
+
+    progress = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
 
     class Meta:
         model = Lesson
         fields = [
             "id",
             "title",
+            "duration_sec",
+            "module_id",
+            "status",
+            "progress",
+        ]
+
+    def get_progress(self, obj: Lesson):
+        return 43
+
+    def get_status(self, obj: Lesson):
+        return "progress"
+
+
+class LessonSerializer(LessonBaseSerializer):
+    """Full lesson detail. micro_test_id resolved via services."""
+
+    micro_test_id = serializers.SerializerMethodField()
+    tag = TagSerializer(read_only=True)
+
+    class Meta(LessonBaseSerializer.Meta):
+        fields = LessonBaseSerializer.Meta.fields + [
             "description",
             "video_url",
             "video_provider",
-            "duration_sec",
             "micro_test_id",
+            "tag",
         ]
 
     def get_micro_test_id(self, obj: Lesson) -> int | None:
@@ -95,6 +147,65 @@ class LessonSerializer(serializers.ModelSerializer):
         ctx_map = self.context.get("micro_test_map")
         if ctx_map is not None:
             return ctx_map.get(obj.pk)
-        from .services import get_micro_test_id_for_lesson
+        from apps.content.services import get_micro_test_id_for_lesson
 
         return get_micro_test_id_for_lesson(obj)
+
+
+class SubjectSerializer(serializers.ModelSerializer):
+    """List shape: includes a denormalized lesson_count."""
+
+    class_count = serializers.SerializerMethodField()
+    progress = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Subject
+        fields = [
+            "id",
+            "name",
+            "slug",
+            "class_count",
+            "progress",
+        ]
+
+    def get_class_count(self, obj: Subject) -> int:
+        return obj.classes.count()
+
+    def get_progress(self, obj: Subject) -> int:
+        # static for now, depends on how the lesson is counted as passed
+        return 43
+
+
+class ClassGradeSerializer(serializers.ModelSerializer):
+    """List shape: includes a denormalized lesson_count."""
+
+    title = serializers.SerializerMethodField()
+    lessons = serializers.SerializerMethodField()
+    modules = serializers.SerializerMethodField()
+    progress = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ClassGrade
+        fields = [
+            "id",
+            "grade",
+            "title",
+            "subject_id",
+            "lessons",
+            "modules",
+            "progress",
+        ]
+
+    def get_lessons(self, obj: ClassGrade) -> int:
+        return Lesson.objects.filter(module__class_grade=obj).count()
+
+    def get_modules(self, obj: ClassGrade) -> int:
+        return Module.objects.filter(class_grade=obj).count()
+
+    def get_progress(self, obj: ClassGrade) -> int:
+        # static for now
+        return 43
+
+    def get_title(self, obj: ClassGrade) -> str:
+        # for now
+        return f"{obj.grade}-сынып"

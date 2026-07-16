@@ -24,13 +24,13 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import GenerationJob, GenerationStep
-from .serializers import (
+from apps.generation.models import GenerationJob, GenerationStep
+from apps.generation.serializers import (
     GenerationJobCreateSerializer,
     GenerationJobListSerializer,
     GenerationJobSerializer, GenerationJobQuestionsSerializer,
 )
-from .services import dispatch_job, iter_event_stream
+from apps.generation.services import dispatch_job, iter_event_stream
 
 logger = logging.getLogger("apps.generation")
 
@@ -146,7 +146,7 @@ class JobCancelView(APIView):
         job.finished_at = timezone.now()
         job.save(update_fields=["status", "finished_at"])
         # Let any open SSE listeners disconnect.
-        from .services import publish_event
+        from apps.generation.services import publish_event
 
         publish_event(
             job.pk,

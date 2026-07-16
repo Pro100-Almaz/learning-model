@@ -24,7 +24,6 @@ import json
 from typing import Any
 from unittest.mock import patch
 
-from django.urls import reverse
 from rest_framework import status as http_status
 from rest_framework.test import APITestCase
 

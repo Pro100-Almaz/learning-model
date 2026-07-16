@@ -1,4 +1,4 @@
-from .settings import *  # noqa
+from conf.settings import *  # noqa
 
 # Use local memory cache so throttles don't persist across test runs
 CACHES = {

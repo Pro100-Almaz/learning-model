@@ -20,10 +20,10 @@ from rest_framework.views import APIView
 
 from apps.content.models import Module
 
-from . import ladder as ladder_service
-from . import services
-from .models import ChapterLadderSession
-from .serializers import (
+from apps.roadmap import ladder as ladder_service
+from apps.roadmap import services
+from apps.roadmap.models import ChapterLadderSession
+from apps.roadmap.serializers import (
     DiagnosticInfoSerializer,
     LadderNextInputSerializer,
     LadderStepSerializer,

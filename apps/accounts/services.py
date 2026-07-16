@@ -9,7 +9,7 @@ from __future__ import annotations
 from django.conf import settings
 from django.db import transaction
 
-from .models import ExpectedScore, StudentProfile
+from apps.accounts.models import ExpectedScore, StudentProfile
 
 
 def ensure_profile(user) -> StudentProfile:
@@ -27,16 +27,18 @@ def ensure_profile(user) -> StudentProfile:
 def upsert_expected_scores(profile: StudentProfile, items) -> None:
     """Replace the profile's expected scores with the provided list.
 
-    ``items`` is an iterable of ``{"subject": str, "score": int}`` dicts.
-    Subjects not present in the new list are removed so the API behaves like
-    a PUT for this nested collection (the parent request is still PATCH).
+    ``items`` is an iterable of ``{"subject": Subject, "score": int}`` dicts,
+    where ``subject`` is a resolved ``content.Subject`` instance (the
+    serializer maps the incoming slug string to it). Subjects not present in
+    the new list are removed so the API behaves like a PUT for this nested
+    collection (the parent request is still PATCH).
     """
-    seen_subjects: set[str] = set()
+    seen_subjects: set = set()
     with transaction.atomic():
         for entry in items:
             subject = entry["subject"]
             score = entry["score"]
-            seen_subjects.add(subject)
+            seen_subjects.add(subject.pk)
             ExpectedScore.objects.update_or_create(
                 profile=profile,
                 subject=subject,
@@ -58,11 +60,12 @@ def complete_onboarding_if_ready(profile: StudentProfile) -> bool:
     if profile.onboarding_completed:
         return False
 
+    # ``other_subjects`` holds Subject slugs (see settings.ENT_CONFIG).
     other_subjects = settings.ENT_CONFIG.get("other_subjects", [])
     has_expected = profile.expected_scores.exists()
     if other_subjects:
         has_expected = profile.expected_scores.filter(
-            subject__in=other_subjects
+            subject__slug__in=other_subjects
         ).exists()
 
     ready = bool(

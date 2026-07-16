@@ -189,12 +189,13 @@ LEVELS = [
     (5000, "geniy", "Гений"),
 ]
 ENT_CONFIG = {
-    "math_subject": "profile_math",
+    "math_subject": "math",
     "other_subjects": [
-        "История Казахстана",
-        "Грамотность чтения",
-        "Математическая грамотность",
-        "Профильный предмет 2",
+        "math",
+        "history-of-kazakhstan",
+        "reading-literacy",
+        "math-literacy",
+        "profile-subject-2",
     ],
     "max_total_score": 140,
 }

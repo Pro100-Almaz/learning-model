@@ -11,8 +11,14 @@ from rest_framework.test import APITestCase
 from apps.accounts.models import ExpectedScore, StudentProfile
 from apps.assessments.models import Test, TestAttempt
 from apps.careers.models import GrantThreshold, Specialty, University
+from apps.content.models import Subject
 
 User = get_user_model()
+
+
+def _subject(slug: str, name: str = "Subject") -> Subject:
+    subject, _ = Subject.objects.get_or_create(slug=slug, defaults={"name": name})
+    return subject
 
 
 def _make_student(email="student@example.com", target_score=None):
@@ -62,8 +68,8 @@ class GrantCalculateHappyPathTests(APITestCase):
         self.user, self.profile = _make_student()
         self.client.force_authenticate(user=self.user)
 
-        ExpectedScore.objects.create(profile=self.profile, subject="История Казахстана", score=20)
-        ExpectedScore.objects.create(profile=self.profile, subject="Грамотность чтения", score=15)
+        ExpectedScore.objects.create(profile=self.profile, subject=_subject("history-of-kazakhstan"), score=20)
+        ExpectedScore.objects.create(profile=self.profile, subject=_subject("reading-literacy"), score=15)
 
         _make_mock_attempt(self.user, score=40.0)  # predicted = 40 + 20 + 15 = 75
 
@@ -123,7 +129,7 @@ class GrantCalculateLatestThresholdTests(APITestCase):
 
     def test_latest_threshold_includes_specialty_when_high_predicted(self):
         # Add expected scores to boost predicted above latest threshold (120).
-        ExpectedScore.objects.create(profile=self.profile, subject="X", score=25)
+        ExpectedScore.objects.create(profile=self.profile, subject=_subject("x"), score=25)
         response = self.client.post(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         grants = response.data["qualifying_grants"]
@@ -139,7 +145,7 @@ class GrantCalculateGoalTests(APITestCase):
         self.url = reverse("v1:careers:calculate")
         self.user, self.profile = _make_student(target_score=140)
         self.client.force_authenticate(user=self.user)
-        ExpectedScore.objects.create(profile=self.profile, subject="X", score=30)
+        ExpectedScore.objects.create(profile=self.profile, subject=_subject("x"), score=30)
         _make_mock_attempt(self.user, score=90.0)  # predicted = 120
 
     def test_goal_present_when_target_set(self):

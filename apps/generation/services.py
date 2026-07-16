@@ -26,7 +26,7 @@ from typing import Any, Iterator, Optional
 from django.utils import timezone
 from django_redis import get_redis_connection
 
-from .models import GenerationJob, GenerationStep
+from apps.generation.models import GenerationJob, GenerationStep
 
 logger = logging.getLogger("apps.generation")
 
@@ -68,7 +68,7 @@ def dispatch_job(
 
     # Lazy import: ``apps.generation.tasks`` pulls in the LangGraph stack,
     # which is heavy. Web requests that just LIST jobs shouldn't pay for it.
-    from . import tasks
+    from apps.generation import tasks
 
     async_result = tasks.run_generation_job.delay(job.pk)
     job.celery_task_id = async_result.id or ""

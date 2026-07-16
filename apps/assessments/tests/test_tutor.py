@@ -44,8 +44,8 @@ def spy_anthropic(monkeypatch):
         calls.append({"system": system, "user": user, "model": model})
         return "  Белгіні шатастырып алдың.  "  # untrimmed on purpose
 
-    # get_tutor_feedback does `from agents_and_engine.llm import chat_anthropic` at call time, so
-    # patching the attribute on the agents_and_engine.llm module is what takes effect.
+    # get_tutor_feedback does `from agents_and_engine.llm import chat_anthropic`
+    # at call time, so patching the attribute on that module is what takes effect.
     monkeypatch.setattr("agents_and_engine.llm.chat_anthropic", fake)
     return calls
 
