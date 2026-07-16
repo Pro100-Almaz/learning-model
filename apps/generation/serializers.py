@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from rest_framework import serializers
 
+import config
 from apps.generation.models import GenerationJob, GenerationStep
 from apps.assessments.serializers import QuestionPublicSerializer
 
@@ -17,6 +18,12 @@ class GenerationJobCreateSerializer(serializers.Serializer):
     # NOT the ENT total. Higher => harder generated questions.
     target_score = serializers.IntegerField(
         min_value=0, max_value=40, required=False, allow_null=True
+    )
+    # Output language for the batch. Optional: omitting it falls back to the
+    # house default (Russian), so existing clients keep working unchanged.
+    language = serializers.ChoiceField(
+        choices=config.SUPPORTED_LANGUAGES,
+        default=config.DEFAULT_LANGUAGE,
     )
 
 
@@ -49,6 +56,7 @@ class GenerationJobSerializer(serializers.ModelSerializer):
             "topic",
             "count",
             "target_score",
+            "language",
             "status",
             "created_at",
             "started_at",
@@ -78,6 +86,7 @@ class GenerationJobListSerializer(serializers.ModelSerializer):
             "topic",
             "count",
             "target_score",
+            "language",
             "status",
             "created_at",
             "started_at",

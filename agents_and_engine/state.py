@@ -32,6 +32,7 @@ class GraphState(TypedDict, total=False):
     # --- input you provide before running the graph ---
     topic: str                       # blueprint name, e.g. "quadratic_equations"
     student_profile: dict[str, Any]  # serialized accounts.StudentProfile (optional)
+    language: str                    #language of the generation
 
     # --- what the Architect produces ---
     math_spec: dict[str, Any]        # the concrete numbers rolled for this problem

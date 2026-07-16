@@ -11,9 +11,9 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.test import APIClient
 
 from agents_and_engine.prompts import (
-    TUTOR_EXPLANATION_SYSTEM,
-    TUTOR_RECAP_SYSTEM,
-    TUTOR_SYSTEM,
+    tutor_explanation_system,
+    tutor_recap_system,
+    tutor_system,
 )
 from apps.assessments import services
 from apps.assessments.models import (
@@ -123,14 +123,30 @@ def test_returns_note_and_feeds_misconception_to_model(student, setup, spy_anthr
 
     assert note == "Белгіні шатастырып алдың."  # trimmed by the service
     assert len(spy_anthropic) == 1
-    # Diagnosis mode uses the mistake-focused, full-solution persona.
-    assert spy_anthropic[0]["system"] == TUTOR_SYSTEM
+    # Diagnosis mode uses the mistake-focused, full-solution persona, built for
+    # the question's language.
+    assert spy_anthropic[0]["system"] == tutor_system(setup["q"].language)
     prompt = spy_anthropic[0]["user"]
     # The specific misconception description must reach the model...
     assert "Reported both roots with the opposite sign." in prompt
     # ...along with the worked solution and the student's wrong answer.
     assert "x1 = 3, x2 = 4" in prompt
     assert "-3, -4" in prompt
+
+
+def test_tutor_prompt_matches_question_language(student, setup, spy_anthropic):
+    """The Tutor must build its system prompt in the question's own language."""
+    # Flip the question to Kazakh; the note the Tutor produces must be built from
+    # the Kazakh persona, not the default Russian one.
+    setup["q"].language = "kazakh"
+    setup["q"].save(update_fields=["language"])
+
+    attempt = _finished_attempt_with_wrong_answer(student, setup)
+    services.get_tutor_feedback(attempt, setup["q"].pk)
+
+    assert spy_anthropic[0]["system"] == tutor_system("kazakh")
+    # And, to be sure the assertion has teeth, it is NOT the Russian build.
+    assert spy_anthropic[0]["system"] != tutor_system("russian")
 
 
 def test_caches_per_option_and_skips_second_llm_call(student, setup, spy_anthropic):
@@ -195,7 +211,7 @@ def test_recap_for_a_correct_answer(student, setup, spy_anthropic):
     assert len(spy_anthropic) == 1
     # Recap mode uses the confirm-the-method persona and feeds the model the
     # worked steps and the answer key (revealing it is fine — already correct).
-    assert spy_anthropic[0]["system"] == TUTOR_RECAP_SYSTEM
+    assert spy_anthropic[0]["system"] == tutor_recap_system(setup["q"].language)
     prompt = spy_anthropic[0]["user"]
     assert "x1 = 3, x2 = 4" in prompt
     assert "[3, 4]" in prompt
@@ -224,7 +240,7 @@ def test_explains_skipped_question(student, setup, spy_anthropic):
     assert note == "Белгіні шатастырып алдың."  # trimmed by the service
     assert len(spy_anthropic) == 1
     # Explanation mode must use the revealing persona...
-    assert spy_anthropic[0]["system"] == TUTOR_EXPLANATION_SYSTEM
+    assert spy_anthropic[0]["system"] == tutor_explanation_system(setup["q"].language)
     prompt = spy_anthropic[0]["user"]
     # ...and feed the model the worked steps and the answer key to reveal.
     assert "x1 = 3, x2 = 4" in prompt
@@ -244,7 +260,7 @@ def test_explains_answered_without_option(student, setup, spy_anthropic):
 
     assert note == "Белгіні шатастырып алдың."
     assert len(spy_anthropic) == 1
-    assert spy_anthropic[0]["system"] == TUTOR_EXPLANATION_SYSTEM
+    assert spy_anthropic[0]["system"] == tutor_explanation_system(setup["q"].language)
 
 
 def test_explanation_is_cached(student, setup, spy_anthropic):

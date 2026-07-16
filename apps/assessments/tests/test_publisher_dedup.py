@@ -61,14 +61,17 @@ def test_different_problems_both_persist():
 
 
 def test_compute_content_hash_identity():
-    # Same topic + same numbers (any key order) -> same hash.
-    h1 = compute_content_hash("quad", {"a": 1, "b": 2, "c": 3})
-    h2 = compute_content_hash("quad", {"c": 3, "b": 2, "a": 1})
-    # A different roll, or a different topic, -> a different hash.
-    h3 = compute_content_hash("quad", {"a": 1, "b": 2, "c": 9})
-    h4 = compute_content_hash("progression", {"a": 1, "b": 2, "c": 3})
+    # Same topic + same numbers (any key order) + same language -> same hash.
+    h1 = compute_content_hash("quad", {"a": 1, "b": 2, "c": 3}, "russian")
+    h2 = compute_content_hash("quad", {"c": 3, "b": 2, "a": 1}, "russian")
+    # A different roll, a different topic, or a different LANGUAGE -> different hash.
+    h3 = compute_content_hash("quad", {"a": 1, "b": 2, "c": 9}, "russian")
+    h4 = compute_content_hash("progression", {"a": 1, "b": 2, "c": 3}, "russian")
+    # Same math, different language: a distinct problem in the bilingual bank.
+    h5 = compute_content_hash("quad", {"a": 1, "b": 2, "c": 3}, "kazakh")
 
     assert h1 == h2
     assert h1 != h3
     assert h1 != h4
+    assert h1 != h5
     assert len(h1) == 64

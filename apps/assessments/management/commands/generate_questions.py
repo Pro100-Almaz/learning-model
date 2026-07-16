@@ -21,6 +21,7 @@ from __future__ import annotations
 
 from django.core.management.base import BaseCommand, CommandError
 
+import config
 from apps.assessments.models import Question
 
 
@@ -45,6 +46,12 @@ class Command(BaseCommand):
             default=None,
             help="Intended profile-subject score 0-40; higher => harder. Omit for the blueprint default.",
         )
+        parser.add_argument(
+            "--language",
+            choices=config.SUPPORTED_LANGUAGES,
+            default=config.DEFAULT_LANGUAGE,
+            help=f"Output language (default: {config.DEFAULT_LANGUAGE}).",
+        )
 
     def handle(self, *args, **opts):
         # math_engine is light (jinja only); import it first so a bad
@@ -53,6 +60,7 @@ class Command(BaseCommand):
 
         topic = opts["topic"]
         count = opts["count"]
+        language = opts["language"]
         profile = {}
         if opts["target_score"] is not None:
             score = opts["target_score"]
@@ -70,7 +78,7 @@ class Command(BaseCommand):
         created = skipped = failed = 0
         for i in range(1, count + 1):
             try:
-                result = generate_question(topic, profile)
+                result = generate_question(topic, profile, language)
             except Exception as exc:  # one bad roll / API hiccup must not kill the batch
                 failed += 1
                 self.stderr.write(self.style.ERROR(f"[{i}/{count}] generation error: {exc}"))

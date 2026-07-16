@@ -40,7 +40,7 @@ from .math_engine import (
     render_constraints,
     resolve_difficulty,
 )
-from .prompts import CRITIC_SYSTEM, STORYTELLER_SYSTEM
+from .prompts import critic_system, storyteller_system
 from .state import GraphState
 
 # Every published Question carries exactly this many answer options (one correct
@@ -58,8 +58,10 @@ class StoryDraft(TypedDict):
     problem_statement: Annotated[
         str,
         ...,
-        "The complete word problem in Kazakh, formulas as LaTeX in $...$. Only "
-        "the statement a student reads — no preamble, no answer, no commentary.",
+        "The complete word problem in the target language, as valid LaTeX source "
+        "renderable in one pass (prose as LaTeX text, formulas as inline math in "
+        "$...$; no Markdown). Only the statement a student reads — no preamble, no "
+        "answer, no commentary.",
     ]
 
 
@@ -73,6 +75,9 @@ class CriticVerdict(TypedDict):
         "If failed: concrete, numbered rewrite instructions. If passed: empty string.",
     ]
 
+def _language(state) -> str: #gets language from the state
+    language = state.get("language", config.DEFAULT_LANGUAGE)
+    return language
 
 # ---------------------------------------------------------------------------
 # Agent 1 — The Architect (deterministic Python, no LLM)
@@ -97,6 +102,7 @@ def architect_node(state: GraphState) -> dict[str, Any]:
     answer_key = compute_answer_key(blueprint, math_spec)
     constraints_payload = render_constraints(blueprint, math_spec)
     solution = build_solution(blueprint, math_spec, answer_key)
+    language = _language(state)
 
     blueprint_distractors = blueprint.get("distractors", [])
     answer_type = blueprint["answer"]["type"]
@@ -136,9 +142,10 @@ def architect_node(state: GraphState) -> dict[str, Any]:
         "difficulty": difficulty,
         "tag_slug": tag["slug"],
         "tag_name": tag["name"],
+        "language": language,
         # Dedup key for the bank, computed from the rolled numbers (the problem's
         # math identity, before any storytelling). The Publisher enforces it.
-        "content_hash": compute_content_hash(state["topic"], math_spec),
+        "content_hash": compute_content_hash(state["topic"], math_spec, language),
     }
 
 
@@ -166,8 +173,9 @@ def storyteller_node(state: GraphState) -> dict[str, Any]:
             f"not undo anything that was already correct:\n{state['rewrite_notes']}"
         )
 
+    language = _language(state)
     draft = chat_openai_structured(
-        STORYTELLER_SYSTEM,
+        storyteller_system(language),
         user_prompt,
         model=config.STORYTELLER_MODEL,
         schema=StoryDraft,
@@ -195,6 +203,8 @@ def critic_node(state: GraphState) -> dict[str, Any]:
     """
     notes: list[str] = []
 
+    language = _language(state)
+
     gate = deterministic_review(
         state["constraints_payload"], state["answer_key"], state["draft_text"]
     )
@@ -209,7 +219,7 @@ def critic_node(state: GraphState) -> dict[str, Any]:
             f"STORYTELLER DRAFT TO REVIEW:\n{state['draft_text']}"
         )
         verdict: CriticVerdict = chat_openai_structured(
-            CRITIC_SYSTEM,
+            critic_system(language),
             user_prompt,
             model=config.CRITIC_MODEL,
             schema=CriticVerdict,
@@ -272,7 +282,7 @@ def _resolve_content_hash(state: GraphState) -> str | None:
     if content_hash:
         return content_hash
     if state.get("topic") and state.get("math_spec") is not None:
-        return compute_content_hash(state["topic"], state["math_spec"])
+        return compute_content_hash(state["topic"], state["math_spec"], _language(state))
     return None
 
 
@@ -295,16 +305,22 @@ def publisher_node(state: GraphState) -> dict[str, Any]:
     """
     from apps.assessments.services import publish_generated_question
 
+    language = _language(state)
     options = state.get("answer_options") or build_answer_options(state["answer_key"])
     correct_text = next((o["text"] for o in options if o["is_correct"]), None)
+    # Fallback explanation only — used when the graph produced no explanation.
+    # Keep its prefix in the question's own language so a Kazakh question never
+    # ships a Russian sentence.
+    answer_label = {"russian": "Правильный ответ", "kazakh": "Дұрыс жауап"}[language]
     explanation = state.get("explanation") or (
-        f"Правильный ответ: {correct_text}." if correct_text else ""
+        f"{answer_label}: {correct_text}." if correct_text else ""
     )
 
     return publish_generated_question(
         text=(state.get("draft_text") or "").strip(),
         explanation=explanation,
         difficulty=state.get("difficulty", 1),
+        language=language,
         # The Architect's structured worked solution — the Tutor's ground truth
         # (arch.md §5). Default {} so a question is still publishable without one.
         solution=state.get("solution") or {},

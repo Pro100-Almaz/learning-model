@@ -26,7 +26,7 @@ from apps.assessments.models import AnswerOption, Question  # noqa: E402
 from apps.assessments.services import _build_tutor_prompt  # noqa: E402
 from config import TUTOR_MODEL  # noqa: E402
 from .llm import chat_anthropic  # noqa: E402
-from .prompts import TUTOR_SYSTEM  # noqa: E402
+from .prompts import tutor_system  # noqa: E402
 
 EXAMPLES = [
     {
@@ -86,7 +86,7 @@ def main() -> None:
         print("Student's answer:", ex["wrong"].text)
         prompt = _build_tutor_prompt(ex["question"], ex["wrong"])
         try:
-            note = chat_anthropic(TUTOR_SYSTEM, prompt, model=TUTOR_MODEL).strip()
+            note = chat_anthropic(tutor_system("kazakh"), prompt, model=TUTOR_MODEL).strip()
             print("\nTutor's margin note (live from Claude):\n")
             print("  " + note)
         except Exception as exc:
