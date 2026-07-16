@@ -105,6 +105,9 @@ INSTALLED_APPS = [
     "apps.roadmap",
     "apps.generation",
     "apps.common",
+    # roadmap web harvester (Agents 1-3 + deterministic loader) — owns its
+    # own JSONB snapshot tables, so it is registered as its own app.
+    "web_harvester",
 ]
 
 MIDDLEWARE = [

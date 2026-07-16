@@ -24,4 +24,13 @@ HARVESTER_MODEL = "gpt-5-mini"
 
 EXTRACTOR_MODEL = "gpt-5-mini"
 
+# --- Part 4: loader / drift gate (deterministic, no LLM) ------------------
+# Abort the whole run if this share (percent) of the fields we are about to
+# commit are carried-forward rather than freshly scraped. The alarm keys off
+# fresh coverage so carry-forward can never mask a broken scraper.
+DRIFT_ABORT_PCT = 10.0
+# Drop a carried value once it is this many cycles (years) stale — never let a
+# value limp forward forever.
+MAX_CARRY_CYCLES = 2
+
 config = Config()
