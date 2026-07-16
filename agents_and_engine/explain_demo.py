@@ -28,7 +28,7 @@ from apps.assessments.models import Question  # noqa: E402
 from apps.assessments.services import _build_explanation_prompt  # noqa: E402
 from config import TUTOR_MODEL  # noqa: E402
 from .llm import chat_anthropic  # noqa: E402
-from .prompts import TUTOR_EXPLANATION_SYSTEM  # noqa: E402
+from .prompts import tutor_explanation_system  # noqa: E402
 
 EXAMPLES = [
     {
@@ -79,7 +79,7 @@ def main() -> None:
         prompt = _build_explanation_prompt(ex["question"])
         try:
             note = chat_anthropic(
-                TUTOR_EXPLANATION_SYSTEM, prompt, model=TUTOR_MODEL, max_tokens=600
+                tutor_explanation_system("kazakh"), prompt, model=TUTOR_MODEL, max_tokens=600
             ).strip()
             print("\nTutor's explanation (live from Claude):\n")
             print(note)

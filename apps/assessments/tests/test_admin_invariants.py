@@ -139,6 +139,7 @@ def test_question_form_accepts_one_or_more_tags():
             "text": "Question?",
             "explanation": "because",
             "difficulty": "1",
+            "language": "russian",
             "tags": [tag.pk],
         }
     )

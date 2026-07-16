@@ -117,7 +117,11 @@ def _run_one_question(job: GenerationJob, idx: int, graph) -> None:
     Each LangGraph chunk is shape ``{node_name: state_updates}``. We persist a
     ``GenerationStep`` and publish an event for each one.
     """
-    initial: dict[str, Any] = {"topic": job.topic, "student_profile": {}}
+    initial: dict[str, Any] = {
+        "topic": job.topic,
+        "language": job.language,
+        "student_profile": {},
+    }
     if job.target_score is not None:
         initial["student_profile"] = {"target_score": job.target_score}
 

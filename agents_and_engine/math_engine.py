@@ -88,22 +88,35 @@ def render_value(value: Any, spec: dict) -> Any:
     return TEMPLATE_ENV.from_string(value).render(**spec)
 
 
-def compute_content_hash(topic: str, math_spec: dict[str, Any]) -> str:
+def compute_content_hash(topic: str, math_spec: dict[str, Any], language: str) -> str:
     """A stable fingerprint of a problem's *mathematical* identity (dedup key).
 
-    Two generated questions are "the same problem" when they share a topic and
-    the same rolled numbers — NOT when their text matches. The Storyteller
-    rewraps the same spec in a fresh narrative on every run, so hashing the
-    draft would never catch a real duplicate; hashing the spec does. The
-    answer_key and worked solution are deterministic functions of the spec, so
-    (topic, math_spec) captures the whole identity.
+    Two generated questions are "the same problem" when they share a topic,
+    the same rolled numbers, AND the same language — NOT when their text
+    matches. The Storyteller rewraps the same spec in a fresh narrative on
+    every run, so hashing the draft would never catch a real duplicate;
+    hashing the spec does. The answer_key and worked solution are
+    deterministic functions of the spec, so (topic, math_spec, language)
+    captures the whole identity.
+
+    Language is part of the identity ON PURPOSE: the same math in Russian and
+    in Kazakh are two distinct problems in the bank, so both can coexist
+    instead of one deduping the other away. `language` is required (no default)
+    so a caller can never silently omit it and collapse the two languages back
+    into one hash.
+
+    Note a one-time discontinuity: adding language changed the formula for
+    EVERY language, so a Russian problem generated after this change won't
+    match a mathematically-identical Russian row created before it (different
+    hash). Pre-change rows are not rehashed; at worst this yields one duplicate
+    per problem across the upgrade boundary, which is acceptable for the bank.
 
     Canonical JSON (sorted keys, no whitespace) makes the hash independent of
     dict ordering; `default=str` keeps it from crashing on a stray Fraction.
     Used by the Publisher to fill assessments.Question.content_hash (unique).
     """
     canonical = json.dumps(
-        {"topic": topic, "spec": math_spec},
+        {"topic": topic, "spec": math_spec, "language": language},
         sort_keys=True,
         separators=(",", ":"),
         default=str,

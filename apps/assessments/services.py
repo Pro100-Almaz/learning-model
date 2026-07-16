@@ -13,7 +13,6 @@ from typing import Optional
 
 from config import TUTOR_MODEL
 from agents_and_engine.llm import chat_anthropic
-from agents_and_engine.prompts import TUTOR_RECAP_SYSTEM
 
 from django.db import IntegrityError, transaction
 from django.db.models import Prefetch
@@ -253,6 +252,7 @@ def publish_generated_question(
     text: str,
     explanation: str,
     difficulty: int,
+    language: str,
     solution: dict,
     options: list[dict],
     tag_slug: str,
@@ -297,6 +297,7 @@ def publish_generated_question(
                 text=text,
                 explanation=explanation,
                 difficulty=difficulty,
+                language=language,
                 solution=solution,
                 content_hash=content_hash,
                 lesson=lesson,
@@ -442,6 +443,8 @@ def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
             {"detail": "question not in test", "code": "question_not_in_test"}
         ) from exc
 
+    language = question.language
+
     # A missing row means the student skipped the question entirely — that is a
     # valid case (explanation mode), not an error.
     try:
@@ -465,7 +468,7 @@ def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
 
         from config import TUTOR_MODEL
         from agents_and_engine.llm import chat_anthropic
-        from agents_and_engine.prompts import TUTOR_RECAP_SYSTEM
+        from agents_and_engine.prompts import tutor_recap_system
 
         cached = (
             TutorNote.objects.filter(question=question, selected_option=option)
@@ -476,7 +479,7 @@ def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
             return cached
 
         note = chat_anthropic(
-            TUTOR_RECAP_SYSTEM,
+            tutor_recap_system(language),
             _build_explanation_prompt(question),
             model=TUTOR_MODEL,
             max_tokens=250,
@@ -499,7 +502,7 @@ def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
     if option is None:
         # Explanation mode: one note per question, stored on the NULL-option row
         # (guarded by the partial unique constraint). Read via IS NULL.
-        from agents_and_engine.prompts import TUTOR_EXPLANATION_SYSTEM
+        from agents_and_engine.prompts import tutor_explanation_system
 
         cached = (
             TutorNote.objects.filter(question=question, selected_option__isnull=True)
@@ -510,7 +513,7 @@ def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
             return cached
 
         note = chat_anthropic(
-            TUTOR_EXPLANATION_SYSTEM,
+            tutor_explanation_system(language),
             _build_explanation_prompt(question),
             model=TUTOR_MODEL,
             max_tokens=600,
@@ -527,7 +530,7 @@ def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
     # full correct solution through to the answer (review-only, so revealing is
     # fine). Durable cache: the note depends only on (question, option), so one
     # row is reused across every student who picks that option.
-    from agents_and_engine.prompts import TUTOR_SYSTEM
+    from agents_and_engine.prompts import tutor_system
 
     cached = (
         TutorNote.objects.filter(question=question, selected_option=option)
@@ -538,7 +541,7 @@ def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
         return cached
 
     note = chat_anthropic(
-        TUTOR_SYSTEM,
+        tutor_system(language),
         _build_tutor_prompt(question, option),
         model=TUTOR_MODEL,
         max_tokens=600,

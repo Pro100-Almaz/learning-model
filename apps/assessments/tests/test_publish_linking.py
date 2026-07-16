@@ -30,6 +30,7 @@ def _publish(content_hash, *, tag_slug="integraly"):
         text="Найдите площадь под кривой $f(x)=...$.",
         explanation="",
         difficulty=2,
+        language="russian",
         solution={"answer_key": 60},
         options=_options(),
         tag_slug=tag_slug,

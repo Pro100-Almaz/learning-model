@@ -22,6 +22,7 @@ from __future__ import annotations
 
 from typing import Any
 
+import config
 from langgraph.graph import END, START, StateGraph
 
 from .nodes_self import (
@@ -72,7 +73,11 @@ def build_graph():
 graph = build_graph()
 
 
-def generate_question(topic: str, student_profile: dict[str, Any] | None = None) -> dict[str, Any]:
+def generate_question(
+    topic: str,
+    student_profile: dict[str, Any] | None = None,
+    language: str = config.DEFAULT_LANGUAGE,
+) -> dict[str, Any]:
     """Run the full pipeline for one topic and return the final GraphState.
 
     Convenience entrypoint for a Celery worker / management command. The caller
@@ -86,5 +91,9 @@ def generate_question(topic: str, student_profile: dict[str, Any] | None = None)
     breakout instead, `critic_passed` is False and no Question was created —
     check that before treating the run as published.
     """
-    initial: GraphState = {"topic": topic, "student_profile": student_profile or {}}
+    initial: GraphState = {
+        "topic": topic,
+        "student_profile": student_profile or {},
+        "language": language,
+    }
     return graph.invoke(initial)

@@ -73,6 +73,7 @@ class JobListCreateView(APIView):
             user=request.user,
             topic=payload.validated_data["topic"],
             count=payload.validated_data["count"],
+            language=payload.validated_data["language"],
             target_score=payload.validated_data.get("target_score"),
         )
         print("USER:", request.user)

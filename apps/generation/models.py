@@ -15,6 +15,12 @@ from __future__ import annotations
 from django.conf import settings
 from django.db import models
 
+import config
+
+# (value, label) pairs derived from the single source of truth in config, so a
+# new language there flows here too. Mirrors assessments.models.LANGUAGE_CHOICES.
+LANGUAGE_CHOICES = [(lang, lang.capitalize()) for lang in config.SUPPORTED_LANGUAGES]
+
 
 class GenerationJob(models.Model):
     STATUS_PENDING = "pending"
@@ -51,6 +57,14 @@ class GenerationJob(models.Model):
     # Intended score for the profile subject (профильная математика), 0-40 —
     # drives generated difficulty. Not the ENT total (see math_engine).
     target_score = models.PositiveIntegerField(null=True, blank=True)
+    # Output language requested for this batch; forwarded into the graph state
+    # and persisted on every Question the batch produces. Default backfills
+    # existing jobs to Russian (what they actually ran as).
+    language = models.CharField(
+        max_length=10,
+        choices=LANGUAGE_CHOICES,
+        default=config.DEFAULT_LANGUAGE,
+    )
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
