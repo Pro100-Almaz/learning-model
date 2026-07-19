@@ -16,6 +16,7 @@ CRITIC_MODEL = "o3"
 TUTOR_MODEL = "claude-sonnet-4-6"
 HARVESTER_MODEL = "gpt-5-mini"
 EXTRACTOR_MODEL = "gpt-5-mini"
+ANALYST_MODEL = "gpt-5-mini"
 
 # Redrafts the Storyteller gets after its first draft before the graph breaks
 # out to the fallback (arch.md §5.4). Total attempts = 1 + MAX_REVISIONS; at 2
@@ -34,5 +35,14 @@ MAX_CARRY_CYCLES = 2
 SUPPORTED_LANGUAGES = ("russian", "kazakh")
 DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[0]
 assert DEFAULT_LANGUAGE in SUPPORTED_LANGUAGES, f"Default language '{DEFAULT_LANGUAGE}' must be in SUPPORTED_LANGUAGES"
+
+#the thresholds for the analytics part
+#on scale 0-100
+WEAK_BELOW = 50
+SOLID_MIN = 75
+
+#the amount of score which is a cut-off between the profession's score and the score of the student
+#called "near_miss_within" since within this score, the profession is reachable
+NEAR_MISS_WITHIN = 5
 
 config = Config()

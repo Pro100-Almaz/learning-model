@@ -61,6 +61,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             "target_university",
             "target_specialty",
             "target_score",
+            "target_math_score",
             "onboarding_completed",
             "subjects",
             "expected_scores",
@@ -85,6 +86,9 @@ class StudentProfileUpdateSerializer(serializers.ModelSerializer):
     target_score = serializers.IntegerField(
         min_value=0, allow_null=True, required=False
     )
+    target_math_score = serializers.IntegerField(
+        min_value=0, max_value=100, allow_null=True, required=False
+    )
 
     class Meta:
         model = StudentProfile
@@ -92,6 +96,7 @@ class StudentProfileUpdateSerializer(serializers.ModelSerializer):
             "target_university",
             "target_specialty",
             "target_score",
+            "target_math_score",
             "subjects",
             "expected_scores",
         )
