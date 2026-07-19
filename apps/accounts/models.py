@@ -22,7 +22,8 @@ class StudentProfile(models.Model):
         on_delete=models.SET_NULL,
         related_name="target_profiles",
     )
-    target_score = models.PositiveIntegerField(null=True, blank=True)
+    target_score = models.PositiveIntegerField(null=True, blank=True) #overall ҰБТ intended score
+    target_math_score = models.PositiveIntegerField(null=True, blank=True)  # math-specific intended target score
     subjects = models.ManyToManyField(
         "content.Subject",
         related_name="students",

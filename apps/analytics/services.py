@@ -8,10 +8,11 @@ tasks without DRF context.
 
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Iterable, Any
 
 from django.db.models import Count, Q
 
+import config
 from apps.content.models import Lesson, Tag
 
 
@@ -204,3 +205,141 @@ def compute_ladder_verdict_distribution(module=None) -> list[dict]:
         )
     result.sort(key=lambda m: m["module_id"])
     return result
+
+
+def build_post_topic_results(user) -> dict[int, dict]:
+    """Latest completed post-topic (``micro``) exam result, per topic.
+
+    Task-1 source of truth for the analytics report. For each topic (a
+    ``content.Tag``) this returns the student's *most recent completed* ``micro``
+    exam attempt, mapped to the topic via ``attempt.test.lesson.tag``.
+
+    Unlike :func:`compute_tag_stats` (lifetime accuracy across *every* attempt),
+    this reads only the post-module micro exams and keeps just the latest per
+    topic — the honest "how did they do on the exam after the module" signal.
+
+    Returns ``{tag_id: {tag, post_score, correct, total, finished_at}}`` keyed by
+    tag id so callers (bucketing, the report) get O(1) lookups. Empty dict when
+    the student has no completed micro attempts. Attempts whose test has no
+    lesson, or whose lesson has no tag, can't be attributed to a topic and are
+    skipped.
+    """
+    # Local import: keeps analytics importable without assessments loaded and
+    # avoids any app-loading ordering surprises (assessments never imports us).
+    from apps.assessments.models import TestAttempt
+
+    attempts = (
+        TestAttempt.objects.filter(
+            student=user,
+            is_completed=True,
+            source="test",
+            test__type="micro",
+        )
+        # Walk test -> lesson -> tag in the initial query, not per-row, so the
+        # loop below fires zero extra queries (no N+1).
+        .select_related("test", "test__lesson", "test__lesson__tag")
+        # correct/total in the same query. distinct=True is required: counting
+        # two different multi-valued relations (test's questions AND this
+        # attempt's answers) in one query otherwise cross-joins and inflates
+        # both counts.
+        .annotate(
+            total=Count("test__questions", distinct=True),
+            correct=Count("answers", filter=Q(answers__is_correct=True), distinct=True),
+        )
+        # Ascending finish time: a more recent attempt for the same topic
+        # overwrites the earlier dict entry, leaving the latest per topic.
+        .order_by("finished_at")
+    )
+
+    results: dict[int, dict] = {}
+    for attempt in attempts:
+        lesson = attempt.test.lesson
+        tag = lesson.tag if lesson else None
+        if tag is None:
+            # Micro exam not linked to a topic (nullable Test.lesson / Lesson.tag):
+            # there's nothing to attribute the score to, so skip it.
+            continue
+        results[tag.id] = {
+            "tag": _serialize_tag(tag),
+            "post_score": attempt.score,
+            "correct": attempt.correct,
+            "total": attempt.total,
+            "finished_at": attempt.finished_at,
+        }
+    return results
+
+def classify_topics(post_results: dict[int, dict]) -> dict[str, list[dict]]:
+    #three lists are made for storing results of the students' according to their scores from the exam
+    weak, improving, solid = [], [], []
+    for entry in post_results.values(): #iterating through the values
+        if entry["post_score"] < config.WEAK_BELOW:
+            weak.append(entry)
+        elif entry["post_score"] >= config.SOLID_MIN:
+            solid.append(entry)
+        else:
+            improving.append(entry)
+    weak.sort(key = lambda entry: entry["post_score"])
+    final_dict = {"weak": weak, "improving": improving, "solid": solid}
+    return final_dict
+
+def build_student_report(user) -> dict[str, dict[str, list[dict]] | list[Any]]:
+    '''
+    Returns the student's analysis of the near_miss professions, the professions already qualified for, universities the student eligible to apply
+    Also returns the bucket of the topics and careers math/university projection -> degrades if no mock
+    '''
+    results = build_post_topic_results(user) #getting the results of the user
+    buckets = classify_topics(results) #identifying weak, improved, solid topics of the user
+    weak_entries = buckets["weak"] #getting the weak entries
+    list_of_weak_entries = []
+    for entry in weak_entries:
+        list_of_weak_entries.append(entry["tag"]["id"])
+    lessons_by_tag = _lessons_for_tag_ids(list_of_weak_entries) #fetching the tag ids of the weak entries
+    recommendations = []
+    for entry in weak_entries:
+        lessons = []
+        lessons_of_entry = lessons_by_tag.get(entry["tag"]["id"], [])
+        for lesson in lessons_of_entry:
+            serialized_lesson_of_entry = _serialize_lesson_summary(lesson)
+            lessons.append(serialized_lesson_of_entry)
+        dict_of_serialized_lesson_of_entry = {
+            "tag": entry["tag"],
+            "post_score": entry["post_score"],
+            "lessons": lessons
+        }
+        recommendations.append(dict_of_serialized_lesson_of_entry)
+
+    from apps.careers.services import calculate_grant, near_miss_grants, NoMockError
+    profile = getattr(user, "profile", None)
+    target_math = profile.target_math_score if profile else None
+    try:
+        result = calculate_grant(user)
+        current_math = result["math_score"]
+        predicted = result["predicted_score"]
+        qualifying = result["qualifying_grants"]
+        near_miss = near_miss_grants(predicted)
+    except NoMockError:
+        current_math = None
+        qualifying = []
+        near_miss = []
+    if current_math is not None and target_math is not None:
+        gap = target_math - current_math
+    else:
+        gap = None
+    math = {
+        "current_math": current_math,
+        "target_math": target_math,
+        "gap": gap
+    }
+    universities = {
+        "qualifying": qualifying,
+        "near_miss": near_miss
+    }
+
+    stat_analysis = {
+        "buckets": buckets,
+        "recommendations": recommendations,
+        "math": math,
+        "universities": universities
+    }
+
+    return stat_analysis

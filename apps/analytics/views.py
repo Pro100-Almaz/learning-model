@@ -5,8 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.analytics.serializers import RecommendationSerializer, TagStatSerializer
-from apps.analytics.services import compute_recommendations, compute_tag_stats
+from apps.analytics.serializers import RecommendationSerializer, TagStatSerializer, StudentReportSerializer
+from apps.analytics.services import compute_recommendations, compute_tag_stats, build_student_report
 
 
 class TagStatsView(APIView):
@@ -28,4 +28,14 @@ class RecommendationsView(APIView):
     @extend_schema(responses=RecommendationSerializer(many=True))
     def get(self, request):
         data = compute_recommendations(request.user)
+        return Response(data)
+
+
+class StudentReportView(APIView):
+    """GET /api/v1/analytics/report/ — full student analytics
+      report."""
+    permission_classes = [IsAuthenticated]
+    @extend_schema(responses=StudentReportSerializer())
+    def get(self, request):
+        data = build_student_report(request.user)
         return Response(data)
