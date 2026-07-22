@@ -15,7 +15,7 @@ from apps.assessments.models import (
     TestAttempt,
     TestQuestion,
 )
-from apps.content.models import Tag
+from apps.content.models import ClassGrade, Lesson, Module, Subject, Tag
 from apps.users.models import CustomUser
 
 
@@ -55,14 +55,27 @@ def _build_question(tag, text="Q?"):
 
 
 @pytest.fixture
-def micro_test(tag):
-    test = Test.objects.create(type="micro", title="Micro 1")
+def lesson(tag):
+    subject, _ = Subject.objects.get_or_create(
+        slug="profile_math", defaults={"name": "Profile Math"}
+    )
+    grade, _ = ClassGrade.objects.get_or_create(grade=11, subject=subject)
+    module = Module.objects.create(title="Algebra", slug="algebra-mod", class_grade=grade)
+    return Lesson.objects.create(
+        module=module, tag=tag, title="Algebra: basics", video_url="https://x", order=1
+    )
+
+
+@pytest.fixture
+def micro_test(tag, lesson):
+    test = Test.objects.create(type="micro", title="Micro 1", lesson=lesson)
     q1, c1, w1 = _build_question(tag, "1+1?")
     q2, c2, w2 = _build_question(tag, "2+2?")
     TestQuestion.objects.create(test=test, question=q1, order=1)
     TestQuestion.objects.create(test=test, question=q2, order=2)
     return {
         "test": test,
+        "lesson": lesson,
         "questions": [q1, q2],
         "correct_options": [c1, c2],
         "wrong_options": [w1, w2],
@@ -113,7 +126,7 @@ def test_test_detail_returns_metadata_without_questions(auth_client, micro_test)
 
 def test_start_attempt_returns_questions_without_correct_flags(auth_client, micro_test):
     url = reverse("v1:attempts:attempt-create")
-    resp = auth_client.post(url, {"test_id": micro_test["test"].pk}, format="json")
+    resp = auth_client.post(url, {"lesson_id": micro_test["lesson"].pk}, format="json")
     assert resp.status_code == status.HTTP_201_CREATED
     body = resp.json()
     assert "attempt_id" in body

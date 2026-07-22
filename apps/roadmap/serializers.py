@@ -114,4 +114,7 @@ class LadderStepSerializer(serializers.Serializer):
 class LadderNextInputSerializer(serializers.Serializer):
     session_id = serializers.IntegerField()
     question_id = serializers.IntegerField()
-    option_id = serializers.IntegerField()
+    # A null/omitted option_id means "don't know" — the student saw the question
+    # but did not (or could not) answer. It is graded as wrong (outcome=0) so a
+    # forced random guess can't luck the student into a skip verdict.
+    option_id = serializers.IntegerField(required=False, allow_null=True)

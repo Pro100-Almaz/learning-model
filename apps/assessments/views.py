@@ -21,6 +21,7 @@ from apps.assessments.serializers import (
     TutorFeedbackSerializer,
     TutorRequestInputSerializer,
 )
+from apps.content.models import Lesson
 
 
 class TestDetailView(APIView):
@@ -48,7 +49,9 @@ class AttemptCreateView(APIView):
     def post(self, request):
         payload = AttemptCreateInputSerializer(data=request.data)
         payload.is_valid(raise_exception=True)
-        test = get_object_or_404(Test, pk=payload.validated_data["test_id"])
+        lesson = get_object_or_404(Lesson, id=payload.data["lesson_id"])
+        test = get_object_or_404(Test, lesson=lesson)
+        services.remove_failed_attempts(request.user, test)
         attempt = services.start_attempt(request.user, test)
         body = services.build_attempt_start_payload(attempt)
         return Response(

@@ -81,6 +81,7 @@ class AttemptReviewItemSerializer(serializers.Serializer):
     correct_option_id = serializers.IntegerField()
     is_correct = serializers.BooleanField()
     explanation = serializers.CharField()
+    mistake_reason = serializers.CharField(allow_blank=True)
     options = _ReviewOptionSerializer(many=True)
 
 
@@ -94,7 +95,7 @@ class AttemptReviewSerializer(serializers.Serializer):
 
 
 class AttemptCreateInputSerializer(serializers.Serializer):
-    test_id = serializers.IntegerField()
+    lesson_id = serializers.IntegerField()
 
 
 class AttemptAnswerInputSerializer(serializers.Serializer):

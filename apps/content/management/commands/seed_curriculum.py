@@ -23,13 +23,13 @@ from pathlib import Path
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
-from apps.content.models import Lesson, Module, Tag
+from apps.content.models import Lesson, Module, Tag, Subject, ClassGrade
 
 # Blueprints live at <repo>/agents_and_engine/blueprints; this file is at
 # <repo>/apps/content/management/commands/seed_curriculum.py -> parents[4] == repo.
 BLUEPRINTS_DIR = Path(__file__).resolve().parents[4] / "agents_and_engine" / "blueprints"
 
-SUBJECT = "profile_math"
+SUBJECT_SLUG = "math"
 
 # (chapter_slug, chapter_title, [(blueprint_topic, lesson_title), ...]) in order.
 CHAPTERS: list[tuple[str, str, list[tuple[str, str]]]] = [
@@ -127,12 +127,15 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options) -> None:
+        subject, _ = Subject.objects.get_or_create(slug=SUBJECT_SLUG, defaults={"title": "Математика"})
+        class_grade, _ = ClassGrade.objects.get_or_create(grade=12, subject=subject)
         n_mod = n_tag_new = n_lesson = 0
 
         for order, (slug, title, lessons) in enumerate(CHAPTERS, start=1):
             module, created = Module.objects.update_or_create(
                 slug=slug,
-                defaults={"title": title, "order": order, "subject": SUBJECT},
+                class_grade=class_grade,
+                defaults={"title": title, "order": order},
             )
             n_mod += 1
             self.stdout.write(f"[{order}] {title}  ({'created' if created else 'updated'})")

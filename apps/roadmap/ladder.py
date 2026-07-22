@@ -271,12 +271,19 @@ def next_question(session: ChapterLadderSession) -> Question | None:
 # ---------------------------------------------------------------------------
 # Record an answer + advance the state machine
 # ---------------------------------------------------------------------------
-def record_answer(session: ChapterLadderSession, question_id: int, option_id: int) -> None:
+def record_answer(
+    session: ChapterLadderSession, question_id: int, option_id: int | None
+) -> None:
     """Record one ladder answer and advance the active topic's state machine.
 
     Persists an ``AttemptAnswer`` (so the answer is first-class), applies the
     inline mastery update, then steps the rung / applies early-stop + asymmetric
     confirm and writes the verdict. Raises DRF 4xx errors the view surfaces.
+
+    ``option_id=None`` means "don't know" — the student did not answer. It is
+    graded as wrong (outcome=0, NULL option) so the theta drop and the rung
+    step-down happen exactly as for a wrong pick; the asymmetric confirm, which
+    only fires on a correct answer, ensures a forced guess can't grant a skip.
     """
     if session.is_complete:
         raise ValidationError({"detail": "ladder already complete", "code": "ladder_complete"})
@@ -293,12 +300,16 @@ def record_answer(session: ChapterLadderSession, question_id: int, option_id: in
         raise ValidationError({"detail": "question already answered", "code": "already_answered"})
     if question.difficulty != st["rung"]:
         raise ValidationError({"detail": "question is not at the expected rung", "code": "wrong_rung"})
-    try:
-        option = AnswerOption.objects.get(pk=option_id, question=question)
-    except AnswerOption.DoesNotExist as exc:
-        raise NotFound({"detail": "option not in question", "code": "option_not_in_question"}) from exc
-
-    outcome = 1 if option.is_correct else 0
+    if option_id is None:
+        # "Don't know" — no option picked; grade as wrong.
+        option = None
+        outcome = 0
+    else:
+        try:
+            option = AnswerOption.objects.get(pk=option_id, question=question)
+        except AnswerOption.DoesNotExist as exc:
+            raise NotFound({"detail": "option not in question", "code": "option_not_in_question"}) from exc
+        outcome = 1 if option.is_correct else 0
 
     AttemptAnswer.objects.update_or_create(
         attempt=session.attempt,

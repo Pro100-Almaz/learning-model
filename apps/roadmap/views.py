@@ -222,6 +222,6 @@ class ChapterLadderNextView(APIView):
         ladder_service.record_answer(
             session,
             question_id=payload.validated_data["question_id"],
-            option_id=payload.validated_data["option_id"],
+            option_id=payload.validated_data.get("option_id"),
         )
         return _ladder_step_response(session)
