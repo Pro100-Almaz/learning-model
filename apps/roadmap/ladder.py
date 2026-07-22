@@ -316,7 +316,10 @@ def record_answer(
         question=question,
         defaults={"selected_option": option, "is_correct": bool(outcome)},
     )
-    mastery.update_mastery(session.student, tag, question.difficulty, outcome)
+    # An "I don't know" drives the ladder verdict but is not evidence of ability,
+    # so it is deliberately excluded from the theta update.
+    if not dont_know:
+        mastery.update_mastery(session.student, tag, question.difficulty, outcome)
 
     st["asked"].append(question.id)
     _transition(st, tag, question.difficulty, outcome)

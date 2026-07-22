@@ -112,6 +112,13 @@ class LadderStepSerializer(serializers.Serializer):
 
 
 class LadderNextInputSerializer(serializers.Serializer):
+    """One ladder answer: either a chosen option, or an "I don't know" abstention.
+
+    Exactly one of ``option_id`` / ``dont_know`` must be supplied. ``dont_know``
+    steps the ladder down like a wrong answer (the verdict falls out of the same
+    rung machine) but does not move the student's mastery ``theta``.
+    """
+
     session_id = serializers.IntegerField()
     question_id = serializers.IntegerField()
     # A null/omitted option_id means "don't know" — the student saw the question

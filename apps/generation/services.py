@@ -49,6 +49,7 @@ def dispatch_job(
     user,
     topic: str,
     count: int,
+    language: str,
     target_score: Optional[int] = None,
 ) -> GenerationJob:
     """Create the job row, then hand it off to Celery.
@@ -61,6 +62,7 @@ def dispatch_job(
         user=user if (user and user.is_authenticated) else None,
         topic=topic,
         count=count,
+        language=language,
         target_score=target_score,
     )
 
