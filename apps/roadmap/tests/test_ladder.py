@@ -88,7 +88,7 @@ def _drive_moves(student, module, moves):
             break
         served.append(question.difficulty)
         if move == "idk":
-            ladder.record_answer(session, question.id, dont_know=True)
+            ladder.record_answer(session, question.id)
         else:
             option = question.options.filter(is_correct=(move == 1)).first()
             ladder.record_answer(session, question.id, option.id)
@@ -420,45 +420,3 @@ class LadderEndpointTests(APITestCase):
             format="json",
         )
         self.assertEqual(resp2.status_code, 400)
-
-    def test_next_accepts_dont_know_without_option(self):
-        module, tag = _make_module()
-        data = self.client.post(self._start_url(module)).json()
-        q = Question.objects.get(pk=data["question"]["id"])  # medium start rung
-        resp = self.client.post(
-            self.NEXT_URL,
-            {"session_id": data["session_id"], "question_id": q.id, "dont_know": True},
-            format="json",
-        )
-        self.assertEqual(resp.status_code, 200)
-        # Abstaining at medium steps down: the next question is easy (d1).
-        next_q = Question.objects.get(pk=resp.json()["question"]["id"])
-        self.assertEqual(next_q.difficulty, 1)
-
-    def test_next_rejects_dont_know_with_option(self):
-        module, tag = _make_module()
-        data = self.client.post(self._start_url(module)).json()
-        q = Question.objects.get(pk=data["question"]["id"])
-        option = q.options.filter(is_correct=True).first()
-        resp = self.client.post(
-            self.NEXT_URL,
-            {
-                "session_id": data["session_id"],
-                "question_id": q.id,
-                "option_id": option.id,
-                "dont_know": True,
-            },
-            format="json",
-        )
-        self.assertEqual(resp.status_code, 400)
-
-    def test_next_rejects_neither_option_nor_dont_know(self):
-        module, tag = _make_module()
-        data = self.client.post(self._start_url(module)).json()
-        q = Question.objects.get(pk=data["question"]["id"])
-        resp = self.client.post(
-            self.NEXT_URL,
-            {"session_id": data["session_id"], "question_id": q.id},
-            format="json",
-        )
-        self.assertEqual(resp.status_code, 400)

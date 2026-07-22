@@ -272,7 +272,7 @@ def next_question(session: ChapterLadderSession) -> Question | None:
 # Record an answer + advance the state machine
 # ---------------------------------------------------------------------------
 def record_answer(
-    session: ChapterLadderSession, question_id: int, option_id: int | None
+    session: ChapterLadderSession, question_id: int, option_id: int | None = None
 ) -> None:
     """Record one ladder answer and advance the active topic's state machine.
 
@@ -318,7 +318,7 @@ def record_answer(
     )
     # An "I don't know" drives the ladder verdict but is not evidence of ability,
     # so it is deliberately excluded from the theta update.
-    if not dont_know:
+    if option_id:
         mastery.update_mastery(session.student, tag, question.difficulty, outcome)
 
     st["asked"].append(question.id)
