@@ -639,9 +639,6 @@ def build_attempt_review_payload(attempt: TestAttempt) -> dict:
         )
         ans = answers_by_question.get(question.pk)
 
-        # Why the student probably erred: map the chosen wrong option's
-        # misconception slug -> its human description on the question's solution.
-        # Empty for correct/skipped answers and untagged (fallback) distractors.
         mistake_reason = ""
         selected = ans.selected_option if ans else None
         if selected is not None and not selected.is_correct and selected.misconception:
