@@ -83,7 +83,7 @@ class ProfileView(APIView):
         profile.save()
 
         if subjects is not None:
-            profile.subjects.set(subjects)
+                profile.subjects.set(subjects)
 
         if expected_scores is not None:
             services.upsert_expected_scores(profile, expected_scores)

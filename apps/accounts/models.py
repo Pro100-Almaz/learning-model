@@ -8,6 +8,11 @@ class StudentProfile(models.Model):
         on_delete=models.CASCADE,
         related_name="profile",
     )
+    username = models.CharField(
+        max_length=150,
+        null=True,
+        blank=True
+    )
     target_university = models.ForeignKey(
         "careers.University",
         null=True,
