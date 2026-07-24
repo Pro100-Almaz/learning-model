@@ -163,7 +163,7 @@ class ModuleLessonsListTests(APITestCase):
         for lesson in response.data:
             self.assertEqual(
                 set(lesson.keys()),
-                {"id", "title", "duration_sec", "module_id", "status", "progress"},
+                {"id", "title", "duration_sec", "module_id", "status", "progress", "mastery"},
             )
 
         # Ordered by `order`.
@@ -248,6 +248,7 @@ class LessonDetailTests(APITestCase):
                 "video_provider",
                 "micro_test_id",
                 "tag",
+                "mastery",
             },
         )
         self.assertEqual(response.data["micro_test_id"], self.micro_test.id)

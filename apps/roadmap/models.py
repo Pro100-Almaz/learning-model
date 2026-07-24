@@ -142,6 +142,10 @@ class StudentTopicMastery(models.Model):
         """Ability as a 0..1 probability, for the UI and the planner thresholds."""
         return 1 / (1 + math.exp(-self.theta))
 
+    @property
+    def progress(self) -> int:
+        return 100 if self.theta >= 1 else 0
+
     def __str__(self) -> str:
         return (
             f"Mastery<{self.pk}> student={self.student_id} tag={self.tag_id} "

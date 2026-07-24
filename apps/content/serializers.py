@@ -6,9 +6,12 @@ must match plan/openapi.yaml exactly (snake_case JSON).
 
 from __future__ import annotations
 
+from django.db.models import Max
 from rest_framework import serializers
 
+from apps.assessments.models import TestAttempt
 from apps.content.models import Lesson, Module, Tag, Subject, ClassGrade
+from apps.roadmap.models import StudentTopicMastery
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -107,6 +110,7 @@ class LessonBaseSerializer(serializers.ModelSerializer):
 
     progress = serializers.SerializerMethodField()
     status = serializers.SerializerMethodField()
+    mastery = serializers.SerializerMethodField()
 
     class Meta:
         model = Lesson
@@ -117,13 +121,56 @@ class LessonBaseSerializer(serializers.ModelSerializer):
             "module_id",
             "status",
             "progress",
+            "mastery",
         ]
 
+    def _calculate_progress(self, obj: Lesson):
+        request = self.context.get("request")
+        student = getattr(request, "user", None)
+        if student is None or not getattr(student, "is_authenticated", False):
+            return 0
+
+        if obj.tag:
+            mastery = StudentTopicMastery.objects.filter(student=student, tag=obj.tag).first()
+            if mastery and mastery.progress == 100:
+                return mastery.progress
+
+        best = (
+            TestAttempt.objects
+            .filter(
+                student=student,
+                test__lesson=obj,
+                is_completed=True,
+                score__isnull=False,
+            )
+            .aggregate(best=Max("score"))["best"]
+        )
+        return int(round(best)) if best is not None else 0
+
     def get_progress(self, obj: Lesson):
-        return 43
+        if hasattr(self, "_cached_progress"):
+            return self._cached_progress
+
+        self._cached_progress = self._calculate_progress(obj)
+        return self._cached_progress
 
     def get_status(self, obj: Lesson):
-        return "progress"
+        if not hasattr(self, "_cached_progress"):
+            self._cached_progress = self._calculate_progress(obj)
+
+        if self._cached_progress >= 85:
+            return "done"
+        elif self._cached_progress > 0:
+            return "progress"
+
+        return "todo"
+
+    def get_mastery(self, obj: Lesson):
+        tag = obj.tag
+        request = self.context.get("request")
+        mastery = StudentTopicMastery.objects.filter(student=request.user, tag=tag).first()
+        if mastery:
+            return mastery.theta
 
 
 class LessonSerializer(LessonBaseSerializer):

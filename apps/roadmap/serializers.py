@@ -121,17 +121,7 @@ class LadderNextInputSerializer(serializers.Serializer):
 
     session_id = serializers.IntegerField()
     question_id = serializers.IntegerField()
-    option_id = serializers.IntegerField(required=False)
-    dont_know = serializers.BooleanField(required=False, default=False)
-
-    def validate(self, attrs):
-        if attrs.get("dont_know"):
-            if attrs.get("option_id") is not None:
-                raise serializers.ValidationError(
-                    {"option_id": "omit option_id when dont_know is true"}
-                )
-        elif attrs.get("option_id") is None:
-            raise serializers.ValidationError(
-                {"option_id": "required unless dont_know is true"}
-            )
-        return attrs
+    # A null/omitted option_id means "don't know" — the student saw the question
+    # but did not (or could not) answer. It is graded as wrong (outcome=0) so a
+    # forced random guess can't luck the student into a skip verdict.
+    option_id = serializers.IntegerField(required=False, allow_null=True)

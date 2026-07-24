@@ -7,15 +7,17 @@ tests can exercise it directly without HTTP plumbing.
 
 from __future__ import annotations
 
+import datetime
 import logging
 from dataclasses import dataclass
+from datetime import timedelta
 from typing import Optional
 
 from config import TUTOR_MODEL
 from agents_and_engine.llm import chat_anthropic
 
 from django.db import IntegrityError, transaction
-from django.db.models import Prefetch
+from django.db.models import Prefetch, ExpressionWrapper, F, Q, DateTimeField
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.exceptions import NotFound, ValidationError
@@ -639,6 +641,13 @@ def build_attempt_review_payload(attempt: TestAttempt) -> dict:
             (o for o in options if o.is_correct), None
         )
         ans = answers_by_question.get(question.pk)
+
+        mistake_reason = ""
+        selected = ans.selected_option if ans else None
+        if selected is not None and not selected.is_correct and selected.misconception:
+            misconceptions = (question.solution or {}).get("misconceptions", {})
+            mistake_reason = misconceptions.get(selected.misconception, "")
+
         items.append(
             {
                 "question_id": question.pk,
@@ -647,6 +656,7 @@ def build_attempt_review_payload(attempt: TestAttempt) -> dict:
                 "correct_option_id": correct_option.pk if correct_option else 0,
                 "is_correct": bool(ans.is_correct) if ans else False,
                 "explanation": question.explanation or "",
+                "mistake_reason": mistake_reason,
                 "options": options,
             }
         )
@@ -656,3 +666,14 @@ def build_attempt_review_payload(attempt: TestAttempt) -> dict:
         "score": attempt.score,
         "items": items,
     }
+
+
+def remove_failed_attempts(user, test: Test):
+    time_limit_sec = test.time_limit_sec or 0
+    cutoff = timezone.now() - datetime.timedelta(seconds=time_limit_sec)
+    TestAttempt.objects.filter(
+        student=user,
+        test=test,
+        is_completed=False,
+        started_at__lt=cutoff
+    ).delete()
