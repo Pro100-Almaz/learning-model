@@ -62,6 +62,11 @@ def load_blueprint(topic: str) -> dict[str, Any]:
     return json.loads((BLUEPRINT_DIR / f"{topic}.json").read_text("utf-8"))
 
 
+def available_topics() -> list[str]:
+    """List available topics."""
+    return sorted(p.stem for p in BLUEPRINT_DIR.glob("*.json"))
+
+
 def render_constraints(blueprint: dict, spec: dict) -> str:
     """Render the topic's Jinja template with the rolled numbers."""
     template = TEMPLATE_ENV.get_template(blueprint["constraints_template"])
