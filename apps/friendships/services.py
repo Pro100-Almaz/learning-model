@@ -1,26 +1,25 @@
-from django.db import transactions
+from django.db import transaction
 from django.db.models import Q
 from apps.accounts.models import StudentProfile
-from apps.accounts.serializers import StudentProfileSerializer
 from apps.friendships.models import Friendship
 
 class FriendshipError(Exception):
     pass
 
 
-@transactions.atomic
+@transaction.atomic
 def send_request(sender: StudentProfile, receiver: StudentProfile) -> Friendship:
     if sender == receiver:
-        return FriendshipError("Cannot be friends with yourself")
+        raise FriendshipError("Cannot be friends with yourself")
 
     reverse = Friendship.objects.filter(
         from_profile=receiver,
         to_profile=sender,
         status=Friendship.Status.PENDING
-    )
-    if reverse:
+    ).first()
+    if reverse is not None:
         reverse.status = Friendship.Status.ACCEPTED
-        reverse.save()
+        reverse.save(update_fields=["status", "updated_at"])
         return reverse
 
     friendship, created = Friendship.objects.get_or_create(
@@ -32,12 +31,13 @@ def send_request(sender: StudentProfile, receiver: StudentProfile) -> Friendship
     )
 
     if not created:
+        if friendship.status == Friendship.Status.ACCEPTED:
+            raise FriendshipError("Already friends")
         if friendship.status == Friendship.Status.REJECTED:
             friendship.status = Friendship.Status.PENDING
-            friendship.save(update_field=["status", "updated_at"])
-        elif friendship.status == Friendship.Status.ACCEPTED:
-            raise FriendshipError("Already friends")
-        return friendship
+            friendship.save(update_fields=["status", "updated_at"])
+
+    return friendship
 
 
 def accept_request(friendship_id: int, actor_id: int) -> Friendship:
@@ -45,7 +45,7 @@ def accept_request(friendship_id: int, actor_id: int) -> Friendship:
     if friendship.to_profile_id != actor_id:
         raise FriendshipError("Wrong receiver")
     friendship.status = Friendship.Status.ACCEPTED
-    friendship.save(updated_fields=["status", "updated_at"])
+    friendship.save(update_fields=["status", "updated_at"])
     return friendship
 
 
@@ -56,6 +56,14 @@ def reject_request(friendship_id: int, actor_id: int) -> Friendship:
     friendship.status = Friendship.Status.REJECTED
     friendship.save(update_fields=["status", "updated_at"])
     return friendship
+
+def cancel_request(friendship_id: int, actor_id: int) -> None:
+    friendship = Friendship.objects.get(id=friendship_id)
+    if friendship.from_profile_id != actor_id:
+        raise FriendshipError("Only the sender can cancel a request")
+    if friendship.status != Friendship.Status.PENDING:
+        raise FriendshipError("Request is no longer pending")
+    friendship.delete()
 
 def remove_friend(profile_id: int, other_id: int) -> None:
     Friendship.objects.filter(
@@ -68,7 +76,7 @@ def list_friends(profile_id: int) -> list[StudentProfile]:
     friendships = Friendship.objects.filter(
         (Q(from_profile_id=profile_id) | Q(to_profile_id=profile_id)),
         status=Friendship.Status.ACCEPTED,
-    )
+    ).select_related("from_profile", "to_profile")
     friends_list = []
     for friend in friendships:
         if friend.to_profile_id != profile_id:
@@ -81,6 +89,13 @@ def list_friendship_requests(receiver_id: int) -> list[Friendship]:
     return list(Friendship.objects.filter(
         to_profile_id = receiver_id,
         status=Friendship.Status.PENDING,
-    ))
+    ).select_related("from_profile", "to_profile"))
+
+
+def list_sent_friendship_requests(sender_id: int) -> list[Friendship]:
+    return list(Friendship.objects.filter(
+        from_profile_id = sender_id,
+        status=Friendship.Status.PENDING,
+    ).select_related("from_profile", "to_profile"))
 
 

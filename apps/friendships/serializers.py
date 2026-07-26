@@ -1,12 +1,18 @@
 from rest_framework import serializers
 
-from apps.accounts.serializers import StudentProfileSerializer
+from apps.accounts.models import StudentProfile
 from apps.friendships.models import Friendship
 
 
+class FriendProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentProfile
+        fields = ["id", "username"]
+
+
 class FriendshipSerializer( serializers.ModelSerializer):
-    from_profile = StudentProfileSerializer(read_only=True)
-    to_profile = StudentProfileSerializer(read_only=True)
+    from_profile = FriendProfileSerializer(read_only=True)
+    to_profile = FriendProfileSerializer(read_only=True)
 
     class Meta:
         model = Friendship
@@ -21,5 +27,9 @@ class RespondFriendRequestSerializer(serializers.Serializer):
     action = serializers.ChoiceField(choices=["accept",  "reject"])
 
 
+class CancelFriendRequestSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+
+
 class RemoveFriendSerializer(serializers.Serializer):
-    pass
+    to_remove_id = serializers.IntegerField()

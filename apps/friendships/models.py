@@ -1,5 +1,7 @@
 from django.db import models
 
+from apps.accounts.models import StudentProfile
+
 
 class Friendship(models.Model):
     class Status(models.TextChoices):
@@ -21,7 +23,7 @@ class Friendship(models.Model):
             ),
 
             models.CheckConstraint(
-                check=~models.Q(from_profile=models.F("to_profile")),
+                condition=~models.Q(from_profile=models.F("to_profile")),
                 name="no_self_friendship"
             )
         ]

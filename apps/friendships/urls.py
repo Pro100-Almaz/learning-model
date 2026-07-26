@@ -3,8 +3,7 @@ from django.urls import path
 from apps.friendships import views
 
 urlpatterns = [
-      path("friendships/", views.FriendshipView.as_view()),
-      path("friendships/remove/", views.RemoveFriendView.as_view()),
-      path("friendships/friends/", views.ListFriendsView.as_view()),
-      path("friendships/requests/", views.ListFriendshipRequestsView.as_view()),
+      path("", views.FriendshipView.as_view()),
+      path("friends/<int:profile_id>/", views.ListFriendsView.as_view()),
+      path("requests/<int:profile_id>/", views.ListFriendshipRequestsView.as_view()),
   ]
