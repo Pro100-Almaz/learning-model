@@ -22,6 +22,7 @@ from apps.assessments.serializers import (
     TutorRequestInputSerializer,
 )
 from apps.content.models import Lesson
+from apps.gamification.services import get_or_create_streak, update_streak
 
 
 class TestDetailView(APIView):
@@ -112,6 +113,8 @@ class AttemptFinishView(APIView):
         if not attempt.is_completed:
             attempt = services.finish_attempt(attempt)
         body = services.build_attempt_result_payload(attempt)
+
+        update_streak(request.user)
         return Response(AttemptResultSerializer(body).data)
 
 
