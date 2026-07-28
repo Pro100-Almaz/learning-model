@@ -3,6 +3,8 @@ import time
 import uuid
 from contextvars import ContextVar
 
+from django.utils import translation
+
 # ContextVars to replace threading.local for async safety
 request_id_var = ContextVar("request_id", default="none")
 client_ip_var = ContextVar("client_ip", default="")
@@ -58,6 +60,34 @@ class RequestIDMiddleware:
             response_time_var.set(response_time)
             status_code_var.set(500)
             raise
+
+
+class LanguageMiddleware:
+    """Resolve the request language from the ``Accept-Language`` header.
+
+    The frontend signals the user's locale via ``Accept-Language``. We negotiate
+    it against ``settings.LANGUAGES`` (ru/kk/en) with Django's own parser, which
+    falls back to ``settings.LANGUAGE_CODE`` when the header is missing or names
+    no supported language. The resolved code is activated for the duration of
+    the request — so ``gettext`` and (later) modeltranslation pick the right
+    language — and exposed as ``request.LANGUAGE_CODE`` for views, serializers,
+    and content queries. ``Content-Language`` is echoed back so caches and the
+    client can see which language was actually served.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        language = translation.get_language_from_request(request, check_path=False)
+        translation.activate(language)
+        request.LANGUAGE_CODE = language
+        try:
+            response = self.get_response(request)
+        finally:
+            translation.deactivate()
+        response["Content-Language"] = language
+        return response
 
 
 class TimeLogFilter(logging.Filter):

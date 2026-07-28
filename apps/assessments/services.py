@@ -16,10 +16,11 @@ from typing import Optional
 from config import TUTOR_MODEL
 from agents_and_engine.llm import chat_anthropic
 
+from django.conf import settings
 from django.db import IntegrityError, transaction
 from django.db.models import Prefetch, ExpressionWrapper, F, Q, DateTimeField
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
+from django.utils import timezone, translation
 from rest_framework.exceptions import NotFound, ValidationError
 
 from apps.content.models import Lesson, Tag
@@ -35,6 +36,19 @@ from apps.assessments.models import (
 )
 
 logger = logging.getLogger("apps.assessments")
+
+
+def _current_language() -> str:
+    """The request's active language, set per request by LanguageMiddleware from
+    Accept-Language. Falls back to ``settings.LANGUAGE_CODE`` when nothing is
+    active (background jobs, management commands, tests with no request).
+
+    Questions are stored one row per language (generated in a single language,
+    never translated), so serving in a locale just means selecting the rows in
+    that language — each row already carries its own text, options, and
+    explanation.
+    """
+    return translation.get_language() or settings.LANGUAGE_CODE
 
 
 @dataclass
@@ -577,9 +591,11 @@ def get_attempt_for_owner(user, attempt_id: int) -> TestAttempt:
 
 
 def get_test_questions_ordered(test: Test):
-    """Return questions for a test, ordered by TestQuestion.order."""
+    """Return questions for a test in the current language, ordered by
+    TestQuestion.order. A test links question rows across languages; we serve
+    only the rows matching the request locale (see ``_current_language``)."""
     return (
-        Question.objects.filter(tests=test)
+        Question.objects.filter(tests=test, language=_current_language())
         .prefetch_related(
             Prefetch(
                 "options",
@@ -602,7 +618,9 @@ def build_attempt_start_payload(attempt: TestAttempt) -> dict:
 
 
 def build_attempt_result_payload(attempt: TestAttempt) -> dict:
-    total_count = attempt.test.questions.count()
+    # Denominator is the current-language question set — the same rows the
+    # student was served — so the score fraction matches what they saw.
+    total_count = attempt.test.questions.filter(language=_current_language()).count()
     correct_count = attempt.answers.filter(is_correct=True).count()
     return {
         "attempt_id": attempt.pk,
@@ -624,7 +642,7 @@ def build_attempt_review_payload(attempt: TestAttempt) -> dict:
     }
 
     questions = list(
-        Question.objects.filter(tests=attempt.test)
+        Question.objects.filter(tests=attempt.test, language=_current_language())
         .prefetch_related(
             Prefetch(
                 "options",

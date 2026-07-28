@@ -30,9 +30,13 @@ DRIFT_ABORT_PCT = 10.0
 # value limp forward forever.
 MAX_CARRY_CYCLES = 2
 
-#Language configuration for agents_and_engine system
-SUPPORTED_LANGUAGES = ("russian", "kazakh")
-DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[0]
+#Language configuration for agents_and_engine system.
+# ISO 639-1 codes (ru = Russian, kk = Kazakh) — the same vocabulary the request
+# i18n layer negotiates from Accept-Language. These are the languages the
+# generation pipeline can actually produce; "en" is supported for authored
+# content only and is intentionally NOT listed here.
+SUPPORTED_LANGUAGES = ("ru", "kk")
+DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[0]  # ru
 assert DEFAULT_LANGUAGE in SUPPORTED_LANGUAGES, f"Default language '{DEFAULT_LANGUAGE}' must be in SUPPORTED_LANGUAGES"
 
 config = Config()

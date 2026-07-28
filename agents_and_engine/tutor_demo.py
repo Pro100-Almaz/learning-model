@@ -86,7 +86,7 @@ def main() -> None:
         print("Student's answer:", ex["wrong"].text)
         prompt = _build_tutor_prompt(ex["question"], ex["wrong"])
         try:
-            note = chat_anthropic(tutor_system("kazakh"), prompt, model=TUTOR_MODEL).strip()
+            note = chat_anthropic(tutor_system("kk"), prompt, model=TUTOR_MODEL).strip()
             print("\nTutor's margin note (live from Claude):\n")
             print("  " + note)
         except Exception as exc:
