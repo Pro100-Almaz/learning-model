@@ -35,8 +35,8 @@ MAX_CARRY_CYCLES = 2
 # i18n layer negotiates from Accept-Language. These are the languages the
 # generation pipeline can actually produce; "en" is supported for authored
 # content only and is intentionally NOT listed here.
-SUPPORTED_LANGUAGES = ("ru", "kk")
-DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[0]  # ru
+SUPPORTED_LANGUAGES = ("kk", "ru")
+DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[0]  # kk
 assert DEFAULT_LANGUAGE in SUPPORTED_LANGUAGES, f"Default language '{DEFAULT_LANGUAGE}' must be in SUPPORTED_LANGUAGES"
 
 config = Config()

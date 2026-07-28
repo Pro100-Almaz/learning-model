@@ -138,15 +138,15 @@ def test_tutor_prompt_matches_question_language(student, setup, spy_anthropic):
     """The Tutor must build its system prompt in the question's own language."""
     # Flip the question to Kazakh; the note the Tutor produces must be built from
     # the Kazakh persona, not the default Russian one.
-    setup["q"].language = "kazakh"
+    setup["q"].language = "kk"
     setup["q"].save(update_fields=["language"])
 
     attempt = _finished_attempt_with_wrong_answer(student, setup)
     services.get_tutor_feedback(attempt, setup["q"].pk)
 
-    assert spy_anthropic[0]["system"] == tutor_system("kazakh")
+    assert spy_anthropic[0]["system"] == tutor_system("kk")
     # And, to be sure the assertion has teeth, it is NOT the Russian build.
-    assert spy_anthropic[0]["system"] != tutor_system("russian")
+    assert spy_anthropic[0]["system"] != tutor_system("ru")
 
 
 def test_caches_per_option_and_skips_second_llm_call(student, setup, spy_anthropic):
