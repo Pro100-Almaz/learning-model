@@ -20,7 +20,7 @@ from apps.accounts.models import StudentProfile
 from apps.analytics.services import (
     build_post_topic_results,
     build_student_report,
-    classify_topics,
+    classify_topics_by_result,
     compute_recommendations,
     compute_tag_stats,
 )
@@ -356,7 +356,7 @@ class AnalyticsEndpointTests(APITestCase):
 def _topic_result(tag_id: int, score: float) -> dict:
     """One ``build_post_topic_results`` entry, hand-built (no DB).
 
-    classify_topics only reads ``post_score`` to route the entry and stores the
+    classify_topics_by_result only reads ``post_score`` to route the entry and stores the
     whole dict, so the other fields just need to be present and plausible.
     """
     return {
@@ -388,13 +388,13 @@ class ClassifyTopicsTests(SimpleTestCase):
         }
 
     def test_bucket_counts(self):
-        result = classify_topics(self._post_results())
+        result = classify_topics_by_result(self._post_results())
         self.assertEqual(len(result["weak"]), 2)
         self.assertEqual(len(result["improving"]), 3)
         self.assertEqual(len(result["solid"]), 2)
 
     def test_boundaries_round_upward(self):
-        result = classify_topics(self._post_results())
+        result = classify_topics_by_result(self._post_results())
         weak = [e["post_score"] for e in result["weak"]]
         improving = [e["post_score"] for e in result["improving"]]
         solid = [e["post_score"] for e in result["solid"]]
@@ -406,20 +406,20 @@ class ClassifyTopicsTests(SimpleTestCase):
         self.assertNotIn(75, improving)
 
     def test_weak_bucket_is_sorted_weakest_first(self):
-        result = classify_topics(self._post_results())
+        result = classify_topics_by_result(self._post_results())
         scores = [e["post_score"] for e in result["weak"]]
         self.assertEqual(scores, sorted(scores))
 
     def test_every_topic_lands_in_exactly_one_bucket(self):
         results = self._post_results()
-        buckets = classify_topics(results)
+        buckets = classify_topics_by_result(results)
         placed = len(buckets["weak"]) + len(buckets["improving"]) + len(buckets["solid"])
         # No topic dropped and none double-counted.
         self.assertEqual(placed, len(results))
 
     def test_empty_input_returns_three_empty_lists(self):
         self.assertEqual(
-            classify_topics({}),
+            classify_topics_by_result({}),
             {"weak": [], "improving": [], "solid": []},
         )
 

@@ -14,6 +14,7 @@ from django.db.models import Count, Q
 
 import config
 from apps.content.models import Lesson, Tag
+from apps.assessments.models import TestAttempt
 
 
 def _percent(correct: int, total: int) -> float:
@@ -224,9 +225,6 @@ def build_post_topic_results(user) -> dict[int, dict]:
     lesson, or whose lesson has no tag, can't be attributed to a topic and are
     skipped.
     """
-    # Local import: keeps analytics importable without assessments loaded and
-    # avoids any app-loading ordering surprises (assessments never imports us).
-    from apps.assessments.models import TestAttempt
 
     attempts = (
         TestAttempt.objects.filter(
@@ -268,7 +266,7 @@ def build_post_topic_results(user) -> dict[int, dict]:
         }
     return results
 
-def classify_topics(post_results: dict[int, dict]) -> dict[str, list[dict]]:
+def classify_topics_by_result(post_results: dict[int, dict]) -> dict[str, list[dict]]:
     #three lists are made for storing results of the students' according to their scores from the exam
     weak, improving, solid = [], [], []
     for entry in post_results.values(): #iterating through the values
@@ -288,7 +286,7 @@ def build_student_report(user) -> dict[str, dict[str, list[dict]] | list[Any]]:
     Also returns the bucket of the topics and careers math/university projection -> degrades if no mock
     '''
     results = build_post_topic_results(user) #getting the results of the user
-    buckets = classify_topics(results) #identifying weak, improved, solid topics of the user
+    buckets = classify_topics_by_result(results) #identifying weak, improved, solid topics of the user
     weak_entries = buckets["weak"] #getting the weak entries
     list_of_weak_entries = []
     for entry in weak_entries:
