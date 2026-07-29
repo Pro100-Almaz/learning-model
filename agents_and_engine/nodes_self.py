@@ -311,7 +311,7 @@ def publisher_node(state: GraphState) -> dict[str, Any]:
     # Fallback explanation only — used when the graph produced no explanation.
     # Keep its prefix in the question's own language so a Kazakh question never
     # ships a Russian sentence.
-    answer_label = {"russian": "Правильный ответ", "kazakh": "Дұрыс жауап"}[language]
+    answer_label = {"ru": "Правильный ответ", "kk": "Дұрыс жауап"}[language]
     explanation = state.get("explanation") or (
         f"{answer_label}: {correct_text}." if correct_text else ""
     )

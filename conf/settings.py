@@ -23,10 +23,21 @@ DEBUG = env.bool("DEBUG", default=False)
 # -----------------------------------------------------------------------------
 # Time & Language
 # -----------------------------------------------------------------------------
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "kk"
+LANGUAGES = [
+    ("kk", "Kazakh"),
+    ("ru", "Russian"),
+    ("en", "English"),
+]
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
+
+# -----------------------------------------------------------------------------
+# Content translation (django-modeltranslation)
+# -----------------------------------------------------------------------------
+MODELTRANSLATION_DEFAULT_LANGUAGE = "kk"
+MODELTRANSLATION_FALLBACK_LANGUAGES = ("kk", "ru", "en")
 
 # -----------------------------------------------------------------------------
 # Security and Users
@@ -79,6 +90,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Applications configuration
 # -----------------------------------------------------------------------------
 INSTALLED_APPS = [
+    "modeltranslation",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -121,6 +133,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "apps.core.middleware.LanguageMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
 ]
 
