@@ -1,5 +1,8 @@
 from django.db import models
 
+from apps.content.services import calculate_student_progress, invalidate_cache_for_student_and_lesson
+from apps.users.models import CustomUser
+
 
 class Subject(models.Model):
     name = models.CharField(max_length=50)
@@ -11,6 +14,11 @@ class Subject(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    def student_progress(self, student: CustomUser) -> int:
+        lessons = Lesson.objects.filter(module__class_grade__subject=self)
+        cache_key = f"student_{student.id}:subject_{self.id}"
+        return calculate_student_progress(lessons, student, cache_key)
+
 
 class ClassGrade(models.Model):
     grade = models.PositiveIntegerField()
@@ -18,6 +26,12 @@ class ClassGrade(models.Model):
 
     def __str__(self) -> str:
         return str(self.grade)
+
+    def student_progress(self, student: CustomUser) -> int:
+        lessons = Lesson.objects.filter(module__class_grade=self)
+        cache_key = f"student_{student.id}:class_grade_{self.id}"
+        result = calculate_student_progress(lessons, student, cache_key)
+        return result
 
 
 class Module(models.Model):
@@ -36,6 +50,11 @@ class Module(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+    def student_progress(self, student: CustomUser) -> int:
+        lessons = Lesson.objects.filter(module=self)
+        cache_key = f"student_{student.id}:module_{self.id}"
+        return calculate_student_progress(lessons, student, cache_key)
 
 
 class Lesson(models.Model):
@@ -76,6 +95,10 @@ class Lesson(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        invalidate_cache_for_student_and_lesson(self.id)
 
 
 class Tag(models.Model):

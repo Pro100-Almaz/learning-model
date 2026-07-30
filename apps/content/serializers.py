@@ -6,11 +6,14 @@ must match plan/openapi.yaml exactly (snake_case JSON).
 
 from __future__ import annotations
 
+import config
+
 from django.db.models import Max
 from rest_framework import serializers
 
 from apps.assessments.models import TestAttempt
 from apps.content.models import Lesson, Module, Tag, Subject, ClassGrade
+from apps.content.services import get_passed_lesson_count
 from apps.roadmap.models import StudentTopicMastery
 
 
@@ -45,10 +48,21 @@ class ModuleSerializer(serializers.ModelSerializer):
         return obj.lessons.count()
 
     def get_done(self, obj: Module):
-        return 1
+        request = self.context.get("request")
+        student = getattr(request, "user", None)
+        if student is None or not getattr(student, "is_authenticated", False):
+            return 0
 
-    def get_progress(self, obj: Module):
-        return 43
+        lessons = Lesson.objects.filter(module=obj)
+        return get_passed_lesson_count(lessons, student)
+
+    def get_progress(self, obj: Module) -> int:
+        request = self.context.get("request")
+        student = getattr(request, "user", None)
+        if student is None or not getattr(student, "is_authenticated", False):
+            return 0
+
+        return obj.student_progress(student)
 
 
 class LessonSummarySerializer(serializers.ModelSerializer):
@@ -132,8 +146,8 @@ class LessonBaseSerializer(serializers.ModelSerializer):
 
         if obj.tag:
             mastery = StudentTopicMastery.objects.filter(student=student, tag=obj.tag).first()
-            if mastery and mastery.progress == 100:
-                return mastery.progress
+            if mastery and mastery.theta >= 1:
+                return 100
 
         best = (
             TestAttempt.objects
@@ -148,19 +162,20 @@ class LessonBaseSerializer(serializers.ModelSerializer):
         return int(round(best)) if best is not None else 0
 
     def get_progress(self, obj: Lesson):
-        if hasattr(self, "_cached_progress"):
-            return self._cached_progress
+        if not hasattr(self, "_cached_progress"):
+            self._cached_progress = {}
 
-        self._cached_progress = self._calculate_progress(obj)
-        return self._cached_progress
+        if obj.id not in self._cached_progress:
+            self._cached_progress[obj.id] = self._calculate_progress(obj)
+
+        return self._cached_progress[obj.id]
 
     def get_status(self, obj: Lesson):
-        if not hasattr(self, "_cached_progress"):
-            self._cached_progress = self._calculate_progress(obj)
+        progress = self.get_progress(obj)
 
-        if self._cached_progress >= 85:
+        if progress >= config.TEST_PASS_THRESHOLD:
             return "done"
-        elif self._cached_progress > 0:
+        elif progress > 0:
             return "progress"
 
         return "todo"
@@ -219,8 +234,12 @@ class SubjectSerializer(serializers.ModelSerializer):
         return obj.classes.count()
 
     def get_progress(self, obj: Subject) -> int:
-        # static for now, depends on how the lesson is counted as passed
-        return 43
+        request = self.context.get("request")
+        student = getattr(request, "user", None)
+        if student is None or not getattr(student, "is_authenticated", False):
+            return 0
+
+        return obj.student_progress(student)
 
 
 class ClassGradeSerializer(serializers.ModelSerializer):
@@ -250,9 +269,17 @@ class ClassGradeSerializer(serializers.ModelSerializer):
         return Module.objects.filter(class_grade=obj).count()
 
     def get_progress(self, obj: ClassGrade) -> int:
-        # static for now
-        return 43
+        request = self.context.get("request")
+        student = getattr(request, "user", None)
+        if student is None or not getattr(student, "is_authenticated", False):
+            return 0
+
+        return obj.student_progress(student)
 
     def get_title(self, obj: ClassGrade) -> str:
         # for now
         return f"{obj.grade}-сынып"
+
+
+class NextLessonsSerializer(serializers.ModelSerializer):
+    pass

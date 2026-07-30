@@ -21,9 +21,9 @@ from rest_framework.views import APIView
 from apps.content.models import Lesson, Module, Subject, ClassGrade
 from apps.content.serializers import (
     LessonSerializer,
-    ModuleSerializer, SubjectSerializer, ClassGradeSerializer, LessonBaseSerializer,
+    ModuleSerializer, SubjectSerializer, ClassGradeSerializer, LessonBaseSerializer, NextLessonsSerializer,
 )
-from apps.content.services import get_micro_test_id_for_lesson
+from apps.content.services import get_micro_test_id_for_lesson, find_next_lesson
 
 
 class ModuleListView(ListAPIView):
@@ -108,6 +108,33 @@ class LessonDetailView(RetrieveAPIView):
         return ctx
 
 
+class NextLessonsView(APIView):
+    """
+    GET /api/v1/lessons/next-lessons
+    Returns the next lessons list (or empty) for the student.
+    """
+
+    serializer_class = NextLessonsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = self.request.user
+        subjects = user.profile.subjects.all()
+        lessons = []
+        for subject in subjects:
+            if subject.student_progress(user) < 100:
+                # find and add lesson
+                lessons.append(find_next_lesson(subject))
+
+        data = NextLessonsSerializer(
+            lessons,
+            many=True,
+            context={"request": request}
+        ).data
+        return Response(data)
+
+
+
 class SubjectListView(ListAPIView):
     """GET /api/v1/subjects/"""
 
@@ -138,5 +165,9 @@ class ClassGradeListView(APIView):
     def get(self, request, subject_id):
         queryset = ClassGrade.objects.filter(subject_id=subject_id)
 
-        data = ClassGradeSerializer(queryset, many=True).data
+        data = ClassGradeSerializer(
+            queryset,
+            many=True,
+            context={"request": request}
+        ).data
         return Response(data)

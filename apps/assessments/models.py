@@ -160,6 +160,13 @@ class TestAttempt(models.Model):
     def __str__(self) -> str:
         return f"Attempt<{self.pk}> student={self.student_id} test={self.test_id}"
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        if self.test:
+            from apps.content.services import invalidate_cache_for_student_and_lesson
+            invalidate_cache_for_student_and_lesson(self.test.lesson_id, self.student_id)
+
 
 class AttemptAnswer(models.Model):
     attempt = models.ForeignKey(
