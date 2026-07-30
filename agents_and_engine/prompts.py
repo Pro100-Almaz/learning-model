@@ -9,10 +9,11 @@ Python and need none.
 
 from __future__ import annotations
 
-#how exactly language is called in the prompts
+#how exactly language is called in the prompts (keyed by the ISO codes in
+# config.SUPPORTED_LANGUAGES)
 LANGUAGE_LABELS = {
-    "russian": "Russian",
-    "kazakh": "Kazakh",
+    "ru": "Russian",
+    "kk": "Kazakh",
 }
 
 def _label(language: str) -> str:

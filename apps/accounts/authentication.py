@@ -144,7 +144,7 @@ class ClerkAuthentication(BaseAuthentication):
     # Local-user upsert
     # ------------------------------------------------------------------
 
-    def _upsert_user(self, payload: dict) -> Optional["CustomUser"]:  # noqa: F821
+    def _upsert_user(self, payload: dict) -> Optional[CustomUser]:  # noqa: F821
         """Resolve / create the local user the Clerk subject maps to.
 
         Match rules (in order):
@@ -185,8 +185,26 @@ class ClerkAuthentication(BaseAuthentication):
             # Sync the lightweight claims so the local row stays fresh.
             dirty: list[str] = []
             if email and user.email.lower() != email:
-                user.email = email
-                dirty.append("email")
+                # Keep the stale address and let the operator merge the duplicate rather than failing the request.
+                clash = (
+                    User.objects.filter(email__iexact=email)
+                    .exclude(pk=user.pk)
+                    .only("pk")
+                    .first()
+                )
+                if clash is None:
+                    user.email = email
+                    dirty.append("email")
+                else:
+                    logger.warning(
+                        "ClerkAuthentication: cannot sync email %r onto user pk=%s "
+                        "(clerk_user_id=%s) — already held by user pk=%s; "
+                        "merge the duplicate rows to resolve.",
+                        email,
+                        user.pk,
+                        sub,
+                        clash.pk,
+                    )
             if first_name and user.first_name != first_name:
                 user.first_name = first_name
                 dirty.append("first_name")

@@ -48,7 +48,6 @@ class ExpectedScoreSerializer(serializers.ModelSerializer):
 
 
 class StudentProfileSerializer(serializers.ModelSerializer):
-    """Read shape for GET /profile/ — matches openapi StudentProfile."""
 
     expected_scores = ExpectedScoreSerializer(many=True, read_only=True)
     subjects = serializers.SlugRelatedField(
@@ -58,14 +57,17 @@ class StudentProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentProfile
         fields = (
+            "id",
+            "username",
             "target_university",
             "target_specialty",
             "target_score",
+            "target_math_score",
             "onboarding_completed",
             "subjects",
             "expected_scores",
         )
-        read_only_fields = ("onboarding_completed",)
+        read_only_fields = ("id", "onboarding_completed")
 
 
 class StudentProfileUpdateSerializer(serializers.ModelSerializer):
@@ -85,6 +87,9 @@ class StudentProfileUpdateSerializer(serializers.ModelSerializer):
     target_score = serializers.IntegerField(
         min_value=0, allow_null=True, required=False
     )
+    target_math_score = serializers.IntegerField(
+        min_value=0, max_value=100, allow_null=True, required=False
+    )
 
     class Meta:
         model = StudentProfile
@@ -92,6 +97,7 @@ class StudentProfileUpdateSerializer(serializers.ModelSerializer):
             "target_university",
             "target_specialty",
             "target_score",
+            "target_math_score",
             "subjects",
             "expected_scores",
         )
