@@ -5,7 +5,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.careers.models import GrantThreshold, Specialty, University
+from apps.careers.models import (
+    AdmissionThreshold,
+    GrantThreshold,
+    ScoreType,
+    Specialty,
+    University,
+)
 from apps.careers.serializers import GrantCalcResultSerializer, UniversitySerializer
 from apps.careers.services import NoMockError, calculate_grant
 
@@ -25,7 +31,16 @@ class UniversityListView(APIView):
                     Prefetch(
                         "thresholds",
                         queryset=GrantThreshold.objects.all(),
-                    )
+                    ),
+                    Prefetch(
+                        "admission_thresholds",
+                        queryset=AdmissionThreshold.objects.select_related(
+                            "source"
+                        ).filter(
+                            verified_at__isnull=False,
+                            score_type=ScoreType.HISTORICAL_GRANT_CUTOFF,
+                        ),
+                    ),
                 ),
             )
         ).order_by("name")

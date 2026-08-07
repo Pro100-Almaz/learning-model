@@ -11,6 +11,44 @@ from web_harvester.source_policy import (
 
 
 class SourcePolicyTests(TestCase):
+    def test_retired_primary_domains_are_not_configured(self):
+        primary_domains = set(COMMON_PRIMARY_DOMAINS)
+        for domains in FIELD_PRIMARY_DOMAINS.values():
+            primary_domains.update(domains)
+
+        retired_domains = {
+            "academy.knb.kz",
+            "almaty.mvd.kz",
+            "amu.kz",
+            "aues.edu.kz",
+            "kaznau.kz",
+            "kaznpu.kz",
+            "kaznui.kz",
+            "korkyt.kz",
+            "mil.kz",
+            "wkau.kz",
+            "wksu.kz",
+            "zkmu.edu.kz",
+        }
+        self.assertTrue(primary_domains.isdisjoint(retired_domains))
+
+    def test_current_official_domains_are_assigned_to_the_expected_fields(self):
+        expected_domains = {
+            FieldType.MEDICINE: {"amu.edu.kz", "ospanov.university"},
+            FieldType.EDUCATION: {
+                "abai.university",
+                "korkyt.edu.kz",
+                "wku.edu.kz",
+            },
+            FieldType.TECHNICAL: {"energo.university"},
+            FieldType.CREATIVE: {"kaznui.edu.kz"},
+            FieldType.AGRICULTURE: {"kaznaru.edu.kz", "wkatu.edu.kz"},
+            FieldType.MILITARY_AND_SECURITY: {"alpolac.edu.kz"},
+        }
+        for field_type, domains in expected_domains.items():
+            with self.subTest(field_type=field_type):
+                self.assertTrue(domains.issubset(FIELD_PRIMARY_DOMAINS[field_type]))
+
     def test_every_field_has_an_immutable_primary_domain_set(self):
         self.assertEqual(set(FIELD_PRIMARY_DOMAINS), set(FieldType))
         for domains in FIELD_PRIMARY_DOMAINS.values():

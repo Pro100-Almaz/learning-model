@@ -1,19 +1,39 @@
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
+from apps.careers.admission_services import latest_grant_cutoff_payload
 from apps.careers.models import GrantThreshold, Specialty, University
 
 
+class LatestGrantCutoffSerializer(serializers.Serializer):
+    """Typed canonical grant cutoff attached to one specialty."""
+
+    score = serializers.IntegerField()
+    year = serializers.IntegerField()
+    score_type = serializers.CharField()
+    source_url = serializers.URLField()
+
+
 class SpecialtySerializer(serializers.ModelSerializer):
-    """Specialty + latest threshold (max year), per openapi.yaml Specialty schema."""
+    """Specialty + legacy latest_threshold + typed canonical latest_grant_cutoff."""
 
     university_id = serializers.IntegerField(read_only=True)
     latest_threshold = serializers.SerializerMethodField()
+    latest_grant_cutoff = serializers.SerializerMethodField()
 
     class Meta:
         model = Specialty
-        fields = ("id", "university_id", "name", "code", "latest_threshold")
+        fields = (
+            "id",
+            "university_id",
+            "name",
+            "code",
+            "latest_threshold",
+            "latest_grant_cutoff",
+        )
 
     def get_latest_threshold(self, obj: Specialty) -> int | None:
+        """Legacy untyped number, kept only until the frontend migrates."""
         # Prefer prefetched thresholds (set by the view) to avoid N+1.
         thresholds = getattr(obj, "_prefetched_thresholds", None)
         if thresholds is None:
@@ -23,6 +43,14 @@ class SpecialtySerializer(serializers.ModelSerializer):
             return None
         latest = max(thresholds, key=lambda t: t.year)
         return int(latest.min_score)
+
+    @extend_schema_field(LatestGrantCutoffSerializer(allow_null=True))
+    def get_latest_grant_cutoff(self, obj: Specialty) -> dict | None:
+        # Prefer prefetched canonical thresholds (set by the view) to avoid N+1.
+        thresholds = getattr(obj, "_prefetched_admission_thresholds", None)
+        if thresholds is None:
+            thresholds = list(obj.admission_thresholds.all())
+        return latest_grant_cutoff_payload(thresholds)
 
 
 class UniversitySerializer(serializers.ModelSerializer):
@@ -39,16 +67,26 @@ class UniversitySerializer(serializers.ModelSerializer):
         # Attach prefetched thresholds to each specialty for the serializer.
         for sp in specialties:
             sp._prefetched_thresholds = list(sp.thresholds.all())
+            sp._prefetched_admission_thresholds = list(sp.admission_thresholds.all())
         return SpecialtySerializer(specialties, many=True).data
 
 
 class QualifyingGrantSerializer(serializers.Serializer):
-    """Shape for one qualifying grant entry inside GrantCalcResult."""
+    """Shape for one qualifying grant entry inside GrantCalcResult.
 
-    university_name = serializers.CharField()
+    The context fields are optional so an older client keeps working, but a
+    canonical entry always carries them: a score without its type and year is
+    not interpretable.
+    """
+
+    university_name = serializers.CharField(allow_blank=True)
     specialty_name = serializers.CharField()
     min_score = serializers.IntegerField()
     margin = serializers.IntegerField()
+    year = serializers.IntegerField(required=False)
+    score_type = serializers.CharField(required=False)
+    program_group_code = serializers.CharField(required=False)
+    source_url = serializers.URLField(required=False)
 
 
 class GoalTrackerSerializer(serializers.Serializer):
@@ -75,6 +113,7 @@ __all__ = [
     "GrantThreshold",
     "UniversitySerializer",
     "SpecialtySerializer",
+    "LatestGrantCutoffSerializer",
     "QualifyingGrantSerializer",
     "GoalTrackerSerializer",
     "GrantCalcResultSerializer",

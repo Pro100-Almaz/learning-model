@@ -3,8 +3,10 @@
 from dataclasses import dataclass
 from enum import StrEnum
 
-from web_harvester import agents_web, trust
-from web_harvester.schemas import WebSearch
+from web_harvester import agents_web
+from web_harvester.claim_validation import ClaimValidationResult, validate_claims
+from web_harvester.schemas import AdmissionExtraction
+from web_harvester.search_planning import SearchTarget
 from web_harvester.source_policy import FieldType, SourceStrategy
 
 
@@ -20,7 +22,8 @@ class AttemptStatus(StrEnum):
 class AttemptOutcome:
     strategy: SourceStrategy
     status: AttemptStatus
-    result: WebSearch | None
+    result: AdmissionExtraction | None
+    validation: ClaimValidationResult | None = None
 
     @property
     def succeeded(self) -> bool:
@@ -31,6 +34,7 @@ class AttemptOutcome:
 class HarvestOutcome:
     field_type: FieldType | None
     attempts: tuple[AttemptOutcome, ...]
+    target_year: int | None = None
 
     @property
     def succeeded(self) -> bool:
@@ -44,7 +48,7 @@ class HarvestOutcome:
         return None
 
     @property
-    def result(self) -> WebSearch | None:
+    def result(self) -> AdmissionExtraction | None:
         success_attempt = self.successful_attempt
         if success_attempt is not None:
             return success_attempt.result
@@ -58,20 +62,23 @@ class HarvestOutcome:
         return None
 
 
-def has_useful_facts(result: WebSearch) -> bool:
-    return bool(result.ubt_score is not None or result.subjects or result.universities)
+def has_useful_facts(result: AdmissionExtraction) -> bool:
+    return bool(
+        result.program_identities
+        or result.threshold_claims
+        or result.subject_requirements
+        or result.university_offerings
+    )
 
 
 def _run_attempt(
-    name: str,
-    national_code: str,
+    target: SearchTarget,
     field_type: FieldType,
     strategy: SourceStrategy,
     max_results: int,
 ) -> AttemptOutcome:
     pages = agents_web.search(
-        name=name,
-        national_code=national_code,
+        target=target,
         field_type=field_type,
         strategy=strategy,
         max_results=max_results,
@@ -85,8 +92,7 @@ def _run_attempt(
         )
 
     extracted_result = agents_web.extract(
-        name=name,
-        national_code=national_code,
+        target=target,
         pages=pages,
     )
 
@@ -104,46 +110,49 @@ def _run_attempt(
             result=None,
         )
 
-    if not trust.validate_sources(
-        extracted_result.sources,
+    validation = validate_claims(
+        extracted_result,
+        pages,
+        target,
         field_type,
         strategy,
-    ):
+    )
+    if validation.has_source_rejections and not has_useful_facts(validation.accepted):
         return AttemptOutcome(
             strategy=strategy,
             status=AttemptStatus.INVALID_SOURCES,
             result=None,
+            validation=validation,
         )
 
-    fetched_urls = {url for url, _content in pages}
-    if not set(extracted_result.sources).issubset(fetched_urls):
+    if not has_useful_facts(validation.accepted):
         return AttemptOutcome(
             strategy=strategy,
-            status=AttemptStatus.INVALID_SOURCES,
+            status=AttemptStatus.NO_USEFUL_FACTS,
             result=None,
+            validation=validation,
         )
 
     return AttemptOutcome(
         strategy=strategy,
         status=AttemptStatus.SUCCESS,
-        result=extracted_result,
+        result=validation.accepted,
+        validation=validation,
     )
 
 
 def harvest(
-    name: str,
-    national_code: str,
+    target: SearchTarget,
     primary_max_results: int = agents_web.DEFAULT_MAX_RESULTS,
     fallback_max_results: int = agents_web.DEFAULT_MAX_RESULTS,
 ) -> HarvestOutcome:
     """Classify a profession and run primary, then fallback, harvesting."""
-    field_type = agents_web.classify(name, national_code)
+    field_type = agents_web.classify(target)
     if field_type is None:
-        return HarvestOutcome(field_type=None, attempts=())
+        return HarvestOutcome(field_type=None, attempts=(), target_year=target.year)
 
     primary_attempt = _run_attempt(
-        name=name,
-        national_code=national_code,
+        target=target,
         field_type=field_type,
         strategy=SourceStrategy.PRIMARY,
         max_results=primary_max_results,
@@ -152,11 +161,11 @@ def harvest(
         return HarvestOutcome(
             field_type=field_type,
             attempts=(primary_attempt,),
+            target_year=target.year,
         )
 
     fallback_attempt = _run_attempt(
-        name=name,
-        national_code=national_code,
+        target=target,
         field_type=field_type,
         strategy=SourceStrategy.FALLBACK,
         max_results=fallback_max_results,
@@ -164,4 +173,5 @@ def harvest(
     return HarvestOutcome(
         field_type=field_type,
         attempts=(primary_attempt, fallback_attempt),
+        target_year=target.year,
     )

@@ -33,9 +33,11 @@ class SourceStrategy(StrEnum):
 
 COMMON_PRIMARY_DOMAINS = frozenset(
     {
+        "adilet.zan.kz",
         "testcenter.kz",
         "egov.kz",
         "gov.kz",
+        "zan.gov.kz",
     }
 )
 
@@ -45,10 +47,10 @@ FIELD_PRIMARY_DOMAINS: Mapping[FieldType, frozenset[str]] = MappingProxyType(
         FieldType.MEDICINE: frozenset(
             {
                 "kaznmu.edu.kz",
-                "amu.kz",
+                "amu.edu.kz",
                 "qmu.edu.kz",
                 "smu.edu.kz",
-                "zkmu.edu.kz",
+                "ospanov.university",
                 "skma.edu.kz",
                 "nu.edu.kz",
                 "kaznu.kz",
@@ -56,7 +58,7 @@ FIELD_PRIMARY_DOMAINS: Mapping[FieldType, frozenset[str]] = MappingProxyType(
         ),
         FieldType.EDUCATION: frozenset(
             {
-                "kaznpu.kz",
+                "abai.university",
                 "enu.kz",
                 "kaznu.kz",
                 "sdu.edu.kz",
@@ -64,8 +66,8 @@ FIELD_PRIMARY_DOMAINS: Mapping[FieldType, frozenset[str]] = MappingProxyType(
                 "buketov.edu.kz",
                 "ppu.edu.kz",
                 "dulaty.kz",
-                "korkyt.kz",
-                "wksu.kz",
+                "korkyt.edu.kz",
+                "wku.edu.kz",
                 "kimep.kz",
             }
         ),
@@ -75,7 +77,7 @@ FIELD_PRIMARY_DOMAINS: Mapping[FieldType, frozenset[str]] = MappingProxyType(
                 "kbtu.edu.kz",
                 "iitu.edu.kz",
                 "astanait.edu.kz",
-                "aues.edu.kz",
+                "energo.university",
                 "kstu.kz",
                 "ektu.kz",
                 "atu.edu.kz",
@@ -88,7 +90,7 @@ FIELD_PRIMARY_DOMAINS: Mapping[FieldType, frozenset[str]] = MappingProxyType(
         FieldType.CREATIVE: frozenset(
             {
                 "kaznai.kz",
-                "kaznui.kz",
+                "kaznui.edu.kz",
                 "conservatoire.edu.kz",
                 "kazgasa.kz",
                 "turan-edu.kz",
@@ -118,9 +120,9 @@ FIELD_PRIMARY_DOMAINS: Mapping[FieldType, frozenset[str]] = MappingProxyType(
         ),
         FieldType.AGRICULTURE: frozenset(
             {
-                "kaznau.kz",
+                "kaznaru.edu.kz",
                 "kazatu.edu.kz",
-                "wkau.kz",
+                "wkatu.edu.kz",
             }
         ),
         FieldType.SPORT_AND_TOURISM: frozenset(
@@ -131,9 +133,7 @@ FIELD_PRIMARY_DOMAINS: Mapping[FieldType, frozenset[str]] = MappingProxyType(
         ),
         FieldType.MILITARY_AND_SECURITY: frozenset(
             {
-                "academy.knb.kz",
-                "mil.kz",
-                "almaty.mvd.kz",
+                "alpolac.edu.kz",
             }
         ),
     }

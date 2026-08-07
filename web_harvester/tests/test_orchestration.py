@@ -2,14 +2,73 @@ from unittest.mock import patch
 
 from django.test import SimpleTestCase
 
+from apps.careers.models import (
+    AdmissionRoute,
+    ApplicantBackground,
+    FundingType,
+    InstructionLanguage,
+    ScoreType,
+)
 from web_harvester import orchestration
 from web_harvester.orchestration import (
     AttemptOutcome,
     AttemptStatus,
     HarvestOutcome,
 )
-from web_harvester.schemas import WebSearch
+from web_harvester.schemas import (
+    AdmissionExtraction,
+    ClaimEvidence,
+    ProfileSubjectRequirementClaim,
+    ThresholdClaim,
+)
+from web_harvester.search_planning import SearchFact, SearchPage, SearchTarget
 from web_harvester.source_policy import FieldType, SourceStrategy
+
+TARGET = SearchTarget(
+    profession_name="Doctor",
+    program_group_code="B086",
+    program_group_name="General medicine",
+    year=2026,
+)
+
+
+def page(url="https://kaznmu.edu.kz/a"):
+    return SearchPage(
+        fact=SearchFact.LEGAL_MINIMUM,
+        query='"B086" 2026 threshold',
+        url=url,
+        content="B086 General medicine minimum score 50 Biology KazNMU",
+    )
+
+
+def evidence(url="https://kaznmu.edu.kz/a"):
+    return ClaimEvidence(source_url=url, excerpt="minimum score 50")
+
+
+def threshold_claim(url="https://kaznmu.edu.kz/a"):
+    return ThresholdClaim(
+        score=50,
+        score_type=ScoreType.LEGAL_MINIMUM,
+        year=2026,
+        program_group_code="B086",
+        university_name=None,
+        admission_route=AdmissionRoute.STANDARD,
+        admission_route_details=None,
+        funding_type=FundingType.GRANT_AND_PAID,
+        applicant_background=ApplicantBackground.GENERAL_SECONDARY,
+        applicant_background_details=None,
+        quota_category="not applicable",
+        instruction_language=InstructionLanguage.LANGUAGE_INDEPENDENT,
+        evidence=evidence(url),
+    )
+
+
+def subject_claim(url="https://univision.kz/a"):
+    return ProfileSubjectRequirementClaim(
+        subjects=["Biology"],
+        program_group_code="B086",
+        evidence=evidence(url),
+    )
 
 
 class AttemptTests(SimpleTestCase):
@@ -23,8 +82,7 @@ class AttemptTests(SimpleTestCase):
             ) as extract,
         ):
             outcome = orchestration._run_attempt(
-                "Medicine",
-                "6B101",
+                TARGET,
                 FieldType.MEDICINE,
                 strategy,
                 6,
@@ -39,23 +97,21 @@ class AttemptTests(SimpleTestCase):
         extract.assert_not_called()
 
     def test_extraction_failure_and_empty_facts_have_distinct_statuses(self):
-        pages = [("https://kaznmu.edu.kz/a", "page")]
+        pages = [page()]
 
         failed, _extract = self.run_attempt(pages, None)
-        empty, _extract = self.run_attempt(pages, WebSearch())
+        empty, _extract = self.run_attempt(pages, AdmissionExtraction())
 
         self.assertIs(failed.status, AttemptStatus.EXTRACTION_FAILED)
         self.assertIs(empty.status, AttemptStatus.NO_USEFUL_FACTS)
 
     def test_invalid_cross_field_and_unfetched_sources_are_rejected(self):
-        pages = [("https://kaznmu.edu.kz/a", "page")]
-        cross_field = WebSearch(
-            ubt_score=80,
-            sources=["https://kbtu.edu.kz/a"],
+        pages = [page()]
+        cross_field = AdmissionExtraction(
+            threshold_claims=[threshold_claim("https://kbtu.edu.kz/a")],
         )
-        unfetched = WebSearch(
-            ubt_score=80,
-            sources=["https://kaznmu.edu.kz/not-fetched"],
+        unfetched = AdmissionExtraction(
+            threshold_claims=[threshold_claim("https://kaznmu.edu.kz/not-fetched")],
         )
 
         cross_outcome, _extract = self.run_attempt(pages, cross_field)
@@ -65,29 +121,27 @@ class AttemptTests(SimpleTestCase):
         self.assertIs(unfetched_outcome.status, AttemptStatus.INVALID_SOURCES)
 
     def test_primary_and_fallback_success_preserve_extracted_result(self):
-        primary = WebSearch(
-            ubt_score=0,
-            sources=["https://kaznmu.edu.kz/a"],
+        primary = AdmissionExtraction(
+            threshold_claims=[threshold_claim()],
         )
-        fallback = WebSearch(
-            subjects=["Biology"],
-            sources=["https://univision.kz/a"],
+        fallback = AdmissionExtraction(
+            subject_requirements=[subject_claim()],
         )
 
         primary_outcome, _extract = self.run_attempt(
-            [("https://kaznmu.edu.kz/a", "page")],
+            [page()],
             primary,
         )
         fallback_outcome, _extract = self.run_attempt(
-            [("https://univision.kz/a", "page")],
+            [page("https://univision.kz/a")],
             fallback,
             SourceStrategy.FALLBACK,
         )
 
         self.assertTrue(primary_outcome.succeeded)
-        self.assertIs(primary_outcome.result, primary)
+        self.assertEqual(primary_outcome.result, primary)
         self.assertTrue(fallback_outcome.succeeded)
-        self.assertIs(fallback_outcome.result, fallback)
+        self.assertEqual(fallback_outcome.result, fallback)
 
 
 class HarvestTests(SimpleTestCase):
@@ -96,15 +150,14 @@ class HarvestTests(SimpleTestCase):
             patch.object(orchestration.agents_web, "classify", return_value=None),
             patch.object(orchestration, "_run_attempt") as run_attempt,
         ):
-            outcome = orchestration.harvest("Unknown", "X")
+            outcome = orchestration.harvest(TARGET)
 
-        self.assertEqual(outcome, HarvestOutcome(None, ()))
+        self.assertEqual(outcome, HarvestOutcome(None, (), TARGET.year))
         run_attempt.assert_not_called()
 
     def test_primary_success_stops_before_fallback(self):
-        data = WebSearch(
-            ubt_score=80,
-            sources=["https://kaznmu.edu.kz/a"],
+        data = AdmissionExtraction(
+            threshold_claims=[threshold_claim()],
         )
         primary = AttemptOutcome(
             SourceStrategy.PRIMARY,
@@ -119,11 +172,11 @@ class HarvestTests(SimpleTestCase):
             ) as classify,
             patch.object(orchestration, "_run_attempt", return_value=primary) as run,
         ):
-            outcome = orchestration.harvest("Medicine", "6B101", 8, 3)
+            outcome = orchestration.harvest(TARGET, 8, 3)
 
         self.assertEqual(outcome.attempts, (primary,))
         self.assertIs(outcome.result, data)
-        classify.assert_called_once_with("Medicine", "6B101")
+        classify.assert_called_once_with(TARGET)
         run.assert_called_once()
         self.assertEqual(run.call_args.kwargs["max_results"], 8)
 
@@ -155,7 +208,7 @@ class HarvestTests(SimpleTestCase):
                     side_effect=[primary, fallback],
                 ) as run,
             ):
-                outcome = orchestration.harvest("Medicine", "6B101", 8, 3)
+                outcome = orchestration.harvest(TARGET, 8, 3)
 
             self.assertEqual(outcome.attempts, (primary, fallback))
             self.assertEqual(run.call_count, 2)
@@ -174,9 +227,8 @@ class HarvestTests(SimpleTestCase):
             AttemptStatus.NO_PAGES,
             None,
         )
-        data = WebSearch(
-            subjects=["Biology"],
-            sources=["https://univision.kz/a"],
+        data = AdmissionExtraction(
+            subject_requirements=[subject_claim()],
         )
         fallback_success = AttemptOutcome(
             SourceStrategy.FALLBACK,
@@ -201,7 +253,7 @@ class HarvestTests(SimpleTestCase):
                 side_effect=[primary, fallback_success],
             ),
         ):
-            success = orchestration.harvest("Medicine", "6B101")
+            success = orchestration.harvest(TARGET)
 
         with (
             patch.object(
@@ -215,7 +267,7 @@ class HarvestTests(SimpleTestCase):
                 side_effect=[primary, fallback_failure],
             ),
         ):
-            failure = orchestration.harvest("Medicine", "6B101")
+            failure = orchestration.harvest(TARGET)
 
         self.assertTrue(success.succeeded)
         self.assertIs(success.result, data)
@@ -237,4 +289,4 @@ class HarvestTests(SimpleTestCase):
             ),
             self.assertRaises(ValueError),
         ):
-            orchestration.harvest("Medicine", "6B101")
+            orchestration.harvest(TARGET)
