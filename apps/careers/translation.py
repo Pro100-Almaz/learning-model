@@ -7,7 +7,7 @@ are left untranslated; scores/years are numeric.
 
 from modeltranslation.translator import TranslationOptions, register
 
-from .models import Specialty, University
+from .models import EducationalProgramGroup, Profession, Specialty, University
 
 
 @register(University)
@@ -17,4 +17,14 @@ class UniversityTranslationOptions(TranslationOptions):
 
 @register(Specialty)
 class SpecialtyTranslationOptions(TranslationOptions):
+    fields = ("name",)
+
+
+@register(EducationalProgramGroup)
+class EducationalProgramGroupTranslationOptions(TranslationOptions):
+    fields = ("name",)
+
+
+@register(Profession)
+class ProfessionTranslationOptions(TranslationOptions):
     fields = ("name",)

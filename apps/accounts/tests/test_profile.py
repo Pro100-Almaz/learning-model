@@ -4,11 +4,24 @@ from __future__ import annotations
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from apps.accounts.models import ExpectedScore, StudentProfile
-from apps.careers.models import GrantThreshold, Specialty, University
+from apps.careers.models import (
+    AdmissionRoute,
+    AdmissionSource,
+    AdmissionThreshold,
+    ApplicantBackground,
+    EducationalProgramGroup,
+    FundingType,
+    GrantThreshold,
+    InstructionLanguage,
+    ScoreType,
+    Specialty,
+    University,
+)
 from apps.content.models import Subject
 
 
@@ -161,8 +174,35 @@ class OnboardingOptionsViewTests(APITestCase):
             university=cls.uni, name="Math", code="math",
             required_subjects=["profile_math"],
         )
+        # Legacy untyped fixture: still exposed as latest_threshold.
         GrantThreshold.objects.create(
             specialty=cls.spec, year=2024, min_score=110
+        )
+        # Canonical typed fixture: exposed as latest_grant_cutoff.
+        cls.group = EducationalProgramGroup.objects.create(
+            code="B054", name="Mathematics"
+        )
+        cls.source = AdmissionSource.objects.create(
+            url="https://source.example.kz/b054/2025",
+            content_fingerprint="b054-2025-115",
+            retrieved_at=timezone.now(),
+        )
+        cls.cutoff = AdmissionThreshold.objects.create(
+            program_group=cls.group,
+            university=cls.uni,
+            specialty=cls.spec,
+            source=cls.source,
+            year=2025,
+            score=115,
+            score_type=ScoreType.HISTORICAL_GRANT_CUTOFF,
+            admission_route=AdmissionRoute.STANDARD,
+            funding_type=FundingType.GRANT,
+            applicant_background=ApplicantBackground.GENERAL_SECONDARY,
+            quota_category="general competition",
+            instruction_language=InstructionLanguage.LANGUAGE_INDEPENDENT,
+            evidence_excerpt="B054 grant cutoff 115",
+            evidence_location="table 1",
+            verified_at=timezone.now(),
         )
 
     def test_options_shape(self):
@@ -185,9 +225,25 @@ class OnboardingOptionsViewTests(APITestCase):
         spec_row = body["specialties"][0]
         self.assertEqual(
             set(spec_row.keys()),
-            {"id", "university_id", "name", "code", "latest_threshold"},
+            {
+                "id",
+                "university_id",
+                "name",
+                "code",
+                "latest_threshold",
+                "latest_grant_cutoff",
+            },
         )
         self.assertEqual(spec_row["latest_threshold"], 110)
+        self.assertEqual(
+            spec_row["latest_grant_cutoff"],
+            {
+                "score": 115,
+                "year": 2025,
+                "score_type": ScoreType.HISTORICAL_GRANT_CUTOFF.value,
+                "source_url": "https://source.example.kz/b054/2025",
+            },
+        )
 
 
 class AuthMeViewTests(APITestCase):

@@ -43,6 +43,8 @@ nav:
   - Celery Tasks: tasks.md
   - Rate Limiting: rate_limiting.md
   - Database Seeding: database_seeding.md
+  - Admissions Data Contract: admission_data_contract.md
+  - Admissions Web Harvesting: web_harvesting.md
   - Testing: testing.md
   - Environment Setup: environment_setup.md
 

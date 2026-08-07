@@ -10,7 +10,18 @@ from rest_framework.test import APITestCase
 
 from apps.accounts.models import ExpectedScore, StudentProfile
 from apps.assessments.models import Test, TestAttempt
-from apps.careers.models import GrantThreshold, Specialty, University
+from apps.careers.models import (
+    AdmissionRoute,
+    AdmissionSource,
+    AdmissionThreshold,
+    ApplicantBackground,
+    EducationalProgramGroup,
+    FundingType,
+    InstructionLanguage,
+    ScoreType,
+    Specialty,
+    University,
+)
 from apps.content.models import Subject
 
 User = get_user_model()
@@ -19,6 +30,41 @@ User = get_user_model()
 def _subject(slug: str, name: str = "Subject") -> Subject:
     subject, _ = Subject.objects.get_or_create(slug=slug, defaults={"name": name})
     return subject
+
+
+def _grant_cutoff(specialty: Specialty, *, year: int, score: int) -> AdmissionThreshold:
+    """Create one verified canonical grant cutoff for a specialty.
+
+    The calculator reads canonical AdmissionThreshold rows only, so student-facing
+    fixtures must carry full admission context, not a bare legacy number.
+    """
+    group, _ = EducationalProgramGroup.objects.get_or_create(
+        code=specialty.code,
+        defaults={"name": specialty.name},
+    )
+    url = f"https://source.example.kz/{specialty.code}/{year}"
+    source, _ = AdmissionSource.objects.get_or_create(
+        url=url,
+        content_fingerprint=f"{specialty.code}-{year}-{score}",
+        defaults={"retrieved_at": timezone.now()},
+    )
+    return AdmissionThreshold.objects.create(
+        program_group=group,
+        university=specialty.university,
+        specialty=specialty,
+        source=source,
+        year=year,
+        score=score,
+        score_type=ScoreType.HISTORICAL_GRANT_CUTOFF,
+        admission_route=AdmissionRoute.STANDARD,
+        funding_type=FundingType.GRANT,
+        applicant_background=ApplicantBackground.GENERAL_SECONDARY,
+        quota_category="general competition",
+        instruction_language=InstructionLanguage.LANGUAGE_INDEPENDENT,
+        evidence_excerpt=f"{specialty.code} grant cutoff {score}",
+        evidence_location="table 1",
+        verified_at=timezone.now(),
+    )
 
 
 def _make_student(email="student@example.com", target_score=None):
@@ -75,10 +121,10 @@ class GrantCalculateHappyPathTests(APITestCase):
 
         uni = University.objects.create(name="KBTU", city="Алматы", code="KBTU")
         sp_ok = Specialty.objects.create(university=uni, name="IS", code="6B06")
-        GrantThreshold.objects.create(specialty=sp_ok, year=2024, min_score=70)
+        _grant_cutoff(sp_ok, year=2024, score=70)
 
         sp_no = Specialty.objects.create(university=uni, name="Medicine", code="6B10")
-        GrantThreshold.objects.create(specialty=sp_no, year=2024, min_score=130)
+        _grant_cutoff(sp_no, year=2024, score=130)
 
     def test_returns_grant_calc_result_shape(self):
         response = self.client.post(self.url)
@@ -118,8 +164,8 @@ class GrantCalculateLatestThresholdTests(APITestCase):
         uni = University.objects.create(name="ENU", city="Астана", code="ENU")
         sp = Specialty.objects.create(university=uni, name="SE", code="6B061")
         # Old year: very low threshold; new year: high threshold > predicted.
-        GrantThreshold.objects.create(specialty=sp, year=2020, min_score=50)
-        GrantThreshold.objects.create(specialty=sp, year=2024, min_score=120)
+        _grant_cutoff(sp, year=2020, score=50)
+        _grant_cutoff(sp, year=2024, score=120)
 
     def test_latest_threshold_excludes_specialty(self):
         response = self.client.post(self.url)

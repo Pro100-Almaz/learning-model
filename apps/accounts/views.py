@@ -7,6 +7,7 @@ Two student-facing endpoints (profile + onboarding-options) and an
 from __future__ import annotations
 
 from django.conf import settings
+from django.db.models import Prefetch
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import serializers as drf_serializers
 from rest_framework import status
@@ -14,8 +15,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from apps.careers.models import Specialty, University
 
 from apps.accounts import services
 from apps.accounts.serializers import (
@@ -25,7 +24,7 @@ from apps.accounts.serializers import (
     StudentProfileSerializer,
     StudentProfileUpdateSerializer,
 )
-
+from apps.careers.models import AdmissionThreshold, ScoreType, Specialty, University
 
 _OnboardingOptionsResponse = inline_serializer(
     name="OnboardingOptionsResponse",
@@ -112,15 +111,28 @@ class OnboardingOptionsView(APIView):
 
     @extend_schema(responses=_OnboardingOptionsResponse)
     def get(self, request: Request) -> Response:
+        canonical_cutoffs = AdmissionThreshold.objects.select_related("source").filter(
+            verified_at__isnull=False,
+            score_type=ScoreType.HISTORICAL_GRANT_CUTOFF,
+        )
         universities = (
             University.objects.all()
-            .prefetch_related("specialties__thresholds")
+            .prefetch_related(
+                "specialties__thresholds",
+                Prefetch(
+                    "specialties__admission_thresholds",
+                    queryset=canonical_cutoffs,
+                ),
+            )
             .order_by("name")
         )
         specialties = (
             Specialty.objects.all()
             .select_related("university")
-            .prefetch_related("thresholds")
+            .prefetch_related(
+                "thresholds",
+                Prefetch("admission_thresholds", queryset=canonical_cutoffs),
+            )
             .order_by("university__name", "name")
         )
 
