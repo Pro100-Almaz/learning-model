@@ -1,0 +1,640 @@
+{
+  "topic": "linear_quadratic_rational_equations",
+  "display_name": "Linear, quadratic and rational equations",
+  "curriculum_ref": "KZ 2026 UBT — Equations — Topic 05",
+  "constraints_template": "ubt_linear_quadratic_rational_equations.j2",
+  "_comment": "Deterministic equation generator. Difficulty is controlled by equation structure: direct equations at level 1, reverse/substitution/rational structures at level 2, and equations requiring multiple transformations at level 3. Python/SymPy solves and validates; Jinja only renders.",
+  "tag": {
+    "name": "Теңдеулер",
+    "slug": "tendeuler"
+  },
+  "default_difficulty": 1,
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "linear_equation",
+        "quadratic_incomplete",
+        "quadratic_factorable",
+        "vieta_sum",
+        "quadratic_general",
+        "vieta_missing_constant",
+        "rational_linear",
+        "biquadratic",
+        "absolute_value_x_quadratic",
+        "absolute_quadratic_expression",
+        "rational_to_quadratic"
+      ]
+    },
+    "a": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "b": {
+      "type": "int",
+      "min": -9,
+      "max": 9
+    },
+    "root1": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "root2": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "solution": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "excluded": {
+      "type": "int",
+      "min": -6,
+      "max": 6
+    },
+    "multiplier": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    },
+    "p": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "q": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "linear_equation",
+          "quadratic_incomplete",
+          "quadratic_factorable",
+          "vieta_sum"
+        ]
+      },
+      "root1": {
+        "min": -5,
+        "max": 5
+      },
+      "root2": {
+        "min": -5,
+        "max": 5
+      },
+      "solution": {
+        "min": -6,
+        "max": 6
+      },
+      "p": {
+        "max": 5
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "quadratic_general",
+          "vieta_missing_constant",
+          "rational_linear",
+          "biquadratic"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "absolute_value_x_quadratic",
+          "absolute_quadratic_expression",
+          "rational_to_quadratic"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "linear_equation": {
+      "uses": [
+        "a",
+        "b",
+        "solution"
+      ],
+      "derived": {
+        "rhs": "a*solution+b"
+      },
+      "question": {
+        "instruction": "Solve the equation",
+        "latex": "{a}x{b:+d}={rhs}"
+      }
+    },
+    "quadratic_incomplete": {
+      "uses": [
+        "a",
+        "p"
+      ],
+      "derived": {
+        "linear_coef": "a*p"
+      },
+      "question": {
+        "instruction": "Solve the equation",
+        "latex": "{a}x^2+{linear_coef}x=0"
+      }
+    },
+    "quadratic_factorable": {
+      "uses": [
+        "root1",
+        "root2"
+      ],
+      "constraints": [
+        "root1 != root2"
+      ],
+      "derived": {
+        "bcoef": "-(root1+root2)",
+        "ccoef": "root1*root2"
+      },
+      "question": {
+        "instruction": "Solve the quadratic equation",
+        "latex": "x^2{bcoef:+d}x{ccoef:+d}=0"
+      }
+    },
+    "vieta_sum": {
+      "uses": [
+        "root1",
+        "root2"
+      ],
+      "constraints": [
+        "root1 != root2"
+      ],
+      "derived": {
+        "bcoef": "-(root1+root2)",
+        "ccoef": "root1*root2"
+      },
+      "question": {
+        "instruction": "Find the sum of the roots using Vieta's theorem",
+        "latex": "x^2{bcoef:+d}x{ccoef:+d}=0"
+      }
+    },
+    "quadratic_general": {
+      "uses": [
+        "a",
+        "root1",
+        "root2"
+      ],
+      "constraints": [
+        "root1 != root2"
+      ],
+      "derived": {
+        "bcoef": "-a*(root1+root2)",
+        "ccoef": "a*root1*root2"
+      },
+      "question": {
+        "instruction": "Solve the quadratic equation",
+        "latex": "{a}x^2{bcoef:+d}x{ccoef:+d}=0"
+      }
+    },
+    "vieta_missing_constant": {
+      "uses": [
+        "root1",
+        "root2"
+      ],
+      "constraints": [
+        "root1 != root2"
+      ],
+      "derived": {
+        "bcoef": "-(root1+root2)"
+      },
+      "question": {
+        "instruction": "Find c using Vieta's theorem",
+        "latex": "x_1={root1},\\qquad x^2{bcoef:+d}x+c=0"
+      }
+    },
+    "rational_linear": {
+      "uses": [
+        "solution",
+        "excluded",
+        "multiplier"
+      ],
+      "constraints": [
+        "solution != excluded"
+      ],
+      "derived": {
+        "shift": "(1-multiplier)*solution + multiplier*excluded",
+        "neg_shift": "-shift",
+        "neg_excluded": "-excluded"
+      },
+      "question": {
+        "instruction": "Solve the rational equation",
+        "latex": "\\frac{{x{neg_shift:+d}}}{{x{neg_excluded:+d}}}={multiplier}"
+      }
+    },
+    "biquadratic": {
+      "uses": [
+        "p",
+        "q"
+      ],
+      "constraints": [
+        "p != q"
+      ],
+      "derived": {
+        "sum_sq": "p**2+q**2",
+        "product_sq": "p**2*q**2"
+      },
+      "question": {
+        "instruction": "Solve the equation",
+        "latex": "x^4-{sum_sq}x^2+{product_sq}=0"
+      }
+    },
+    "absolute_value_x_quadratic": {
+      "uses": [
+        "p",
+        "q"
+      ],
+      "constraints": [
+        "p != q"
+      ],
+      "derived": {
+        "sum_pq": "p+q",
+        "product_pq": "p*q"
+      },
+      "question": {
+        "instruction": "Solve the equation",
+        "latex": "x^2-{sum_pq}|x|+{product_pq}=0"
+      }
+    },
+    "absolute_quadratic_expression": {
+      "uses": [
+        "p",
+        "q"
+      ],
+      "constraints": [
+        "p > q"
+      ],
+      "derived": {
+        "p_sq": "p**2",
+        "q_sq": "q**2"
+      },
+      "question": {
+        "instruction": "Solve the equation",
+        "latex": "\\left|x^2-{p_sq}\\right|={q_sq}"
+      }
+    },
+    "rational_to_quadratic": {
+      "uses": [
+        "root1",
+        "root2",
+        "excluded"
+      ],
+      "constraints": [
+        "root1 != root2",
+        "root1 != excluded",
+        "root2 != excluded",
+        "root1 + root2 != 0"
+      ],
+      "derived": {
+        "m": "root1+root2",
+        "constant": "root1*root2-(root1+root2)*excluded",
+        "neg_excluded": "-excluded"
+      },
+      "question": {
+        "instruction": "Solve the rational equation",
+        "latex": "\\frac{{x^2{constant:+d}}}{{x{neg_excluded:+d}}}={m}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "linear_equation": "solution",
+      "quadratic_incomplete": "FiniteSet(0,-p)",
+      "quadratic_factorable": "FiniteSet(root1,root2)",
+      "vieta_sum": "root1+root2",
+      "quadratic_general": "FiniteSet(root1,root2)",
+      "vieta_missing_constant": "root1*root2",
+      "rational_linear": "solution",
+      "biquadratic": "FiniteSet(p,-p,q,-q)",
+      "absolute_value_x_quadratic": "FiniteSet(p,-p,q,-q)",
+      "absolute_quadratic_expression": "FiniteSet(sqrt(p**2+q**2),-sqrt(p**2+q**2),sqrt(p**2-q**2),-sqrt(p**2-q**2))",
+      "rational_to_quadratic": "FiniteSet(root1,root2)"
+    }
+  },
+  "answer_render": {
+    "linear_equation": "scalar",
+    "quadratic_incomplete": "solution_set",
+    "quadratic_factorable": "solution_set",
+    "vieta_sum": "scalar",
+    "quadratic_general": "solution_set",
+    "vieta_missing_constant": "scalar",
+    "rational_linear": "scalar",
+    "biquadratic": "solution_set",
+    "absolute_value_x_quadratic": "solution_set",
+    "absolute_quadratic_expression": "solution_set",
+    "rational_to_quadratic": "solution_set"
+  },
+  "distractors": {
+    "linear_equation": [
+      {
+        "id": "sign_error",
+        "transform": "-solution"
+      },
+      {
+        "id": "plus_one",
+        "transform": "solution+1"
+      },
+      {
+        "id": "minus_one",
+        "transform": "solution-1"
+      },
+      {
+        "id": "ignore_constant",
+        "transform": "b/a"
+      },
+      {
+        "id": "negate_constant_ratio",
+        "transform": "-b/a"
+      },
+      {
+        "id": "divide_rhs_only",
+        "transform": "(a*solution+b)/a"
+      }
+    ],
+    "quadratic_incomplete": [
+      {
+        "id": "wrong_sign",
+        "transform": "FiniteSet(0,p)"
+      },
+      {
+        "id": "omit_zero",
+        "transform": "FiniteSet(-p)"
+      },
+      {
+        "id": "omit_nonzero_root",
+        "transform": "FiniteSet(0)"
+      },
+      {
+        "id": "coefficient_as_root",
+        "transform": "FiniteSet(0,-a*p)"
+      },
+      {
+        "id": "off_by_one",
+        "transform": "FiniteSet(0,-p+1)"
+      },
+      {
+        "id": "two_nonzero_roots",
+        "transform": "FiniteSet(-p,p)"
+      }
+    ],
+    "quadratic_factorable": [
+      {
+        "id": "negate_both_roots",
+        "transform": "FiniteSet(-root1,-root2)"
+      },
+      {
+        "id": "negate_second_root",
+        "transform": "FiniteSet(root1,-root2)"
+      },
+      {
+        "id": "negate_first_root",
+        "transform": "FiniteSet(-root1,root2)"
+      },
+      {
+        "id": "first_root_only",
+        "transform": "FiniteSet(root1)"
+      },
+      {
+        "id": "second_root_only",
+        "transform": "FiniteSet(root2)"
+      },
+      {
+        "id": "shift_first_root",
+        "transform": "FiniteSet(root1+1,root2)"
+      }
+    ],
+    "vieta_sum": [
+      {
+        "id": "product_instead_of_sum",
+        "transform": "root1*root2"
+      },
+      {
+        "id": "negative_sum",
+        "transform": "-(root1+root2)"
+      },
+      {
+        "id": "difference",
+        "transform": "root1-root2"
+      },
+      {
+        "id": "reverse_difference",
+        "transform": "root2-root1"
+      },
+      {
+        "id": "sum_plus_one",
+        "transform": "root1+root2+1"
+      },
+      {
+        "id": "absolute_sum",
+        "transform": "abs(root1+root2)"
+      }
+    ],
+    "quadratic_general": [
+      {
+        "id": "negate_both_roots",
+        "transform": "FiniteSet(-root1,-root2)"
+      },
+      {
+        "id": "negate_second_root",
+        "transform": "FiniteSet(root1,-root2)"
+      },
+      {
+        "id": "negate_first_root",
+        "transform": "FiniteSet(-root1,root2)"
+      },
+      {
+        "id": "divide_roots_by_a",
+        "transform": "FiniteSet(root1/a,root2/a)"
+      },
+      {
+        "id": "first_root_only",
+        "transform": "FiniteSet(root1)"
+      },
+      {
+        "id": "shift_second_root",
+        "transform": "FiniteSet(root1,root2+1)"
+      }
+    ],
+    "vieta_missing_constant": [
+      {
+        "id": "sum_instead_product",
+        "transform": "root1+root2"
+      },
+      {
+        "id": "negative_product",
+        "transform": "-root1*root2"
+      },
+      {
+        "id": "negative_sum",
+        "transform": "-(root1+root2)"
+      },
+      {
+        "id": "difference",
+        "transform": "root1-root2"
+      },
+      {
+        "id": "product_plus_one",
+        "transform": "root1*root2+1"
+      },
+      {
+        "id": "known_root_squared",
+        "transform": "root1**2"
+      }
+    ],
+    "rational_linear": [
+      {
+        "id": "excluded_value",
+        "transform": "excluded"
+      },
+      {
+        "id": "negate_solution",
+        "transform": "-solution"
+      },
+      {
+        "id": "plus_one",
+        "transform": "solution+1"
+      },
+      {
+        "id": "minus_one",
+        "transform": "solution-1"
+      },
+      {
+        "id": "numerator_shift",
+        "transform": "(1-multiplier)*solution+multiplier*excluded"
+      },
+      {
+        "id": "multiplier_as_solution",
+        "transform": "multiplier"
+      }
+    ],
+    "biquadratic": [
+      {
+        "id": "positive_roots_only",
+        "transform": "FiniteSet(p,q)"
+      },
+      {
+        "id": "negative_roots_only",
+        "transform": "FiniteSet(-p,-q)"
+      },
+      {
+        "id": "first_pair_only",
+        "transform": "FiniteSet(p,-p)"
+      },
+      {
+        "id": "second_pair_only",
+        "transform": "FiniteSet(q,-q)"
+      },
+      {
+        "id": "forget_negative_q",
+        "transform": "FiniteSet(p,-p,q)"
+      },
+      {
+        "id": "squared_roots",
+        "transform": "FiniteSet(p**2,-p**2,q**2,-q**2)"
+      }
+    ],
+    "absolute_value_x_quadratic": [
+      {
+        "id": "positive_only",
+        "transform": "FiniteSet(p,q)"
+      },
+      {
+        "id": "negative_only",
+        "transform": "FiniteSet(-p,-q)"
+      },
+      {
+        "id": "omit_negative_p",
+        "transform": "FiniteSet(p,q,-q)"
+      },
+      {
+        "id": "omit_negative_q",
+        "transform": "FiniteSet(p,-p,q)"
+      },
+      {
+        "id": "wrong_sign_second_pair",
+        "transform": "FiniteSet(p,-p,-q)"
+      },
+      {
+        "id": "sum_difference_roots",
+        "transform": "FiniteSet(p+q,p-q,-p-q,-p+q)"
+      }
+    ],
+    "absolute_quadratic_expression": [
+      {
+        "id": "outer_branch_only",
+        "transform": "FiniteSet(sqrt(p**2+q**2),-sqrt(p**2+q**2))"
+      },
+      {
+        "id": "inner_branch_only",
+        "transform": "FiniteSet(sqrt(p**2-q**2),-sqrt(p**2-q**2))"
+      },
+      {
+        "id": "positive_roots_only",
+        "transform": "FiniteSet(sqrt(p**2+q**2),sqrt(p**2-q**2))"
+      },
+      {
+        "id": "negative_roots_only",
+        "transform": "FiniteSet(-sqrt(p**2+q**2),-sqrt(p**2-q**2))"
+      },
+      {
+        "id": "linearize_squares",
+        "transform": "FiniteSet(p+q,-p-q,p-q,-p+q)"
+      },
+      {
+        "id": "wrong_inner_radicand",
+        "transform": "FiniteSet(sqrt(p**2+q**2),-sqrt(p**2+q**2),sqrt(p**2-q),-sqrt(p**2-q))"
+      }
+    ],
+    "rational_to_quadratic": [
+      {
+        "id": "negate_both_roots",
+        "transform": "FiniteSet(-root1,-root2)"
+      },
+      {
+        "id": "include_excluded",
+        "transform": "FiniteSet(root1,excluded)"
+      },
+      {
+        "id": "first_root_only",
+        "transform": "FiniteSet(root1)"
+      },
+      {
+        "id": "second_root_only",
+        "transform": "FiniteSet(root2)"
+      },
+      {
+        "id": "shift_first_root",
+        "transform": "FiniteSet(root1+1,root2)"
+      },
+      {
+        "id": "use_sum_and_product",
+        "transform": "FiniteSet(root1+root2,root1*root2)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "exact_answers_only": true,
+    "respect_domain_restrictions": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

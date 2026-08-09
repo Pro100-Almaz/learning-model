@@ -1,0 +1,138 @@
+{
+  "topic": "arithmetic_progression",
+
+  "display_name": "Arithmetic progression",
+
+  "style_prompt": "prompts/ubt_style.md",
+
+  "constraints_template": "prompts/topics/arithmetic_progression.j2",
+
+  "style_examples": [
+    "data/ubt_examples/math/arithmetic_progression.md"
+  ],
+
+  "curriculum": {
+    "country": "Kazakhstan",
+    "exam": "UBT",
+    "grade": "9-10",
+    "section": "Sequences and Progressions",
+    "learning_objectives": [
+      "Find the nth term",
+      "Find the sum of the first n terms"
+    ]
+  },
+
+  "tag": {
+    "name": "Прогрессии",
+    "slug": "progressii"
+  },
+
+  "parameters": {
+    "a1": {
+      "type": "int",
+      "min": -10,
+      "max": 20
+    },
+
+    "d": {
+      "type": "int",
+      "min": 1,
+      "max": 9
+    },
+
+    "n": {
+      "type": "int",
+      "min": 5,
+      "max": 30
+    }
+  },
+
+  "difficulty_profiles": {
+
+    "1": {
+      "reasoning_steps": 1,
+      "word_problem": false,
+      "reverse_reasoning": false,
+      "multiple_formulae": false
+    },
+
+    "2": {
+      "reasoning_steps": 2,
+      "word_problem": true,
+      "reverse_reasoning": true,
+      "multiple_formulae": false
+    },
+
+    "3": {
+      "reasoning_steps": 3,
+      "word_problem": true,
+      "reverse_reasoning": true,
+      "multiple_formulae": true
+    }
+  },
+
+  "constraints": [
+    "d != 0",
+    "Exactly one correct answer",
+    "Exactly five answer choices"
+  ],
+
+  "answer": {
+    "type": "progression",
+    "nth_term": "a1 + (n - 1) * d",
+    "sum_n": "n * (2*a1 + (n - 1)*d) / 2"
+  },
+
+  "reasoning_patterns": [
+    "Direct computation",
+    "Reverse computation",
+    "Determine missing parameter",
+    "Compare progressions",
+    "Word problem"
+  ],
+
+  "distractors": [
+
+    {
+      "id": "index_off_by_one",
+      "weight": 0.35,
+      "transform": {
+        "a_n": "a1+n*d",
+        "S_n": "n*(2*a1+n*d)/2"
+      }
+    },
+
+    {
+      "id": "forgot_divide_by_two",
+      "weight": 0.30,
+      "transform": {
+        "a_n": "a1+(n-1)*d",
+        "S_n": "n*(2*a1+(n-1)*d)"
+      }
+    },
+
+    {
+      "id": "sum_equals_last_term_times_n",
+      "weight": 0.20,
+      "transform": {
+        "a_n": "a1+(n-1)*d",
+        "S_n": "n*(a1+(n-1)*d)"
+      }
+    },
+
+    {
+      "id": "sign_error",
+      "weight": 0.15
+    }
+
+  ],
+
+  "validation": {
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "curriculum_alignment": true,
+    "difficulty_match": true,
+    "latex_valid": true,
+    "ubt_style": true
+  }
+}

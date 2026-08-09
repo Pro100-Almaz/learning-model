@@ -1,0 +1,606 @@
+{
+  "topic": "trigonometry",
+  "display_name": "Trigonometry",
+  "curriculum_ref": "KZ 2026 UBT — Numbers — Topic 03",
+  "constraints_template": "trigonometry.j2",
+  "_comment": "Deterministic topic config. Difficulty is primarily controlled by mathematical structure. Python/SymPy evaluates and validates all mathematics; Jinja only renders prepared content.",
+  "tag": {
+    "name": "Тригонометрия",
+    "slug": "trigonometriya"
+  },
+  "default_difficulty": 1,
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "degrees_to_radians",
+        "radians_to_degrees",
+        "exact_sine",
+        "exact_cosine",
+        "reduction_formula",
+        "identity_evaluation",
+        "graph_period",
+        "inverse_trig_principal",
+        "sum_to_product",
+        "product_to_sum",
+        "inverse_trig_nonprincipal"
+      ]
+    },
+    "angle_deg": {
+      "type": "choice",
+      "values": [
+        30,
+        45,
+        60,
+        90,
+        120,
+        135,
+        150,
+        180,
+        210,
+        225,
+        240,
+        270,
+        300,
+        315,
+        330
+      ]
+    },
+    "acute_angle_deg": {
+      "type": "choice",
+      "values": [
+        30,
+        45,
+        60
+      ]
+    },
+    "rad_num": {
+      "type": "int",
+      "min": 1,
+      "max": 11
+    },
+    "rad_den": {
+      "type": "choice",
+      "values": [
+        2,
+        3,
+        4,
+        6,
+        12
+      ]
+    },
+    "k": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "a": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "b": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "inverse_angle_deg": {
+      "type": "choice",
+      "values": [
+        -60,
+        -45,
+        -30,
+        0,
+        30,
+        45,
+        60
+      ]
+    },
+    "nonprincipal_angle_deg": {
+      "type": "choice",
+      "values": [
+        120,
+        135,
+        150,
+        210,
+        225,
+        240,
+        300,
+        315,
+        330
+      ]
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "degrees_to_radians",
+          "radians_to_degrees",
+          "exact_sine",
+          "exact_cosine"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "reduction_formula",
+          "identity_evaluation",
+          "graph_period",
+          "inverse_trig_principal"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "sum_to_product",
+          "product_to_sum",
+          "inverse_trig_nonprincipal"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "degrees_to_radians": {
+      "uses": [
+        "angle_deg"
+      ],
+      "question": {
+        "instruction": "Convert to radians",
+        "latex": "{angle_deg}^\\circ"
+      }
+    },
+    "radians_to_degrees": {
+      "uses": [
+        "rad_num",
+        "rad_den"
+      ],
+      "constraints": [
+        "rad_num < 2*rad_den"
+      ],
+      "question": {
+        "instruction": "Convert to degrees",
+        "latex": "\\frac{{{rad_num}\\pi}}{{{rad_den}}}"
+      }
+    },
+    "exact_sine": {
+      "uses": [
+        "angle_deg"
+      ],
+      "question": {
+        "instruction": "Find the exact value",
+        "latex": "\\sin {angle_deg}^\\circ"
+      }
+    },
+    "exact_cosine": {
+      "uses": [
+        "angle_deg"
+      ],
+      "question": {
+        "instruction": "Find the exact value",
+        "latex": "\\cos {angle_deg}^\\circ"
+      }
+    },
+    "reduction_formula": {
+      "uses": [
+        "acute_angle_deg"
+      ],
+      "question": {
+        "instruction": "Find the exact value",
+        "latex": "\\sin\\left(180^\\circ+{acute_angle_deg}^\\circ\\right)"
+      }
+    },
+    "identity_evaluation": {
+      "uses": [
+        "acute_angle_deg"
+      ],
+      "question": {
+        "instruction": "Simplify and find the exact value",
+        "latex": "\\frac{{1-\\cos^2 {acute_angle_deg}^\\circ}}{{\\sin {acute_angle_deg}^\\circ}}"
+      }
+    },
+    "graph_period": {
+      "uses": [
+        "k"
+      ],
+      "question": {
+        "instruction": "Find the fundamental period of the function",
+        "latex": "y=\\sin({k}x)"
+      }
+    },
+    "inverse_trig_principal": {
+      "uses": [
+        "inverse_angle_deg"
+      ],
+      "question": {
+        "instruction": "Find the exact value",
+        "latex": "\\arcsin\\left(\\sin {inverse_angle_deg}^\\circ\\right)"
+      }
+    },
+    "sum_to_product": {
+      "uses": [
+        "a",
+        "b"
+      ],
+      "symbols": [
+        "x"
+      ],
+      "constraints": [
+        "a != b"
+      ],
+      "question": {
+        "instruction": "Transform the sum into a product",
+        "latex": "\\sin({a}x)+\\sin({b}x)"
+      }
+    },
+    "product_to_sum": {
+      "uses": [
+        "a",
+        "b"
+      ],
+      "symbols": [
+        "x"
+      ],
+      "constraints": [
+        "a != b"
+      ],
+      "question": {
+        "instruction": "Transform the product into a sum",
+        "latex": "2\\sin({a}x)\\cos({b}x)"
+      }
+    },
+    "inverse_trig_nonprincipal": {
+      "uses": [
+        "nonprincipal_angle_deg"
+      ],
+      "question": {
+        "instruction": "Find the principal value",
+        "latex": "\\arcsin\\left(\\sin {nonprincipal_angle_deg}^\\circ\\right)"
+      }
+    }
+  },
+  "constraints": [
+    "rad_den > 0",
+    "k > 0",
+    "a > 0",
+    "b > 0"
+  ],
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "degrees_to_radians": "angle_deg*pi/180",
+      "radians_to_degrees": "180*rad_num/rad_den",
+      "exact_sine": "sin(angle_deg*pi/180)",
+      "exact_cosine": "cos(angle_deg*pi/180)",
+      "reduction_formula": "sin((180+acute_angle_deg)*pi/180)",
+      "identity_evaluation": "(1-cos(acute_angle_deg*pi/180)**2)/sin(acute_angle_deg*pi/180)",
+      "graph_period": "2*pi/k",
+      "inverse_trig_principal": "asin(sin(inverse_angle_deg*pi/180))",
+      "sum_to_product": "2*sin((a+b)*x/2)*cos((a-b)*x/2)",
+      "product_to_sum": "sin((a+b)*x)+sin((a-b)*x)",
+      "inverse_trig_nonprincipal": "asin(sin(nonprincipal_angle_deg*pi/180))"
+    }
+  },
+  "distractors": {
+    "degrees_to_radians": [
+      {
+        "id": "divide_by_360",
+        "transform": "angle_deg*pi/360"
+      },
+      {
+        "id": "divide_by_90",
+        "transform": "angle_deg*pi/90"
+      },
+      {
+        "id": "invert_conversion",
+        "transform": "180*pi/angle_deg"
+      },
+      {
+        "id": "omit_pi",
+        "transform": "angle_deg/180"
+      },
+      {
+        "id": "multiply_by_pi",
+        "transform": "angle_deg*pi"
+      },
+      {
+        "id": "off_by_factor_two",
+        "transform": "2*angle_deg*pi/180"
+      }
+    ],
+    "radians_to_degrees": [
+      {
+        "id": "use_360",
+        "transform": "360*rad_num/rad_den"
+      },
+      {
+        "id": "use_90",
+        "transform": "90*rad_num/rad_den"
+      },
+      {
+        "id": "invert_fraction",
+        "transform": "180*rad_den/rad_num"
+      },
+      {
+        "id": "omit_180",
+        "transform": "rad_num/rad_den"
+      },
+      {
+        "id": "multiply_denominator",
+        "transform": "180*rad_num*rad_den"
+      },
+      {
+        "id": "off_by_one_numerator",
+        "transform": "180*(rad_num+1)/rad_den"
+      }
+    ],
+    "exact_sine": [
+      {
+        "id": "use_cosine",
+        "transform": "cos(angle_deg*pi/180)"
+      },
+      {
+        "id": "negate_sine",
+        "transform": "-sin(angle_deg*pi/180)"
+      },
+      {
+        "id": "double_angle",
+        "transform": "sin(2*angle_deg*pi/180)"
+      },
+      {
+        "id": "half_angle_input",
+        "transform": "sin(angle_deg*pi/360)"
+      },
+      {
+        "id": "swap_to_tangent",
+        "transform": "tan(angle_deg*pi/180)"
+      },
+      {
+        "id": "complementary_sine",
+        "transform": "sin((90-angle_deg)*pi/180)"
+      },
+      {
+        "id": "supplementary_cosine",
+        "transform": "cos((180-angle_deg)*pi/180)"
+      }
+    ],
+    "exact_cosine": [
+      {
+        "id": "use_sine",
+        "transform": "sin(angle_deg*pi/180)"
+      },
+      {
+        "id": "negate_cosine",
+        "transform": "-cos(angle_deg*pi/180)"
+      },
+      {
+        "id": "double_angle",
+        "transform": "cos(2*angle_deg*pi/180)"
+      },
+      {
+        "id": "half_angle_input",
+        "transform": "cos(angle_deg*pi/360)"
+      },
+      {
+        "id": "swap_to_tangent",
+        "transform": "tan(angle_deg*pi/180)"
+      },
+      {
+        "id": "complementary_cosine",
+        "transform": "cos((90-angle_deg)*pi/180)"
+      },
+      {
+        "id": "supplementary_sine",
+        "transform": "sin((180-angle_deg)*pi/180)"
+      }
+    ],
+    "reduction_formula": [
+      {
+        "id": "ignore_quadrant_sign",
+        "transform": "sin(acute_angle_deg*pi/180)"
+      },
+      {
+        "id": "use_cosine_positive",
+        "transform": "cos(acute_angle_deg*pi/180)"
+      },
+      {
+        "id": "use_cosine_negative",
+        "transform": "-cos(acute_angle_deg*pi/180)"
+      },
+      {
+        "id": "double_angle",
+        "transform": "sin(2*acute_angle_deg*pi/180)"
+      },
+      {
+        "id": "complement",
+        "transform": "sin((90-acute_angle_deg)*pi/180)"
+      },
+      {
+        "id": "negative_complement",
+        "transform": "-sin((90-acute_angle_deg)*pi/180)"
+      }
+    ],
+    "identity_evaluation": [
+      {
+        "id": "return_cosine",
+        "transform": "cos(acute_angle_deg*pi/180)"
+      },
+      {
+        "id": "return_tangent",
+        "transform": "tan(acute_angle_deg*pi/180)"
+      },
+      {
+        "id": "return_one",
+        "transform": "1"
+      },
+      {
+        "id": "square_sine",
+        "transform": "sin(acute_angle_deg*pi/180)**2"
+      },
+      {
+        "id": "reciprocal_sine",
+        "transform": "1/sin(acute_angle_deg*pi/180)"
+      },
+      {
+        "id": "negative_sine",
+        "transform": "-sin(acute_angle_deg*pi/180)"
+      }
+    ],
+    "graph_period": [
+      {
+        "id": "pi_over_k",
+        "transform": "pi/k"
+      },
+      {
+        "id": "two_pi_times_k",
+        "transform": "2*pi*k"
+      },
+      {
+        "id": "pi_times_k",
+        "transform": "pi*k"
+      },
+      {
+        "id": "one_over_k",
+        "transform": "1/k"
+      },
+      {
+        "id": "two_over_k",
+        "transform": "2/k"
+      },
+      {
+        "id": "two_pi_over_k_plus_one",
+        "transform": "2*pi/(k+1)"
+      }
+    ],
+    "inverse_trig_principal": [
+      {
+        "id": "negate_angle",
+        "transform": "-inverse_angle_deg*pi/180"
+      },
+      {
+        "id": "complement",
+        "transform": "(90-inverse_angle_deg)*pi/180"
+      },
+      {
+        "id": "supplement",
+        "transform": "(180-inverse_angle_deg)*pi/180"
+      },
+      {
+        "id": "double_angle",
+        "transform": "2*inverse_angle_deg*pi/180"
+      },
+      {
+        "id": "half_angle",
+        "transform": "inverse_angle_deg*pi/360"
+      },
+      {
+        "id": "absolute_angle",
+        "transform": "abs(inverse_angle_deg)*pi/180"
+      }
+    ],
+    "sum_to_product": [
+      {
+        "id": "swap_sin_cos",
+        "transform": "2*cos((a+b)*x/2)*sin((a-b)*x/2)"
+      },
+      {
+        "id": "wrong_difference_sign",
+        "transform": "2*sin((a+b)*x/2)*cos((b-a)*x/2)"
+      },
+      {
+        "id": "omit_half_angles",
+        "transform": "2*sin((a+b)*x)*cos((a-b)*x)"
+      },
+      {
+        "id": "omit_factor_two",
+        "transform": "sin((a+b)*x/2)*cos((a-b)*x/2)"
+      },
+      {
+        "id": "use_difference_as_first_factor",
+        "transform": "2*sin((a-b)*x/2)*cos((a+b)*x/2)"
+      },
+      {
+        "id": "both_sine",
+        "transform": "2*sin((a+b)*x/2)*sin((a-b)*x/2)"
+      },
+      {
+        "id": "both_cosine",
+        "transform": "2*cos((a+b)*x/2)*cos((a-b)*x/2)"
+      }
+    ],
+    "product_to_sum": [
+      {
+        "id": "difference_instead_of_sum",
+        "transform": "sin((a+b)*x)-sin((a-b)*x)"
+      },
+      {
+        "id": "cosine_pair",
+        "transform": "cos((a-b)*x)-cos((a+b)*x)"
+      },
+      {
+        "id": "omit_second_term",
+        "transform": "sin((a+b)*x)"
+      },
+      {
+        "id": "double_result",
+        "transform": "2*sin((a+b)*x)+2*sin((a-b)*x)"
+      },
+      {
+        "id": "half_result",
+        "transform": "(sin((a+b)*x)+sin((a-b)*x))/2"
+      },
+      {
+        "id": "swap_difference",
+        "transform": "sin((a+b)*x)+sin((b-a)*x)"
+      },
+      {
+        "id": "cosine_sum",
+        "transform": "cos((a+b)*x)+cos((a-b)*x)"
+      }
+    ],
+    "inverse_trig_nonprincipal": [
+      {
+        "id": "return_original_angle",
+        "transform": "nonprincipal_angle_deg*pi/180"
+      },
+      {
+        "id": "negate_original_angle",
+        "transform": "-nonprincipal_angle_deg*pi/180"
+      },
+      {
+        "id": "supplement",
+        "transform": "(180-nonprincipal_angle_deg)*pi/180"
+      },
+      {
+        "id": "negative_supplement",
+        "transform": "-(180-nonprincipal_angle_deg)*pi/180"
+      },
+      {
+        "id": "subtract_180",
+        "transform": "(nonprincipal_angle_deg-180)*pi/180"
+      },
+      {
+        "id": "subtract_360",
+        "transform": "(nonprincipal_angle_deg-360)*pi/180"
+      },
+      {
+        "id": "complement",
+        "transform": "(90-nonprincipal_angle_deg)*pi/180"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "equivalence_method": "trigsimp",
+    "exact_answers_only": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

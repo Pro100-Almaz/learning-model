@@ -1,0 +1,382 @@
+{
+  "topic": "roots_expressions",
+  "display_name": "Roots and algebraic expressions",
+  "curriculum_ref": "KZ 2026 UBT — Numbers — Topic 01",
+  "constraints_template": "roots_expressions.j2",
+  "_comment": "Deterministic topic config. Difficulty changes the allowed mathematical mode, not just the size of numbers. Expressions are evaluated symbolically; Jinja only renders.",
+  "tag": {
+    "name": "Түбірлер және өрнектер",
+    "slug": "tubirler-zhane-ornekte"
+  },
+  "default_difficulty": 1,
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "extract_square_factor",
+        "insert_factor_under_root",
+        "rationalize_simple",
+        "combine_like_radicals",
+        "rational_exponent_exact",
+        "nth_root_extract",
+        "rationalize_conjugate",
+        "mixed_radical_fraction"
+      ],
+      "desc": "question structure"
+    },
+    "k": {
+      "type": "int",
+      "min": 2,
+      "max": 10,
+      "desc": "positive factor extracted from / inserted into a radical"
+    },
+    "k2": {
+      "type": "int",
+      "min": 1,
+      "max": 8,
+      "desc": "second positive factor"
+    },
+    "m": {
+      "type": "choice",
+      "values": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        10,
+        11,
+        13,
+        14,
+        15
+      ],
+      "desc": "non-square positive radicand"
+    },
+    "p": {
+      "type": "int",
+      "min": 1,
+      "max": 8,
+      "desc": "numerator / scalar"
+    },
+    "q": {
+      "type": "int",
+      "min": 1,
+      "max": 2,
+      "desc": "integer term in a binomial denominator"
+    },
+    "r": {
+      "type": "int",
+      "min": 2,
+      "max": 6,
+      "desc": "base root for exact rational powers"
+    },
+    "exp_num": {
+      "type": "int",
+      "min": 1,
+      "max": 3,
+      "desc": "numerator of a rational exponent"
+    },
+    "exp_den": {
+      "type": "choice",
+      "values": [
+        2,
+        3,
+        4
+      ],
+      "desc": "denominator of a rational exponent"
+    },
+    "degree": {
+      "type": "choice",
+      "values": [
+        3,
+        4
+      ],
+      "desc": "nth-root degree"
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "extract_square_factor",
+          "insert_factor_under_root",
+          "rationalize_simple"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "combine_like_radicals",
+          "rational_exponent_exact",
+          "nth_root_extract"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "rationalize_conjugate",
+          "mixed_radical_fraction"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "extract_square_factor": {
+      "uses": [
+        "k",
+        "m"
+      ],
+      "derived": {
+        "radicand": "k**2 * m"
+      },
+      "question": {
+        "instruction": "Simplify",
+        "latex": "\\sqrt{{{radicand}}}"
+      }
+    },
+    "insert_factor_under_root": {
+      "uses": [
+        "k",
+        "m"
+      ],
+      "question": {
+        "instruction": "Write as a single radical",
+        "latex": "{k}\\sqrt{{{m}}}"
+      }
+    },
+    "rationalize_simple": {
+      "uses": [
+        "p",
+        "m"
+      ],
+      "question": {
+        "instruction": "Rationalize the denominator and simplify",
+        "latex": "\\frac{{{p}}}{{\\sqrt{{{m}}}}}"
+      }
+    },
+    "combine_like_radicals": {
+      "uses": [
+        "k",
+        "k2",
+        "m"
+      ],
+      "derived": {
+        "r1": "k**2 * m",
+        "r2": "k2**2 * m"
+      },
+      "constraints": [
+        "k != k2"
+      ],
+      "question": {
+        "instruction": "Simplify",
+        "latex": "\\sqrt{{{r1}}}+\\sqrt{{{r2}}}"
+      }
+    },
+    "rational_exponent_exact": {
+      "uses": [
+        "r",
+        "exp_num",
+        "exp_den"
+      ],
+      "derived": {
+        "base": "r**exp_den"
+      },
+      "constraints": [
+        "exp_num < exp_den"
+      ],
+      "question": {
+        "instruction": "Evaluate",
+        "latex": "{base}^{{\\frac{{{exp_num}}}{{{exp_den}}}}}"
+      }
+    },
+    "nth_root_extract": {
+      "uses": [
+        "degree",
+        "k",
+        "m"
+      ],
+      "derived": {
+        "radicand": "k**degree * m"
+      },
+      "question": {
+        "instruction": "Simplify",
+        "latex": "\\sqrt[{degree}]{{{radicand}}}"
+      }
+    },
+    "rationalize_conjugate": {
+      "uses": [
+        "p",
+        "q",
+        "m"
+      ],
+      "constraints": [
+        "m > q**2"
+      ],
+      "question": {
+        "instruction": "Rationalize the denominator and simplify",
+        "latex": "\\frac{{{p}}}{{\\sqrt{{{m}}}+{q}}}"
+      }
+    },
+    "mixed_radical_fraction": {
+      "uses": [
+        "k",
+        "k2",
+        "m"
+      ],
+      "derived": {
+        "r1": "k**2 * m",
+        "r2": "k2**2 * m"
+      },
+      "constraints": [
+        "k > k2"
+      ],
+      "question": {
+        "instruction": "Simplify",
+        "latex": "\\frac{{\\sqrt{{{r1}}}-\\sqrt{{{r2}}}}}{{\\sqrt{{{m}}}}}"
+      }
+    }
+  },
+  "constraints": [
+    "k > 0",
+    "k2 > 0",
+    "m > 0",
+    "p > 0"
+  ],
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "extract_square_factor": "k*sqrt(m)",
+      "insert_factor_under_root": "sqrt(k**2*m)",
+      "rationalize_simple": "p*sqrt(m)/m",
+      "combine_like_radicals": "(k+k2)*sqrt(m)",
+      "rational_exponent_exact": "r**exp_num",
+      "nth_root_extract": "k*root(m, degree)",
+      "rationalize_conjugate": "p*(sqrt(m)-q)/(m-q**2)",
+      "mixed_radical_fraction": "k-k2"
+    }
+  },
+  "distractors": {
+    "extract_square_factor": [
+      {
+        "id": "square_not_rooted",
+        "transform": "k**2*sqrt(m)"
+      },
+      {
+        "id": "factor_left_inside",
+        "transform": "sqrt(k*m)"
+      },
+      {
+        "id": "drop_radical",
+        "transform": "k*m"
+      }
+    ],
+    "insert_factor_under_root": [
+      {
+        "id": "factor_not_squared",
+        "transform": "sqrt(k*m)"
+      },
+      {
+        "id": "square_everything",
+        "transform": "sqrt(k**2*m**2)"
+      },
+      {
+        "id": "leave_unchanged",
+        "transform": "k*sqrt(m)"
+      }
+    ],
+    "rationalize_simple": [
+      {
+        "id": "forgot_denominator_factor",
+        "transform": "p*sqrt(m)"
+      },
+      {
+        "id": "denominator_squared",
+        "transform": "p*sqrt(m)/m**2"
+      },
+      {
+        "id": "double_denominator",
+        "transform": "p*sqrt(m)/(2*m)"
+      }
+    ],
+    "combine_like_radicals": [
+      {
+        "id": "add_radicands",
+        "transform": "sqrt((k**2+k2**2)*m)"
+      },
+      {
+        "id": "multiply_coefficients",
+        "transform": "k*k2*sqrt(m)"
+      },
+      {
+        "id": "subtract_coefficients",
+        "transform": "abs(k-k2)*sqrt(m)"
+      }
+    ],
+    "rational_exponent_exact": [
+      {
+        "id": "use_denominator_as_power",
+        "transform": "r**exp_den"
+      },
+      {
+        "id": "multiply_exponents",
+        "transform": "r**(exp_num*exp_den)"
+      },
+      {
+        "id": "multiply_base_by_numerator",
+        "transform": "r*exp_num"
+      }
+    ],
+    "nth_root_extract": [
+      {
+        "id": "leave_factor_inside",
+        "transform": "root(k*m, degree)"
+      },
+      {
+        "id": "extract_full_power",
+        "transform": "k**degree*root(m, degree)"
+      },
+      {
+        "id": "drop_remaining_root",
+        "transform": "k*m"
+      }
+    ],
+    "rationalize_conjugate": [
+      {
+        "id": "wrong_conjugate_sign",
+        "transform": "p*(sqrt(m)+q)/(m-q**2)"
+      },
+      {
+        "id": "sum_of_squares",
+        "transform": "p*(sqrt(m)-q)/(m+q**2)"
+      },
+      {
+        "id": "forgot_to_scale_numerator",
+        "transform": "(sqrt(m)-q)/(m-q**2)"
+      }
+    ],
+    "mixed_radical_fraction": [
+      {
+        "id": "add_instead_of_subtract",
+        "transform": "k+k2"
+      },
+      {
+        "id": "forget_denominator_cancellation",
+        "transform": "(k-k2)*sqrt(m)"
+      },
+      {
+        "id": "subtract_squared_coefficients",
+        "transform": "k**2-k2**2"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true
+  }
+}

@@ -1,0 +1,9 @@
+{{ question.instruction }}
+
+\[
+{{ question.latex }}
+\]
+
+{% for choice in choices -%}
+{{ ["A", "B", "C", "D", "E"][loop.index0] }}) \( {{ choice.latex }} \)
+{% endfor %}

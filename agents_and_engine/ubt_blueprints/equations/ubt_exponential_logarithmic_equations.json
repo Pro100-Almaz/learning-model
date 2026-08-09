@@ -1,0 +1,563 @@
+{
+  "topic": "exponential_logarithmic_equations",
+  "display_name": "Exponential and logarithmic equations",
+  "curriculum_ref": "KZ 2026 UBT — Equations — Topic 07",
+  "constraints_template": "ubt_exponential_logarithmic_equations.j2",
+  "_comment": "Deterministic generator for exponential and logarithmic equations. Difficulty is controlled by solving structure: direct inverse operations at level 1, factoring/substitution/log-property equations at level 2, and reciprocal/domain-sensitive multi-step equations at level 3. Python/SymPy owns solving and validation; Jinja only renders.",
+  "tag": {
+    "name": "Көрсеткіштік және логарифмдік теңдеулер",
+    "slug": "korsetkishtik-logarifmdik-tendeuler"
+  },
+  "default_difficulty": 1,
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "exponential_same_base",
+        "log_definition",
+        "log_linear_argument",
+        "exponential_common_factor",
+        "exponential_quadratic_substitution",
+        "log_sum_linear_factors",
+        "exponential_reciprocal",
+        "log_difference_linear_factors",
+        "log_quadratic_argument"
+      ]
+    },
+    "base": {
+      "type": "choice",
+      "values": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "solution": {
+      "type": "int",
+      "min": -5,
+      "max": 6
+    },
+    "shift": {
+      "type": "int",
+      "min": -4,
+      "max": 4
+    },
+    "power": {
+      "type": "int",
+      "min": 1,
+      "max": 4
+    },
+    "coef": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "u": {
+      "type": "int",
+      "min": -3,
+      "max": 3
+    },
+    "v": {
+      "type": "int",
+      "min": -3,
+      "max": 3
+    },
+    "m": {
+      "type": "int",
+      "min": 1,
+      "max": 3
+    },
+    "n": {
+      "type": "int",
+      "min": 1,
+      "max": 3
+    },
+    "x0": {
+      "type": "int",
+      "min": 4,
+      "max": 20
+    },
+    "s": {
+      "type": "int",
+      "min": -4,
+      "max": 8
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "exponential_same_base",
+          "log_definition",
+          "log_linear_argument"
+        ]
+      },
+      "base": {
+        "values": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "solution": {
+        "min": -3,
+        "max": 5
+      },
+      "power": {
+        "max": 3
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "exponential_common_factor",
+          "exponential_quadratic_substitution",
+          "log_sum_linear_factors"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "exponential_reciprocal",
+          "log_difference_linear_factors",
+          "log_quadratic_argument"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "exponential_same_base": {
+      "uses": [
+        "base",
+        "solution",
+        "shift"
+      ],
+      "derived": {
+        "target_power": "solution+shift"
+      },
+      "question": {
+        "instruction": "Solve the equation",
+        "latex": "{base}^{{x{shift:+d}}}={base}^{{{target_power}}}"
+      }
+    },
+    "log_definition": {
+      "uses": [
+        "base",
+        "power"
+      ],
+      "derived": {
+        "argument": "base**power"
+      },
+      "question": {
+        "instruction": "Solve the equation",
+        "latex": "\\log_{{{base}}}x={power}"
+      }
+    },
+    "log_linear_argument": {
+      "uses": [
+        "base",
+        "power",
+        "solution",
+        "coef"
+      ],
+      "derived": {
+        "rhs_power": "base**power",
+        "constant": "base**power-coef*solution"
+      },
+      "question": {
+        "instruction": "Solve the logarithmic equation",
+        "latex": "\\log_{{{base}}}\\left({coef}x{constant:+d}\\right)={power}"
+      }
+    },
+    "exponential_common_factor": {
+      "uses": [
+        "base",
+        "solution",
+        "coef"
+      ],
+      "derived": {
+        "rhs": "(base+coef)*base**solution"
+      },
+      "question": {
+        "instruction": "Solve the exponential equation",
+        "latex": "{base}^{{x+1}}+{coef}\\cdot {base}^x={rhs}"
+      }
+    },
+    "exponential_quadratic_substitution": {
+      "uses": [
+        "base",
+        "u",
+        "v"
+      ],
+      "constraints": [
+        "u != v",
+        "u >= 0",
+        "v >= 0"
+      ],
+      "derived": {
+        "tu": "base**u",
+        "tv": "base**v",
+        "sum_t": "base**u+base**v",
+        "product_t": "base**(u+v)"
+      },
+      "question": {
+        "instruction": "Solve the equation using a substitution",
+        "latex": "{base}^{{2x}}-{sum_t}\\cdot {base}^x+{product_t}=0"
+      }
+    },
+    "log_sum_linear_factors": {
+      "uses": [
+        "base",
+        "m",
+        "n",
+        "x0"
+      ],
+      "derived": {
+        "r": "x0-base**m",
+        "s2": "x0-base**n",
+        "neg_r": "-(x0-base**m)",
+        "neg_s2": "-(x0-base**n)",
+        "rhs": "m+n"
+      },
+      "question": {
+        "instruction": "Solve the logarithmic equation",
+        "latex": "\\log_{{{base}}}(x{neg_r:+d})+\\log_{{{base}}}(x{neg_s2:+d})={rhs}"
+      }
+    },
+    "exponential_reciprocal": {
+      "uses": [
+        "base",
+        "power"
+      ],
+      "derived": {
+        "rhs": "base**power+base**(-power)"
+      },
+      "question": {
+        "instruction": "Solve the exponential equation",
+        "latex": "{base}^x+{base}^{{-x}}={rhs_latex}"
+      },
+      "render_derived": {
+        "rhs_latex": "latex(base**power+base**(-power))"
+      }
+    },
+    "log_difference_linear_factors": {
+      "uses": [
+        "base",
+        "power",
+        "x0",
+        "s"
+      ],
+      "constraints": [
+        "x0 > s"
+      ],
+      "derived": {
+        "B": "base**power",
+        "r": "base**power*s-(base**power-1)*x0",
+        "neg_r": "-(base**power*s-(base**power-1)*x0)",
+        "neg_s": "-s"
+      },
+      "question": {
+        "instruction": "Solve the logarithmic equation",
+        "latex": "\\log_{{{base}}}(x{neg_r:+d})-\\log_{{{base}}}(x{neg_s:+d})={power}"
+      }
+    },
+    "log_quadratic_argument": {
+      "uses": [
+        "base",
+        "m",
+        "n",
+        "x0"
+      ],
+      "derived": {
+        "r": "x0-base**m",
+        "s2": "x0-base**n",
+        "neg_r": "-(x0-base**m)",
+        "neg_s2": "-(x0-base**n)",
+        "rhs": "m+n",
+        "other_root": "x0-base**m-base**n"
+      },
+      "question": {
+        "instruction": "Solve the logarithmic equation",
+        "latex": "\\log_{{{base}}}\\left((x{neg_r:+d})(x{neg_s2:+d})\\right)={rhs}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "exponential_same_base": "solution",
+      "log_definition": "base**power",
+      "log_linear_argument": "solution",
+      "exponential_common_factor": "solution",
+      "exponential_quadratic_substitution": "FiniteSet(u,v)",
+      "log_sum_linear_factors": "x0",
+      "exponential_reciprocal": "FiniteSet(power,-power)",
+      "log_difference_linear_factors": "x0",
+      "log_quadratic_argument": "FiniteSet(x0,x0-base**m-base**n)"
+    }
+  },
+  "answer_render": {
+    "exponential_same_base": "scalar",
+    "log_definition": "scalar",
+    "log_linear_argument": "scalar",
+    "exponential_common_factor": "scalar",
+    "exponential_quadratic_substitution": "solution_set",
+    "log_sum_linear_factors": "scalar",
+    "exponential_reciprocal": "solution_set",
+    "log_difference_linear_factors": "scalar",
+    "log_quadratic_argument": "solution_set"
+  },
+  "distractors": {
+    "exponential_same_base": [
+      {
+        "id": "ignore_shift",
+        "transform": "solution+shift"
+      },
+      {
+        "id": "subtract_shift_twice",
+        "transform": "solution-shift"
+      },
+      {
+        "id": "negate_solution",
+        "transform": "-solution"
+      },
+      {
+        "id": "plus_one",
+        "transform": "solution+1"
+      },
+      {
+        "id": "minus_one",
+        "transform": "solution-1"
+      },
+      {
+        "id": "target_power",
+        "transform": "solution+shift"
+      }
+    ],
+    "log_definition": [
+      {
+        "id": "multiply_base_power",
+        "transform": "base*power"
+      },
+      {
+        "id": "add_base_power",
+        "transform": "base+power"
+      },
+      {
+        "id": "swap_power_base",
+        "transform": "power**base"
+      },
+      {
+        "id": "negative_power",
+        "transform": "base**(-power)"
+      },
+      {
+        "id": "power_only",
+        "transform": "power"
+      },
+      {
+        "id": "base_only",
+        "transform": "base"
+      }
+    ],
+    "log_linear_argument": [
+      {
+        "id": "forget_coefficient",
+        "transform": "base**power-constant"
+      },
+      {
+        "id": "wrong_sign_constant",
+        "transform": "(base**power+constant)/coef"
+      },
+      {
+        "id": "divide_power_not_value",
+        "transform": "(power-constant)/coef"
+      },
+      {
+        "id": "negate_solution",
+        "transform": "-solution"
+      },
+      {
+        "id": "plus_one",
+        "transform": "solution+1"
+      },
+      {
+        "id": "minus_one",
+        "transform": "solution-1"
+      }
+    ],
+    "exponential_common_factor": [
+      {
+        "id": "divide_rhs_by_base_only",
+        "transform": "solution+1"
+      },
+      {
+        "id": "ignore_coefficient",
+        "transform": "solution-1"
+      },
+      {
+        "id": "negate_solution",
+        "transform": "-solution"
+      },
+      {
+        "id": "rhs_as_solution",
+        "transform": "(base+coef)*base**solution"
+      },
+      {
+        "id": "coefficient_as_solution",
+        "transform": "coef"
+      },
+      {
+        "id": "base_as_solution",
+        "transform": "base"
+      }
+    ],
+    "exponential_quadratic_substitution": [
+      {
+        "id": "t_values_not_exponents",
+        "transform": "FiniteSet(base**u,base**v)"
+      },
+      {
+        "id": "negate_exponents",
+        "transform": "FiniteSet(-u,-v)"
+      },
+      {
+        "id": "first_root_only",
+        "transform": "FiniteSet(u)"
+      },
+      {
+        "id": "second_root_only",
+        "transform": "FiniteSet(v)"
+      },
+      {
+        "id": "sum_product",
+        "transform": "FiniteSet(u+v,u*v)"
+      },
+      {
+        "id": "shift_both",
+        "transform": "FiniteSet(u+1,v+1)"
+      }
+    ],
+    "log_sum_linear_factors": [
+      {
+        "id": "other_quadratic_root",
+        "transform": "x0-base**m-base**n"
+      },
+      {
+        "id": "first_boundary",
+        "transform": "x0-base**m"
+      },
+      {
+        "id": "second_boundary",
+        "transform": "x0-base**n"
+      },
+      {
+        "id": "negate_solution",
+        "transform": "-x0"
+      },
+      {
+        "id": "plus_one",
+        "transform": "x0+1"
+      },
+      {
+        "id": "minus_one",
+        "transform": "x0-1"
+      }
+    ],
+    "exponential_reciprocal": [
+      {
+        "id": "positive_only",
+        "transform": "FiniteSet(power)"
+      },
+      {
+        "id": "negative_only",
+        "transform": "FiniteSet(-power)"
+      },
+      {
+        "id": "powers_of_base",
+        "transform": "FiniteSet(base**power,base**(-power))"
+      },
+      {
+        "id": "zero_and_positive",
+        "transform": "FiniteSet(0,power)"
+      },
+      {
+        "id": "shifted_pair",
+        "transform": "FiniteSet(power+1,-power-1)"
+      },
+      {
+        "id": "same_sign_pair",
+        "transform": "FiniteSet(power,power+1)"
+      }
+    ],
+    "log_difference_linear_factors": [
+      {
+        "id": "denominator_boundary",
+        "transform": "s"
+      },
+      {
+        "id": "numerator_boundary",
+        "transform": "base**power*s-(base**power-1)*x0"
+      },
+      {
+        "id": "negate_solution",
+        "transform": "-x0"
+      },
+      {
+        "id": "plus_one",
+        "transform": "x0+1"
+      },
+      {
+        "id": "minus_one",
+        "transform": "x0-1"
+      },
+      {
+        "id": "ratio_base",
+        "transform": "base**power"
+      }
+    ],
+    "log_quadratic_argument": [
+      {
+        "id": "principal_root_only",
+        "transform": "FiniteSet(x0)"
+      },
+      {
+        "id": "other_root_only",
+        "transform": "FiniteSet(x0-base**m-base**n)"
+      },
+      {
+        "id": "factor_boundaries",
+        "transform": "FiniteSet(x0-base**m,x0-base**n)"
+      },
+      {
+        "id": "negate_both",
+        "transform": "FiniteSet(-x0,-(x0-base**m-base**n))"
+      },
+      {
+        "id": "sum_difference",
+        "transform": "FiniteSet(x0+base**m,x0-base**n)"
+      },
+      {
+        "id": "shift_roots",
+        "transform": "FiniteSet(x0+1,x0-base**m-base**n+1)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "respect_log_domain": true,
+    "reject_extraneous_roots": true,
+    "reject_undefined_choices": true,
+    "exact_answers_only": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

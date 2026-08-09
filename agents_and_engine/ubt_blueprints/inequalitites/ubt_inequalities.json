@@ -1,0 +1,609 @@
+{
+  "topic": "inequalities",
+  "display_name": "Linear, quadratic, rational, trigonometric, irrational, exponential and logarithmic inequalities",
+  "curriculum_ref": "KZ 2026 UBT — Inequalities — Topic 10",
+  "constraints_template": "ubt_inequalities.j2",
+  "_comment": "Deterministic inequality generator. Difficulty is controlled by the structure of the inequality and the number of transformations required, not mainly by coefficient size. Python/SymPy owns generation, solving, interval/set validation, domain checks, and distractor filtering. Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Теңсіздіктер",
+    "slug": "tensizdikter"
+  },
+  "default_difficulty": 1,
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "linear_direct",
+        "exponential_same_base",
+        "logarithmic_linear",
+        "quadratic_between_roots",
+        "trig_sine_interval",
+        "irrational_root_bound",
+        "quadratic_outside_roots",
+        "rational_sign_chart",
+        "exponential_quadratic_substitution",
+        "logarithmic_squared"
+      ]
+    },
+    "a": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "b": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "threshold": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "r1": {
+      "type": "int",
+      "min": -7,
+      "max": 4
+    },
+    "r2": {
+      "type": "int",
+      "min": -3,
+      "max": 8
+    },
+    "alpha": {
+      "type": "choice",
+      "values": [
+        30,
+        45,
+        60
+      ]
+    },
+    "shift": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    },
+    "p": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "base": {
+      "type": "choice",
+      "values": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "solution": {
+      "type": "int",
+      "min": -6,
+      "max": 6
+    },
+    "u": {
+      "type": "int",
+      "min": -3,
+      "max": 2
+    },
+    "v": {
+      "type": "int",
+      "min": 1,
+      "max": 5
+    },
+    "log_shift": {
+      "type": "int",
+      "min": -6,
+      "max": 6
+    },
+    "log_power": {
+      "type": "int",
+      "min": 1,
+      "max": 3
+    },
+    "center": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "linear_direct",
+          "exponential_same_base",
+          "logarithmic_linear"
+        ]
+      },
+      "a": {
+        "max": 5
+      },
+      "threshold": {
+        "min": -5,
+        "max": 5
+      },
+      "solution": {
+        "min": -4,
+        "max": 4
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "quadratic_between_roots",
+          "trig_sine_interval",
+          "irrational_root_bound"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "quadratic_outside_roots",
+          "rational_sign_chart",
+          "exponential_quadratic_substitution",
+          "logarithmic_squared"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "linear_direct": {
+      "uses": [
+        "a",
+        "b",
+        "threshold"
+      ],
+      "derived": {
+        "rhs": "a*threshold+b"
+      },
+      "question": {
+        "instruction": "Solve the inequality",
+        "latex": "{a}x{b:+d}>{rhs}"
+      }
+    },
+    "exponential_same_base": {
+      "uses": [
+        "base",
+        "solution",
+        "shift"
+      ],
+      "derived": {
+        "target_power": "solution+shift"
+      },
+      "question": {
+        "instruction": "Solve the exponential inequality",
+        "latex": "{base}^{{x{shift:+d}}}>{base}^{{{target_power}}}"
+      }
+    },
+    "logarithmic_linear": {
+      "uses": [
+        "base",
+        "log_shift",
+        "log_power"
+      ],
+      "derived": {
+        "neg_shift": "-log_shift"
+      },
+      "question": {
+        "instruction": "Solve the logarithmic inequality",
+        "latex": "\\log_{{{base}}}(x{neg_shift:+d})>{log_power}"
+      }
+    },
+    "quadratic_between_roots": {
+      "uses": [
+        "r1",
+        "r2"
+      ],
+      "constraints": [
+        "r1 < r2"
+      ],
+      "derived": {
+        "bcoef": "-(r1+r2)",
+        "ccoef": "r1*r2"
+      },
+      "question": {
+        "instruction": "Solve the quadratic inequality",
+        "latex": "x^2{bcoef:+d}x{ccoef:+d}<0"
+      }
+    },
+    "trig_sine_interval": {
+      "uses": [
+        "alpha"
+      ],
+      "question": {
+        "instruction": "Solve the trigonometric inequality on the given interval",
+        "latex": "\\sin x\\ge\\sin {alpha}^\\circ,\\qquad 0^\\circ\\le x\\le180^\\circ"
+      }
+    },
+    "irrational_root_bound": {
+      "uses": [
+        "p",
+        "shift"
+      ],
+      "derived": {
+        "threshold_value": "p**2-shift"
+      },
+      "question": {
+        "instruction": "Solve the irrational inequality",
+        "latex": "\\sqrt{{x+{shift}}}\\ge {p}"
+      }
+    },
+    "quadratic_outside_roots": {
+      "uses": [
+        "r1",
+        "r2"
+      ],
+      "constraints": [
+        "r1 < r2"
+      ],
+      "derived": {
+        "bcoef": "-(r1+r2)",
+        "ccoef": "r1*r2"
+      },
+      "question": {
+        "instruction": "Solve the quadratic inequality",
+        "latex": "x^2{bcoef:+d}x{ccoef:+d}>0"
+      }
+    },
+    "rational_sign_chart": {
+      "uses": [
+        "r1",
+        "r2"
+      ],
+      "constraints": [
+        "r1 < r2"
+      ],
+      "derived": {
+        "neg_r1": "-r1",
+        "neg_r2": "-r2"
+      },
+      "question": {
+        "instruction": "Solve the rational inequality",
+        "latex": "\\frac{{x{neg_r1:+d}}}{{x{neg_r2:+d}}}>0"
+      }
+    },
+    "exponential_quadratic_substitution": {
+      "uses": [
+        "base",
+        "u",
+        "v"
+      ],
+      "constraints": [
+        "u < v"
+      ],
+      "derived": {
+        "sum_t": "base**u+base**v",
+        "product_t": "base**(u+v)"
+      },
+      "question": {
+        "instruction": "Solve the exponential inequality using a substitution",
+        "latex": "{base}^{{2x}}-{sum_t}\\cdot {base}^x+{product_t}<0"
+      }
+    },
+    "logarithmic_squared": {
+      "uses": [
+        "base",
+        "center",
+        "log_power"
+      ],
+      "derived": {
+        "rhs_power": "2*log_power",
+        "neg_center": "-center"
+      },
+      "question": {
+        "instruction": "Solve the logarithmic inequality",
+        "latex": "\\log_{{{base}}}\\left((x{neg_center:+d})^2\\right)\\ge {rhs_power}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "linear_direct": "Interval.open(threshold,oo)",
+      "exponential_same_base": "Interval.open(solution,oo)",
+      "logarithmic_linear": "Interval.open(log_shift+base**log_power,oo)",
+      "quadratic_between_roots": "Interval.open(r1,r2)",
+      "trig_sine_interval": "Interval(alpha,180-alpha)",
+      "irrational_root_bound": "Interval(p**2-shift,oo)",
+      "quadratic_outside_roots": "Union(Interval.open(-oo,r1),Interval.open(r2,oo))",
+      "rational_sign_chart": "Union(Interval.open(-oo,r1),Interval.open(r2,oo))",
+      "exponential_quadratic_substitution": "Interval.open(u,v)",
+      "logarithmic_squared": "Union(Interval(-oo,center-base**log_power),Interval(center+base**log_power,oo))"
+    }
+  },
+  "answer_render": {
+    "linear_direct": "interval",
+    "exponential_same_base": "interval",
+    "logarithmic_linear": "interval",
+    "quadratic_between_roots": "interval",
+    "trig_sine_interval": "degree_interval",
+    "irrational_root_bound": "interval",
+    "quadratic_outside_roots": "interval_union",
+    "rational_sign_chart": "interval_union",
+    "exponential_quadratic_substitution": "interval",
+    "logarithmic_squared": "interval_union"
+  },
+  "distractors": {
+    "linear_direct": [
+      {
+        "id": "reverse_direction",
+        "transform": "Interval.open(-oo,threshold)"
+      },
+      {
+        "id": "include_boundary",
+        "transform": "Interval(threshold,oo)"
+      },
+      {
+        "id": "negative_threshold",
+        "transform": "Interval.open(-threshold,oo)"
+      },
+      {
+        "id": "plus_one",
+        "transform": "Interval.open(threshold+1,oo)"
+      },
+      {
+        "id": "minus_one",
+        "transform": "Interval.open(threshold-1,oo)"
+      },
+      {
+        "id": "bounded_interval",
+        "transform": "Interval.open(-oo,threshold+1)"
+      }
+    ],
+    "exponential_same_base": [
+      {
+        "id": "reverse_direction",
+        "transform": "Interval.open(-oo,solution)"
+      },
+      {
+        "id": "include_boundary",
+        "transform": "Interval(solution,oo)"
+      },
+      {
+        "id": "ignore_shift",
+        "transform": "Interval.open(solution+shift,oo)"
+      },
+      {
+        "id": "subtract_shift_twice",
+        "transform": "Interval.open(solution-shift,oo)"
+      },
+      {
+        "id": "negate_solution",
+        "transform": "Interval.open(-solution,oo)"
+      },
+      {
+        "id": "plus_one",
+        "transform": "Interval.open(solution+1,oo)"
+      }
+    ],
+    "logarithmic_linear": [
+      {
+        "id": "forget_log_shift",
+        "transform": "Interval.open(base**log_power,oo)"
+      },
+      {
+        "id": "use_power_not_exponential",
+        "transform": "Interval.open(log_shift+log_power,oo)"
+      },
+      {
+        "id": "reverse_direction",
+        "transform": "Interval.open(log_shift,log_shift+base**log_power)"
+      },
+      {
+        "id": "include_boundary",
+        "transform": "Interval(log_shift+base**log_power,oo)"
+      },
+      {
+        "id": "wrong_shift_sign",
+        "transform": "Interval.open(-log_shift+base**log_power,oo)"
+      },
+      {
+        "id": "domain_only",
+        "transform": "Interval.open(log_shift,oo)"
+      }
+    ],
+    "quadratic_between_roots": [
+      {
+        "id": "outside_roots",
+        "transform": "Union(Interval.open(-oo,r1),Interval.open(r2,oo))"
+      },
+      {
+        "id": "include_roots",
+        "transform": "Interval(r1,r2)"
+      },
+      {
+        "id": "left_only",
+        "transform": "Interval.open(-oo,r1)"
+      },
+      {
+        "id": "right_only",
+        "transform": "Interval.open(r2,oo)"
+      },
+      {
+        "id": "swap_endpoint_signs",
+        "transform": "Interval.open(-r2,-r1)"
+      },
+      {
+        "id": "all_real",
+        "transform": "Interval(-oo,oo)"
+      }
+    ],
+    "trig_sine_interval": [
+      {
+        "id": "outside_interval",
+        "transform": "Union(Interval(0,alpha),Interval(180-alpha,180))"
+      },
+      {
+        "id": "open_boundaries",
+        "transform": "Interval.open(alpha,180-alpha)"
+      },
+      {
+        "id": "cosine_style",
+        "transform": "Interval(0,alpha)"
+      },
+      {
+        "id": "complementary",
+        "transform": "Interval(90-alpha,90+alpha)"
+      },
+      {
+        "id": "left_half_only",
+        "transform": "Interval(alpha,90)"
+      },
+      {
+        "id": "right_half_only",
+        "transform": "Interval(90,180-alpha)"
+      }
+    ],
+    "irrational_root_bound": [
+      {
+        "id": "forget_square",
+        "transform": "Interval(p-shift,oo)"
+      },
+      {
+        "id": "wrong_shift_sign",
+        "transform": "Interval(p**2+shift,oo)"
+      },
+      {
+        "id": "strict_boundary",
+        "transform": "Interval.open(p**2-shift,oo)"
+      },
+      {
+        "id": "domain_only",
+        "transform": "Interval(-shift,oo)"
+      },
+      {
+        "id": "reverse_direction",
+        "transform": "Interval(-shift,p**2-shift)"
+      },
+      {
+        "id": "negative_threshold",
+        "transform": "Interval(-(p**2-shift),oo)"
+      }
+    ],
+    "quadratic_outside_roots": [
+      {
+        "id": "between_roots",
+        "transform": "Interval.open(r1,r2)"
+      },
+      {
+        "id": "include_roots",
+        "transform": "Union(Interval(-oo,r1),Interval(r2,oo))"
+      },
+      {
+        "id": "left_only",
+        "transform": "Interval.open(-oo,r1)"
+      },
+      {
+        "id": "right_only",
+        "transform": "Interval.open(r2,oo)"
+      },
+      {
+        "id": "all_real",
+        "transform": "Interval(-oo,oo)"
+      },
+      {
+        "id": "closed_between",
+        "transform": "Interval(r1,r2)"
+      }
+    ],
+    "rational_sign_chart": [
+      {
+        "id": "between_critical_points",
+        "transform": "Interval.open(r1,r2)"
+      },
+      {
+        "id": "include_numerator_zero",
+        "transform": "Union(Interval(-oo,r1),Interval.open(r2,oo))"
+      },
+      {
+        "id": "include_denominator_zero",
+        "transform": "Union(Interval.open(-oo,r1),Interval(r2,oo))"
+      },
+      {
+        "id": "left_only",
+        "transform": "Interval.open(-oo,r1)"
+      },
+      {
+        "id": "right_only",
+        "transform": "Interval.open(r2,oo)"
+      },
+      {
+        "id": "all_except_denominator",
+        "transform": "Union(Interval.open(-oo,r2),Interval.open(r2,oo))"
+      }
+    ],
+    "exponential_quadratic_substitution": [
+      {
+        "id": "outside_exponents",
+        "transform": "Union(Interval.open(-oo,u),Interval.open(v,oo))"
+      },
+      {
+        "id": "include_endpoints",
+        "transform": "Interval(u,v)"
+      },
+      {
+        "id": "t_values_as_x",
+        "transform": "Interval.open(base**u,base**v)"
+      },
+      {
+        "id": "negate_bounds",
+        "transform": "Interval.open(-v,-u)"
+      },
+      {
+        "id": "left_only",
+        "transform": "Interval.open(-oo,u)"
+      },
+      {
+        "id": "right_only",
+        "transform": "Interval.open(v,oo)"
+      }
+    ],
+    "logarithmic_squared": [
+      {
+        "id": "inside_instead_of_outside",
+        "transform": "Interval(center-base**log_power,center+base**log_power)"
+      },
+      {
+        "id": "open_outer_boundaries",
+        "transform": "Union(Interval.open(-oo,center-base**log_power),Interval.open(center+base**log_power,oo))"
+      },
+      {
+        "id": "forget_square_on_threshold",
+        "transform": "Union(Interval(-oo,center-log_power),Interval(center+log_power,oo))"
+      },
+      {
+        "id": "right_side_only",
+        "transform": "Interval(center+base**log_power,oo)"
+      },
+      {
+        "id": "left_side_only",
+        "transform": "Interval(-oo,center-base**log_power)"
+      },
+      {
+        "id": "domain_only",
+        "transform": "Union(Interval.open(-oo,center),Interval.open(center,oo))"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "interval_equivalence": true,
+    "respect_open_closed_boundaries": true,
+    "respect_rational_domain": true,
+    "respect_radical_domain": true,
+    "respect_log_domain": true,
+    "trigonometric_interval_check": true,
+    "reject_undefined_choices": true,
+    "exact_answers_only": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}
