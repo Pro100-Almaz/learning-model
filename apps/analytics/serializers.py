@@ -62,17 +62,23 @@ class MathSerializer(serializers.Serializer):
     gap = serializers.FloatField(allow_null=True, required=False)
 
 
-class QualifyingGrantSerializer(serializers.Serializer):
-    university_name = serializers.CharField()
+class _CanonicalThresholdContextSerializer(serializers.Serializer):
+    """Context every canonical threshold entry carries, optional for old clients."""
+
+    university_name = serializers.CharField(allow_blank=True)
     specialty_name = serializers.CharField()
     min_score = serializers.IntegerField()
+    year = serializers.IntegerField(required=False)
+    score_type = serializers.CharField(required=False)
+    program_group_code = serializers.CharField(required=False)
+    source_url = serializers.URLField(required=False)
+
+
+class QualifyingGrantSerializer(_CanonicalThresholdContextSerializer):
     margin = serializers.IntegerField()
 
 
-class NearMissGrantSerializer(serializers.Serializer):
-    university_name = serializers.CharField()
-    specialty_name = serializers.CharField()
-    min_score = serializers.IntegerField()
+class NearMissGrantSerializer(_CanonicalThresholdContextSerializer):
     points_needed = serializers.IntegerField()
 
 

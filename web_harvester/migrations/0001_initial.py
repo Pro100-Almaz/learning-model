@@ -4,29 +4,44 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Profession',
+            name="Profession",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=250)),
-                ('national_code', models.CharField(max_length=100)),
-                ('ubt_score', models.IntegerField(blank=True, null=True)),
-                ('subjects', models.JSONField(default=list, null=True)),
-                ('universities', models.JSONField(default=list, null=True)),
-                ('sources', models.JSONField(default=list, null=True)),
-                ('source_tier', models.IntegerField(blank=True, null=True)),
-                ('confidence', models.CharField(choices=[('Low', 'Low'), ('High', 'High')], max_length=100)),
-                ('fetched_at', models.DateTimeField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=250)),
+                ("national_code", models.CharField(max_length=100)),
+                ("ubt_score", models.IntegerField(blank=True, null=True)),
+                ("subjects", models.JSONField(default=list, null=True)),
+                ("universities", models.JSONField(default=list, null=True)),
+                ("sources", models.JSONField(default=list, null=True)),
+                ("source_tier", models.IntegerField(blank=True, null=True)),
+                (
+                    "confidence",
+                    models.CharField(
+                        choices=[("Low", "Low"), ("High", "High")], max_length=100
+                    ),
+                ),
+                ("fetched_at", models.DateTimeField(blank=True, null=True)),
             ],
             options={
-                'constraints': [models.UniqueConstraint(fields=('national_code', 'name'), name='unique_name_national_code')],
+                "constraints": [
+                    models.UniqueConstraint(
+                        fields=("national_code", "name"), name="unique_name_national_code"
+                    )
+                ],
             },
         ),
     ]
