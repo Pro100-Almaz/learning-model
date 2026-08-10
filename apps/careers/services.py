@@ -9,12 +9,13 @@ from __future__ import annotations
 from typing import Any
 
 from django.contrib.auth import get_user_model
-from django.db.models import Max
 
 import config
 from apps.assessments.models import TestAttempt
-
-from apps.careers.models import Specialty
+from apps.careers.admission_services import (
+    near_miss_grant_cutoffs,
+    qualifying_grant_cutoffs,
+)
 
 User = get_user_model()
 
@@ -82,37 +83,16 @@ def _build_advice(gap: float, weakest_tag: str | None) -> str:
 
 
 def _qualifying_grants(predicted_score: float) -> list[dict]:
-    """Return Specialty rows whose newest threshold min_score <= predicted_score."""
+    """Return canonical grant cutoffs the predicted score already clears.
 
-    # latest year per specialty, annotated for filtering + min_score lookup
-    specialties = (
-        Specialty.objects.select_related("university")
-        .prefetch_related("thresholds")
-        .annotate(_latest_year=Max("thresholds__year"))
-        .filter(_latest_year__isnull=False)
-    )
+    Reads verified ``AdmissionThreshold`` rows only. Legacy ``GrantThreshold``
+    is never used as a silent fallback: an untyped legacy number cannot tell a
+    student whether it was a legal minimum or a past winning score, and that
+    ambiguity is exactly what this pipeline removes. No canonical data yet means
+    an empty list.
+    """
 
-    result: list[dict] = []
-    for sp in specialties:
-        latest = None
-        for t in sp.thresholds.all():
-            if latest is None or t.year > latest.year:
-                latest = t
-        if latest is None:
-            continue
-        if latest.min_score <= predicted_score:
-            result.append(
-                {
-                    "university_name": sp.university.name,
-                    "specialty_name": sp.name,
-                    "min_score": int(latest.min_score),
-                    "margin": int(round(predicted_score - latest.min_score)),
-                }
-            )
-
-    # Deterministic order: biggest margin first.
-    result.sort(key=lambda r: r["margin"], reverse=True)
-    return result
+    return qualifying_grant_cutoffs(predicted_score)
 
 
 def calculate_grant(user) -> dict:
@@ -175,39 +155,14 @@ def calculate_grant(user) -> dict:
     }
 
 def near_miss_grants(predicted_score: float, within: int = config.NEAR_MISS_WITHIN): #to calculate and identify the grants which is almost reachable for a student
-    # latest year per specialty, annotated for filtering + min_score lookup
     '''
       The intuition behind the two changed values:
         - _qualifying_grants answers "how comfortably did I clear this?" → margin is predicted − cutoff, positive because they're at or above
             it, and it sorts biggest-first (safest bets on top).
         - near_miss_grants answers "how far short am I?" → points_needed is cutoff − predicted, positive because they're below it (that's what
             the strict > in the filter guarantees), and it sorts smallest-first (closest targets on top — the most motivating).
+
+      Both read canonical verified AdmissionThreshold grant cutoffs, never the
+      untyped legacy GrantThreshold rows.
     '''
-    specialties = (
-        Specialty.objects.select_related("university")
-        .prefetch_related("thresholds")
-        .annotate(_latest_year=Max("thresholds__year"))
-        .filter(_latest_year__isnull=False)
-    )
-
-
-    result: list[dict] = []
-    for sp in specialties:
-        latest = None
-        for t in sp.thresholds.all():
-            if latest is None or t.year > latest.year:
-                latest = t
-        if latest is None:
-            continue
-        if predicted_score < latest.min_score and latest.min_score <= predicted_score + within:
-            result.append(
-                {
-                    "university_name": sp.university.name,
-                    "specialty_name": sp.name,
-                    "min_score": int(latest.min_score),
-                    "points_needed": int(round(latest.min_score - predicted_score)),
-                }
-            )
-    # Deterministic order: lowest points_needed first.
-    result.sort(key=lambda r: r["points_needed"])
-    return result
+    return near_miss_grant_cutoffs(predicted_score, within)

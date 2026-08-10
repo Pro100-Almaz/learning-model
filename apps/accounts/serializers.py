@@ -6,11 +6,13 @@ These shape the User / StudentProfile / ExpectedScore I/O to match
 
 from __future__ import annotations
 
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
-from apps.content.models import Subject
-
 from apps.accounts.models import ExpectedScore, StudentProfile
+from apps.careers.admission_services import latest_grant_cutoff_payload
+from apps.careers.serializers import LatestGrantCutoffSerializer
+from apps.content.models import Subject
 
 
 class AuthUserSerializer(serializers.Serializer):
@@ -115,10 +117,17 @@ class OnboardingSpecialtySerializer(serializers.Serializer):
     name = serializers.CharField()
     code = serializers.CharField()
     latest_threshold = serializers.SerializerMethodField()
+    latest_grant_cutoff = serializers.SerializerMethodField()
 
     def get_latest_threshold(self, obj) -> int | None:
+        """Legacy untyped number, kept for onboarding-client compatibility."""
         threshold = obj.thresholds.order_by("-year").first()
         return threshold.min_score if threshold else None
+
+    @extend_schema_field(LatestGrantCutoffSerializer(allow_null=True))
+    def get_latest_grant_cutoff(self, obj) -> dict | None:
+        """Typed canonical cutoff, so onboarding can explain what the score is."""
+        return latest_grant_cutoff_payload(list(obj.admission_thresholds.all()))
 
 
 class OnboardingUniversitySerializer(serializers.Serializer):

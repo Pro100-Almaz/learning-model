@@ -29,7 +29,7 @@ def noop(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
+    atomic = False
     dependencies = [
         ('content', '0002_lesson_tag'),
     ]
