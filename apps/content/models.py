@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from apps.content.services import calculate_student_progress, invalidate_cache_for_student_and_lesson
 from apps.users.models import CustomUser
@@ -111,3 +112,30 @@ class Tag(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class NextLesson(models.Model):
+    STATUS_CHOICES = [
+        ("todo", "ToDo"),
+        ("done", "Done"),
+    ]
+
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="next_lessons")
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="next_lessons")
+    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="next_lessons")
+    date = models.DateField(default=timezone.localdate)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="todo")
+
+    class Meta:
+        ordering = ["student_id", "date"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["student", "subject", "date"],
+                name="uniq_next_lesson_per_student_subject_day",
+            ),
+        ]
+        indexes = [models.Index(fields=["student", "date"])]
+
+    def __str__(self) -> str:
+        return f"NextLesson<{self.pk}> student={self.student_id} lesson={self.lesson_id} {self.date}"
+
