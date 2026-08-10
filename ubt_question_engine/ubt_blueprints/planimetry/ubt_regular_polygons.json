@@ -1,0 +1,110 @@
+{
+  "topic": "ubt_regular_polygons",
+  "parent_topic": "planimetry_geometric_figures",
+  "parent_topic_number": 14,
+  "display_name": "Planimetry — regular polygons",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 14",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 14. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Планиметрия",
+    "slug": "planimetriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "regular_polygon_interior_angle"
+      ],
+      "desc": "question structure"
+    },
+    "n_sides": {
+      "type": "choice",
+      "values": [
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12
+      ]
+    }
+  },
+  "supported_difficulties": [
+    2
+  ],
+  "default_difficulty": 2,
+  "difficulty_overrides": {
+    "2": {
+      "mode": {
+        "values": [
+          "regular_polygon_interior_angle"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "regular_polygon_interior_angle": {
+      "uses": [
+        "n_sides"
+      ],
+      "question": {
+        "instruction": "Find one interior angle of the regular polygon.",
+        "latex": "n={n_sides}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "regular_polygon_interior_angle": "Rational((n_sides-2)*180,n_sides)"
+    }
+  },
+  "answer_render": {
+    "regular_polygon_interior_angle": "degrees"
+  },
+  "distractors": {
+    "regular_polygon_interior_angle": [
+      {
+        "id": "exterior",
+        "transform": "Rational(360,n_sides)"
+      },
+      {
+        "id": "sum_interiors",
+        "transform": "(n_sides-2)*180"
+      },
+      {
+        "id": "n_minus_one",
+        "transform": "Rational((n_sides-1)*180,n_sides)"
+      },
+      {
+        "id": "wrong_180",
+        "transform": "180-Rational(180,n_sides)"
+      },
+      {
+        "id": "half_correct",
+        "transform": "Rational((n_sides-2)*90,n_sides)"
+      },
+      {
+        "id": "central_plus_90",
+        "transform": "Rational(360,n_sides)+90"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "angle_range_validation": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

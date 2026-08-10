@@ -1,0 +1,272 @@
+{
+  "topic": "ubt_function_basics",
+  "parent_topic": "functions_calculus_modelling",
+  "parent_topic_number": 13,
+  "display_name": "Functions — basic values, intercepts, vertices and domains",
+  "curriculum_ref": "KZ 2026 UBT — Mathematical modelling and analysis — Topic 13",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 13. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Функциялар және математикалық анализ",
+    "slug": "funkciyalar-matematikalyk-analiz"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "function_value",
+        "linear_x_intercept",
+        "quadratic_vertex",
+        "rational_domain"
+      ],
+      "desc": "question structure"
+    },
+    "a": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "b": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "c": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "x0": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    },
+    "h": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    },
+    "k": {
+      "type": "int",
+      "min": -6,
+      "max": 6
+    }
+  },
+  "supported_difficulties": [
+    1
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "function_value",
+          "linear_x_intercept",
+          "quadratic_vertex",
+          "rational_domain"
+        ]
+      },
+      "a": {
+        "max": 4
+      },
+      "x0": {
+        "min": -3,
+        "max": 3
+      }
+    }
+  },
+  "modes": {
+    "function_value": {
+      "uses": [
+        "a",
+        "b",
+        "c",
+        "x0"
+      ],
+      "question": {
+        "instruction": "Find the value of the function",
+        "latex": "f(x)={a}x^2{b:+d}x{c:+d},\\qquad f({x0})=?"
+      }
+    },
+    "linear_x_intercept": {
+      "uses": [
+        "a",
+        "b"
+      ],
+      "constraints": [
+        "b != 0"
+      ],
+      "question": {
+        "instruction": "Find the x-coordinate of the intersection with the x-axis",
+        "latex": "y={a}x{b:+d}"
+      }
+    },
+    "quadratic_vertex": {
+      "uses": [
+        "a",
+        "h",
+        "k"
+      ],
+      "question": {
+        "instruction": "Find the vertex of the parabola",
+        "latex": "y={a}(x{neg_h:+d})^2{k:+d}"
+      },
+      "derived": {
+        "neg_h": "-h"
+      }
+    },
+    "rational_domain": {
+      "uses": [
+        "h"
+      ],
+      "derived": {
+        "neg_h": "-h"
+      },
+      "question": {
+        "instruction": "Find the domain of the function",
+        "latex": "f(x)=\\frac{{1}}{{x{neg_h:+d}}}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "function_value": "a*x0**2+b*x0+c",
+      "linear_x_intercept": "-Rational(b,a)",
+      "quadratic_vertex": "Tuple(h,k)",
+      "rational_domain": "Union(Interval.open(-oo,h),Interval.open(h,oo))"
+    }
+  },
+  "answer_render": {
+    "function_value": "scalar",
+    "linear_x_intercept": "exact_number",
+    "quadratic_vertex": "ordered_pair",
+    "rational_domain": "interval_union"
+  },
+  "distractors": {
+    "function_value": [
+      {
+        "id": "forget_square",
+        "transform": "a*x0+b*x0+c"
+      },
+      {
+        "id": "omit_linear_term",
+        "transform": "a*x0**2+c"
+      },
+      {
+        "id": "omit_constant",
+        "transform": "a*x0**2+b*x0"
+      },
+      {
+        "id": "sign_linear",
+        "transform": "a*x0**2-b*x0+c"
+      },
+      {
+        "id": "use_x_plus_one",
+        "transform": "a*(x0+1)**2+b*(x0+1)+c"
+      },
+      {
+        "id": "square_whole_linear_part",
+        "transform": "(a*x0+b)**2+c"
+      }
+    ],
+    "linear_x_intercept": [
+      {
+        "id": "wrong_sign",
+        "transform": "Rational(b,a)"
+      },
+      {
+        "id": "reciprocal",
+        "transform": "-Rational(a,b)"
+      },
+      {
+        "id": "constant_only",
+        "transform": "b"
+      },
+      {
+        "id": "coefficient_only",
+        "transform": "a"
+      },
+      {
+        "id": "sum",
+        "transform": "a+b"
+      },
+      {
+        "id": "negative_sum",
+        "transform": "-a-b"
+      }
+    ],
+    "quadratic_vertex": [
+      {
+        "id": "negate_h",
+        "transform": "Tuple(-h,k)"
+      },
+      {
+        "id": "negate_k",
+        "transform": "Tuple(h,-k)"
+      },
+      {
+        "id": "negate_both",
+        "transform": "Tuple(-h,-k)"
+      },
+      {
+        "id": "swap",
+        "transform": "Tuple(k,h)"
+      },
+      {
+        "id": "shift_h",
+        "transform": "Tuple(h+1,k)"
+      },
+      {
+        "id": "shift_k",
+        "transform": "Tuple(h,k+1)"
+      }
+    ],
+    "rational_domain": [
+      {
+        "id": "include_excluded",
+        "transform": "Interval(-oo,oo)"
+      },
+      {
+        "id": "right_only",
+        "transform": "Interval.open(h,oo)"
+      },
+      {
+        "id": "left_only",
+        "transform": "Interval.open(-oo,h)"
+      },
+      {
+        "id": "exclude_negative_h",
+        "transform": "Union(Interval.open(-oo,-h),Interval.open(-h,oo))"
+      },
+      {
+        "id": "closed_break",
+        "transform": "Union(Interval(-oo,h),Interval(h,oo))"
+      },
+      {
+        "id": "bounded",
+        "transform": "Interval.open(-h,h)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "tuple_equivalence": true,
+    "interval_equivalence": true,
+    "function_equivalence": true,
+    "exact_answers_only": true,
+    "respect_function_domain": true,
+    "validate_derivatives": true,
+    "validate_integrals": true,
+    "validate_tangent_point_and_slope": true,
+    "validate_extrema_and_monotonicity": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

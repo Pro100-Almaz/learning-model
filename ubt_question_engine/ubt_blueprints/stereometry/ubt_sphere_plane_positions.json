@@ -1,0 +1,271 @@
+{
+  "topic": "ubt_sphere_plane_positions",
+  "parent_topic": "stereometry_geometric_figures",
+  "parent_topic_number": 16,
+  "display_name": "Mutual position of a sphere and a plane",
+  "curriculum_ref": "KZ 2026 UBT — Stereometry — Topic 16",
+  "_comment": "Deterministic Topic 16 generator. Python owns parameter selection, mathematical or logical validation, answer generation, distractor filtering and seeded reproducibility. JSON owns configuration. Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Стереометрия",
+    "slug": "stereometriya"
+  },
+  "expression_language": "sympy",
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "sphere_plane_secant",
+        "sphere_plane_tangent",
+        "sphere_plane_disjoint",
+        "sphere_section_radius"
+      ]
+    },
+    "r": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "d": {
+      "type": "int",
+      "min": 0,
+      "max": 9
+    },
+    "u": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "v": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "sphere_plane_tangent",
+          "sphere_plane_disjoint"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "sphere_plane_secant"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "sphere_section_radius"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "sphere_plane_secant": {
+      "uses": [
+        "r",
+        "d"
+      ],
+      "constraints": [
+        "0 <= d",
+        "d < r"
+      ],
+      "question": {
+        "instruction": "A plane is at distance d from the center of a sphere of radius r. Describe their intersection.",
+        "latex": "r={r},\\qquad d={d}"
+      }
+    },
+    "sphere_plane_tangent": {
+      "uses": [
+        "r"
+      ],
+      "question": {
+        "instruction": "A plane is at distance r from the center of a sphere of radius r. Describe their intersection.",
+        "latex": "d=r={r}"
+      }
+    },
+    "sphere_plane_disjoint": {
+      "uses": [
+        "r",
+        "d"
+      ],
+      "constraints": [
+        "d > r"
+      ],
+      "question": {
+        "instruction": "A plane is at distance d from the center of a sphere of radius r. Describe their intersection.",
+        "latex": "r={r},\\qquad d={d}"
+      }
+    },
+    "sphere_section_radius": {
+      "uses": [
+        "u",
+        "v"
+      ],
+      "derived": {
+        "r": "sqrt(u**2+v**2)",
+        "d": "u"
+      },
+      "render_derived": {
+        "r_latex": "latex(r)"
+      },
+      "question": {
+        "instruction": "A plane cuts a sphere. Find the radius ρ of the circular section.",
+        "latex": "R={r_latex},\\qquad d={d}"
+      }
+    }
+  },
+  "answer": {
+    "type": "mixed_by_mode",
+    "expression": {
+      "sphere_plane_secant": "circle",
+      "sphere_plane_tangent": "one_point",
+      "sphere_plane_disjoint": "no_points",
+      "sphere_section_radius": "v"
+    }
+  },
+  "choice_labels": {
+    "circle": "\\text{circle}",
+    "one_point": "\\text{one common point}",
+    "no_points": "\\text{no common points}",
+    "sphere_in_plane": "\\text{the whole sphere}",
+    "two_points": "\\text{two common points}",
+    "line": "\\text{line}"
+  },
+  "answer_render": {
+    "sphere_plane_secant": "literal_label",
+    "sphere_plane_tangent": "literal_label",
+    "sphere_plane_disjoint": "literal_label",
+    "sphere_section_radius": "exact_number"
+  },
+  "distractors": {
+    "sphere_plane_secant": [
+      {
+        "id": "one",
+        "literal": "one_point"
+      },
+      {
+        "id": "none",
+        "literal": "no_points"
+      },
+      {
+        "id": "two",
+        "literal": "two_points"
+      },
+      {
+        "id": "line",
+        "literal": "line"
+      },
+      {
+        "id": "whole",
+        "literal": "sphere_in_plane"
+      },
+      {
+        "id": "square",
+        "literal": "one_point"
+      }
+    ],
+    "sphere_plane_tangent": [
+      {
+        "id": "circle",
+        "literal": "circle"
+      },
+      {
+        "id": "none",
+        "literal": "no_points"
+      },
+      {
+        "id": "two",
+        "literal": "two_points"
+      },
+      {
+        "id": "line",
+        "literal": "line"
+      },
+      {
+        "id": "whole",
+        "literal": "sphere_in_plane"
+      },
+      {
+        "id": "circle2",
+        "literal": "circle"
+      }
+    ],
+    "sphere_plane_disjoint": [
+      {
+        "id": "circle",
+        "literal": "circle"
+      },
+      {
+        "id": "one",
+        "literal": "one_point"
+      },
+      {
+        "id": "two",
+        "literal": "two_points"
+      },
+      {
+        "id": "line",
+        "literal": "line"
+      },
+      {
+        "id": "whole",
+        "literal": "sphere_in_plane"
+      },
+      {
+        "id": "circle2",
+        "literal": "circle"
+      }
+    ],
+    "sphere_section_radius": [
+      {
+        "id": "u",
+        "transform": "u"
+      },
+      {
+        "id": "R",
+        "transform": "sqrt(u**2+v**2)"
+      },
+      {
+        "id": "sum",
+        "transform": "u+v"
+      },
+      {
+        "id": "diff",
+        "transform": "abs(u-v)"
+      },
+      {
+        "id": "sq",
+        "transform": "v**2"
+      },
+      {
+        "id": "half",
+        "transform": "Rational(v,2)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "exact_answers_only": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true,
+    "mixed_literal_symbolic_equivalence": true,
+    "sphere_plane_relation_validation": true,
+    "positive_length_validation": true
+  },
+  "constraints_template": "ubt_question.j2"
+}

@@ -1,0 +1,322 @@
+{
+  "topic": "ubt_geometric_progression",
+  "parent_topic": "arithmetic_geometric_progressions",
+  "parent_topic_number": 12,
+  "display_name": "Geometric progression",
+  "curriculum_ref": "KZ 2026 UBT — Sequences — Topic 12",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 12. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Прогрессиялар",
+    "slug": "progressiyalar"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "geometric_nth_term",
+        "geometric_missing_term",
+        "geometric_find_ratio",
+        "geometric_sum_n",
+        "geometric_characteristic_property"
+      ],
+      "desc": "question structure"
+    },
+    "g1": {
+      "type": "int",
+      "min": 1,
+      "max": 8
+    },
+    "q": {
+      "type": "choice",
+      "values": [
+        2,
+        3,
+        4
+      ]
+    },
+    "n": {
+      "type": "int",
+      "min": 4,
+      "max": 20
+    },
+    "middle": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "geometric_nth_term",
+          "geometric_missing_term"
+        ]
+      },
+      "n": {
+        "min": 4,
+        "max": 10
+      },
+      "q": {
+        "values": [
+          2,
+          3
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "geometric_find_ratio",
+          "geometric_sum_n"
+        ]
+      },
+      "n": {
+        "min": 5,
+        "max": 14
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "geometric_characteristic_property"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "geometric_nth_term": {
+      "uses": [
+        "g1",
+        "q",
+        "n"
+      ],
+      "question": {
+        "instruction": "Find the n-th term of the geometric progression",
+        "latex": "b_1={g1},\\quad q={q},\\quad n={n}"
+      }
+    },
+    "geometric_missing_term": {
+      "uses": [
+        "middle",
+        "q"
+      ],
+      "derived": {
+        "left": "middle",
+        "right": "middle*q**2"
+      },
+      "question": {
+        "instruction": "Find the positive missing term so that the three numbers form a geometric progression",
+        "latex": "{left},\\quad x,\\quad {right}"
+      }
+    },
+    "geometric_find_ratio": {
+      "uses": [
+        "g1",
+        "q",
+        "n"
+      ],
+      "derived": {
+        "gn": "g1*q**(n-1)"
+      },
+      "question": {
+        "instruction": "Find the positive common ratio of the geometric progression",
+        "latex": "b_1={g1},\\quad b_{{{n}}}={gn},\\quad n={n}"
+      }
+    },
+    "geometric_sum_n": {
+      "uses": [
+        "g1",
+        "q",
+        "n"
+      ],
+      "question": {
+        "instruction": "Find the sum of the first n terms of the geometric progression",
+        "latex": "b_1={g1},\\quad q={q},\\quad n={n}"
+      }
+    },
+    "geometric_characteristic_property": {
+      "uses": [
+        "middle",
+        "q"
+      ],
+      "derived": {
+        "left": "middle",
+        "right": "middle*q**2"
+      },
+      "question": {
+        "instruction": "Use the characteristic property of a geometric progression to find the positive x",
+        "latex": "{left},\\quad x,\\quad {right}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "geometric_nth_term": "g1*q**(n-1)",
+      "geometric_missing_term": "middle*q",
+      "geometric_find_ratio": "q",
+      "geometric_sum_n": "g1*(q**n-1)/(q-1)",
+      "geometric_characteristic_property": "middle*q"
+    }
+  },
+  "answer_render": {
+    "geometric_nth_term": "scalar",
+    "geometric_missing_term": "scalar",
+    "geometric_find_ratio": "scalar",
+    "geometric_sum_n": "scalar",
+    "geometric_characteristic_property": "scalar"
+  },
+  "distractors": {
+    "geometric_nth_term": [
+      {
+        "id": "use_q_power_n",
+        "transform": "g1*q**n"
+      },
+      {
+        "id": "use_q_power_n_minus_2",
+        "transform": "g1*q**(n-2)"
+      },
+      {
+        "id": "arithmetic_rule",
+        "transform": "g1+(n-1)*q"
+      },
+      {
+        "id": "omit_first_term",
+        "transform": "q**(n-1)"
+      },
+      {
+        "id": "multiply_n",
+        "transform": "g1*n*q"
+      },
+      {
+        "id": "add_power",
+        "transform": "g1+q**(n-1)"
+      }
+    ],
+    "geometric_missing_term": [
+      {
+        "id": "left_term",
+        "transform": "middle"
+      },
+      {
+        "id": "right_term",
+        "transform": "middle*q**2"
+      },
+      {
+        "id": "arithmetic_average",
+        "transform": "(middle+middle*q**2)/2"
+      },
+      {
+        "id": "multiply_by_q_squared",
+        "transform": "middle*q**2"
+      },
+      {
+        "id": "add_ratio",
+        "transform": "middle+q"
+      },
+      {
+        "id": "subtract_ratio",
+        "transform": "middle*q-q"
+      }
+    ],
+    "geometric_find_ratio": [
+      {
+        "id": "use_nth_root",
+        "transform": "q**Rational(n-1,n)"
+      },
+      {
+        "id": "use_term_ratio_direct",
+        "transform": "g1*q**(n-1)/g1"
+      },
+      {
+        "id": "negate_ratio",
+        "transform": "-q"
+      },
+      {
+        "id": "plus_one",
+        "transform": "q+1"
+      },
+      {
+        "id": "minus_one",
+        "transform": "q-1"
+      },
+      {
+        "id": "arithmetic_difference",
+        "transform": "(g1*q**(n-1)-g1)/(n-1)"
+      }
+    ],
+    "geometric_sum_n": [
+      {
+        "id": "omit_denominator",
+        "transform": "g1*(q**n-1)"
+      },
+      {
+        "id": "use_n_minus_1_power",
+        "transform": "g1*(q**(n-1)-1)/(q-1)"
+      },
+      {
+        "id": "nth_term_times_n",
+        "transform": "n*g1*q**(n-1)"
+      },
+      {
+        "id": "wrong_denominator",
+        "transform": "g1*(q**n-1)/q"
+      },
+      {
+        "id": "plus_instead_minus",
+        "transform": "g1*(q**n+1)/(q-1)"
+      },
+      {
+        "id": "arithmetic_sum_rule",
+        "transform": "n*(2*g1+(n-1)*q)/2"
+      }
+    ],
+    "geometric_characteristic_property": [
+      {
+        "id": "left_neighbor",
+        "transform": "middle"
+      },
+      {
+        "id": "right_neighbor",
+        "transform": "middle*q**2"
+      },
+      {
+        "id": "arithmetic_mean",
+        "transform": "(middle+middle*q**2)/2"
+      },
+      {
+        "id": "product_neighbors",
+        "transform": "middle**2*q**2"
+      },
+      {
+        "id": "add_ratio",
+        "transform": "middle+q"
+      },
+      {
+        "id": "one_power_too_high",
+        "transform": "middle*q**2"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "rational_simplification": true,
+    "positive_ratio_when_required": true,
+    "infinite_series_requires_abs_ratio_lt_one": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

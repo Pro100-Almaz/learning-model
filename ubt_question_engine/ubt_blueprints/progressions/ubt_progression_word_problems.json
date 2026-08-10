@@ -1,0 +1,181 @@
+{
+  "topic": "ubt_progression_word_problems",
+  "parent_topic": "arithmetic_geometric_progressions",
+  "parent_topic_number": 12,
+  "display_name": "Progression word problems",
+  "curriculum_ref": "KZ 2026 UBT — Sequences — Topic 12",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 12. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Прогрессиялар",
+    "slug": "progressiyalar"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "arithmetic_word_sum",
+        "geometric_word_growth"
+      ],
+      "desc": "question structure"
+    },
+    "a1": {
+      "type": "int",
+      "min": -10,
+      "max": 20
+    },
+    "d": {
+      "type": "int",
+      "min": 1,
+      "max": 9
+    },
+    "n": {
+      "type": "int",
+      "min": 4,
+      "max": 20
+    },
+    "g1": {
+      "type": "int",
+      "min": 1,
+      "max": 8
+    },
+    "q": {
+      "type": "choice",
+      "values": [
+        2,
+        3,
+        4
+      ]
+    }
+  },
+  "supported_difficulties": [
+    2
+  ],
+  "default_difficulty": 2,
+  "difficulty_overrides": {
+    "2": {
+      "mode": {
+        "values": [
+          "arithmetic_word_sum",
+          "geometric_word_growth"
+        ]
+      },
+      "n": {
+        "min": 5,
+        "max": 14
+      }
+    }
+  },
+  "modes": {
+    "arithmetic_word_sum": {
+      "uses": [
+        "a1",
+        "d",
+        "n"
+      ],
+      "question": {
+        "instruction": "A hall has a1 seats in the first row, and each next row has d more seats than the previous row. Find the total number of seats in the first n rows.",
+        "text_context": {
+          "a1": "{a1}",
+          "d": "{d}",
+          "n": "{n}"
+        },
+        "latex": "a_1={a1},\\quad d={d},\\quad n={n}"
+      }
+    },
+    "geometric_word_growth": {
+      "uses": [
+        "g1",
+        "q",
+        "n"
+      ],
+      "question": {
+        "instruction": "A quantity starts at g1 and is multiplied by q at each step. Find its value at step n.",
+        "text_context": {
+          "g1": "{g1}",
+          "q": "{q}",
+          "n": "{n}"
+        },
+        "latex": "b_1={g1},\\quad q={q},\\quad n={n}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "arithmetic_word_sum": "n*(2*a1+(n-1)*d)/2",
+      "geometric_word_growth": "g1*q**(n-1)"
+    }
+  },
+  "answer_render": {
+    "arithmetic_word_sum": "scalar",
+    "geometric_word_growth": "scalar"
+  },
+  "distractors": {
+    "arithmetic_word_sum": [
+      {
+        "id": "last_row_only",
+        "transform": "a1+(n-1)*d"
+      },
+      {
+        "id": "last_row_times_n",
+        "transform": "n*(a1+(n-1)*d)"
+      },
+      {
+        "id": "forget_half",
+        "transform": "n*(2*a1+(n-1)*d"
+      },
+      {
+        "id": "use_n_d",
+        "transform": "n*(2*a1+n*d)/2"
+      },
+      {
+        "id": "first_row_times_n",
+        "transform": "a1*n"
+      },
+      {
+        "id": "difference_total_only",
+        "transform": "n*d"
+      }
+    ],
+    "geometric_word_growth": [
+      {
+        "id": "use_n_power",
+        "transform": "g1*q**n"
+      },
+      {
+        "id": "arithmetic_growth",
+        "transform": "g1+(n-1)*q"
+      },
+      {
+        "id": "multiply_all",
+        "transform": "g1*q*n"
+      },
+      {
+        "id": "omit_initial",
+        "transform": "q**(n-1)"
+      },
+      {
+        "id": "previous_step",
+        "transform": "g1*q**(n-2)"
+      },
+      {
+        "id": "sum_instead_value",
+        "transform": "g1*(q**n-1)/(q-1)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "rational_simplification": true,
+    "positive_ratio_when_required": true,
+    "infinite_series_requires_abs_ratio_lt_one": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

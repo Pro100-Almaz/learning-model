@@ -1,0 +1,220 @@
+{
+  "topic": "ubt_midlines_proportions",
+  "parent_topic": "planimetry_geometric_figures",
+  "parent_topic_number": 14,
+  "display_name": "Planimetry — midlines and proportional segments",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 14",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 14. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Планиметрия",
+    "slug": "planimetriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "triangle_midline",
+        "trapezoid_midline",
+        "thales_proportional_segments"
+      ],
+      "desc": "question structure"
+    },
+    "base1": {
+      "type": "int",
+      "min": 4,
+      "max": 20
+    },
+    "base2": {
+      "type": "int",
+      "min": 4,
+      "max": 20
+    },
+    "segment_a": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "segment_b": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "segment_c": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "triangle_midline"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "trapezoid_midline"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "thales_proportional_segments"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "triangle_midline": {
+      "uses": [
+        "base1"
+      ],
+      "question": {
+        "instruction": "A segment joins the midpoints of two sides of a triangle. Find its length.",
+        "latex": "BC={base1}"
+      }
+    },
+    "trapezoid_midline": {
+      "uses": [
+        "base1",
+        "base2"
+      ],
+      "constraints": [
+        "base1 != base2"
+      ],
+      "question": {
+        "instruction": "Find the length of the midline of the trapezoid.",
+        "latex": "a={base1},\\qquad b={base2}"
+      }
+    },
+    "thales_proportional_segments": {
+      "uses": [
+        "segment_a",
+        "segment_b",
+        "segment_c"
+      ],
+      "question": {
+        "instruction": "Use proportional segments formed by parallel lines to find x.",
+        "latex": "\\frac{{{segment_a}}}{{{segment_b}}}=\\frac{{{segment_c}}}{{x}}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "triangle_midline": "Rational(base1,2)",
+      "trapezoid_midline": "Rational(base1+base2,2)",
+      "thales_proportional_segments": "Rational(segment_b*segment_c,segment_a)"
+    }
+  },
+  "answer_render": {
+    "triangle_midline": "exact_number",
+    "trapezoid_midline": "exact_number",
+    "thales_proportional_segments": "exact_number"
+  },
+  "distractors": {
+    "triangle_midline": [
+      {
+        "id": "full",
+        "transform": "base1"
+      },
+      {
+        "id": "double",
+        "transform": "2*base1"
+      },
+      {
+        "id": "third",
+        "transform": "Rational(base1,3)"
+      },
+      {
+        "id": "plus_two",
+        "transform": "base1+2"
+      },
+      {
+        "id": "minus_two",
+        "transform": "base1-2"
+      },
+      {
+        "id": "quarter",
+        "transform": "Rational(base1,4)"
+      }
+    ],
+    "trapezoid_midline": [
+      {
+        "id": "sum",
+        "transform": "base1+base2"
+      },
+      {
+        "id": "difference",
+        "transform": "abs(base1-base2)"
+      },
+      {
+        "id": "half_difference",
+        "transform": "Rational(abs(base1-base2),2)"
+      },
+      {
+        "id": "first",
+        "transform": "base1"
+      },
+      {
+        "id": "second",
+        "transform": "base2"
+      },
+      {
+        "id": "geometric_mean",
+        "transform": "sqrt(base1*base2)"
+      }
+    ],
+    "thales_proportional_segments": [
+      {
+        "id": "invert",
+        "transform": "Rational(segment_a*segment_c,segment_b)"
+      },
+      {
+        "id": "wrong_cross",
+        "transform": "Rational(segment_a*segment_b,segment_c)"
+      },
+      {
+        "id": "additive",
+        "transform": "segment_b+segment_c-segment_a"
+      },
+      {
+        "id": "sum_all",
+        "transform": "segment_a+segment_b+segment_c"
+      },
+      {
+        "id": "difference",
+        "transform": "abs(segment_b-segment_c)"
+      },
+      {
+        "id": "average",
+        "transform": "Rational(segment_b+segment_c,2)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "angle_range_validation": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

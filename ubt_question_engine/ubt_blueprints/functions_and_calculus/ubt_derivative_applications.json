@@ -1,0 +1,188 @@
+{
+  "topic": "ubt_derivative_applications",
+  "parent_topic": "functions_calculus_modelling",
+  "parent_topic_number": 13,
+  "display_name": "Derivative applications — tangents and inflection points",
+  "curriculum_ref": "KZ 2026 UBT — Mathematical modelling and analysis — Topic 13",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 13. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Функциялар және математикалық анализ",
+    "slug": "funkciyalar-matematikalyk-analiz"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "tangent_line",
+        "cubic_inflection_point"
+      ],
+      "desc": "question structure"
+    },
+    "a": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "b": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "c": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "x0": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    },
+    "h": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    }
+  },
+  "supported_difficulties": [
+    2,
+    3
+  ],
+  "default_difficulty": 2,
+  "difficulty_overrides": {
+    "2": {
+      "mode": {
+        "values": [
+          "tangent_line"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "cubic_inflection_point"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "tangent_line": {
+      "uses": [
+        "a",
+        "b",
+        "c",
+        "x0"
+      ],
+      "derived": {
+        "y0": "a*x0**2+b*x0+c",
+        "slope": "2*a*x0+b",
+        "intercept": "a*x0**2+b*x0+c-(2*a*x0+b)*x0"
+      },
+      "question": {
+        "instruction": "Find the equation of the tangent line at x=x_0",
+        "latex": "f(x)={a}x^2{b:+d}x{c:+d},\\qquad x_0={x0}"
+      }
+    },
+    "cubic_inflection_point": {
+      "uses": [
+        "a",
+        "b",
+        "c",
+        "h"
+      ],
+      "derived": {
+        "neg_h": "-h"
+      },
+      "question": {
+        "instruction": "Find the x-coordinate of the inflection point",
+        "latex": "f(x)={a}(x{neg_h:+d})^3{b:+d}(x{neg_h:+d}){c:+d}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "tangent_line": "(2*a*x0+b)*x + (a*x0**2+b*x0+c-(2*a*x0+b)*x0)",
+      "cubic_inflection_point": "h"
+    }
+  },
+  "answer_render": {
+    "tangent_line": "linear_equation",
+    "cubic_inflection_point": "scalar"
+  },
+  "distractors": {
+    "tangent_line": [
+      {
+        "id": "use_function_as_tangent",
+        "transform": "a*x**2+b*x+c"
+      },
+      {
+        "id": "wrong_slope_b",
+        "transform": "b*x+(a*x0**2+b*x0+c-b*x0)"
+      },
+      {
+        "id": "negate_slope",
+        "transform": "-(2*a*x0+b)*x+(a*x0**2+b*x0+c+(2*a*x0+b)*x0)"
+      },
+      {
+        "id": "omit_y0",
+        "transform": "(2*a*x0+b)*(x-x0)"
+      },
+      {
+        "id": "use_derivative_as_line",
+        "transform": "(2*a*x0+b)*x"
+      },
+      {
+        "id": "shift_intercept",
+        "transform": "(2*a*x0+b)*x+(a*x0**2+b*x0+c-(2*a*x0+b)*x0)+1"
+      }
+    ],
+    "cubic_inflection_point": [
+      {
+        "id": "negate_h",
+        "transform": "-h"
+      },
+      {
+        "id": "h_plus_one",
+        "transform": "h+1"
+      },
+      {
+        "id": "h_minus_one",
+        "transform": "h-1"
+      },
+      {
+        "id": "constant_c",
+        "transform": "c"
+      },
+      {
+        "id": "linear_b",
+        "transform": "b"
+      },
+      {
+        "id": "zero",
+        "transform": "0"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "tuple_equivalence": true,
+    "interval_equivalence": true,
+    "function_equivalence": true,
+    "exact_answers_only": true,
+    "respect_function_domain": true,
+    "validate_derivatives": true,
+    "validate_integrals": true,
+    "validate_tangent_point_and_slope": true,
+    "validate_extrema_and_monotonicity": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

@@ -1,0 +1,321 @@
+{
+  "topic": "ubt_tetrahedron_parallelepiped",
+  "parent_topic": "stereometry_geometric_figures",
+  "parent_topic_number": 16,
+  "display_name": "Tetrahedron and parallelepiped",
+  "curriculum_ref": "KZ 2026 UBT — Stereometry — Topic 16",
+  "_comment": "Deterministic Topic 16 generator. Python owns parameter selection, mathematical or logical validation, answer generation, distractor filtering and seeded reproducibility. JSON owns configuration. Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Стереометрия",
+    "slug": "stereometriya"
+  },
+  "expression_language": "sympy",
+  "supported_difficulties": [
+    1,
+    2
+  ],
+  "default_difficulty": 1,
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "tetrahedron_vertices",
+        "tetrahedron_edges",
+        "tetrahedron_faces",
+        "parallelepiped_vertices",
+        "parallelepiped_edges",
+        "parallelepiped_faces",
+        "rectangular_parallelepiped_opposite_face_pairs"
+      ]
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "tetrahedron_vertices",
+          "tetrahedron_edges",
+          "tetrahedron_faces",
+          "parallelepiped_vertices",
+          "parallelepiped_faces"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "parallelepiped_edges",
+          "rectangular_parallelepiped_opposite_face_pairs"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "tetrahedron_vertices": {
+      "uses": [],
+      "question": {
+        "instruction": "How many vertices does a tetrahedron have?",
+        "latex": ""
+      }
+    },
+    "tetrahedron_edges": {
+      "uses": [],
+      "question": {
+        "instruction": "How many edges does a tetrahedron have?",
+        "latex": ""
+      }
+    },
+    "tetrahedron_faces": {
+      "uses": [],
+      "question": {
+        "instruction": "How many faces does a tetrahedron have?",
+        "latex": ""
+      }
+    },
+    "parallelepiped_vertices": {
+      "uses": [],
+      "question": {
+        "instruction": "How many vertices does a parallelepiped have?",
+        "latex": ""
+      }
+    },
+    "parallelepiped_edges": {
+      "uses": [],
+      "question": {
+        "instruction": "How many edges does a parallelepiped have?",
+        "latex": ""
+      }
+    },
+    "parallelepiped_faces": {
+      "uses": [],
+      "question": {
+        "instruction": "How many faces does a parallelepiped have?",
+        "latex": ""
+      }
+    },
+    "rectangular_parallelepiped_opposite_face_pairs": {
+      "uses": [],
+      "question": {
+        "instruction": "How many pairs of opposite faces does a rectangular parallelepiped have?",
+        "latex": ""
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "tetrahedron_vertices": "4",
+      "tetrahedron_edges": "6",
+      "tetrahedron_faces": "4",
+      "parallelepiped_vertices": "8",
+      "parallelepiped_edges": "12",
+      "parallelepiped_faces": "6",
+      "rectangular_parallelepiped_opposite_face_pairs": "3"
+    }
+  },
+  "answer_render": {
+    "tetrahedron_vertices": "scalar",
+    "tetrahedron_edges": "scalar",
+    "tetrahedron_faces": "scalar",
+    "parallelepiped_vertices": "scalar",
+    "parallelepiped_edges": "scalar",
+    "parallelepiped_faces": "scalar",
+    "rectangular_parallelepiped_opposite_face_pairs": "scalar"
+  },
+  "distractors": {
+    "tetrahedron_vertices": [
+      {
+        "id": "d1",
+        "transform": "2"
+      },
+      {
+        "id": "d2",
+        "transform": "3"
+      },
+      {
+        "id": "d3",
+        "transform": "5"
+      },
+      {
+        "id": "d4",
+        "transform": "6"
+      },
+      {
+        "id": "d5",
+        "transform": "7"
+      },
+      {
+        "id": "d6",
+        "transform": "8"
+      }
+    ],
+    "tetrahedron_edges": [
+      {
+        "id": "d1",
+        "transform": "4"
+      },
+      {
+        "id": "d2",
+        "transform": "5"
+      },
+      {
+        "id": "d3",
+        "transform": "7"
+      },
+      {
+        "id": "d4",
+        "transform": "8"
+      },
+      {
+        "id": "d5",
+        "transform": "9"
+      },
+      {
+        "id": "d6",
+        "transform": "12"
+      }
+    ],
+    "tetrahedron_faces": [
+      {
+        "id": "d1",
+        "transform": "2"
+      },
+      {
+        "id": "d2",
+        "transform": "3"
+      },
+      {
+        "id": "d3",
+        "transform": "5"
+      },
+      {
+        "id": "d4",
+        "transform": "6"
+      },
+      {
+        "id": "d5",
+        "transform": "7"
+      },
+      {
+        "id": "d6",
+        "transform": "8"
+      }
+    ],
+    "parallelepiped_vertices": [
+      {
+        "id": "d1",
+        "transform": "6"
+      },
+      {
+        "id": "d2",
+        "transform": "7"
+      },
+      {
+        "id": "d3",
+        "transform": "9"
+      },
+      {
+        "id": "d4",
+        "transform": "10"
+      },
+      {
+        "id": "d5",
+        "transform": "11"
+      },
+      {
+        "id": "d6",
+        "transform": "16"
+      }
+    ],
+    "parallelepiped_edges": [
+      {
+        "id": "d1",
+        "transform": "10"
+      },
+      {
+        "id": "d2",
+        "transform": "11"
+      },
+      {
+        "id": "d3",
+        "transform": "13"
+      },
+      {
+        "id": "d4",
+        "transform": "14"
+      },
+      {
+        "id": "d5",
+        "transform": "15"
+      },
+      {
+        "id": "d6",
+        "transform": "24"
+      }
+    ],
+    "parallelepiped_faces": [
+      {
+        "id": "d1",
+        "transform": "4"
+      },
+      {
+        "id": "d2",
+        "transform": "5"
+      },
+      {
+        "id": "d3",
+        "transform": "7"
+      },
+      {
+        "id": "d4",
+        "transform": "8"
+      },
+      {
+        "id": "d5",
+        "transform": "9"
+      },
+      {
+        "id": "d6",
+        "transform": "12"
+      }
+    ],
+    "rectangular_parallelepiped_opposite_face_pairs": [
+      {
+        "id": "d1",
+        "transform": "1"
+      },
+      {
+        "id": "d2",
+        "transform": "2"
+      },
+      {
+        "id": "d3",
+        "transform": "4"
+      },
+      {
+        "id": "d4",
+        "transform": "5"
+      },
+      {
+        "id": "d5",
+        "transform": "6"
+      },
+      {
+        "id": "d6",
+        "transform": "6"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "exact_answers_only": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true,
+    "symbolic_equivalence": true,
+    "integer_answer": true
+  },
+  "constraints_template": "ubt_question.j2"
+}

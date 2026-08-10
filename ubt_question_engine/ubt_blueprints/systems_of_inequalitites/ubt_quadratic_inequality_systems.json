@@ -1,0 +1,234 @@
+{
+  "topic": "ubt_quadratic_inequality_systems",
+  "parent_topic": "systems_of_inequalities",
+  "parent_topic_number": 11,
+  "display_name": "Systems and unions of quadratic inequalities",
+  "curriculum_ref": "KZ 2026 UBT — Systems of inequalities — Topic 11",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 11. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Теңсіздіктер жүйесі",
+    "slug": "tensizdikter-zhuyesi"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "linear_quadratic_system",
+        "quadratic_system",
+        "quadratic_union"
+      ],
+      "desc": "question structure"
+    },
+    "r1": {
+      "type": "int",
+      "min": -7,
+      "max": 2
+    },
+    "r2": {
+      "type": "int",
+      "min": -2,
+      "max": 8
+    },
+    "width": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "linear_quadratic_system"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "quadratic_system",
+          "quadratic_union"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "linear_quadratic_system": {
+      "uses": [
+        "r1",
+        "r2"
+      ],
+      "constraints": [
+        "r1 < r2"
+      ],
+      "derived": {
+        "bcoef": "-(r1+r2)",
+        "ccoef": "r1*r2"
+      },
+      "question": {
+        "instruction": "Solve the system of inequalities",
+        "latex": "\\begin{{cases}} x>{r1} \\\\ x^2{bcoef:+d}x{ccoef:+d}\\le0 \\end{{cases}}"
+      }
+    },
+    "quadratic_system": {
+      "uses": [
+        "r1",
+        "r2"
+      ],
+      "constraints": [
+        "r2-r1 >= 3"
+      ],
+      "derived": {
+        "s1": "r1+1",
+        "s2": "r2+1",
+        "bcoef1": "-(r1+r2)",
+        "ccoef1": "r1*r2",
+        "bcoef2": "-((r1+1)+(r2+1))",
+        "ccoef2": "(r1+1)*(r2+1)"
+      },
+      "question": {
+        "instruction": "Solve the system of quadratic inequalities",
+        "latex": "\\begin{{cases}} x^2{bcoef1:+d}x{ccoef1:+d}<0 \\\\ x^2{bcoef2:+d}x{ccoef2:+d}<0 \\end{{cases}}"
+      }
+    },
+    "quadratic_union": {
+      "uses": [
+        "r1",
+        "r2",
+        "width"
+      ],
+      "constraints": [
+        "r1 < r2"
+      ],
+      "derived": {
+        "s1": "r2+1",
+        "s2": "r2+1+width",
+        "bcoef1": "-(r1+r2)",
+        "ccoef1": "r1*r2",
+        "bcoef2": "-((r2+1)+(r2+1+width))",
+        "ccoef2": "(r2+1)*(r2+1+width)"
+      },
+      "question": {
+        "instruction": "Find the union of the solution sets",
+        "latex": "\\left[x^2{bcoef1:+d}x{ccoef1:+d}<0\\right]\\ \\cup\\ \\left[x^2{bcoef2:+d}x{ccoef2:+d}<0\\right]"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "linear_quadratic_system": "Intersection(Interval.open(r1,oo),Interval(r1,r2))",
+      "quadratic_system": "Interval.open(r1+1,r2)",
+      "quadratic_union": "Union(Interval.open(r1,r2),Interval.open(r2+1,r2+1+width))"
+    }
+  },
+  "answer_render": {
+    "linear_quadratic_system": "interval",
+    "quadratic_system": "interval",
+    "quadratic_union": "interval_union"
+  },
+  "distractors": {
+    "linear_quadratic_system": [
+      {
+        "id": "closed_both",
+        "transform": "Interval(r1,r2)"
+      },
+      {
+        "id": "open_both",
+        "transform": "Interval.open(r1,r2)"
+      },
+      {
+        "id": "outside_quadratic",
+        "transform": "Union(Interval.open(-oo,r1),Interval.open(r2,oo))"
+      },
+      {
+        "id": "right_only",
+        "transform": "Interval.open(r2,oo)"
+      },
+      {
+        "id": "all_above_first_root",
+        "transform": "Interval.open(r1,oo)"
+      },
+      {
+        "id": "left_side",
+        "transform": "Interval.open(-oo,r1)"
+      }
+    ],
+    "quadratic_system": [
+      {
+        "id": "first_interval_only",
+        "transform": "Interval.open(r1,r2)"
+      },
+      {
+        "id": "second_interval_only",
+        "transform": "Interval.open(r1+1,r2+1)"
+      },
+      {
+        "id": "include_left",
+        "transform": "Interval(r1+1,r2,left_open=False,right_open=True)"
+      },
+      {
+        "id": "include_right",
+        "transform": "Interval(r1+1,r2,left_open=True,right_open=False)"
+      },
+      {
+        "id": "union_instead_intersection",
+        "transform": "Interval.open(r1,r2+1)"
+      },
+      {
+        "id": "outside",
+        "transform": "Union(Interval.open(-oo,r1+1),Interval.open(r2,oo))"
+      }
+    ],
+    "quadratic_union": [
+      {
+        "id": "intersection_empty",
+        "transform": "EmptySet"
+      },
+      {
+        "id": "first_only",
+        "transform": "Interval.open(r1,r2)"
+      },
+      {
+        "id": "second_only",
+        "transform": "Interval.open(r2+1,r2+1+width)"
+      },
+      {
+        "id": "fill_gap",
+        "transform": "Interval.open(r1,r2+1+width)"
+      },
+      {
+        "id": "closed_intervals",
+        "transform": "Union(Interval(r1,r2),Interval(r2+1,r2+1+width))"
+      },
+      {
+        "id": "outside_regions",
+        "transform": "Union(Interval.open(-oo,r1),Interval.open(r2+1+width,oo))"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "interval_equivalence": true,
+    "tuple_equivalence": true,
+    "ordered_pairs": true,
+    "respect_open_closed_boundaries": true,
+    "respect_rational_domain": true,
+    "respect_log_domain": true,
+    "reject_undefined_choices": true,
+    "exact_answers_only": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

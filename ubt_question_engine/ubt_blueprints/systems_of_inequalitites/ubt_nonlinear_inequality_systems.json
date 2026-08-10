@@ -1,0 +1,119 @@
+{
+  "topic": "ubt_nonlinear_inequality_systems",
+  "parent_topic": "systems_of_inequalities",
+  "parent_topic_number": 11,
+  "display_name": "Nonlinear inequality systems in two variables",
+  "curriculum_ref": "KZ 2026 UBT — Systems of inequalities — Topic 11",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 11. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Теңсіздіктер жүйесі",
+    "slug": "tensizdikter-zhuyesi"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "nonlinear_two_variable_membership"
+      ],
+      "desc": "question structure"
+    },
+    "x0": {
+      "type": "int",
+      "min": 2,
+      "max": 6
+    },
+    "y0": {
+      "type": "int",
+      "min": 2,
+      "max": 6
+    }
+  },
+  "supported_difficulties": [
+    3
+  ],
+  "default_difficulty": 3,
+  "difficulty_overrides": {
+    "3": {
+      "mode": {
+        "values": [
+          "nonlinear_two_variable_membership"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "nonlinear_two_variable_membership": {
+      "uses": [
+        "x0",
+        "y0"
+      ],
+      "constraints": [
+        "x0 != y0"
+      ],
+      "derived": {
+        "radius_sq": "x0**2+y0**2",
+        "sum_xy": "x0+y0"
+      },
+      "question": {
+        "instruction": "Which ordered pair satisfies the system?",
+        "latex": "\\begin{{cases}} x^2+y^2\\le {radius_sq} \\\\ x+y\\ge {sum_xy} \\end{{cases}}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "nonlinear_two_variable_membership": "Tuple(x0,y0)"
+    }
+  },
+  "answer_render": {
+    "nonlinear_two_variable_membership": "ordered_pair"
+  },
+  "distractors": {
+    "nonlinear_two_variable_membership": [
+      {
+        "id": "outside_circle_x",
+        "transform": "Tuple(x0+1,y0)"
+      },
+      {
+        "id": "outside_circle_y",
+        "transform": "Tuple(x0,y0+1)"
+      },
+      {
+        "id": "fails_sum_x",
+        "transform": "Tuple(x0-1,y0)"
+      },
+      {
+        "id": "fails_sum_y",
+        "transform": "Tuple(x0,y0-1)"
+      },
+      {
+        "id": "negative_x",
+        "transform": "Tuple(-x0,y0)"
+      },
+      {
+        "id": "negative_y",
+        "transform": "Tuple(x0,-y0)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "interval_equivalence": true,
+    "tuple_equivalence": true,
+    "ordered_pairs": true,
+    "respect_open_closed_boundaries": true,
+    "respect_rational_domain": true,
+    "respect_log_domain": true,
+    "reject_undefined_choices": true,
+    "exact_answers_only": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

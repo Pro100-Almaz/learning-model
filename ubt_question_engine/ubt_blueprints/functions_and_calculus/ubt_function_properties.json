@@ -1,0 +1,167 @@
+{
+  "topic": "ubt_function_properties",
+  "parent_topic": "functions_calculus_modelling",
+  "parent_topic_number": 13,
+  "display_name": "Functions — asymptotes and monotonicity",
+  "curriculum_ref": "KZ 2026 UBT — Mathematical modelling and analysis — Topic 13",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 13. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Функциялар және математикалық анализ",
+    "slug": "funkciyalar-matematikalyk-analiz"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "rational_asymptotes",
+        "quadratic_increasing_interval"
+      ],
+      "desc": "question structure"
+    },
+    "a": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "h": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    },
+    "k": {
+      "type": "int",
+      "min": -6,
+      "max": 6
+    }
+  },
+  "supported_difficulties": [
+    2
+  ],
+  "default_difficulty": 2,
+  "difficulty_overrides": {
+    "2": {
+      "mode": {
+        "values": [
+          "rational_asymptotes",
+          "quadratic_increasing_interval"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "rational_asymptotes": {
+      "uses": [
+        "a",
+        "h",
+        "k"
+      ],
+      "derived": {
+        "neg_h": "-h"
+      },
+      "question": {
+        "instruction": "Find the vertical and horizontal asymptotes",
+        "latex": "f(x)=\\frac{{{a}}}{{x{neg_h:+d}}}{k:+d}"
+      }
+    },
+    "quadratic_increasing_interval": {
+      "uses": [
+        "a",
+        "h",
+        "k"
+      ],
+      "derived": {
+        "neg_h": "-h"
+      },
+      "question": {
+        "instruction": "Find the interval on which the function is increasing",
+        "latex": "f(x)={a}(x{neg_h:+d})^2{k:+d}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "rational_asymptotes": "Tuple(h,k)",
+      "quadratic_increasing_interval": "Interval.open(h,oo)"
+    }
+  },
+  "answer_render": {
+    "rational_asymptotes": "asymptote_pair",
+    "quadratic_increasing_interval": "interval"
+  },
+  "distractors": {
+    "rational_asymptotes": [
+      {
+        "id": "negate_h",
+        "transform": "Tuple(-h,k)"
+      },
+      {
+        "id": "negate_k",
+        "transform": "Tuple(h,-k)"
+      },
+      {
+        "id": "swap",
+        "transform": "Tuple(k,h)"
+      },
+      {
+        "id": "zero_horizontal",
+        "transform": "Tuple(h,0)"
+      },
+      {
+        "id": "a_as_horizontal",
+        "transform": "Tuple(h,a)"
+      },
+      {
+        "id": "both_zero",
+        "transform": "Tuple(0,0)"
+      }
+    ],
+    "quadratic_increasing_interval": [
+      {
+        "id": "decreasing_interval",
+        "transform": "Interval.open(-oo,h)"
+      },
+      {
+        "id": "include_vertex",
+        "transform": "Interval(h,oo)"
+      },
+      {
+        "id": "wrong_vertex_sign",
+        "transform": "Interval.open(-h,oo)"
+      },
+      {
+        "id": "all_real",
+        "transform": "Interval(-oo,oo)"
+      },
+      {
+        "id": "bounded_right",
+        "transform": "Interval.open(h,h+1)"
+      },
+      {
+        "id": "outside_vertex",
+        "transform": "Union(Interval.open(-oo,h),Interval.open(h,oo))"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "tuple_equivalence": true,
+    "interval_equivalence": true,
+    "function_equivalence": true,
+    "exact_answers_only": true,
+    "respect_function_domain": true,
+    "validate_derivatives": true,
+    "validate_integrals": true,
+    "validate_tangent_point_and_slope": true,
+    "validate_extrema_and_monotonicity": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

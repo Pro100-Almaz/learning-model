@@ -1,0 +1,121 @@
+{
+  "topic": "ubt_integral_areas",
+  "parent_topic": "functions_calculus_modelling",
+  "parent_topic_number": 13,
+  "display_name": "Area using definite integrals",
+  "curriculum_ref": "KZ 2026 UBT — Mathematical modelling and analysis — Topic 13",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 13. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Функциялар және математикалық анализ",
+    "slug": "funkciyalar-matematikalyk-analiz"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "area_under_parabola"
+      ],
+      "desc": "question structure"
+    },
+    "r1": {
+      "type": "int",
+      "min": -4,
+      "max": 1
+    },
+    "r2": {
+      "type": "int",
+      "min": 2,
+      "max": 6
+    }
+  },
+  "supported_difficulties": [
+    3
+  ],
+  "default_difficulty": 3,
+  "difficulty_overrides": {
+    "3": {
+      "mode": {
+        "values": [
+          "area_under_parabola"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "area_under_parabola": {
+      "uses": [
+        "r1",
+        "r2"
+      ],
+      "constraints": [
+        "r1 < r2"
+      ],
+      "derived": {
+        "sum_roots": "r1+r2",
+        "product_roots": "r1*r2"
+      },
+      "question": {
+        "instruction": "Find the area bounded by the parabola and the x-axis",
+        "latex": "y=-x^2+{sum_roots}x-{product_roots},\\qquad {r1}\\le x\\le {r2}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "area_under_parabola": "(r2-r1)**3/6"
+    }
+  },
+  "answer_render": {
+    "area_under_parabola": "exact_number"
+  },
+  "distractors": {
+    "area_under_parabola": [
+      {
+        "id": "triangle_formula",
+        "transform": "(r2-r1)**2/2"
+      },
+      {
+        "id": "forget_six",
+        "transform": "(r2-r1)**3"
+      },
+      {
+        "id": "divide_two",
+        "transform": "(r2-r1)**3/2"
+      },
+      {
+        "id": "interval_length",
+        "transform": "r2-r1"
+      },
+      {
+        "id": "square_interval",
+        "transform": "(r2-r1)**2"
+      },
+      {
+        "id": "reverse_sign",
+        "transform": "-(r2-r1)**3/6"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "tuple_equivalence": true,
+    "interval_equivalence": true,
+    "function_equivalence": true,
+    "exact_answers_only": true,
+    "respect_function_domain": true,
+    "validate_derivatives": true,
+    "validate_integrals": true,
+    "validate_tangent_point_and_slope": true,
+    "validate_extrema_and_monotonicity": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

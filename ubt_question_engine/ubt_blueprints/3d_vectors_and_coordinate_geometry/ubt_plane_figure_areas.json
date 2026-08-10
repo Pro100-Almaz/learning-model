@@ -1,0 +1,305 @@
+{
+  "topic": "ubt_plane_figure_areas",
+  "parent_topic": "planimetry_metric_relations_vectors_transformations",
+  "parent_topic_number": 15,
+  "display_name": "Areas of triangles and quadrilaterals",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 15",
+  "_comment": "Deterministic Topic 15 generator. Python/SymPy owns parameter generation, mathematics, validation and distractor filtering. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Метрикалық қатыстар және векторлар",
+    "slug": "metrikalyk-katystar-vektorlar"
+  },
+  "expression_language": "sympy",
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "triangle_base_height",
+        "parallelogram_area",
+        "trapezoid_area",
+        "rhombus_diagonals",
+        "circumscribed_polygon_area"
+      ]
+    },
+    "base": {
+      "type": "int",
+      "min": 3,
+      "max": 20
+    },
+    "height": {
+      "type": "int",
+      "min": 2,
+      "max": 15
+    },
+    "base2": {
+      "type": "int",
+      "min": 3,
+      "max": 20
+    },
+    "diag1": {
+      "type": "int",
+      "min": 2,
+      "max": 16
+    },
+    "diag2": {
+      "type": "int",
+      "min": 2,
+      "max": 16
+    },
+    "semiperimeter": {
+      "type": "int",
+      "min": 4,
+      "max": 20
+    },
+    "inradius": {
+      "type": "int",
+      "min": 1,
+      "max": 8
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "triangle_base_height",
+          "parallelogram_area",
+          "trapezoid_area"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "rhombus_diagonals"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "circumscribed_polygon_area"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "triangle_base_height": {
+      "uses": [
+        "base",
+        "height"
+      ],
+      "question": {
+        "instruction": "Find the area of the triangle.",
+        "latex": "b={base},\\qquad h={height}"
+      }
+    },
+    "parallelogram_area": {
+      "uses": [
+        "base",
+        "height"
+      ],
+      "question": {
+        "instruction": "Find the area of the parallelogram.",
+        "latex": "b={base},\\qquad h={height}"
+      }
+    },
+    "trapezoid_area": {
+      "uses": [
+        "base",
+        "base2",
+        "height"
+      ],
+      "question": {
+        "instruction": "Find the area of the trapezoid.",
+        "latex": "a={base},\\qquad b={base2},\\qquad h={height}"
+      }
+    },
+    "rhombus_diagonals": {
+      "uses": [
+        "diag1",
+        "diag2"
+      ],
+      "question": {
+        "instruction": "Find the area of the rhombus from its diagonals.",
+        "latex": "d_1={diag1},\\qquad d_2={diag2}"
+      }
+    },
+    "circumscribed_polygon_area": {
+      "uses": [
+        "semiperimeter",
+        "inradius"
+      ],
+      "question": {
+        "instruction": "A polygon is circumscribed about a circle. Find its area.",
+        "latex": "p={semiperimeter},\\qquad r={inradius}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "triangle_base_height": "Rational(base*height,2)",
+      "parallelogram_area": "base*height",
+      "trapezoid_area": "Rational((base+base2)*height,2)",
+      "rhombus_diagonals": "Rational(diag1*diag2,2)",
+      "circumscribed_polygon_area": "semiperimeter*inradius"
+    }
+  },
+  "answer_render": {
+    "triangle_base_height": "exact_number",
+    "parallelogram_area": "exact_number",
+    "trapezoid_area": "exact_number",
+    "rhombus_diagonals": "exact_number",
+    "circumscribed_polygon_area": "exact_number"
+  },
+  "distractors": {
+    "triangle_base_height": [
+      {
+        "id": "d1",
+        "transform": "base*height"
+      },
+      {
+        "id": "d2",
+        "transform": "base+height"
+      },
+      {
+        "id": "d3",
+        "transform": "Rational(base+height,2)"
+      },
+      {
+        "id": "d4",
+        "transform": "base**2"
+      },
+      {
+        "id": "d5",
+        "transform": "height**2"
+      },
+      {
+        "id": "d6",
+        "transform": "Rational(base*height,4)"
+      }
+    ],
+    "parallelogram_area": [
+      {
+        "id": "d1",
+        "transform": "Rational(base*height,2)"
+      },
+      {
+        "id": "d2",
+        "transform": "2*(base+height)"
+      },
+      {
+        "id": "d3",
+        "transform": "base+height"
+      },
+      {
+        "id": "d4",
+        "transform": "base**2"
+      },
+      {
+        "id": "d5",
+        "transform": "height**2"
+      },
+      {
+        "id": "d6",
+        "transform": "2*base*height"
+      }
+    ],
+    "trapezoid_area": [
+      {
+        "id": "d1",
+        "transform": "(base+base2)*height"
+      },
+      {
+        "id": "d2",
+        "transform": "Rational(abs(base-base2)*height,2)"
+      },
+      {
+        "id": "d3",
+        "transform": "Rational(base*height,2)"
+      },
+      {
+        "id": "d4",
+        "transform": "Rational(base2*height,2)"
+      },
+      {
+        "id": "d5",
+        "transform": "base+base2+height"
+      },
+      {
+        "id": "d6",
+        "transform": "sqrt(base*base2)*height"
+      }
+    ],
+    "rhombus_diagonals": [
+      {
+        "id": "d1",
+        "transform": "diag1*diag2"
+      },
+      {
+        "id": "d2",
+        "transform": "Rational(diag1+diag2,2)"
+      },
+      {
+        "id": "d3",
+        "transform": "diag1+diag2"
+      },
+      {
+        "id": "d4",
+        "transform": "Rational(diag1*diag2,4)"
+      },
+      {
+        "id": "d5",
+        "transform": "diag1**2+diag2**2"
+      },
+      {
+        "id": "d6",
+        "transform": "sqrt(diag1*diag2)"
+      }
+    ],
+    "circumscribed_polygon_area": [
+      {
+        "id": "d1",
+        "transform": "2*semiperimeter*inradius"
+      },
+      {
+        "id": "d2",
+        "transform": "Rational(semiperimeter*inradius,2)"
+      },
+      {
+        "id": "d3",
+        "transform": "semiperimeter+inradius"
+      },
+      {
+        "id": "d4",
+        "transform": "pi*inradius**2"
+      },
+      {
+        "id": "d5",
+        "transform": "semiperimeter**2"
+      },
+      {
+        "id": "d6",
+        "transform": "inradius**2"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true,
+    "positive_area_validation": true
+  },
+  "constraints_template": "ubt_question.j2"
+}

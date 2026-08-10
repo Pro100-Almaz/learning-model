@@ -1,0 +1,173 @@
+{
+  "topic": "ubt_quadratic_inequalities",
+  "parent_topic": "inequalities",
+  "parent_topic_number": 10,
+  "display_name": "Quadratic inequalities",
+  "curriculum_ref": "KZ 2026 UBT — Inequalities — Topic 10",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 10. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Теңсіздіктер",
+    "slug": "tensizdikter"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "quadratic_between_roots",
+        "quadratic_outside_roots"
+      ],
+      "desc": "question structure"
+    },
+    "r1": {
+      "type": "int",
+      "min": -7,
+      "max": 4
+    },
+    "r2": {
+      "type": "int",
+      "min": -3,
+      "max": 8
+    }
+  },
+  "supported_difficulties": [
+    2,
+    3
+  ],
+  "default_difficulty": 2,
+  "difficulty_overrides": {
+    "2": {
+      "mode": {
+        "values": [
+          "quadratic_between_roots"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "quadratic_outside_roots"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "quadratic_between_roots": {
+      "uses": [
+        "r1",
+        "r2"
+      ],
+      "constraints": [
+        "r1 < r2"
+      ],
+      "derived": {
+        "bcoef": "-(r1+r2)",
+        "ccoef": "r1*r2"
+      },
+      "question": {
+        "instruction": "Solve the quadratic inequality",
+        "latex": "x^2{bcoef:+d}x{ccoef:+d}<0"
+      }
+    },
+    "quadratic_outside_roots": {
+      "uses": [
+        "r1",
+        "r2"
+      ],
+      "constraints": [
+        "r1 < r2"
+      ],
+      "derived": {
+        "bcoef": "-(r1+r2)",
+        "ccoef": "r1*r2"
+      },
+      "question": {
+        "instruction": "Solve the quadratic inequality",
+        "latex": "x^2{bcoef:+d}x{ccoef:+d}>0"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "quadratic_between_roots": "Interval.open(r1,r2)",
+      "quadratic_outside_roots": "Union(Interval.open(-oo,r1),Interval.open(r2,oo))"
+    }
+  },
+  "answer_render": {
+    "quadratic_between_roots": "interval",
+    "quadratic_outside_roots": "interval_union"
+  },
+  "distractors": {
+    "quadratic_between_roots": [
+      {
+        "id": "outside_roots",
+        "transform": "Union(Interval.open(-oo,r1),Interval.open(r2,oo))"
+      },
+      {
+        "id": "include_roots",
+        "transform": "Interval(r1,r2)"
+      },
+      {
+        "id": "left_only",
+        "transform": "Interval.open(-oo,r1)"
+      },
+      {
+        "id": "right_only",
+        "transform": "Interval.open(r2,oo)"
+      },
+      {
+        "id": "swap_endpoint_signs",
+        "transform": "Interval.open(-r2,-r1)"
+      },
+      {
+        "id": "all_real",
+        "transform": "Interval(-oo,oo)"
+      }
+    ],
+    "quadratic_outside_roots": [
+      {
+        "id": "between_roots",
+        "transform": "Interval.open(r1,r2)"
+      },
+      {
+        "id": "include_roots",
+        "transform": "Union(Interval(-oo,r1),Interval(r2,oo))"
+      },
+      {
+        "id": "left_only",
+        "transform": "Interval.open(-oo,r1)"
+      },
+      {
+        "id": "right_only",
+        "transform": "Interval.open(r2,oo)"
+      },
+      {
+        "id": "all_real",
+        "transform": "Interval(-oo,oo)"
+      },
+      {
+        "id": "closed_between",
+        "transform": "Interval(r1,r2)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "interval_equivalence": true,
+    "respect_open_closed_boundaries": true,
+    "respect_rational_domain": true,
+    "respect_radical_domain": true,
+    "respect_log_domain": true,
+    "trigonometric_interval_check": true,
+    "reject_undefined_choices": true,
+    "exact_answers_only": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

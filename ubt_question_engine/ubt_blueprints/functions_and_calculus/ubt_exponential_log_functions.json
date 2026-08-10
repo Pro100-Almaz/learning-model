@@ -1,0 +1,220 @@
+{
+  "topic": "ubt_exponential_log_functions",
+  "parent_topic": "functions_calculus_modelling",
+  "parent_topic_number": 13,
+  "display_name": "Exponential and logarithmic functions",
+  "curriculum_ref": "KZ 2026 UBT — Mathematical modelling and analysis — Topic 13",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 13. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Функциялар және математикалық анализ",
+    "slug": "funkciyalar-matematikalyk-analiz"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "exponential_derivative",
+        "logarithmic_derivative",
+        "exponential_model"
+      ],
+      "desc": "question structure"
+    },
+    "a": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "base": {
+      "type": "choice",
+      "values": [
+        2,
+        3,
+        5
+      ]
+    },
+    "b": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "initial": {
+      "type": "int",
+      "min": 1,
+      "max": 10
+    },
+    "time": {
+      "type": "int",
+      "min": 2,
+      "max": 6
+    }
+  },
+  "supported_difficulties": [
+    2,
+    3
+  ],
+  "default_difficulty": 2,
+  "difficulty_overrides": {
+    "2": {
+      "mode": {
+        "values": [
+          "exponential_derivative",
+          "logarithmic_derivative"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "exponential_model"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "exponential_derivative": {
+      "uses": [
+        "a",
+        "base"
+      ],
+      "question": {
+        "instruction": "Find f'(x)",
+        "latex": "f(x)={a}\\cdot {base}^x"
+      }
+    },
+    "logarithmic_derivative": {
+      "uses": [
+        "a",
+        "b"
+      ],
+      "question": {
+        "instruction": "Find f'(x)",
+        "latex": "f(x)={a}\\ln x{b:+d}"
+      }
+    },
+    "exponential_model": {
+      "uses": [
+        "initial",
+        "base",
+        "time"
+      ],
+      "question": {
+        "instruction": "A quantity follows the exponential model P(t)=P_0 b^t. Find its value at the given time.",
+        "latex": "P_0={initial},\\qquad b={base},\\qquad t={time}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "exponential_derivative": "a*base**x*log(base)",
+      "logarithmic_derivative": "a/x",
+      "exponential_model": "initial*base**time"
+    }
+  },
+  "answer_render": {
+    "exponential_derivative": "expression",
+    "logarithmic_derivative": "expression",
+    "exponential_model": "scalar"
+  },
+  "distractors": {
+    "exponential_derivative": [
+      {
+        "id": "omit_log_base",
+        "transform": "a*base**x"
+      },
+      {
+        "id": "multiply_by_base",
+        "transform": "a*base**(x+1)"
+      },
+      {
+        "id": "power_rule_wrong",
+        "transform": "a*x*base**(x-1)"
+      },
+      {
+        "id": "log_only",
+        "transform": "a*log(base)"
+      },
+      {
+        "id": "omit_a",
+        "transform": "base**x*log(base)"
+      },
+      {
+        "id": "negative_derivative",
+        "transform": "-a*base**x*log(base)"
+      }
+    ],
+    "logarithmic_derivative": [
+      {
+        "id": "keep_log",
+        "transform": "a*log(x)"
+      },
+      {
+        "id": "one_over_log",
+        "transform": "a/log(x)"
+      },
+      {
+        "id": "omit_a",
+        "transform": "1/x"
+      },
+      {
+        "id": "negative",
+        "transform": "-a/x"
+      },
+      {
+        "id": "a_over_x_squared",
+        "transform": "a/x**2"
+      },
+      {
+        "id": "constant_b",
+        "transform": "a/x+b"
+      }
+    ],
+    "exponential_model": [
+      {
+        "id": "linear_growth",
+        "transform": "initial+base*time"
+      },
+      {
+        "id": "use_time_minus_one",
+        "transform": "initial*base**(time-1)"
+      },
+      {
+        "id": "use_time_plus_one",
+        "transform": "initial*base**(time+1)"
+      },
+      {
+        "id": "omit_initial",
+        "transform": "base**time"
+      },
+      {
+        "id": "multiply_all",
+        "transform": "initial*base*time"
+      },
+      {
+        "id": "add_initial",
+        "transform": "initial+base**time"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "tuple_equivalence": true,
+    "interval_equivalence": true,
+    "function_equivalence": true,
+    "exact_answers_only": true,
+    "respect_function_domain": true,
+    "validate_derivatives": true,
+    "validate_integrals": true,
+    "validate_tangent_point_and_slope": true,
+    "validate_extrema_and_monotonicity": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

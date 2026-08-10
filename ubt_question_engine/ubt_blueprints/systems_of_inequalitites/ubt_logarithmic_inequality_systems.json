@@ -1,0 +1,199 @@
+{
+  "topic": "ubt_logarithmic_inequality_systems",
+  "parent_topic": "systems_of_inequalities",
+  "parent_topic_number": 11,
+  "display_name": "Systems of logarithmic inequalities",
+  "curriculum_ref": "KZ 2026 UBT — Systems of inequalities — Topic 11",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 11. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Теңсіздіктер жүйесі",
+    "slug": "tensizdikter-zhuyesi"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "logarithmic_system",
+        "logarithmic_domain_system"
+      ],
+      "desc": "question structure"
+    },
+    "base": {
+      "type": "choice",
+      "values": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "m": {
+      "type": "int",
+      "min": -2,
+      "max": 3
+    },
+    "n": {
+      "type": "int",
+      "min": 1,
+      "max": 5
+    },
+    "lower": {
+      "type": "int",
+      "min": -8,
+      "max": 3
+    },
+    "upper": {
+      "type": "int",
+      "min": -2,
+      "max": 9
+    }
+  },
+  "supported_difficulties": [
+    2,
+    3
+  ],
+  "default_difficulty": 2,
+  "difficulty_overrides": {
+    "2": {
+      "mode": {
+        "values": [
+          "logarithmic_system"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "logarithmic_domain_system"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "logarithmic_system": {
+      "uses": [
+        "base",
+        "m",
+        "n",
+        "lower"
+      ],
+      "constraints": [
+        "m < n"
+      ],
+      "derived": {
+        "neg_lower": "-lower"
+      },
+      "question": {
+        "instruction": "Solve the system of logarithmic inequalities",
+        "latex": "\\begin{{cases}} \\log_{{{base}}}(x{neg_lower:+d})>{m} \\\\ \\log_{{{base}}}(x{neg_lower:+d})\\le {n} \\end{{cases}}"
+      }
+    },
+    "logarithmic_domain_system": {
+      "uses": [
+        "base",
+        "m",
+        "n",
+        "lower",
+        "upper"
+      ],
+      "constraints": [
+        "m < n",
+        "lower < upper"
+      ],
+      "derived": {
+        "left_shift": "lower-base**m",
+        "right_shift": "upper+base**n",
+        "neg_left_shift": "-(lower-base**m)",
+        "neg_right_shift": "-(upper+base**n)"
+      },
+      "question": {
+        "instruction": "Solve the system of logarithmic inequalities",
+        "latex": "\\begin{{cases}} \\log_{{{base}}}(x{neg_left_shift:+d})>{m} \\\\ \\log_{{{base}}}({right_shift}-x)>{n} \\end{{cases}}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "logarithmic_system": "Intersection(Interval.open(lower+base**m,oo),Interval(-oo,lower+base**n))",
+      "logarithmic_domain_system": "Interval.open(lower,upper)"
+    }
+  },
+  "answer_render": {
+    "logarithmic_system": "interval",
+    "logarithmic_domain_system": "interval"
+  },
+  "distractors": {
+    "logarithmic_system": [
+      {
+        "id": "log_values_as_bounds",
+        "transform": "Interval.open(lower+m,lower+n)"
+      },
+      {
+        "id": "ignore_shift",
+        "transform": "Interval.open(base**m,base**n)"
+      },
+      {
+        "id": "open_upper",
+        "transform": "Interval.open(lower+base**m,lower+base**n)"
+      },
+      {
+        "id": "closed_left",
+        "transform": "Interval(lower+base**m,lower+base**n)"
+      },
+      {
+        "id": "domain_only",
+        "transform": "Interval.open(lower,oo)"
+      },
+      {
+        "id": "outside",
+        "transform": "Union(Interval.open(-oo,lower+base**m),Interval.open(lower+base**n,oo))"
+      }
+    ],
+    "logarithmic_domain_system": [
+      {
+        "id": "closed_interval",
+        "transform": "Interval(lower,upper)"
+      },
+      {
+        "id": "left_closed",
+        "transform": "Interval.Ropen(lower,upper)"
+      },
+      {
+        "id": "right_closed",
+        "transform": "Interval.Lopen(lower,upper)"
+      },
+      {
+        "id": "outside",
+        "transform": "Union(Interval.open(-oo,lower),Interval.open(upper,oo))"
+      },
+      {
+        "id": "first_log_only",
+        "transform": "Interval.open(lower,oo)"
+      },
+      {
+        "id": "second_log_only",
+        "transform": "Interval.open(-oo,upper)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "interval_equivalence": true,
+    "tuple_equivalence": true,
+    "ordered_pairs": true,
+    "respect_open_closed_boundaries": true,
+    "respect_rational_domain": true,
+    "respect_log_domain": true,
+    "reject_undefined_choices": true,
+    "exact_answers_only": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

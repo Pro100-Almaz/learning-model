@@ -1,0 +1,221 @@
+{
+  "topic": "ubt_derivatives",
+  "parent_topic": "functions_calculus_modelling",
+  "parent_topic_number": 13,
+  "display_name": "Derivatives — power, trigonometric and chain rule",
+  "curriculum_ref": "KZ 2026 UBT — Mathematical modelling and analysis — Topic 13",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 13. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Функциялар және математикалық анализ",
+    "slug": "funkciyalar-matematikalyk-analiz"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "derivative_power",
+        "derivative_trigonometric",
+        "chain_rule_power"
+      ],
+      "desc": "question structure"
+    },
+    "a": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "b": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "power": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "derivative_power"
+        ]
+      },
+      "a": {
+        "max": 4
+      },
+      "power": {
+        "max": 4
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "derivative_trigonometric"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "chain_rule_power"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "derivative_power": {
+      "uses": [
+        "a",
+        "b",
+        "power"
+      ],
+      "question": {
+        "instruction": "Find f'(x)",
+        "latex": "f(x)={a}x^{{{power}}}{b:+d}x"
+      }
+    },
+    "derivative_trigonometric": {
+      "uses": [
+        "a",
+        "b"
+      ],
+      "question": {
+        "instruction": "Find f'(x)",
+        "latex": "f(x)={a}\\sin x{b:+d}\\cos x"
+      }
+    },
+    "chain_rule_power": {
+      "uses": [
+        "a",
+        "b",
+        "power"
+      ],
+      "question": {
+        "instruction": "Find f'(x)",
+        "latex": "f(x)=\\left({a}x{b:+d}\\right)^{{{power}}}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "derivative_power": "a*power*x**(power-1)+b",
+      "derivative_trigonometric": "a*cos(x)-b*sin(x)",
+      "chain_rule_power": "power*a*(a*x+b)**(power-1)"
+    }
+  },
+  "answer_render": {
+    "derivative_power": "expression",
+    "derivative_trigonometric": "expression",
+    "chain_rule_power": "expression"
+  },
+  "distractors": {
+    "derivative_power": [
+      {
+        "id": "forget_power_factor",
+        "transform": "a*x**(power-1)+b"
+      },
+      {
+        "id": "keep_power",
+        "transform": "a*power*x**power+b"
+      },
+      {
+        "id": "differentiate_linear_to_bx",
+        "transform": "a*power*x**(power-1)+b*x"
+      },
+      {
+        "id": "drop_linear_derivative",
+        "transform": "a*power*x**(power-1)"
+      },
+      {
+        "id": "power_minus_two",
+        "transform": "a*power*x**(power-2)+b"
+      },
+      {
+        "id": "add_constant_derivative",
+        "transform": "a*power*x**(power-1)+b+1"
+      }
+    ],
+    "derivative_trigonometric": [
+      {
+        "id": "both_positive",
+        "transform": "a*cos(x)+b*sin(x)"
+      },
+      {
+        "id": "swap_functions",
+        "transform": "a*sin(x)-b*cos(x)"
+      },
+      {
+        "id": "both_negative",
+        "transform": "-a*cos(x)-b*sin(x)"
+      },
+      {
+        "id": "original",
+        "transform": "a*sin(x)+b*cos(x)"
+      },
+      {
+        "id": "drop_cos_term",
+        "transform": "a*cos(x)"
+      },
+      {
+        "id": "drop_sin_term",
+        "transform": "-b*sin(x)"
+      }
+    ],
+    "chain_rule_power": [
+      {
+        "id": "omit_inner_derivative",
+        "transform": "power*(a*x+b)**(power-1)"
+      },
+      {
+        "id": "keep_power",
+        "transform": "power*a*(a*x+b)**power"
+      },
+      {
+        "id": "power_rule_on_x_only",
+        "transform": "power*a*x**(power-1)"
+      },
+      {
+        "id": "omit_power_factor",
+        "transform": "a*(a*x+b)**(power-1)"
+      },
+      {
+        "id": "original_function",
+        "transform": "(a*x+b)**power"
+      },
+      {
+        "id": "wrong_inner_sign",
+        "transform": "power*a*(a*x-b)**(power-1)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "tuple_equivalence": true,
+    "interval_equivalence": true,
+    "function_equivalence": true,
+    "exact_answers_only": true,
+    "respect_function_domain": true,
+    "validate_derivatives": true,
+    "validate_integrals": true,
+    "validate_tangent_point_and_slope": true,
+    "validate_extrema_and_monotonicity": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

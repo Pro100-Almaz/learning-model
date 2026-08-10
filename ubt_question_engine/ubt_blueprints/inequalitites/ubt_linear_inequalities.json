@@ -1,0 +1,128 @@
+{
+  "topic": "ubt_linear_inequalities",
+  "parent_topic": "inequalities",
+  "parent_topic_number": 10,
+  "display_name": "Linear inequalities",
+  "curriculum_ref": "KZ 2026 UBT — Inequalities — Topic 10",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 10. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Теңсіздіктер",
+    "slug": "tensizdikter"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "linear_direct"
+      ],
+      "desc": "question structure"
+    },
+    "a": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "b": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "threshold": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    }
+  },
+  "supported_difficulties": [
+    1
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "linear_direct"
+        ]
+      },
+      "a": {
+        "max": 5
+      },
+      "threshold": {
+        "min": -5,
+        "max": 5
+      }
+    }
+  },
+  "modes": {
+    "linear_direct": {
+      "uses": [
+        "a",
+        "b",
+        "threshold"
+      ],
+      "derived": {
+        "rhs": "a*threshold+b"
+      },
+      "question": {
+        "instruction": "Solve the inequality",
+        "latex": "{a}x{b:+d}>{rhs}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "linear_direct": "Interval.open(threshold,oo)"
+    }
+  },
+  "answer_render": {
+    "linear_direct": "interval"
+  },
+  "distractors": {
+    "linear_direct": [
+      {
+        "id": "reverse_direction",
+        "transform": "Interval.open(-oo,threshold)"
+      },
+      {
+        "id": "include_boundary",
+        "transform": "Interval(threshold,oo)"
+      },
+      {
+        "id": "negative_threshold",
+        "transform": "Interval.open(-threshold,oo)"
+      },
+      {
+        "id": "plus_one",
+        "transform": "Interval.open(threshold+1,oo)"
+      },
+      {
+        "id": "minus_one",
+        "transform": "Interval.open(threshold-1,oo)"
+      },
+      {
+        "id": "bounded_interval",
+        "transform": "Interval.open(-oo,threshold+1)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "interval_equivalence": true,
+    "respect_open_closed_boundaries": true,
+    "respect_rational_domain": true,
+    "respect_radical_domain": true,
+    "respect_log_domain": true,
+    "trigonometric_interval_check": true,
+    "reject_undefined_choices": true,
+    "exact_answers_only": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

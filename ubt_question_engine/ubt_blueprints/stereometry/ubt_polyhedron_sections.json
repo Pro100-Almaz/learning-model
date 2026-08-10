@@ -1,0 +1,262 @@
+{
+  "topic": "ubt_polyhedron_sections",
+  "parent_topic": "stereometry_geometric_figures",
+  "parent_topic_number": 16,
+  "display_name": "Plane sections of polyhedra",
+  "curriculum_ref": "KZ 2026 UBT — Stereometry — Topic 16",
+  "_comment": "Deterministic Topic 16 generator. Python owns parameter selection, mathematical or logical validation, answer generation, distractor filtering and seeded reproducibility. JSON owns configuration. Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Стереометрия",
+    "slug": "stereometriya"
+  },
+  "expression_language": "sympy",
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "tetrahedron_parallel_base_section",
+        "triangular_prism_parallel_base_section",
+        "rectangular_parallelepiped_parallel_face_section",
+        "cube_parallel_face_section",
+        "pentagonal_pyramid_parallel_base_section"
+      ]
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "tetrahedron_parallel_base_section",
+          "cube_parallel_face_section"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "triangular_prism_parallel_base_section",
+          "rectangular_parallelepiped_parallel_face_section"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "pentagonal_pyramid_parallel_base_section"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "tetrahedron_parallel_base_section": {
+      "uses": [],
+      "question": {
+        "instruction": "A plane cuts a tetrahedron parallel to one face. What is the shape of the section?",
+        "latex": ""
+      }
+    },
+    "triangular_prism_parallel_base_section": {
+      "uses": [],
+      "question": {
+        "instruction": "A plane cuts a triangular prism parallel to its base. What is the shape of the section?",
+        "latex": ""
+      }
+    },
+    "rectangular_parallelepiped_parallel_face_section": {
+      "uses": [],
+      "question": {
+        "instruction": "A plane cuts a rectangular parallelepiped parallel to one of its faces. What is the shape of the section?",
+        "latex": ""
+      }
+    },
+    "cube_parallel_face_section": {
+      "uses": [],
+      "question": {
+        "instruction": "A plane cuts a cube parallel to one of its faces. What is the shape of the section?",
+        "latex": ""
+      }
+    },
+    "pentagonal_pyramid_parallel_base_section": {
+      "uses": [],
+      "question": {
+        "instruction": "A plane cuts a pentagonal pyramid parallel to its base. What is the shape of the section?",
+        "latex": ""
+      }
+    }
+  },
+  "answer": {
+    "type": "literal_by_mode",
+    "expression": {
+      "tetrahedron_parallel_base_section": "triangle",
+      "triangular_prism_parallel_base_section": "triangle",
+      "rectangular_parallelepiped_parallel_face_section": "rectangle",
+      "cube_parallel_face_section": "square",
+      "pentagonal_pyramid_parallel_base_section": "pentagon"
+    }
+  },
+  "choice_labels": {
+    "triangle": "\\text{triangle}",
+    "quadrilateral": "\\text{quadrilateral}",
+    "rectangle": "\\text{rectangle}",
+    "square": "\\text{square}",
+    "pentagon": "\\text{pentagon}",
+    "hexagon": "\\text{hexagon}",
+    "circle": "\\text{circle}"
+  },
+  "answer_render": {
+    "tetrahedron_parallel_base_section": "literal_label",
+    "triangular_prism_parallel_base_section": "literal_label",
+    "rectangular_parallelepiped_parallel_face_section": "literal_label",
+    "cube_parallel_face_section": "literal_label",
+    "pentagonal_pyramid_parallel_base_section": "literal_label"
+  },
+  "distractors": {
+    "tetrahedron_parallel_base_section": [
+      {
+        "id": "d1",
+        "literal": "quadrilateral"
+      },
+      {
+        "id": "d2",
+        "literal": "rectangle"
+      },
+      {
+        "id": "d3",
+        "literal": "square"
+      },
+      {
+        "id": "d4",
+        "literal": "pentagon"
+      },
+      {
+        "id": "d5",
+        "literal": "hexagon"
+      },
+      {
+        "id": "d6",
+        "literal": "circle"
+      }
+    ],
+    "triangular_prism_parallel_base_section": [
+      {
+        "id": "d1",
+        "literal": "quadrilateral"
+      },
+      {
+        "id": "d2",
+        "literal": "rectangle"
+      },
+      {
+        "id": "d3",
+        "literal": "square"
+      },
+      {
+        "id": "d4",
+        "literal": "pentagon"
+      },
+      {
+        "id": "d5",
+        "literal": "hexagon"
+      },
+      {
+        "id": "d6",
+        "literal": "circle"
+      }
+    ],
+    "rectangular_parallelepiped_parallel_face_section": [
+      {
+        "id": "d1",
+        "literal": "triangle"
+      },
+      {
+        "id": "d2",
+        "literal": "quadrilateral"
+      },
+      {
+        "id": "d3",
+        "literal": "square"
+      },
+      {
+        "id": "d4",
+        "literal": "pentagon"
+      },
+      {
+        "id": "d5",
+        "literal": "hexagon"
+      },
+      {
+        "id": "d6",
+        "literal": "circle"
+      }
+    ],
+    "cube_parallel_face_section": [
+      {
+        "id": "d1",
+        "literal": "triangle"
+      },
+      {
+        "id": "d2",
+        "literal": "quadrilateral"
+      },
+      {
+        "id": "d3",
+        "literal": "rectangle"
+      },
+      {
+        "id": "d4",
+        "literal": "pentagon"
+      },
+      {
+        "id": "d5",
+        "literal": "hexagon"
+      },
+      {
+        "id": "d6",
+        "literal": "circle"
+      }
+    ],
+    "pentagonal_pyramid_parallel_base_section": [
+      {
+        "id": "d1",
+        "literal": "triangle"
+      },
+      {
+        "id": "d2",
+        "literal": "quadrilateral"
+      },
+      {
+        "id": "d3",
+        "literal": "rectangle"
+      },
+      {
+        "id": "d4",
+        "literal": "square"
+      },
+      {
+        "id": "d5",
+        "literal": "hexagon"
+      },
+      {
+        "id": "d6",
+        "literal": "circle"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "exact_answers_only": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true,
+    "literal_equivalence": true
+  },
+  "constraints_template": "ubt_question.j2"
+}
