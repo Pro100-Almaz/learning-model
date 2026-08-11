@@ -163,7 +163,7 @@ class TestAttempt(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        if self.test:
+        if self.test_id and self.test.lesson_id:
             from apps.content.services import invalidate_cache_for_student_and_lesson
             invalidate_cache_for_student_and_lesson(self.test.lesson_id, self.student_id)
 

@@ -130,8 +130,10 @@ def get_passed_lesson_count(lessons: QuerySet[Lesson], student: CustomUser) -> i
     return len(get_passed_lesson_ids(lessons, student))
 
 
-def invalidate_cache_for_student_and_lesson(lesson_id: int, student_id: int | None = None):
+def invalidate_cache_for_student_and_lesson(lesson_id: int | None, student_id: int | None = None):
     from apps.content.models import Lesson
+    if lesson_id is None:
+        return
     lesson = Lesson.objects.select_related("module__class_grade__subject").get(id=lesson_id)
     module = lesson.module
     class_grade = module.class_grade
