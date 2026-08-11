@@ -125,184 +125,184 @@
   "distractors": {
     "tetrahedron_vertices": [
       {
-        "id": "d1",
+        "id": "too_few_by_two",
         "transform": "2"
       },
       {
-        "id": "d2",
+        "id": "counted_base_vertices_only",
         "transform": "3"
       },
       {
-        "id": "d3",
+        "id": "counted_the_apex_twice",
         "transform": "5"
       },
       {
-        "id": "d4",
+        "id": "confused_with_edge_count",
         "transform": "6"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_three",
         "transform": "7"
       },
       {
-        "id": "d6",
+        "id": "confused_with_parallelepiped_vertices",
         "transform": "8"
       }
     ],
     "tetrahedron_edges": [
       {
-        "id": "d1",
+        "id": "confused_with_vertex_count",
         "transform": "4"
       },
       {
-        "id": "d2",
+        "id": "missed_one_edge",
         "transform": "5"
       },
       {
-        "id": "d3",
+        "id": "too_many_by_one",
         "transform": "7"
       },
       {
-        "id": "d4",
+        "id": "too_many_by_two",
         "transform": "8"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_three",
         "transform": "9"
       },
       {
-        "id": "d6",
+        "id": "confused_with_parallelepiped_edges",
         "transform": "12"
       }
     ],
     "tetrahedron_faces": [
       {
-        "id": "d1",
+        "id": "too_few_by_two",
         "transform": "2"
       },
       {
-        "id": "d2",
+        "id": "counted_lateral_faces_only",
         "transform": "3"
       },
       {
-        "id": "d3",
+        "id": "counted_the_base_twice",
         "transform": "5"
       },
       {
-        "id": "d4",
+        "id": "confused_with_edge_count",
         "transform": "6"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_three",
         "transform": "7"
       },
       {
-        "id": "d6",
+        "id": "confused_with_parallelepiped_vertex_count",
         "transform": "8"
       }
     ],
     "parallelepiped_vertices": [
       {
-        "id": "d1",
+        "id": "confused_with_face_count",
         "transform": "6"
       },
       {
-        "id": "d2",
+        "id": "missed_one_vertex",
         "transform": "7"
       },
       {
-        "id": "d3",
+        "id": "too_many_by_one",
         "transform": "9"
       },
       {
-        "id": "d4",
+        "id": "too_many_by_two",
         "transform": "10"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_three",
         "transform": "11"
       },
       {
-        "id": "d6",
+        "id": "doubled_the_vertex_count",
         "transform": "16"
       }
     ],
     "parallelepiped_edges": [
       {
-        "id": "d1",
+        "id": "too_few_by_two",
         "transform": "10"
       },
       {
-        "id": "d2",
+        "id": "missed_one_edge",
         "transform": "11"
       },
       {
-        "id": "d3",
+        "id": "too_many_by_one",
         "transform": "13"
       },
       {
-        "id": "d4",
+        "id": "too_many_by_two",
         "transform": "14"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_three",
         "transform": "15"
       },
       {
-        "id": "d6",
+        "id": "doubled_the_edge_count",
         "transform": "24"
       }
     ],
     "parallelepiped_faces": [
       {
-        "id": "d1",
+        "id": "confused_with_tetrahedron_faces",
         "transform": "4"
       },
       {
-        "id": "d2",
+        "id": "missed_one_face",
         "transform": "5"
       },
       {
-        "id": "d3",
+        "id": "too_many_by_one",
         "transform": "7"
       },
       {
-        "id": "d4",
+        "id": "confused_with_vertex_count",
         "transform": "8"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_three",
         "transform": "9"
       },
       {
-        "id": "d6",
+        "id": "confused_with_edge_count",
         "transform": "12"
       }
     ],
     "rectangular_parallelepiped_opposite_face_pairs": [
       {
-        "id": "d1",
+        "id": "counted_one_pair_only",
         "transform": "1"
       },
       {
-        "id": "d2",
+        "id": "missed_one_pair",
         "transform": "2"
       },
       {
-        "id": "d3",
+        "id": "too_many_by_one",
         "transform": "4"
       },
       {
-        "id": "d4",
+        "id": "too_many_by_two",
         "transform": "5"
       },
       {
-        "id": "d5",
+        "id": "confused_with_face_count",
         "transform": "6"
       },
       {
-        "id": "d6",
-        "transform": "6"
+        "id": "confused_with_edge_count",
+        "transform": "12"
       }
     ]
   },

@@ -152,183 +152,183 @@
   "distractors": {
     "pyramid_vertices": [
       {
-        "id": "n",
+        "id": "forgot_the_apex",
         "transform": "n"
       },
       {
-        "id": "n2",
+        "id": "counted_the_apex_twice",
         "transform": "n+2"
       },
       {
-        "id": "2n",
+        "id": "doubled_the_base_vertices",
         "transform": "2*n"
       },
       {
-        "id": "2n1",
+        "id": "confused_with_edge_count_plus_apex",
         "transform": "2*n+1"
       },
       {
-        "id": "nminus1",
+        "id": "dropped_a_base_vertex",
         "transform": "n-1"
       },
       {
-        "id": "3n",
+        "id": "tripled_the_base_vertices",
         "transform": "3*n"
       }
     ],
     "pyramid_edges": [
       {
-        "id": "n",
+        "id": "counted_base_edges_only",
         "transform": "n"
       },
       {
-        "id": "n1",
+        "id": "confused_with_vertex_count",
         "transform": "n+1"
       },
       {
-        "id": "n2",
+        "id": "confused_with_face_count",
         "transform": "n+2"
       },
       {
-        "id": "2n1",
+        "id": "counted_the_apex_as_an_edge",
         "transform": "2*n+1"
       },
       {
-        "id": "2nminus1",
+        "id": "missed_one_lateral_edge",
         "transform": "2*n-1"
       },
       {
-        "id": "3n",
+        "id": "tripled_the_base_edges",
         "transform": "3*n"
       }
     ],
     "pyramid_faces": [
       {
-        "id": "n",
+        "id": "forgot_the_base_face",
         "transform": "n"
       },
       {
-        "id": "n2",
+        "id": "counted_the_base_twice",
         "transform": "n+2"
       },
       {
-        "id": "2n",
+        "id": "confused_with_edge_count",
         "transform": "2*n"
       },
       {
-        "id": "2n1",
+        "id": "doubled_the_lateral_faces_plus_base",
         "transform": "2*n+1"
       },
       {
-        "id": "nminus1",
+        "id": "missed_one_lateral_face",
         "transform": "n-1"
       },
       {
-        "id": "3",
+        "id": "assumed_triangular_pyramid_always",
         "transform": "3"
       }
     ],
     "frustum_lateral_faces": [
       {
-        "id": "n1",
+        "id": "counted_one_base_as_lateral",
         "transform": "n+1"
       },
       {
-        "id": "n2",
+        "id": "counted_both_bases_as_lateral",
         "transform": "n+2"
       },
       {
-        "id": "2n",
+        "id": "doubled_the_lateral_faces",
         "transform": "2*n"
       },
       {
-        "id": "2n2",
+        "id": "doubled_the_faces_and_added_bases",
         "transform": "2*n+2"
       },
       {
-        "id": "nminus1",
+        "id": "missed_one_lateral_face",
         "transform": "n-1"
       },
       {
-        "id": "3n",
+        "id": "tripled_the_lateral_faces",
         "transform": "3*n"
       }
     ],
     "frustum_total_faces": [
       {
-        "id": "n",
+        "id": "forgot_both_bases",
         "transform": "n"
       },
       {
-        "id": "n1",
+        "id": "counted_one_base_only",
         "transform": "n+1"
       },
       {
-        "id": "2n",
+        "id": "doubled_the_lateral_faces",
         "transform": "2*n"
       },
       {
-        "id": "2n2",
+        "id": "doubled_the_faces_and_added_bases",
         "transform": "2*n+2"
       },
       {
-        "id": "nminus1",
+        "id": "missed_one_lateral_face",
         "transform": "n-1"
       },
       {
-        "id": "n3",
+        "id": "counted_three_bases",
         "transform": "n+3"
       }
     ],
     "regular_tetrahedron_faces": [
       {
-        "id": "3",
+        "id": "counted_lateral_faces_only",
         "transform": "3"
       },
       {
-        "id": "5",
+        "id": "too_many_by_one",
         "transform": "5"
       },
       {
-        "id": "6",
+        "id": "confused_with_edge_count",
         "transform": "6"
       },
       {
-        "id": "8",
+        "id": "confused_with_octahedron",
         "transform": "8"
       },
       {
-        "id": "12",
+        "id": "confused_with_dodecahedron",
         "transform": "12"
       },
       {
-        "id": "20",
+        "id": "confused_with_icosahedron",
         "transform": "20"
       }
     ],
     "cube_faces": [
       {
-        "id": "4",
+        "id": "confused_with_tetrahedron_faces",
         "transform": "4"
       },
       {
-        "id": "5",
+        "id": "missed_one_face",
         "transform": "5"
       },
       {
-        "id": "8",
+        "id": "confused_with_vertex_count",
         "transform": "8"
       },
       {
-        "id": "10",
+        "id": "too_many_by_four",
         "transform": "10"
       },
       {
-        "id": "12",
+        "id": "confused_with_edge_count",
         "transform": "12"
       },
       {
-        "id": "14",
+        "id": "summed_faces_and_vertices",
         "transform": "14"
       }
     ]

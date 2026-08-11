@@ -124,7 +124,7 @@
       },
       {
         "id": "forget_half",
-        "transform": "n*(2*a1+(n-1)*d"
+        "transform": "n*(2*a1+(n-1)*d)"
       },
       {
         "id": "use_n_d",

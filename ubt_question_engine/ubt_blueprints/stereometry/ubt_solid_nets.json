@@ -103,131 +103,131 @@
   "distractors": {
     "cube_net_square_count": [
       {
-        "id": "d1",
+        "id": "assumed_net_has_no_squares",
         "transform": "0"
       },
       {
-        "id": "d2",
+        "id": "counted_one_face_only",
         "transform": "1"
       },
       {
-        "id": "d3",
+        "id": "counted_base_and_top_only",
         "transform": "2"
       },
       {
-        "id": "d4",
+        "id": "counted_visible_faces_only",
         "transform": "3"
       },
       {
-        "id": "d5",
+        "id": "counted_lateral_faces_only",
         "transform": "4"
       },
       {
-        "id": "d6",
+        "id": "missed_one_face",
         "transform": "5"
       }
     ],
     "rectangular_parallelepiped_net_rectangle_count": [
       {
-        "id": "d1",
+        "id": "assumed_net_has_no_rectangles",
         "transform": "0"
       },
       {
-        "id": "d2",
+        "id": "counted_one_face_only",
         "transform": "1"
       },
       {
-        "id": "d3",
+        "id": "counted_base_and_top_only",
         "transform": "2"
       },
       {
-        "id": "d4",
+        "id": "counted_visible_faces_only",
         "transform": "3"
       },
       {
-        "id": "d5",
+        "id": "counted_lateral_faces_only",
         "transform": "4"
       },
       {
-        "id": "d6",
+        "id": "missed_one_face",
         "transform": "5"
       }
     ],
     "cylinder_net_circle_count": [
       {
-        "id": "d1",
+        "id": "assumed_net_has_no_circles",
         "transform": "0"
       },
       {
-        "id": "d2",
+        "id": "counted_one_base_only",
         "transform": "1"
       },
       {
-        "id": "d3",
+        "id": "counted_lateral_rectangle_as_circle",
         "transform": "3"
       },
       {
-        "id": "d4",
+        "id": "doubled_the_bases",
         "transform": "4"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_three",
         "transform": "5"
       },
       {
-        "id": "d6",
+        "id": "too_many_by_four",
         "transform": "6"
       }
     ],
     "cone_net_circle_count": [
       {
-        "id": "d1",
+        "id": "assumed_net_has_no_circles",
         "transform": "0"
       },
       {
-        "id": "d2",
+        "id": "confused_with_cylinder_net",
         "transform": "2"
       },
       {
-        "id": "d3",
+        "id": "counted_the_sector_as_a_circle",
         "transform": "3"
       },
       {
-        "id": "d4",
+        "id": "too_many_by_three",
         "transform": "4"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_four",
         "transform": "5"
       },
       {
-        "id": "d6",
+        "id": "too_many_by_five",
         "transform": "6"
       }
     ],
     "frustum_cone_net_circle_count": [
       {
-        "id": "d1",
+        "id": "assumed_net_has_no_circles",
         "transform": "0"
       },
       {
-        "id": "d2",
+        "id": "counted_one_base_only",
         "transform": "1"
       },
       {
-        "id": "d3",
+        "id": "counted_the_sector_as_a_circle",
         "transform": "3"
       },
       {
-        "id": "d4",
+        "id": "doubled_the_bases",
         "transform": "4"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_three",
         "transform": "5"
       },
       {
-        "id": "d6",
+        "id": "too_many_by_four",
         "transform": "6"
       }
     ]

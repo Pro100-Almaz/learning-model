@@ -112,131 +112,131 @@
   "distractors": {
     "coplanar_no_intersection_lines": [
       {
-        "id": "d1",
+        "id": "ignored_the_no_common_point_condition",
         "literal": "intersecting_lines"
       },
       {
-        "id": "d2",
+        "id": "ignored_the_same_plane_condition",
         "literal": "skew_lines"
       },
       {
-        "id": "d3",
+        "id": "answered_about_a_line_and_a_plane",
         "literal": "line_parallel_plane"
       },
       {
-        "id": "d4",
+        "id": "answered_about_a_line_perpendicular_to_a_plane",
         "literal": "line_perpendicular_plane"
       },
       {
-        "id": "d5",
+        "id": "answered_about_two_planes",
         "literal": "intersecting_planes"
       },
       {
-        "id": "d6",
+        "id": "answered_about_two_parallel_planes",
         "literal": "parallel_planes"
       }
     ],
     "noncoplanar_lines": [
       {
-        "id": "d1",
+        "id": "assumed_the_lines_are_coplanar",
         "literal": "parallel_lines"
       },
       {
-        "id": "d2",
+        "id": "assumed_the_lines_meet",
         "literal": "intersecting_lines"
       },
       {
-        "id": "d3",
+        "id": "answered_about_a_line_and_a_plane",
         "literal": "line_parallel_plane"
       },
       {
-        "id": "d4",
+        "id": "answered_about_a_line_perpendicular_to_a_plane",
         "literal": "line_perpendicular_plane"
       },
       {
-        "id": "d5",
+        "id": "answered_about_two_planes",
         "literal": "intersecting_planes"
       },
       {
-        "id": "d6",
+        "id": "answered_about_two_parallel_planes",
         "literal": "parallel_planes"
       }
     ],
     "line_no_common_points_plane": [
       {
-        "id": "d1",
+        "id": "answered_about_two_parallel_lines",
         "literal": "parallel_lines"
       },
       {
-        "id": "d2",
+        "id": "answered_about_two_intersecting_lines",
         "literal": "intersecting_lines"
       },
       {
-        "id": "d3",
+        "id": "confused_skew_lines_with_line_parallel_to_plane",
         "literal": "skew_lines"
       },
       {
-        "id": "d4",
+        "id": "ignored_the_no_common_point_condition",
         "literal": "line_perpendicular_plane"
       },
       {
-        "id": "d5",
+        "id": "answered_about_two_planes",
         "literal": "intersecting_planes"
       },
       {
-        "id": "d6",
+        "id": "answered_about_two_parallel_planes",
         "literal": "parallel_planes"
       }
     ],
     "line_perpendicular_two_plane_lines": [
       {
-        "id": "d1",
+        "id": "answered_about_two_parallel_lines",
         "literal": "parallel_lines"
       },
       {
-        "id": "d2",
+        "id": "answered_about_two_intersecting_lines",
         "literal": "intersecting_lines"
       },
       {
-        "id": "d3",
+        "id": "confused_skew_lines_with_perpendicularity",
         "literal": "skew_lines"
       },
       {
-        "id": "d4",
+        "id": "ignored_the_perpendicularity_test",
         "literal": "line_parallel_plane"
       },
       {
-        "id": "d5",
+        "id": "answered_about_two_planes",
         "literal": "intersecting_planes"
       },
       {
-        "id": "d6",
+        "id": "answered_about_two_parallel_planes",
         "literal": "parallel_planes"
       }
     ],
     "planes_no_common_points": [
       {
-        "id": "d1",
+        "id": "answered_about_two_parallel_lines",
         "literal": "parallel_lines"
       },
       {
-        "id": "d2",
+        "id": "answered_about_two_intersecting_lines",
         "literal": "intersecting_lines"
       },
       {
-        "id": "d3",
+        "id": "applied_skewness_to_planes",
         "literal": "skew_lines"
       },
       {
-        "id": "d4",
+        "id": "answered_about_a_line_and_a_plane",
         "literal": "line_parallel_plane"
       },
       {
-        "id": "d5",
+        "id": "answered_about_a_line_perpendicular_to_a_plane",
         "literal": "line_perpendicular_plane"
       },
       {
-        "id": "d6",
+        "id": "ignored_the_no_common_point_condition",
         "literal": "intersecting_planes"
       }
     ]

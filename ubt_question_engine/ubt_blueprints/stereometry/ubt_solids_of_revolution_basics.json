@@ -114,157 +114,157 @@
   "distractors": {
     "cylinder_number_of_bases": [
       {
-        "id": "d1",
+        "id": "assumed_no_bases",
         "transform": "0"
       },
       {
-        "id": "d2",
+        "id": "confused_with_cone",
         "transform": "1"
       },
       {
-        "id": "d3",
+        "id": "counted_lateral_surface_as_a_base",
         "transform": "3"
       },
       {
-        "id": "d4",
+        "id": "too_many_by_two",
         "transform": "4"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_three",
         "transform": "5"
       },
       {
-        "id": "d6",
+        "id": "too_many_by_four",
         "transform": "6"
       }
     ],
     "cone_number_of_bases": [
       {
-        "id": "d1",
+        "id": "assumed_no_bases",
         "transform": "0"
       },
       {
-        "id": "d2",
+        "id": "confused_with_cylinder",
         "transform": "2"
       },
       {
-        "id": "d3",
+        "id": "counted_apex_and_lateral_as_bases",
         "transform": "3"
       },
       {
-        "id": "d4",
+        "id": "too_many_by_three",
         "transform": "4"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_four",
         "transform": "5"
       },
       {
-        "id": "d6",
+        "id": "too_many_by_five",
         "transform": "6"
       }
     ],
     "frustum_number_of_bases": [
       {
-        "id": "d1",
+        "id": "assumed_no_bases",
         "transform": "0"
       },
       {
-        "id": "d2",
+        "id": "counted_one_base_only",
         "transform": "1"
       },
       {
-        "id": "d3",
+        "id": "counted_lateral_surface_as_a_base",
         "transform": "3"
       },
       {
-        "id": "d4",
+        "id": "too_many_by_two",
         "transform": "4"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_three",
         "transform": "5"
       },
       {
-        "id": "d6",
+        "id": "too_many_by_four",
         "transform": "6"
       }
     ],
     "sphere_number_of_bases": [
       {
-        "id": "d1",
+        "id": "assumed_sphere_has_a_base",
         "transform": "1"
       },
       {
-        "id": "d2",
+        "id": "confused_with_cylinder",
         "transform": "2"
       },
       {
-        "id": "d3",
+        "id": "too_many_by_three",
         "transform": "3"
       },
       {
-        "id": "d4",
+        "id": "too_many_by_four",
         "transform": "4"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_five",
         "transform": "5"
       },
       {
-        "id": "d6",
+        "id": "too_many_by_six",
         "transform": "6"
       }
     ],
     "cylinder_generatrices_parallel": [
       {
-        "id": "d1",
+        "id": "assumed_no_common_direction",
         "transform": "0"
       },
       {
-        "id": "d2",
+        "id": "counted_both_ends_as_directions",
         "transform": "2"
       },
       {
-        "id": "d3",
+        "id": "too_many_by_two",
         "transform": "3"
       },
       {
-        "id": "d4",
+        "id": "too_many_by_three",
         "transform": "4"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_four",
         "transform": "5"
       },
       {
-        "id": "d6",
+        "id": "too_many_by_five",
         "transform": "6"
       }
     ],
     "cone_generatrices_meet": [
       {
-        "id": "d1",
+        "id": "assumed_generatrices_never_meet",
         "transform": "0"
       },
       {
-        "id": "d2",
+        "id": "confused_with_cylinder_ends",
         "transform": "2"
       },
       {
-        "id": "d3",
+        "id": "too_many_by_two",
         "transform": "3"
       },
       {
-        "id": "d4",
+        "id": "too_many_by_three",
         "transform": "4"
       },
       {
-        "id": "d5",
+        "id": "too_many_by_four",
         "transform": "5"
       },
       {
-        "id": "d6",
+        "id": "too_many_by_five",
         "transform": "6"
       }
     ]

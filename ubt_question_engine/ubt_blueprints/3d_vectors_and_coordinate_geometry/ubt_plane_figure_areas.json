@@ -161,131 +161,131 @@
   "distractors": {
     "triangle_base_height": [
       {
-        "id": "d1",
+        "id": "forgot_half",
         "transform": "base*height"
       },
       {
-        "id": "d2",
+        "id": "added_instead_of_multiplied",
         "transform": "base+height"
       },
       {
-        "id": "d3",
+        "id": "averaged_base_and_height",
         "transform": "Rational(base+height,2)"
       },
       {
-        "id": "d4",
+        "id": "squared_the_base",
         "transform": "base**2"
       },
       {
-        "id": "d5",
+        "id": "squared_the_height",
         "transform": "height**2"
       },
       {
-        "id": "d6",
+        "id": "divided_by_four",
         "transform": "Rational(base*height,4)"
       }
     ],
     "parallelogram_area": [
       {
-        "id": "d1",
+        "id": "used_triangle_formula",
         "transform": "Rational(base*height,2)"
       },
       {
-        "id": "d2",
+        "id": "used_perimeter_formula",
         "transform": "2*(base+height)"
       },
       {
-        "id": "d3",
+        "id": "added_instead_of_multiplied",
         "transform": "base+height"
       },
       {
-        "id": "d4",
+        "id": "squared_the_base",
         "transform": "base**2"
       },
       {
-        "id": "d5",
+        "id": "squared_the_height",
         "transform": "height**2"
       },
       {
-        "id": "d6",
+        "id": "doubled_the_area",
         "transform": "2*base*height"
       }
     ],
     "trapezoid_area": [
       {
-        "id": "d1",
+        "id": "forgot_half",
         "transform": "(base+base2)*height"
       },
       {
-        "id": "d2",
+        "id": "subtracted_bases_instead_of_adding",
         "transform": "Rational(abs(base-base2)*height,2)"
       },
       {
-        "id": "d3",
+        "id": "used_first_base_only",
         "transform": "Rational(base*height,2)"
       },
       {
-        "id": "d4",
+        "id": "used_second_base_only",
         "transform": "Rational(base2*height,2)"
       },
       {
-        "id": "d5",
+        "id": "added_all_three_lengths",
         "transform": "base+base2+height"
       },
       {
-        "id": "d6",
+        "id": "used_geometric_mean_of_bases",
         "transform": "sqrt(base*base2)*height"
       }
     ],
     "rhombus_diagonals": [
       {
-        "id": "d1",
+        "id": "forgot_half",
         "transform": "diag1*diag2"
       },
       {
-        "id": "d2",
+        "id": "averaged_the_diagonals",
         "transform": "Rational(diag1+diag2,2)"
       },
       {
-        "id": "d3",
+        "id": "added_the_diagonals",
         "transform": "diag1+diag2"
       },
       {
-        "id": "d4",
+        "id": "divided_by_four",
         "transform": "Rational(diag1*diag2,4)"
       },
       {
-        "id": "d5",
+        "id": "summed_squares_of_diagonals",
         "transform": "diag1**2+diag2**2"
       },
       {
-        "id": "d6",
+        "id": "took_root_of_product",
         "transform": "sqrt(diag1*diag2)"
       }
     ],
     "circumscribed_polygon_area": [
       {
-        "id": "d1",
+        "id": "doubled_the_product",
         "transform": "2*semiperimeter*inradius"
       },
       {
-        "id": "d2",
+        "id": "halved_the_product",
         "transform": "Rational(semiperimeter*inradius,2)"
       },
       {
-        "id": "d3",
+        "id": "added_instead_of_multiplied",
         "transform": "semiperimeter+inradius"
       },
       {
-        "id": "d4",
+        "id": "used_circle_area_instead",
         "transform": "pi*inradius**2"
       },
       {
-        "id": "d5",
+        "id": "squared_the_semiperimeter",
         "transform": "semiperimeter**2"
       },
       {
-        "id": "d6",
+        "id": "squared_the_inradius",
         "transform": "inradius**2"
       }
     ]

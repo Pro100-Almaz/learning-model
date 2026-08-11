@@ -119,131 +119,131 @@
   "distractors": {
     "tetrahedron_parallel_base_section": [
       {
-        "id": "d1",
+        "id": "assumed_quadrilateral_section",
         "literal": "quadrilateral"
       },
       {
-        "id": "d2",
+        "id": "assumed_rectangular_section",
         "literal": "rectangle"
       },
       {
-        "id": "d3",
+        "id": "assumed_square_section",
         "literal": "square"
       },
       {
-        "id": "d4",
+        "id": "assumed_pentagonal_section",
         "literal": "pentagon"
       },
       {
-        "id": "d5",
+        "id": "assumed_hexagonal_section",
         "literal": "hexagon"
       },
       {
-        "id": "d6",
+        "id": "assumed_circular_section",
         "literal": "circle"
       }
     ],
     "triangular_prism_parallel_base_section": [
       {
-        "id": "d1",
+        "id": "assumed_quadrilateral_section",
         "literal": "quadrilateral"
       },
       {
-        "id": "d2",
+        "id": "assumed_rectangular_section",
         "literal": "rectangle"
       },
       {
-        "id": "d3",
+        "id": "assumed_square_section",
         "literal": "square"
       },
       {
-        "id": "d4",
+        "id": "assumed_pentagonal_section",
         "literal": "pentagon"
       },
       {
-        "id": "d5",
+        "id": "assumed_hexagonal_section",
         "literal": "hexagon"
       },
       {
-        "id": "d6",
+        "id": "assumed_circular_section",
         "literal": "circle"
       }
     ],
     "rectangular_parallelepiped_parallel_face_section": [
       {
-        "id": "d1",
+        "id": "assumed_triangular_section",
         "literal": "triangle"
       },
       {
-        "id": "d2",
+        "id": "assumed_generic_quadrilateral_section",
         "literal": "quadrilateral"
       },
       {
-        "id": "d3",
+        "id": "assumed_square_section",
         "literal": "square"
       },
       {
-        "id": "d4",
+        "id": "assumed_pentagonal_section",
         "literal": "pentagon"
       },
       {
-        "id": "d5",
+        "id": "assumed_hexagonal_section",
         "literal": "hexagon"
       },
       {
-        "id": "d6",
+        "id": "assumed_circular_section",
         "literal": "circle"
       }
     ],
     "cube_parallel_face_section": [
       {
-        "id": "d1",
+        "id": "assumed_triangular_section",
         "literal": "triangle"
       },
       {
-        "id": "d2",
+        "id": "assumed_generic_quadrilateral_section",
         "literal": "quadrilateral"
       },
       {
-        "id": "d3",
+        "id": "assumed_non_square_rectangle_section",
         "literal": "rectangle"
       },
       {
-        "id": "d4",
+        "id": "assumed_pentagonal_section",
         "literal": "pentagon"
       },
       {
-        "id": "d5",
+        "id": "assumed_hexagonal_section",
         "literal": "hexagon"
       },
       {
-        "id": "d6",
+        "id": "assumed_circular_section",
         "literal": "circle"
       }
     ],
     "pentagonal_pyramid_parallel_base_section": [
       {
-        "id": "d1",
+        "id": "assumed_triangular_section",
         "literal": "triangle"
       },
       {
-        "id": "d2",
+        "id": "assumed_generic_quadrilateral_section",
         "literal": "quadrilateral"
       },
       {
-        "id": "d3",
+        "id": "assumed_rectangular_section",
         "literal": "rectangle"
       },
       {
-        "id": "d4",
+        "id": "assumed_square_section",
         "literal": "square"
       },
       {
-        "id": "d5",
+        "id": "assumed_hexagonal_section",
         "literal": "hexagon"
       },
       {
-        "id": "d6",
+        "id": "assumed_circular_section",
         "literal": "circle"
       }
     ]
