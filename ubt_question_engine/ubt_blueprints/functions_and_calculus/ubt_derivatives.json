@@ -82,7 +82,10 @@
       "question": {
         "instruction": "Find f'(x)",
         "latex": "f(x)={a}x^{{{power}}}{b:+d}x"
-      }
+      },
+      "constraints": [
+        "b != 0"
+      ]
     },
     "derivative_trigonometric": {
       "uses": [

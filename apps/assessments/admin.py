@@ -9,10 +9,12 @@ from django import forms
 from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.forms.models import BaseInlineFormSet
+from django.utils.safestring import mark_safe
 
 from apps.assessments.models import (
     AnswerOption,
     AttemptAnswer,
+    ModeFigure,
     Question,
     Test,
     TestAttempt,
@@ -93,6 +95,41 @@ class QuestionAdmin(admin.ModelAdmin):
     @admin.display(description="Question")
     def short_text(self, obj: Question) -> str:
         return (obj.text or "")[:80]
+
+
+# ---------------------------------------------------------------------------
+# ModeFigure
+# ---------------------------------------------------------------------------
+
+
+@admin.register(ModeFigure)
+class ModeFigureAdmin(admin.ModelAdmin):
+    """Authoring surface for the ~231 blueprint-mode diagrams.
+
+    `topic` and `mode` are free text on purpose: blueprints live in JSON on disk,
+    not in the database, so a choices list here would need a migration every time
+    a mode is added. A typo means the figure silently never shows -- which is why
+    `preview` renders the markup right here, next to the key.
+    """
+
+    list_display = ("topic", "mode", "has_alt", "updated_at")
+    list_filter = ("topic",)
+    search_fields = ("topic", "mode")
+    readonly_fields = ("preview", "updated_at")
+    fields = ("topic", "mode", "svg", "preview", "alt", "updated_at")
+
+    @admin.display(boolean=True, description="Alt text")
+    def has_alt(self, obj: ModeFigure) -> bool:
+        return bool(obj.alt)
+
+    @admin.display(description="Preview")
+    def preview(self, obj: ModeFigure):
+        # Safe to mark: ModeFigure.save() refuses anything executable, and this
+        # page is staff-only. Rendering it is the whole point -- an author who
+        # cannot see the diagram cannot tell it is upside down.
+        if not obj.pk or not obj.svg:
+            return "—"
+        return mark_safe(f'<div style="max-width:420px">{obj.svg}</div>')
 
 
 # ---------------------------------------------------------------------------

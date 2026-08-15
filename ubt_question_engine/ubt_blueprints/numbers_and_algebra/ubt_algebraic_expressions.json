@@ -252,7 +252,8 @@
       "constraints": [
         "r != s",
         "r != 0",
-        "s != 0"
+        "s != 0",
+        "r+s != 0"
       ],
       "derived": {
         "sum_rs": "r+s",

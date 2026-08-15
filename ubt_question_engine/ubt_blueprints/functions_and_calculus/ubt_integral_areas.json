@@ -50,7 +50,8 @@
         "r2"
       ],
       "constraints": [
-        "r1 < r2"
+        "r1 < r2",
+        "r1+r2 != 0"
       ],
       "derived": {
         "sum_roots": "r1+r2",

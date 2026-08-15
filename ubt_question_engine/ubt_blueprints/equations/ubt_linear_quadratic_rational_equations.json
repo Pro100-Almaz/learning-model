@@ -188,7 +188,8 @@
         "root2"
       ],
       "constraints": [
-        "root1 != root2"
+        "root1 != root2",
+        "root1+root2 != 0"
       ],
       "derived": {
         "bcoef": "-a*(root1+root2)",
@@ -205,7 +206,8 @@
         "root2"
       ],
       "constraints": [
-        "root1 != root2"
+        "root1 != root2",
+        "root1+root2 != 0"
       ],
       "derived": {
         "bcoef": "-(root1+root2)"

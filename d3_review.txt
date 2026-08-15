@@ -1,0 +1,816 @@
+difficulty 3 / 43 topics that support it / seed 2026 / en
+==============================================================================
+ubt_algebraic_expressions / polynomial_root / d3 / seed 2029 / en
+Algebraic expressions and transformations   [tag: algebralyk-ornekte]
+------------------------------------------------------------------------------
+Which of the following numbers is a root of the polynomial?
+
+$$
+3x^2-6x-45
+$$
+
+Options:
+  A) 2   [sum_roots]
+  B) -3   <-- correct
+  C) -2   [root_off_by_one]
+  D) -5   [negate_other_root]
+  E) -15   [product_roots]
+
+
+==============================================================================
+==============================================================================
+ubt_arithmetic_progression / arithmetic_characteristic_property / d3 / seed 2029 / en
+Arithmetic progression   [tag: progressiyalar]
+------------------------------------------------------------------------------
+Use the characteristic property of an arithmetic progression to find x
+
+$$
+7,\quad x,\quad 11
+$$
+
+Options:
+  A) 9   <-- correct
+  B) 4   [difference_neighbors]
+  C) 11   [right_neighbor]
+  D) 5   [middle_minus_step]
+  E) 7   [left_neighbor]
+
+
+==============================================================================
+==============================================================================
+ubt_circle_angles / cyclic_quadrilateral / d3 / seed 2029 / en
+Planimetry — circle angle relations   [tag: planimetriya]
+------------------------------------------------------------------------------
+A quadrilateral is inscribed in a circle. Find the angle opposite the given angle.
+
+$$
+\angle A=143^\circ
+$$
+
+Options:
+  A) 37   <-- correct
+  B) 27   [minus_ten]
+  C) 286   [double]
+  D) -53   [complement]
+  E) \frac{37}{2}   [half_supplement]
+
+
+==============================================================================
+==============================================================================
+ubt_circle_lengths_areas / circular_segment_area / d3 / seed 2029 / en
+Planimetry — circle lengths and areas   [tag: planimetriya]
+------------------------------------------------------------------------------
+A circular segment is cut off by a chord subtending a 90° central angle. Find the area of the segment.
+
+$$
+r=9,\qquad \theta=90^\circ
+$$
+
+Options:
+  A) - \frac{81}{2} + \frac{81 \pi}{4}   <-- correct
+  B) - \frac{81}{4}   [omit_pi]
+  C) - \frac{81}{2} + \frac{81 \pi}{2}   [semicircle_minus_triangle]
+  D) \frac{81}{2}   [triangle_only]
+  E) \frac{81}{2} + \frac{81 \pi}{4}   [add_triangle]
+
+
+==============================================================================
+==============================================================================
+ubt_circle_segment_theorems / tangent_secant / d3 / seed 2029 / en
+Planimetry — chord, tangent and secant theorems   [tag: planimetriya]
+------------------------------------------------------------------------------
+From one external point, a tangent and a secant are drawn to a circle. Find the tangent length.
+
+$$
+PA^2=8\left(8+3\right)
+$$
+
+Options:
+  A) 2 \sqrt{22}   <-- correct
+  B) \sqrt{33}   [inside_whole]
+  C) 11   [whole_secant]
+  D) \sqrt{11}   [root_sum]
+  E) 2 \sqrt{6}   [external_inside]
+
+
+==============================================================================
+==============================================================================
+ubt_coordinate_geometry / line_through_two_points / d3 / seed 2029 / en
+Coordinate geometry in the plane   [tag: metrikalyk-katystar-vektorlar]
+------------------------------------------------------------------------------
+Find the equation of the line through the two points.
+
+$$
+A(1,-4),\qquad B(5,-12)
+$$
+
+Options:
+  A) - 2 x - 2   <-- correct
+  B) - \frac{x}{2} - \frac{7}{2}   [swap_slope]
+  C) -4   [horizontal]
+  D) - 2 x   [through_origin]
+  E) - 2 x - 1   [shifted]
+
+
+==============================================================================
+==============================================================================
+ubt_derivative_applications / cubic_inflection_point / d3 / seed 2029 / en
+Derivative applications — tangents and inflection points   [tag: funkciyalar-matematikalyk-analiz]
+------------------------------------------------------------------------------
+Find the x-coordinate of the inflection point
+
+$$
+f(x)=4(x-1)^3-3(x-1)-3
+$$
+
+Options:
+  A) -3   [constant_c]
+  B) 1   <-- correct
+  C) 2   [h_plus_one]
+  D) -1   [negate_h]
+  E) 0   [h_minus_one]
+
+
+==============================================================================
+==============================================================================
+ubt_derivatives / chain_rule_power / d3 / seed 2029 / en
+Derivatives — power, trigonometric and chain rule   [tag: funkciyalar-matematikalyk-analiz]
+------------------------------------------------------------------------------
+Find f'(x)
+
+$$
+f(x)=\left(4x-3\right)^{3}
+$$
+
+Options:
+  A) 12 \left(4 x - 3\right)^{2}   <-- correct
+  B) \left(4 x - 3\right)^{3}   [original_function]
+  C) 12 \left(4 x + 3\right)^{2}   [wrong_inner_sign]
+  D) 12 \left(4 x - 3\right)^{3}   [keep_power]
+  E) 4 \left(4 x - 3\right)^{2}   [omit_power_factor]
+
+
+==============================================================================
+==============================================================================
+ubt_exponential_inequalities / exponential_quadratic_substitution / d3 / seed 2029 / en
+Exponential inequalities   [tag: tensizdikter]
+------------------------------------------------------------------------------
+Solve the exponential inequality using a substitution
+
+$$
+5^{2x}-626/25\cdot 5^x+1<0
+$$
+
+Options:
+  A) \left(-2, 2\right)   <-- correct
+  B) \left[-2, 2\right]   [include_endpoints]
+  C) \left(-\infty, -2\right)   [left_only]
+  D) \left(2, \infty\right)   [right_only]
+  E) \left(\frac{1}{25}, 25\right)   [t_values_as_x]
+
+
+==============================================================================
+==============================================================================
+ubt_exponential_inequality_systems / exponential_substitution_system / d3 / seed 2029 / en
+Systems of exponential inequalities   [tag: tensizdikter-zhuyesi]
+------------------------------------------------------------------------------
+Solve the system using the substitution t=a^x
+
+$$
+\begin{cases} 5^{2x}-126/5\cdot 5^x+5\le0 \\ 5^x>5^{-1} \end{cases}
+$$
+
+Options:
+  A) \left(-1, 2\right]   <-- correct
+  B) \left(-1, \infty\right)   [left_only]
+  C) \left(-\infty, 2\right]   [right_only]
+  D) \left(-1, 2\right)   [open_both]
+  E) \left(\frac{1}{5}, 25\right)   [t_values_as_x]
+
+
+==============================================================================
+==============================================================================
+ubt_exponential_log_functions / exponential_model / d3 / seed 2029 / en
+Exponential and logarithmic functions   [tag: funkciyalar-matematikalyk-analiz]
+------------------------------------------------------------------------------
+A quantity follows the exponential model P(t)=P_0 b^t. Find its value at the given time.
+
+$$
+P_0=8,\qquad b=2,\qquad t=3
+$$
+
+Options:
+  A) 64   <-- correct
+  B) 48   [multiply_all]
+  C) 16   [add_initial]
+  D) 32   [use_time_minus_one]
+  E) 8   [omit_initial]
+
+
+==============================================================================
+==============================================================================
+ubt_exponential_logarithmic_equations / log_quadratic_argument / d3 / seed 2029 / en
+Exponential and logarithmic equations   [tag: korsetkishtik-logarifmdik-tendeuler]
+------------------------------------------------------------------------------
+Solve the logarithmic equation
+
+$$
+\log_{5}\left((x+16)(x-4)\right)=3
+$$
+
+Options:
+  A) \left\{-21, 9\right\}   <-- correct
+  B) \left\{4, 34\right\}   [sum_difference]
+  C) \left\{-20, 10\right\}   [shift_roots]
+  D) \left\{-21\right\}   [other_root_only]
+  E) \left\{-9, 21\right\}   [negate_both]
+
+
+==============================================================================
+==============================================================================
+ubt_geometric_progression / geometric_characteristic_property / d3 / seed 2029 / en
+Geometric progression   [tag: progressiyalar]
+------------------------------------------------------------------------------
+Use the characteristic property of a geometric progression to find the positive x
+
+$$
+9,\quad x,\quad 36
+$$
+
+Options:
+  A) 18   <-- correct
+  B) 36   [right_neighbor]
+  C) \frac{45}{2}   [arithmetic_mean]
+  D) 9   [left_neighbor]
+  E) 324   [product_neighbors]
+
+
+==============================================================================
+==============================================================================
+ubt_infinite_geometric_progression / infinite_geometric_sum / d3 / seed 2029 / en
+Infinite decreasing geometric progression   [tag: progressiyalar]
+------------------------------------------------------------------------------
+Find the sum of the infinite decreasing geometric progression
+
+$$
+b_1=8,\quad q=\frac{2}{6}
+$$
+
+Options:
+  A) 12   <-- correct
+  B) -4   [use_ratio_inverse]
+  C) 8   [first_term_only]
+  D) 6   [wrong_plus_denominator]
+  E) \frac{16}{3}   [multiply_by_one_minus_q]
+
+
+==============================================================================
+==============================================================================
+ubt_integral_areas / area_under_parabola / d3 / seed 2029 / en
+Area using definite integrals   [tag: funkciyalar-matematikalyk-analiz]
+------------------------------------------------------------------------------
+Find the area bounded by the parabola and the x-axis
+
+$$
+y=-x^2+2x+3,\qquad -1\le x\le 3
+$$
+
+Options:
+  A) \frac{32}{3}   <-- correct
+  B) 64   [forget_six]
+  C) 4   [interval_length]
+  D) - \frac{32}{3}   [reverse_sign]
+  E) 32   [divide_two]
+
+
+==============================================================================
+==============================================================================
+ubt_integrals / substitution_definite_integral / d3 / seed 2029 / en
+Integrals — direct and substitution   [tag: funkciyalar-matematikalyk-analiz]
+------------------------------------------------------------------------------
+Evaluate the definite integral using substitution
+
+$$
+\int_{2}^{5}4\left(4x-3\right)^{3}\,dx
+$$
+
+Options:
+  A) 20724   <-- correct
+  B) -20724   [reverse_bounds]
+  C) 4788   [endpoint_values_only]
+  D) 27632   [wrong_denominator_power]
+  E) 5181   [divide_by_a_extra]
+
+
+==============================================================================
+==============================================================================
+ubt_linear_quadratic_rational_equations / rational_to_quadratic / d3 / seed 2029 / en
+Linear, quadratic and rational equations   [tag: tendeuler]
+------------------------------------------------------------------------------
+Solve the rational equation
+
+$$
+\frac{x^2-19}{x-2}=2
+$$
+
+Options:
+  A) \left\{-3, 5\right\}   <-- correct
+  B) \left\{-3, 2\right\}   [include_excluded]
+  C) \left\{-2, 5\right\}   [shift_first_root]
+  D) \left\{-3\right\}   [first_root_only]
+  E) \left\{-15, 2\right\}   [use_sum_and_product]
+
+
+==============================================================================
+==============================================================================
+ubt_logarithmic_inequalities / logarithmic_squared / d3 / seed 2029 / en
+Logarithmic inequalities   [tag: tensizdikter]
+------------------------------------------------------------------------------
+Solve the logarithmic inequality
+
+$$
+\log_{5}\left((x+3)^2\right)\ge 6
+$$
+
+Options:
+  A) \left(-\infty, -128\right] \cup \left[122, \infty\right)   <-- correct
+  B) \left(-\infty, -128\right]   [left_side_only]
+  C) \left(-\infty, -128\right) \cup \left(122, \infty\right)   [open_outer_boundaries]
+  D) \left(-\infty, -3\right) \cup \left(-3, \infty\right)   [domain_only]
+  E) \left[122, \infty\right)   [right_side_only]
+
+
+==============================================================================
+==============================================================================
+ubt_logarithmic_inequality_systems / logarithmic_domain_system / d3 / seed 2029 / en
+Systems of logarithmic inequalities   [tag: tensizdikter-zhuyesi]
+------------------------------------------------------------------------------
+Solve the system of logarithmic inequalities
+
+$$
+\begin{cases} \log_{3}(x-2)>0 \\ \log_{3}(33-x)>3 \end{cases}
+$$
+
+Options:
+  A) \left(-\infty, 6\right)   [second_log_only]
+  B) \left(3, 6\right)   <-- correct
+  C) \left(3, \infty\right)   [first_log_only]
+  D) \left(-\infty, 3\right) \cup \left(6, \infty\right)   [outside]
+  E) \left[3, 6\right)   [left_closed]
+
+
+==============================================================================
+==============================================================================
+ubt_mathematical_modelling / optimization_rectangle / d3 / seed 2029 / en
+Mathematical modelling and optimization   [tag: funkciyalar-matematikalyk-analiz]
+------------------------------------------------------------------------------
+A rectangle has x+y equal to the given value. Find x for which the area xy is maximal.
+
+$$
+x+y=14,\qquad x>0,\ y>0
+$$
+
+Options:
+  A) 7   <-- correct
+  B) 1   [one]
+  C) 8   [plus_one]
+  D) \frac{7}{2}   [quarter]
+  E) 6   [minus_one]
+
+
+==============================================================================
+==============================================================================
+ubt_midlines_proportions / thales_proportional_segments / d3 / seed 2029 / en
+Planimetry — midlines and proportional segments   [tag: planimetriya]
+------------------------------------------------------------------------------
+Use proportional segments formed by parallel lines to find x.
+
+$$
+\frac{9}{4}=\frac{4}{x}
+$$
+
+Options:
+  A) \frac{16}{9}   <-- correct
+  B) -1   [additive]
+  C) 0   [difference]
+  D) 4   [average]
+  E) 17   [sum_all]
+
+
+==============================================================================
+==============================================================================
+ubt_nonlinear_inequality_systems / nonlinear_two_variable_membership / d3 / seed 2029 / en
+Nonlinear inequality systems in two variables   [tag: tensizdikter-zhuyesi]
+------------------------------------------------------------------------------
+Which ordered pair satisfies the system?
+
+$$
+\begin{cases} x^2+y^2\le 34 \\ x+y\ge 8 \end{cases}
+$$
+
+Options:
+  A) \left( 5, \  3\right)   <-- correct
+  B) \left( 5, \  4\right)   [outside_circle_y]
+  C) \left( 5, \  2\right)   [fails_sum_y]
+  D) \left( 5, \  -3\right)   [negative_y]
+  E) \left( 4, \  3\right)   [fails_sum_x]
+
+
+==============================================================================
+==============================================================================
+ubt_plane_figure_areas / circumscribed_polygon_area / d3 / seed 2029 / en
+Areas of triangles and quadrilaterals   [tag: metrikalyk-katystar-vektorlar]
+------------------------------------------------------------------------------
+A polygon is circumscribed about a circle. Find its area.
+
+$$
+p=19,\qquad r=3
+$$
+
+Options:
+  A) 57   <-- correct
+  B) \frac{57}{2}   [halved_the_product]
+  C) 9 \pi   [used_circle_area_instead]
+  D) 9   [squared_the_inradius]
+  E) 22   [added_instead_of_multiplied]
+
+
+==============================================================================
+==============================================================================
+ubt_plane_vectors / vector_decomposition / d3 / seed 2029 / en
+Vectors in the plane   [tag: metrikalyk-katystar-vektorlar]
+------------------------------------------------------------------------------
+Given \vec e_1=(1,1) and \vec e_2=(1,-1), find (m,n) if \vec v=m\vec e_1+n\vec e_2.
+
+$$
+\vec v=(1,5)
+$$
+
+Options:
+  A) \left( 3, \  -2\right)   <-- correct
+  B) \left( -3, \  2\right)   [neg]
+  C) \left( 3, \  0\right)   [first_only]
+  D) \left( 4, \  -3\right)   [shift]
+  E) \left( 1, \  5\right)   [sumdiff]
+
+
+==============================================================================
+==============================================================================
+ubt_polyhedra_pyramids / frustum_total_faces / d3 / seed 2029 / en
+Polyhedra, pyramids and regular polyhedra   [tag: stereometriya]
+------------------------------------------------------------------------------
+A frustum of a pyramid has n-gonal bases. Find the total number of faces.
+
+$$
+n=6
+$$
+
+Options:
+  A) 8   <-- correct
+  B) 9   [counted_three_bases]
+  C) 14   [doubled_the_faces_and_added_bases]
+  D) 7   [counted_one_base_only]
+  E) 12   [doubled_the_lateral_faces]
+
+
+==============================================================================
+==============================================================================
+ubt_polyhedron_sections / pentagonal_pyramid_parallel_base_section / d3 / seed 2029 / en
+Plane sections of polyhedra   [tag: stereometriya]
+------------------------------------------------------------------------------
+A plane cuts a pentagonal pyramid parallel to its base. What is the shape of the section?
+
+Options:
+  A) \text{pentagon}   <-- correct
+  B) \text{quadrilateral}   [assumed_generic_quadrilateral_section]
+  C) \text{rectangle}   [assumed_rectangular_section]
+  D) \text{square}   [assumed_square_section]
+  E) \text{hexagon}   [assumed_hexagonal_section]
+
+
+==============================================================================
+==============================================================================
+ubt_powers / scientific_divide / d3 / seed 2029 / en
+Powers and scientific notation   [tag: darezheler]
+------------------------------------------------------------------------------
+Write the result in standard scientific notation
+
+$$
+\frac{5\cdot10^{2}}{1\cdot10^{-5}}
+$$
+
+Options:
+  A) \frac{1}{200}   [add_ten_exponents]
+  B) \frac{1}{2000000}   [reverse_exponent_subtraction]
+  C) 50000000   <-- correct
+  D) \frac{1}{20000}   [keep_denominator_power]
+  E) 500   [keep_numerator_power]
+
+
+==============================================================================
+==============================================================================
+ubt_quadratic_inequalities / quadratic_outside_roots / d3 / seed 2029 / en
+Quadratic inequalities   [tag: tensizdikter]
+------------------------------------------------------------------------------
+Solve the quadratic inequality
+
+$$
+x^2-6x+5>0
+$$
+
+Options:
+  A) \left(-\infty, 1\right) \cup \left(5, \infty\right)   <-- correct
+  B) \left(-\infty, 1\right)   [left_only]
+  C) \left(-\infty, 1\right] \cup \left[5, \infty\right)   [include_roots]
+  D) \left(-\infty, \infty\right)   [all_real]
+  E) \left(5, \infty\right)   [right_only]
+
+
+==============================================================================
+==============================================================================
+ubt_quadrilaterals / tangential_quadrilateral / d3 / seed 2029 / en
+Planimetry — quadrilateral properties   [tag: planimetriya]
+------------------------------------------------------------------------------
+A quadrilateral is circumscribed about a circle. Three side lengths are given. Find the fourth side.
+
+$$
+AB=9,\quad BC=4,\quad CD=4,\quad DA=x
+$$
+
+Options:
+  A) 9   <-- correct
+  B) \frac{17}{2}   [average]
+  C) 4   [segment_only]
+  D) 17   [sum_all]
+  E) 13   [first_plus_second]
+
+
+==============================================================================
+==============================================================================
+ubt_rational_inequalities / rational_sign_chart / d3 / seed 2029 / en
+Rational inequalities   [tag: tensizdikter]
+------------------------------------------------------------------------------
+Solve the rational inequality
+
+$$
+\frac{x-1}{x-5}>0
+$$
+
+Options:
+  A) \left(-\infty, 1\right) \cup \left(5, \infty\right)   <-- correct
+  B) \left(-\infty, 1\right) \cup \left[5, \infty\right)   [include_denominator_zero]
+  C) \left(-\infty, 1\right] \cup \left(5, \infty\right)   [include_numerator_zero]
+  D) \left(5, \infty\right)   [right_only]
+  E) \left(-\infty, 1\right)   [left_only]
+
+
+==============================================================================
+==============================================================================
+ubt_rational_inequality_systems / rational_system / d3 / seed 2029 / en
+Systems containing rational inequalities   [tag: tensizdikter-zhuyesi]
+------------------------------------------------------------------------------
+Solve the system of inequalities
+
+$$
+\begin{cases} \frac{x+1}{x-6}>0 \\ x<9 \end{cases}
+$$
+
+Options:
+  A) \left(6, 9\right)   [right_piece_only]
+  B) \left(-\infty, -1\right) \cup \left(6, 9\right)   <-- correct
+  C) \left(-\infty, -1\right) \cup \left(6, 9\right]   [include_upper_bound]
+  D) \left(-1, 6\right)   [between_critical_points]
+  E) \left(-\infty, -1\right)   [left_piece_only]
+
+
+==============================================================================
+==============================================================================
+ubt_repeating_decimals / repeating_decimal_fraction / d3 / seed 2029 / en
+Repeating decimals via infinite geometric progression   [tag: progressiyalar]
+------------------------------------------------------------------------------
+Convert the repeating decimal to an ordinary fraction
+
+$$
+3.\overline{24}
+$$
+
+Options:
+  A) \frac{107}{33}   <-- correct
+  B) \frac{81}{25}   [divide_by_100]
+  C) \frac{17}{3}   [divide_by_9]
+  D) \frac{49}{15}   [divide_by_90]
+  E) \frac{8}{33}   [omit_integer_part]
+
+
+==============================================================================
+==============================================================================
+ubt_roots_expressions / mixed_radical_fraction / d3 / seed 2029 / en
+Roots and algebraic expressions   [tag: tubirler-zhane-ornekte]
+------------------------------------------------------------------------------
+Simplify
+
+$$
+\frac{\sqrt{405}-\sqrt{45}}{\sqrt{5}}
+$$
+
+Options:
+  A) 6   <-- correct
+  B) 30   [multiplied_by_m]
+  C) 6 \sqrt{2}   [subtract_under_root]
+  D) 6 \sqrt{5}   [forget_denominator_cancellation]
+  E) \frac{6}{5}   [divided_by_m_as_well]
+
+
+==============================================================================
+==============================================================================
+ubt_special_equation_systems / logarithmic_shifted_coupled / d3 / seed 2029 / en
+Systems of trigonometric, irrational, exponential and logarithmic equations   [tag: arnayi-tendeuler-zhuyeleri]
+------------------------------------------------------------------------------
+Solve the logarithmic system
+
+$$
+\begin{cases} \log_{3}(x+5)+\log_{3}(y-4)=3 \\ \log_{3}(x+5)-\log_{3}(y-4)=-1 \end{cases}
+$$
+
+Options:
+  A) \left( 3, \  9\right)   [forget_shifts]
+  B) \left( -2, \  13\right)   <-- correct
+  C) \left( -4, \  6\right)   [log_values_plus_shifts]
+  D) \left( 13, \  -2\right)   [swap_coordinates]
+  E) \left( 8, \  5\right)   [subtract_shifts]
+
+
+==============================================================================
+==============================================================================
+ubt_sphere_plane_positions / sphere_section_radius / d3 / seed 2029 / en
+Mutual position of a sphere and a plane   [tag: stereometriya]
+------------------------------------------------------------------------------
+A plane cuts a sphere. Find the radius ρ of the circular section.
+
+$$
+R=2 \sqrt{5},\qquad d=4
+$$
+
+Options:
+  A) 2   <-- correct
+  B) 2 \sqrt{5}   [R]
+  C) 1   [half]
+  D) 4   [u]
+  E) 6   [sum]
+
+
+==============================================================================
+==============================================================================
+ubt_systems_linear_nonlinear_equations / circle_line_intersection / d3 / seed 2029 / en
+Systems of linear and nonlinear equations in two variables   [tag: tendeuler-zhuyesi]
+------------------------------------------------------------------------------
+Solve the nonlinear system
+
+$$
+\begin{cases} x+y=-3 \\ x^2+y^2=17 \end{cases}
+$$
+
+Options:
+  A) \left\{\left( -4, \  1\right), \left( 1, \  -4\right)\right\}   <-- correct
+  B) \left\{\left( -4, \  1\right)\right\}   [second_point_only]
+  C) \left\{\left( -4, \  -1\right), \left( 1, \  4\right)\right\}   [negate_y_coordinates]
+  D) \left\{\left( -3, \  17\right)\right\}   [sum_radius_pair]
+  E) \left\{\left( -1, \  4\right), \left( 4, \  -1\right)\right\}   [negate_both_points]
+
+
+==============================================================================
+==============================================================================
+ubt_triangle_circle_metric_formulas / area_from_circumradius / d3 / seed 2029 / en
+Triangle area, circumradius and inradius formulas   [tag: metrikalyk-katystar-vektorlar]
+------------------------------------------------------------------------------
+Use S=abc/(4R) to find the triangle area.
+
+$$
+a=12,\ b=16,\ c=20,\ R=10
+$$
+
+Options:
+  A) 96   <-- correct
+  B) 400   [square_hyp]
+  C) 24   [scale_area]
+  D) 3840   [product]
+  E) 1920   [half_product]
+
+
+==============================================================================
+==============================================================================
+ubt_triangle_metric_relations / pythagorean_missing_leg / d3 / seed 2029 / en
+Triangle metric relations and right triangles   [tag: metrikalyk-katystar-vektorlar]
+------------------------------------------------------------------------------
+A right triangle has the given hypotenuse and one leg. Find the other leg.
+
+$$
+c=20,\qquad a=12
+$$
+
+Options:
+  A) 16   <-- correct
+  B) 24   [six_scale]
+  C) 32   [sum]
+  D) 20   [hypotenuse]
+  E) 8   [difference]
+
+
+==============================================================================
+==============================================================================
+ubt_triangle_properties / centroid_median_ratio / d3 / seed 2029 / en
+Planimetry — triangle properties   [tag: planimetriya]
+------------------------------------------------------------------------------
+The centroid divides a median in the ratio 2:1 from the vertex. Find the distance from the vertex to the centroid.
+
+$$
+m=15
+$$
+
+Options:
+  A) 10   <-- correct
+  B) \frac{45}{4}   [three_quarters]
+  C) \frac{45}{2}   [three_halves]
+  D) \frac{15}{2}   [half]
+  E) 15   [full]
+
+
+==============================================================================
+==============================================================================
+ubt_triangle_segments_similarity / right_triangle_similarity_altitude / d3 / seed 2029 / en
+Triangle special segments and similarity   [tag: metrikalyk-katystar-vektorlar]
+------------------------------------------------------------------------------
+The altitude to the hypotenuse creates two similar right triangles. Find h.
+
+$$
+p=25,\qquad q=9
+$$
+
+Options:
+  A) 15   <-- correct
+  B) \sqrt{34}   [root_sum]
+  C) 3   [v]
+  D) 17   [average]
+  E) 5   [u]
+
+
+==============================================================================
+==============================================================================
+ubt_triangle_trigonometry / triangle_area_two_sides_angle / d3 / seed 2029 / en
+Triangle trigonometry — ratios, sine and cosine theorems   [tag: metrikalyk-katystar-vektorlar]
+------------------------------------------------------------------------------
+Find the area of the triangle from two sides and the included angle.
+
+$$
+a=9,\qquad b=4,\qquad C=90^\circ
+$$
+
+Options:
+  A) 18   <-- correct
+  B) 0   [cosine]
+  C) \frac{97}{2}   [square_sum]
+  D) 36   [omit_half]
+  E) \frac{13}{2}   [sum]
+
+
+==============================================================================
+==============================================================================
+ubt_trigonometric_irrational_equations / irrational_two_radicals / d3 / seed 2029 / en
+Trigonometric and irrational equations   [tag: trigonometriyalyk-irracional-tendeuler]
+------------------------------------------------------------------------------
+Solve the irrational equation
+
+$$
+\sqrt{x}+\sqrt{x+9}=9
+$$
+
+Options:
+  A) 16   <-- correct
+  B) 15   [minus_one]
+  C) 9   [radicand_difference]
+  D) 4   [unsquared_first_root]
+  E) 5   [unsquared_second_root]
+
+
+==============================================================================
+==============================================================================
+ubt_trigonometry / inverse_trig_nonprincipal / d3 / seed 2029 / en
+Trigonometry   [tag: trigonometriya]
+------------------------------------------------------------------------------
+Find the principal value
+
+$$
+\arcsin\left(\sin 315^\circ\right)
+$$
+
+Options:
+  A) - \frac{\pi}{4}   <-- correct
+  B) - \frac{7 \pi}{4}   [negate_original_angle]
+  C) \frac{7 \pi}{4}   [return_original_angle]
+  D) \frac{3 \pi}{4}   [negative_supplement]
+  E) - \frac{3 \pi}{4}   [supplement]
+
+
+==============================================================================
+==============================================================================
+43 topic(s) requested; 0 failure(s)

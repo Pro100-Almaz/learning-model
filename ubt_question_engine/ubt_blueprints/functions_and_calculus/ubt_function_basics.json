@@ -87,7 +87,10 @@
       "question": {
         "instruction": "Find the value of the function",
         "latex": "f(x)={a}x^2{b:+d}x{c:+d},\\qquad f({x0})=?"
-      }
+      },
+      "constraints": [
+        "b != 0"
+      ]
     },
     "linear_x_intercept": {
       "uses": [

@@ -59,7 +59,8 @@
         "r2"
       ],
       "constraints": [
-        "r1 < r2"
+        "r1 < r2",
+        "r1+r2 != 0"
       ],
       "derived": {
         "bcoef": "-(r1+r2)",
@@ -76,7 +77,8 @@
         "r2"
       ],
       "constraints": [
-        "r1 < r2"
+        "r1 < r2",
+        "r1+r2 != 0"
       ],
       "derived": {
         "bcoef": "-(r1+r2)",

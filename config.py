@@ -32,11 +32,16 @@ DRIFT_ABORT_PCT = 10.0
 MAX_CARRY_CYCLES = 2
 
 #Language configuration for agents_and_engine system.
-# ISO 639-1 codes (ru = Russian, kk = Kazakh) — the same vocabulary the request
-# i18n layer negotiates from Accept-Language. These are the languages the
-# generation pipeline can actually produce; "en" is supported for authored
-# content only and is intentionally NOT listed here.
-SUPPORTED_LANGUAGES = ("kk", "ru")
+# ISO 639-1 codes (ru = Russian, kk = Kazakh, en = English) — the same vocabulary
+# the request i18n layer negotiates from Accept-Language.
+#
+# "en" joined the list when the UBT question engine started publishing it. Its
+# blueprints are authored in English, so English is that engine's SOURCE language
+# and needs no translation step at all: ubt_question_engine.localize emits all
+# three versions of an item from one generation, and every one of them is a real
+# row a student can be served. Changing this tuple changes Question.language's
+# choices, so it takes a migration.
+SUPPORTED_LANGUAGES = ("kk", "ru", "en")
 DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[0]  # kk
 assert DEFAULT_LANGUAGE in SUPPORTED_LANGUAGES, f"Default language '{DEFAULT_LANGUAGE}' must be in SUPPORTED_LANGUAGES"
 

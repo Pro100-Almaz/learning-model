@@ -157,7 +157,6 @@ def roll_params(
 
 def constraints_pass(expressions: list[str], context: dict[str, Any]) -> bool:
     """True when every constraint holds for this draw.
-
     Constraints are evaluated with Python, not SymPy: sympify("k != k2") builds
     a symbolic Ne object that is truthy whatever the values are, so every
     constraint would silently pass and the engine would emit sqrt(50)+sqrt(50).

@@ -94,6 +94,8 @@ class EngineState(TypedDict, total=False):
     derived: dict[str, Any]        # what was computed from the roll
     instruction: str               # English, from modes[mode].question.instruction
     latex: str                     # rendered statement block; models copy it verbatim
+    text_context: dict[str, str]   # word-problem modes only: named values as words,
+                                   # so the Contextualizer never reads them out of LaTeX
     choice_labels: dict[str, str]  # literal-answer topics only (\text{...} labels)
     answer_expression: str         # the blueprint expression that was evaluated
     answer_latex: str              # authoritative rendered answer

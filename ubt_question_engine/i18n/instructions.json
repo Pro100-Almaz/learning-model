@@ -1,0 +1,20 @@
+{
+  "kk:476eb15afd2e8953": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Factor completely",
+    "text": "Толық жіктеңіз"
+  },
+  "kk:5475cbd1165623f8": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Simplify the expression, taking its domain restrictions into account",
+    "text": "Өрнекті ықшамдаңыз, анықталу облысын ескеріңіз"
+  },
+  "kk:b9af6034884f3cd2": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Expand and simplify",
+    "text": "Кеңейтіп, ықшамдаңыз"
+  }
+}

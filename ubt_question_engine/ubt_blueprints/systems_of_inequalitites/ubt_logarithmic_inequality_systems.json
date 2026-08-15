@@ -99,6 +99,7 @@
         "upper"
       ],
       "constraints": [
+        "m >= 0",
         "m < n",
         "lower < upper"
       ],

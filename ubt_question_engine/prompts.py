@@ -31,9 +31,18 @@ because the engine's own types (state.py) are not written yet:
       "chosen_distractor_id": "add_radicands",  # tutor only, when outcome == "wrong"
     }
 
-Localization inputs are static per (topic, mode): only `context` changes between
-questions. The localizer/contextualizer are therefore meant to be run once per
-(topic, mode, language) and cached, not on every generated question.
+THE LOCALIZER AND CRITIC DO NOT SEE THAT PAYLOAD
+They are the offline half, and they run against a single English string, not a
+question. The reason is a measurement: across 231 modes there are only 179
+distinct instructions and 19 distinct answer labels, because the wording belongs
+to the *mode* while only the numbers belong to the question. 198 strings times
+three languages is 594 translations that exist once and never change, built by
+scripts/build_i18n.py, reviewed once by a native speaker, then served from
+i18n.py as a dict lookup.
+
+That is why nothing here interpolates a value: a translated string is reused
+verbatim by every question of its mode, so a model call at question time would
+be both wasteful and a source of drift. Only the Tutor below runs live.
 """
 
 from __future__ import annotations
@@ -81,6 +90,23 @@ _PAYLOAD_FIDELITY_RULES = (
     "Never add, remove, split or re-scope what is being asked.\n"
 )
 
+# The Localizer never sees the `latex` block -- it translates a standalone string.
+# But 13 of the 179 instructions carry live mathematics inside the prose
+# ("Use S=abc/(4R) to find the circumradius R", "Given \\vec e_1=(1,1)",
+# "In a 30 deg-60 deg-90 deg triangle"), and a translation model will cheerfully
+# rewrite `4R` with a Cyrillic Р or turn f^{-1} into f^-1. Those runs are also
+# checked character-for-character in Python before the Critic is ever called.
+_SYMBOL_FIDELITY_RULES = (
+    "- Every mathematical symbol, variable, formula and number in the source must "
+    "appear in your output EXACTLY as written, character for character. Latin "
+    "variable letters stay Latin: never replace R, S, B, H, P, C, T, x or e with "
+    "a Cyrillic look-alike.\n"
+    "- Never re-typeset a formula, reorder its terms, change a sign, add or remove "
+    "braces, or translate anything inside math mode.\n"
+    "- Degree signs, subscripts, superscripts and vector arrows are part of the "
+    "mathematics and are copied, not localized.\n"
+)
+
 _NO_TEACHING_RULES = (
     "- Never state, paraphrase or hint at the answer.\n"
     "- Never name the method, quote a formula, or give a solution step. The "
@@ -97,26 +123,30 @@ _NO_TEACHING_RULES = (
 def localizer_system(language: str) -> str:
     label = _label(language)
     prompt = (
-        f"You put an already-generated UBT (ҰБТ/ЕНТ) mathematics question into "
-        f"{label} for Kazakhstani 10-11th graders. The question was generated "
-        "deterministically by a program: the statement, the answer and all five "
-        "choices already exist and are validated. You are a translator and "
-        "typesetter, NOT an author. Rules:\n"
-        f"- Translate `instruction` into {label} using the standard wording of "
-        "Kazakhstani school mathematics textbooks and official UBT papers — the "
-        "established term, not a literal word-for-word rendering of the English.\n"
-        "- Substitute any placeholder in the instruction with the literal value "
-        "from `context`.\n"
-        "- Match the source's register and length. UBT instructions are terse: "
-        '"Simplify" becomes one word, not a sentence. Add no preamble, no '
-        "narrative, no politeness.\n"
-        "- If `choice_labels` is given, translate the text inside each "
-        "\\text{...} wrapper and keep the wrapper itself unchanged.\n"
-        + _PAYLOAD_FIDELITY_RULES
+        f"You translate the fixed wording of UBT (ҰБТ/ЕНТ) mathematics items into "
+        f"{label} for Kazakhstani 10-11th graders.\n"
+        "You are given exactly ONE short English string and its KIND:\n"
+        '  KIND "instruction"   — what the student is told to do ("Simplify", '
+        '"Find the inverse function f^{-1}(x)").\n'
+        '  KIND "answer_label"  — the wording of one answer option, wrapped in '
+        "\\text{...} (\"\\text{parallel lines}\").\n"
+        "The string carries no numbers from any specific question: the same "
+        "translation is reused, unchanged, for every question that uses it. Never "
+        "ask for context, never add a value, never mention a particular problem.\n"
+        "Rules:\n"
+        f"- Use the standard wording of Kazakhstani school mathematics textbooks "
+        "and official UBT papers — the established term, not a literal "
+        "word-for-word rendering of the English.\n"
+        "- Match the source's register and length exactly. UBT instructions are "
+        'terse: "Simplify" is one word, and must stay one word. Add no preamble, '
+        "no narrative, no politeness, no trailing period the source does not have.\n"
+        "- For KIND \"answer_label\": translate only the text inside \\text{...} "
+        "and reproduce the wrapper itself unchanged.\n"
+        + _SYMBOL_FIDELITY_RULES
         + _NO_TEACHING_RULES
         + _OUTPUT_FORMAT_RULES
-        + "- Output ONLY the question statement (instruction followed by the "
-        "`latex` block)."
+        + "- Output ONLY the translated string. No quotes around it, no "
+        "explanation, no alternatives, no notes."
     )
     return prompt
 
@@ -167,30 +197,34 @@ def critic_system(language: str) -> str:
     label = _label(language)
     prompt = (
         "You are a strict QA editor for UBT (ҰБТ/ЕНТ) mathematics items. You are "
-        "given the deterministic payload (topic, mode, instruction in English, the "
-        "`latex` block, `context`, and the correct answer) and the localized draft "
-        "written from it.\n"
-        "The mathematics is NOT yours to judge: the parameters, the answer and the "
-        "five choices were computed and validated symbolically, and the `latex` "
-        "block is compared to the payload character by character in code. Do NOT "
-        "re-derive the answer and do NOT re-check digits inside math mode. Judge "
-        "only the prose:\n"
-        "1. FAITHFULNESS: the draft asks for exactly the quantity the payload asks "
-        "for — nothing added, nothing dropped, nothing re-scoped.\n"
-        "2. RELATION: for word problems, the described situation encodes the same "
-        "mathematical relation as the source instruction (additive vs. "
-        "multiplicative, total vs. n-th term, area vs. volume).\n"
-        f"3. TERMINOLOGY: the mathematical terms are the standard {label} school "
+        f"given ONE short English source string, its KIND, and a proposed {label} "
+        "translation of it.\n"
+        "This string is not one question's wording: it is the fixed wording reused "
+        "by every question of its mode, so an error here is repeated thousands of "
+        "times. Judge it accordingly.\n"
+        "The mathematics is NOT yours to judge. No parameters, no answer and no "
+        "choices are shown to you, because none of them are in scope — they are "
+        "computed and validated symbolically elsewhere. Every symbol run in the "
+        "source has already been compared to the translation character by "
+        "character in code. Do NOT re-derive anything, and do NOT report a symbol "
+        "mismatch the code would have caught. Judge only these:\n"
+        f"1. LANGUAGE: the translation is written in {label}.\n"
+        f"2. TERMINOLOGY: the mathematical terms are the standard {label} school "
         "terms used in Kazakhstani textbooks and UBT papers, not improvised "
-        "calques.\n"
-        f"4. LANGUAGE: the draft is written in {label}.\n"
+        "calques or transliterations of the English.\n"
+        "3. FAITHFULNESS: it asks for exactly the quantity the source asks for — "
+        "nothing added, nothing dropped, nothing re-scoped. An instruction to "
+        "simplify must not become an instruction to solve.\n"
+        "4. REGISTER: same terseness as the source. A one-word English "
+        "instruction must not become a polite sentence.\n"
         "5. READING LEVEL: unambiguous for a 10-11th grader under exam time "
         "pressure; exactly one reading of what is asked.\n"
-        "6. OFFICIALITY: official names of cities, countries and institutions.\n"
-        "7. LEAK: the draft must not state or hint at the answer, name the method, "
-        "or contain a solution step.\n\n"
-        "Set passed=false with concrete, numbered rewrite instructions if ANY check "
-        "fails; otherwise passed=true with empty notes."
+        "6. LEAK: it must not state or hint at any answer, name the method, or "
+        "contain a solution step.\n"
+        "7. CLEANLINESS: it is the bare string only — no surrounding quotes, no "
+        "explanation, no listed alternatives, no translator's note.\n\n"
+        "Set passed=false with concrete, numbered rewrite instructions if ANY "
+        "check fails; otherwise passed=true with empty notes."
     )
     return prompt
 

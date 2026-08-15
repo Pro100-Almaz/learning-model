@@ -83,7 +83,10 @@
       "question": {
         "instruction": "Find the equation of the tangent line at x=x_0",
         "latex": "f(x)={a}x^2{b:+d}x{c:+d},\\qquad x_0={x0}"
-      }
+      },
+      "constraints": [
+        "b != 0"
+      ]
     },
     "cubic_inflection_point": {
       "uses": [
@@ -98,7 +101,10 @@
       "question": {
         "instruction": "Find the x-coordinate of the inflection point",
         "latex": "f(x)={a}(x{neg_h:+d})^3{b:+d}(x{neg_h:+d}){c:+d}"
-      }
+      },
+      "constraints": [
+        "b != 0"
+      ]
     }
   },
   "answer": {
