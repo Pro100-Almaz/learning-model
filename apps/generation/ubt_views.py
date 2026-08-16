@@ -28,6 +28,7 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.assessments import figures
 from apps.assessments.models import Question
 from apps.generation.ubt_serializers import (
     UbtCoverageSerializer,
@@ -185,6 +186,9 @@ class UbtPreviewView(APIView):
                             "latex": state["latex"],
                             "text": state["text"],
                             "answer_latex": state["answer_latex"],
+                            "figure": figures.figure_for_mode(
+                                state["topic"], state["mode"], language
+                            ),
                             "options": [
                                 {
                                     "latex": choice["latex"],

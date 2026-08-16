@@ -19,6 +19,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 
 from apps.assessments.models import AnswerOption, Question
+from ubt_question_engine import i18n
 from ubt_question_engine.testing import use_fake_translations, use_no_translations
 
 pytestmark = pytest.mark.django_db
@@ -99,10 +100,19 @@ def test_the_catalogue_describes_every_topic(staff_client):
 
 
 def test_coverage_reports_what_can_be_served(staff_client):
+    """Counts are derived, not pinned.
+
+    The surface is one string per distinct blueprint instruction, so every topic
+    added or retired moves the total. Hard-coding it means an unrelated
+    blueprint edit fails a test about the coverage ENDPOINT. What matters here
+    is the relationship: English is complete by definition, an unbuilt language
+    is at zero, and only complete languages are publishable.
+    """
+    total = len(i18n.translatable())
     body = staff_client.get(COVERAGE).json()
-    assert body["translatable_strings"] == 198
-    assert body["coverage"]["en"] == [198, 198]
-    assert body["coverage"]["kk"] == [0, 198]
+    assert body["translatable_strings"] == total
+    assert body["coverage"]["en"] == [total, total]
+    assert body["coverage"]["kk"] == [0, total]
     assert body["publishable_languages"] == ["en"]
 
 
@@ -231,6 +241,7 @@ def test_an_untranslated_language_fails_fast(staff_client):
     """Not 200 with N identical failures: that buries a config problem."""
     response = _post(staff_client, PREVIEW, topic=TOPIC, languages=["kk"])
     assert response.status_code == 400
+    total = len(i18n.translatable())
     detail = response.json()["detail"]
-    assert "missing 198 of 198 translations" in detail
+    assert f"missing {total} of {total} translations" in detail
     assert "build_i18n" in detail

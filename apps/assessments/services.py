@@ -27,6 +27,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone, translation
 from rest_framework.exceptions import NotFound, ValidationError
 
+from apps.assessments import figures
 from apps.content.models import Lesson, Tag
 
 from apps.assessments.models import (
@@ -762,6 +763,7 @@ def build_attempt_review_payload(attempt: TestAttempt) -> dict:
                 "is_correct": bool(ans.is_correct) if ans else False,
                 "explanation": question.explanation or "",
                 "mistake_reason": mistake_reason,
+                "figure": figures.figure_for(question.solution, language=question.language),
                 "options": options,
             }
         )

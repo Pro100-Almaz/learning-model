@@ -15,7 +15,7 @@ import pytest
 
 from ubt_question_engine import i18n
 from ubt_question_engine.generator import generate_question
-from ubt_question_engine.loader import list_topics, topic_meta
+from ubt_question_engine.loader import list_topics, load_blueprint, topic_meta
 from ubt_question_engine.localize import (ENGINE_LANGUAGES, build_all_languages,
                                           build_question, localize, missing_for)
 
@@ -29,17 +29,24 @@ MATHEMATICAL_FIELDS = (
 
 
 def test_the_translatable_surface_is_small_and_bounded():
-    """179 instructions + 19 answer labels.
+    """A few hundred strings, not one per question.
 
-    This number is the entire justification for a cache instead of per-question
-    translation. If it ever grows unbounded, the design has to change, so it is
-    asserted rather than assumed.
+    This is the entire justification for a cache instead of per-question
+    translation, so it is asserted rather than assumed. The BOUND is asserted,
+    not the exact count: the surface is one string per distinct blueprint
+    instruction plus one per answer label, so it moves whenever a topic is added
+    or retired -- and a test that fails on every blueprint edit teaches nobody
+    anything. What must never happen is unbounded growth.
     """
     surface = i18n.translatable()
     kinds = [meta["kind"] for meta in surface.values()]
-    assert len(surface) == 198
-    assert kinds.count(i18n.KIND_INSTRUCTION) == 179
-    assert kinds.count(i18n.KIND_ANSWER_LABEL) == 19
+    assert 100 < len(surface) < 600, "surface has escaped the size the cache assumes"
+    assert len(surface) == kinds.count(i18n.KIND_INSTRUCTION) + kinds.count(
+        i18n.KIND_ANSWER_LABEL
+    ), "every translatable string must be an instruction or an answer label"
+    # Instructions dominate; answer labels exist only for literal-answer topics
+    # and can legitimately fall to zero when those topics are retired.
+    assert kinds.count(i18n.KIND_INSTRUCTION) > 100
 
 
 def test_keys_are_stable_and_language_scoped():
@@ -59,7 +66,7 @@ def test_english_needs_no_translations(empty_i18n):
     assert i18n.translate("Simplify", "en") == "Simplify"
     assert i18n.missing("en") == {}
     done, total = i18n.coverage()["en"]
-    assert done == total == 198
+    assert done == total == len(i18n.translatable())
 
 
 def test_a_missing_translation_raises_instead_of_falling_back(empty_i18n):
@@ -70,8 +77,9 @@ def test_a_missing_translation_raises_instead_of_falling_back(empty_i18n):
 
 
 def test_coverage_counts_what_is_actually_missing(empty_i18n):
-    assert i18n.coverage()["kk"] == (0, 198)
-    assert len(i18n.missing("kk")) == 198
+    total = len(i18n.translatable())
+    assert i18n.coverage()["kk"] == (0, total)
+    assert len(i18n.missing("kk")) == total
 
 
 # --- localization -----------------------------------------------------------
@@ -117,14 +125,37 @@ def test_the_words_actually_change(fake_i18n):
         assert versions["kk"]["instruction"] != versions["en"]["instruction"], topic
 
 
+def _literal_answer_topics() -> list[str]:
+    """Topics where an option's TEXT is the answer, not a number.
+
+    Discovered rather than listed. The three topics this test was written
+    against were all retired when the stereometry chapter was rewritten from
+    "classify these lines" into volume and surface area, and a hard-coded list
+    turns that legitimate curriculum change into a failing test about
+    translation.
+    """
+    topics = []
+    for topic in list_topics():
+        blueprint = load_blueprint(topic)
+        renders = set((blueprint.get("answer_render") or {}).values())
+        if "literal_label" in renders or blueprint.get("answer", {}).get(
+            "type"
+        ) == "literal_by_mode":
+            topics.append(topic)
+    return topics
+
+
+@pytest.mark.skipif(
+    not _literal_answer_topics(),
+    reason="no blueprint currently answers with a word; the feature is unused, not broken",
+)
 def test_answer_labels_are_translated_because_they_are_the_answer(fake_i18n):
-    """On 3 topics the option text IS the answer ("parallel lines").
+    """Where the option text IS the answer ("parallel lines").
 
     Untranslated, a Kazakh student picks between five English phrases.
     """
     checked = 0
-    for topic in ("ubt_spatial_line_plane_relations", "ubt_polyhedron_sections",
-                  "ubt_sphere_plane_positions"):
+    for topic in _literal_answer_topics():
         for difficulty in topic_meta(topic)["supported_difficulties"]:
             versions = build_all_languages(topic, difficulty=difficulty, seed=13)
             english = versions["en"]
@@ -136,7 +167,7 @@ def test_answer_labels_are_translated_because_they_are_the_answer(fake_i18n):
                 continue
             checked += 1
             assert {c["latex"] for c in versions["kk"]["answer_options"]} != options
-    assert checked >= 3
+    assert checked >= 1
 
 
 def test_localize_does_not_mutate_its_input(fake_i18n):

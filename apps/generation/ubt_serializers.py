@@ -84,6 +84,10 @@ class UbtPreviewItemSerializer(serializers.Serializer):
     latex = serializers.CharField(allow_blank=True)
     text = serializers.CharField()
     answer_latex = serializers.CharField()
+    # The diagram this mode would ship with, so a reviewer sees the item exactly
+    # as a student will -- including noticing that a geometry mode has no figure
+    # yet. Null for every mode without a ModeFigure row.
+    figure = serializers.JSONField(allow_null=True)
     options = UbtOptionSerializer(many=True)
 
 

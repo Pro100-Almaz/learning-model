@@ -15,6 +15,7 @@ import pytest
 from django.core.cache import cache
 from django.db import IntegrityError
 
+from apps.users.models import CustomUser
 from apps.assessments import figures
 from apps.assessments.models import ModeFigure, Question
 from apps.assessments.serializers import QuestionPublicSerializer
@@ -165,3 +166,65 @@ def test_validation_runs_on_plain_save_not_only_in_the_admin():
         row.save()
     row.refresh_from_db()
     assert "onload" not in row.svg
+
+
+# --- every surface that shows a question shows its figure --------------------
+
+
+def test_the_attempt_review_carries_the_figure(figure):
+    """A student rereading a wrong geometry answer needs the same picture.
+
+    Without this the review renders "find x" over a bare formula -- unreadable
+    for exactly the questions people go back to.
+    """
+    from django.utils import translation
+
+    from apps.assessments.models import Test, TestAttempt, TestQuestion
+    from apps.assessments.services import build_attempt_review_payload
+
+    question = _publish_one()
+    test = Test.objects.create(type="micro", title="Figures")
+    TestQuestion.objects.create(test=test, question=question, order=1)
+    student = CustomUser.objects.create_user(
+        email="reviewer@example.com", password="testpass123"
+    )
+    attempt = TestAttempt.objects.create(student=student, test=test)
+
+    # build_attempt_review_payload serves the row matching the ACTIVE language.
+    with translation.override("en"):
+        payload = build_attempt_review_payload(attempt)
+
+    assert len(payload["items"]) == 1
+    assert payload["items"][0]["figure"]["svg"] == SVG
+    assert payload["items"][0]["figure"]["alt"] == "A triangle with two angles marked"
+
+
+def test_review_of_a_question_without_a_figure_reports_none():
+    """Null, not a missing key: the serializer declares the field either way."""
+    from django.utils import translation
+
+    from apps.assessments.models import Test, TestAttempt, TestQuestion
+    from apps.assessments.services import build_attempt_review_payload
+
+    question = _publish_one(topic="ubt_roots_expressions")
+    test = Test.objects.create(type="micro", title="No figures")
+    TestQuestion.objects.create(test=test, question=question, order=1)
+    student = CustomUser.objects.create_user(
+        email="reviewer2@example.com", password="testpass123"
+    )
+    attempt = TestAttempt.objects.create(student=student, test=test)
+
+    with translation.override("en"):
+        payload = build_attempt_review_payload(attempt)
+
+    assert payload["items"][0]["figure"] is None
+
+
+def test_preview_can_look_a_figure_up_without_a_saved_question(figure):
+    """Preview renders items that were never published, so it has no solution."""
+    assert figures.figure_for_mode(TOPIC, MODE, "en")["svg"] == SVG
+    assert figures.figure_for_mode(TOPIC, MODE, "kk")["alt"] == (
+        "Екі бұрышы белгіленген үшбұрыш"
+    )
+    assert figures.figure_for_mode(TOPIC, "no_such_mode", "en") is None
+    assert figures.figure_for_mode(None, None) is None

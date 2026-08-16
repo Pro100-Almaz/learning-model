@@ -88,16 +88,16 @@ def invalidate() -> None:
     cache.delete(CACHE_KEY)
 
 
-def figure_for(solution: Any, language: str | None = None) -> dict[str, Any] | None:
-    """The figure for a question, or None.
+def figure_for_mode(
+    topic: str | None,
+    mode: str | None,
+    language: str | None = None,
+) -> dict[str, Any] | None:
+    """The figure for a blueprint mode, or None.
 
-    `solution` is ``Question.solution``. Hand-authored questions and MAIQE ones
-    carry no topic/mode and so can never match, which is why this is safe to call
-    unconditionally for every question in the bank.
+    Takes the keys directly rather than a solution, because preview renders items
+    that have never been saved -- there is no Question row to read them off.
     """
-    if not isinstance(solution, dict):
-        return None
-    topic, mode = solution.get("topic"), solution.get("mode")
     if not topic or not mode:
         return None
 
@@ -107,3 +107,15 @@ def figure_for(solution: Any, language: str | None = None) -> dict[str, Any] | N
 
     alt = entry["alt"].get(language) if language else None
     return {"svg": entry["svg"], "alt": alt}
+
+
+def figure_for(solution: Any, language: str | None = None) -> dict[str, Any] | None:
+    """The figure for a question, or None.
+
+    `solution` is ``Question.solution``. Hand-authored questions and MAIQE ones
+    carry no topic/mode and so can never match, which is why this is safe to call
+    unconditionally for every question in the bank.
+    """
+    if not isinstance(solution, dict):
+        return None
+    return figure_for_mode(solution.get("topic"), solution.get("mode"), language)

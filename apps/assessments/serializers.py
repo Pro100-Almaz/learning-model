@@ -94,6 +94,10 @@ class AttemptReviewItemSerializer(serializers.Serializer):
     is_correct = serializers.BooleanField()
     explanation = serializers.CharField()
     mistake_reason = serializers.CharField(allow_blank=True)
+    # Same diagram the student saw while answering. Without it the review shows
+    # "find x" with no picture, which is unreadable for exactly the geometry
+    # questions people most need to review.
+    figure = serializers.JSONField(allow_null=True)
     options = _ReviewOptionSerializer(many=True)
 
 
