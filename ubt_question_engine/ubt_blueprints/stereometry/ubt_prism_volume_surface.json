@@ -1,0 +1,365 @@
+{
+  "topic": "ubt_prism_volume_surface",
+  "parent_topic": "stereometry_geometric_figures",
+  "parent_topic_number": 16,
+  "display_name": "Stereometry — prisms and parallelepipeds: volume and surface area",
+  "curriculum_ref": "KZ 2026 UBT — Stereometry — Prisms and parallelepipeds",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Replaces the counting-trivia generator that asked how many faces a parallelepiped has. Every mode here is computational: the student applies a volume, surface-area or diagonal formula. Python/SymPy owns generation, mathematics, validation and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Стереометрия",
+    "slug": "stereometriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "cuboid_volume",
+        "cuboid_surface_area",
+        "cube_space_diagonal",
+        "prism_lateral_area",
+        "cuboid_space_diagonal",
+        "regular_triangular_prism_volume"
+      ],
+      "desc": "question structure"
+    },
+    "a": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "b": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "c": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "edge": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "height": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "n": {
+      "type": "choice",
+      "values": [
+        3,
+        4,
+        6
+      ],
+      "desc": "number of sides of the regular base"
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "cuboid_volume",
+          "cuboid_surface_area"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "cube_space_diagonal",
+          "prism_lateral_area"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "cuboid_space_diagonal",
+          "regular_triangular_prism_volume"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "cuboid_volume": {
+      "uses": [
+        "a",
+        "b",
+        "c"
+      ],
+      "comment": "Distinct edges: with a=b the surface-area and lateral-area distractors start colliding with each other.",
+      "constraints": [
+        "a != b",
+        "b != c",
+        "a != c"
+      ],
+      "question": {
+        "instruction": "The edges of a rectangular parallelepiped are given. Find its volume.",
+        "latex": "a={a},\\qquad b={b},\\qquad c={c}"
+      }
+    },
+    "cuboid_surface_area": {
+      "uses": [
+        "a",
+        "b",
+        "c"
+      ],
+      "constraints": [
+        "a != b",
+        "b != c",
+        "a != c"
+      ],
+      "question": {
+        "instruction": "The edges of a rectangular parallelepiped are given. Find its total surface area.",
+        "latex": "a={a},\\qquad b={b},\\qquad c={c}"
+      }
+    },
+    "cube_space_diagonal": {
+      "uses": [
+        "edge"
+      ],
+      "question": {
+        "instruction": "Find the space diagonal of the cube with the given edge.",
+        "latex": "a={edge}"
+      }
+    },
+    "prism_lateral_area": {
+      "uses": [
+        "n",
+        "a",
+        "height"
+      ],
+      "question": {
+        "instruction": "A regular prism has a base with n equal sides of the given length. Find its lateral surface area.",
+        "latex": "n={n},\\qquad a={a},\\qquad h={height}"
+      }
+    },
+    "cuboid_space_diagonal": {
+      "uses": [
+        "a",
+        "b",
+        "c"
+      ],
+      "constraints": [
+        "a != b",
+        "b != c",
+        "a != c"
+      ],
+      "question": {
+        "instruction": "The edges of a rectangular parallelepiped are given. Find the length of its space diagonal.",
+        "latex": "a={a},\\qquad b={b},\\qquad c={c}"
+      }
+    },
+    "regular_triangular_prism_volume": {
+      "uses": [
+        "a",
+        "height"
+      ],
+      "question": {
+        "instruction": "A regular triangular prism has the given base edge and height. Find its volume.",
+        "latex": "a={a},\\qquad h={height}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "cuboid_volume": "a*b*c",
+      "cuboid_surface_area": "2*(a*b+b*c+a*c)",
+      "cube_space_diagonal": "edge*sqrt(3)",
+      "prism_lateral_area": "n*a*height",
+      "cuboid_space_diagonal": "sqrt(a**2+b**2+c**2)",
+      "regular_triangular_prism_volume": "sqrt(3)/4*a**2*height"
+    }
+  },
+  "answer_render": {
+    "cuboid_volume": "scalar",
+    "cuboid_surface_area": "scalar",
+    "cube_space_diagonal": "exact_expression",
+    "prism_lateral_area": "scalar",
+    "cuboid_space_diagonal": "exact_expression",
+    "regular_triangular_prism_volume": "exact_expression"
+  },
+  "distractors": {
+    "cuboid_volume": [
+      {
+        "id": "surface_area_instead_of_volume",
+        "transform": "2*(a*b+b*c+a*c)"
+      },
+      {
+        "id": "one_face_area_only",
+        "transform": "a*b"
+      },
+      {
+        "id": "sum_of_all_edges",
+        "transform": "4*(a+b+c)"
+      },
+      {
+        "id": "lateral_area_only",
+        "transform": "2*(a+b)*c"
+      },
+      {
+        "id": "halved_as_if_pyramid",
+        "transform": "a*b*c/2"
+      },
+      {
+        "id": "sum_instead_of_product",
+        "transform": "a+b+c"
+      }
+    ],
+    "cuboid_surface_area": [
+      {
+        "id": "forgot_to_double",
+        "transform": "a*b+b*c+a*c"
+      },
+      {
+        "id": "volume_instead_of_area",
+        "transform": "a*b*c"
+      },
+      {
+        "id": "lateral_area_only",
+        "transform": "2*(a+b)*c"
+      },
+      {
+        "id": "one_pair_of_faces_only",
+        "transform": "2*a*b"
+      },
+      {
+        "id": "counted_six_equal_faces",
+        "transform": "6*a*b"
+      },
+      {
+        "id": "sum_of_all_edges",
+        "transform": "4*(a+b+c)"
+      }
+    ],
+    "cube_space_diagonal": [
+      {
+        "id": "face_diagonal_instead",
+        "transform": "edge*sqrt(2)"
+      },
+      {
+        "id": "three_times_edge",
+        "transform": "3*edge"
+      },
+      {
+        "id": "volume_instead_of_length",
+        "transform": "edge**3"
+      },
+      {
+        "id": "surface_area_instead_of_length",
+        "transform": "6*edge**2"
+      },
+      {
+        "id": "halved_diagonal",
+        "transform": "edge*sqrt(3)/2"
+      },
+      {
+        "id": "forgot_root_of_three",
+        "transform": "edge"
+      }
+    ],
+    "prism_lateral_area": [
+      {
+        "id": "single_lateral_face",
+        "transform": "a*height"
+      },
+      {
+        "id": "base_perimeter_only",
+        "transform": "n*a"
+      },
+      {
+        "id": "missed_one_face",
+        "transform": "(n-1)*a*height"
+      },
+      {
+        "id": "halved_as_if_triangles",
+        "transform": "n*a*height/2"
+      },
+      {
+        "id": "counted_both_bases_too",
+        "transform": "2*n*a*height"
+      },
+      {
+        "id": "height_squared",
+        "transform": "n*a*height**2"
+      }
+    ],
+    "cuboid_space_diagonal": [
+      {
+        "id": "sum_of_edges_instead",
+        "transform": "a+b+c"
+      },
+      {
+        "id": "face_diagonal_instead",
+        "transform": "sqrt(a**2+b**2)"
+      },
+      {
+        "id": "forgot_the_square_root",
+        "transform": "a**2+b**2+c**2"
+      },
+      {
+        "id": "root_of_the_sum",
+        "transform": "sqrt(a+b+c)"
+      },
+      {
+        "id": "cube_formula_on_first_edge",
+        "transform": "a*sqrt(3)"
+      },
+      {
+        "id": "halved_diagonal",
+        "transform": "sqrt(a**2+b**2+c**2)/2"
+      }
+    ],
+    "regular_triangular_prism_volume": [
+      {
+        "id": "base_area_without_height",
+        "transform": "sqrt(3)/4*a**2"
+      },
+      {
+        "id": "used_pyramid_one_third",
+        "transform": "sqrt(3)/12*a**2*height"
+      },
+      {
+        "id": "square_base_instead_of_triangular",
+        "transform": "a**2*height"
+      },
+      {
+        "id": "half_base_times_height",
+        "transform": "a*height/2"
+      },
+      {
+        "id": "lateral_area_instead_of_volume",
+        "transform": "3*a*height"
+      },
+      {
+        "id": "forgot_to_square_the_edge",
+        "transform": "sqrt(3)/4*a*height"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "positive_volume_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

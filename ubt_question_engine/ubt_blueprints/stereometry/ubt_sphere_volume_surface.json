@@ -1,0 +1,338 @@
+{
+  "topic": "ubt_sphere_volume_surface",
+  "parent_topic": "stereometry_geometric_figures",
+  "parent_topic_number": 16,
+  "display_name": "Stereometry — spheres: volume, surface area and plane sections",
+  "curriculum_ref": "KZ 2026 UBT — Stereometry — Spheres",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Replaces the classification generator that asked whether a plane meets a sphere in a point, a circle or nothing. The section modes derive the radius and the plane distance from a 3-4-5 triple, so the section radius is an integer rather than an unusable surd. Python/SymPy owns generation, mathematics, validation and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Стереометрия",
+    "slug": "stereometriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "sphere_surface_area",
+        "sphere_volume",
+        "sphere_section_radius",
+        "hemisphere_total_surface_area",
+        "sphere_section_area",
+        "sphere_volume_from_diameter"
+      ],
+      "desc": "question structure"
+    },
+    "radius": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "scale": {
+      "type": "int",
+      "min": 1,
+      "max": 4,
+      "desc": "multiplier on the 3-4-5 triple, so the section radius is an integer"
+    },
+    "diameter": {
+      "type": "choice",
+      "values": [
+        4,
+        6,
+        8,
+        10,
+        12,
+        14
+      ],
+      "desc": "even, so the radius stays an integer"
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "sphere_surface_area",
+          "sphere_volume"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "sphere_section_radius",
+          "hemisphere_total_surface_area"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "sphere_section_area",
+          "sphere_volume_from_diameter"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "sphere_surface_area": {
+      "uses": [
+        "radius"
+      ],
+      "question": {
+        "instruction": "Find the surface area of the sphere with the given radius.",
+        "latex": "R={radius}"
+      }
+    },
+    "sphere_volume": {
+      "uses": [
+        "radius"
+      ],
+      "question": {
+        "instruction": "Find the volume of the ball with the given radius.",
+        "latex": "R={radius}"
+      }
+    },
+    "sphere_section_radius": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "sphere_radius": "5*scale",
+        "plane_distance": "3*scale"
+      },
+      "question": {
+        "instruction": "A plane at the given distance from the centre of a sphere cuts it in a circle. Find the radius of that circle.",
+        "latex": "R={sphere_radius},\\qquad d={plane_distance}"
+      }
+    },
+    "hemisphere_total_surface_area": {
+      "uses": [
+        "radius"
+      ],
+      "comment": "Total, not curved: the flat disc counts, and forgetting it is the mistake the pool is built around.",
+      "question": {
+        "instruction": "Find the total surface area of the hemisphere with the given radius, including its flat circular face.",
+        "latex": "R={radius}"
+      }
+    },
+    "sphere_section_area": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "sphere_radius": "5*scale",
+        "plane_distance": "3*scale"
+      },
+      "question": {
+        "instruction": "A plane at the given distance from the centre of a sphere cuts it in a circle. Find the area of that circle.",
+        "latex": "R={sphere_radius},\\qquad d={plane_distance}"
+      }
+    },
+    "sphere_volume_from_diameter": {
+      "uses": [
+        "diameter"
+      ],
+      "question": {
+        "instruction": "Find the volume of the ball with the given diameter.",
+        "latex": "d={diameter}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "sphere_surface_area": "4*pi*radius**2",
+      "sphere_volume": "4*pi*radius**3/3",
+      "sphere_section_radius": "sqrt(sphere_radius**2-plane_distance**2)",
+      "hemisphere_total_surface_area": "3*pi*radius**2",
+      "sphere_section_area": "pi*(sphere_radius**2-plane_distance**2)",
+      "sphere_volume_from_diameter": "4*pi*(diameter/2)**3/3"
+    }
+  },
+  "answer_render": {
+    "sphere_surface_area": "exact_expression",
+    "sphere_volume": "exact_expression",
+    "sphere_section_radius": "scalar",
+    "hemisphere_total_surface_area": "exact_expression",
+    "sphere_section_area": "exact_expression",
+    "sphere_volume_from_diameter": "exact_expression"
+  },
+  "distractors": {
+    "sphere_surface_area": [
+      {
+        "id": "used_circle_area",
+        "transform": "pi*radius**2"
+      },
+      {
+        "id": "used_volume_formula",
+        "transform": "4*pi*radius**3/3"
+      },
+      {
+        "id": "doubled_instead_of_quadrupled",
+        "transform": "2*pi*radius**2"
+      },
+      {
+        "id": "cubed_the_radius",
+        "transform": "4*pi*radius**3"
+      },
+      {
+        "id": "used_circumference",
+        "transform": "2*pi*radius"
+      },
+      {
+        "id": "omitted_pi",
+        "transform": "4*radius**2"
+      }
+    ],
+    "sphere_volume": [
+      {
+        "id": "forgot_the_one_third",
+        "transform": "4*pi*radius**3"
+      },
+      {
+        "id": "surface_area_instead_of_volume",
+        "transform": "4*pi*radius**2"
+      },
+      {
+        "id": "squared_instead_of_cubed",
+        "transform": "4*pi*radius**2/3"
+      },
+      {
+        "id": "used_three_quarters",
+        "transform": "3*pi*radius**3/4"
+      },
+      {
+        "id": "used_cone_style_one_third",
+        "transform": "pi*radius**3/3"
+      },
+      {
+        "id": "omitted_pi",
+        "transform": "4*radius**3/3"
+      }
+    ],
+    "sphere_section_radius": [
+      {
+        "id": "added_instead_of_subtracted",
+        "transform": "sqrt(sphere_radius**2+plane_distance**2)"
+      },
+      {
+        "id": "subtracted_the_lengths",
+        "transform": "sphere_radius-plane_distance"
+      },
+      {
+        "id": "forgot_the_square_root",
+        "transform": "sphere_radius**2-plane_distance**2"
+      },
+      {
+        "id": "root_of_the_difference",
+        "transform": "sqrt(sphere_radius-plane_distance)"
+      },
+      {
+        "id": "sphere_radius_taken_as_section_radius",
+        "transform": "sphere_radius"
+      },
+      {
+        "id": "section_area_instead_of_radius",
+        "transform": "pi*(sphere_radius**2-plane_distance**2)"
+      }
+    ],
+    "hemisphere_total_surface_area": [
+      {
+        "id": "curved_part_only",
+        "transform": "2*pi*radius**2"
+      },
+      {
+        "id": "halved_the_full_sphere_and_stopped",
+        "transform": "4*pi*radius**2"
+      },
+      {
+        "id": "flat_disc_only",
+        "transform": "pi*radius**2"
+      },
+      {
+        "id": "halved_at_the_wrong_step",
+        "transform": "3*pi*radius**2/2"
+      },
+      {
+        "id": "used_volume_formula",
+        "transform": "2*pi*radius**3/3"
+      },
+      {
+        "id": "omitted_pi",
+        "transform": "3*radius**2"
+      }
+    ],
+    "sphere_section_area": [
+      {
+        "id": "used_the_sphere_radius",
+        "transform": "pi*sphere_radius**2"
+      },
+      {
+        "id": "added_instead_of_subtracted",
+        "transform": "pi*(sphere_radius**2+plane_distance**2)"
+      },
+      {
+        "id": "section_radius_instead_of_area",
+        "transform": "sqrt(sphere_radius**2-plane_distance**2)"
+      },
+      {
+        "id": "used_sphere_surface_formula",
+        "transform": "4*pi*(sphere_radius**2-plane_distance**2)"
+      },
+      {
+        "id": "squared_the_difference_of_lengths",
+        "transform": "pi*(sphere_radius-plane_distance)**2"
+      },
+      {
+        "id": "omitted_pi",
+        "transform": "sphere_radius**2-plane_distance**2"
+      }
+    ],
+    "sphere_volume_from_diameter": [
+      {
+        "id": "used_diameter_as_radius",
+        "transform": "4*pi*diameter**3/3"
+      },
+      {
+        "id": "halved_the_volume_instead_of_the_diameter",
+        "transform": "4*pi*diameter**3/6"
+      },
+      {
+        "id": "surface_area_instead_of_volume",
+        "transform": "4*pi*(diameter/2)**2"
+      },
+      {
+        "id": "forgot_the_one_third",
+        "transform": "4*pi*(diameter/2)**3"
+      },
+      {
+        "id": "squared_instead_of_cubed",
+        "transform": "4*pi*(diameter/2)**2/3"
+      },
+      {
+        "id": "omitted_pi",
+        "transform": "4*(diameter/2)**3/3"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "positive_volume_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}
