@@ -250,6 +250,25 @@ def _resolve_lesson_for_tag(tag: Tag) -> Optional[Lesson]:
     return Lesson.objects.filter(tag=tag).order_by("order").first()
 
 
+def _resolve_lesson(tag: Tag, topic: Optional[str]) -> Optional[Lesson]:
+    """The Lesson a generated question belongs to: by topic, else by tag.
+
+    Topic first, because tag is too coarse to land a question accurately. The
+    UBT engine gives 58 topics only 16 tags — all eight planimetry topics share
+    ``planimetriya`` — so tag-only matching would file "regular polygons" and
+    "chord and tangent theorems" questions under the same lesson.
+
+    Tag stays as the fallback for questions with no topic in their solution:
+    every MAIQE question, and anything hand-authored. Those keep the behaviour
+    they have always had.
+    """
+    if topic:
+        lesson = Lesson.objects.filter(topic=topic).order_by("order").first()
+        if lesson is not None:
+            return lesson
+    return _resolve_lesson_for_tag(tag)
+
+
 def _link_to_micro_test(question: Question, lesson: Lesson) -> Test:
     """Add ``question`` to its lesson's micro Test, creating the Test if needed.
 
@@ -318,7 +337,7 @@ def publish_generated_question(
     try:
         with transaction.atomic():
             tag, _ = Tag.objects.get_or_create(slug=tag_slug, defaults={"name": tag_name})
-            lesson = _resolve_lesson_for_tag(tag)
+            lesson = _resolve_lesson(tag, (solution or {}).get("topic"))
             question = Question.objects.create(
                 text=text,
                 explanation=explanation,

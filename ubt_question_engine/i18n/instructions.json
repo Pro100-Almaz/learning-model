@@ -1,9 +1,369 @@
 {
+  "kk:009ba6a7171b7b1c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the scalar product \\vec a\\cdot\\vec b.",
+    "text": "Скаляр көбейтіндісін табыңыз $\\vec a\\cdot\\vec b$."
+  },
+  "kk:012f7d07d7831502": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many circular bases does a cylinder have?",
+    "text": "Цилиндрдің қанша шеңберлі табаны бар?"
+  },
+  "kk:069e15f4272a237b": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{rectangle}",
+    "text": "\\text{тік төртбұрыш}"
+  },
+  "kk:0722257e2831c234": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the inverse function f^{-1}(x)",
+    "text": "$f^{-1}(x)$ кері функциясын табыңыз"
+  },
+  "kk:0789ef939fccff2e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the exponential equation",
+    "text": "Экспоненциалдық теңдеуді шешіңіз"
+  },
+  "kk:082d2a24ea09aa34": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "In the right triangle, find sin α.",
+    "text": "Тік бұрышты үшбұрышта $\\sin\\alpha$ табыңыз"
+  },
+  "kk:08593456a47cc7c0": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the area of the parallelogram.",
+    "text": "Параллелограманың ауданын табыңыз."
+  },
+  "kk:0a07c2f4e51bd318": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{two common points}",
+    "text": "\\text{екі ортақ нүкте}"
+  },
+  "kk:1107967deaa890e4": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the domain of the function",
+    "text": "Функцияның анықталу облысын табыңыз"
+  },
+  "kk:11d453e109c4aba5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the fundamental period of the function",
+    "text": "Функцияның негізгі периодын табыңыз"
+  },
+  "kk:1681ddf0b3759cc2": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many circles appear in a standard net of a cone?",
+    "text": "Конустың стандартты жаймасында қанша шеңбер бар?"
+  },
+  "kk:17ebf29c09f21dec": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find one interior angle of the regular polygon.",
+    "text": "Дұрыс көпбұрыштың бір ішкі бұрышын табыңыз."
+  },
+  "kk:195b8470d16926b2": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The vectors are collinear. Find the scalar k such that \\vec b=k\\vec a.",
+    "text": "Векторлар коллинеар. $\\vec b=k\\vec a$ болатын скаляр $k$-ны табыңыз."
+  },
+  "kk:1960d352f94cc381": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{line perpendicular to plane}",
+    "text": "\\text{жазықтыққа перпендикуляр түзу}"
+  },
+  "kk:19c2f9f7bb471c5c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the sum of the first n terms of the arithmetic progression",
+    "text": "Арифметикалық прогрессияның алғашқы $n$ мүшесінің қосындысын табыңыз"
+  },
+  "kk:1a8be995fbfecfc1": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "An isosceles triangle has the given vertex angle. Find each base angle.",
+    "text": "Шың бұрышы берілген теңбүйірлі үшбұрыш. Әрбір табан бұрышын табыңыз."
+  },
+  "kk:1bad9b9d28bd3ec8": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A net of a rectangular parallelepiped contains how many rectangular faces?",
+    "text": "Тікбұрышты параллелепипедтің ашылуы қанша тіктөртбұрыштан тұрады?"
+  },
+  "kk:1bf1fbfa59c6e17e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A pyramid has an n-gonal base. Find the number of vertices.",
+    "text": "Пирамида $n$-бұрышты негізге ие. Төбелерінің санын табыңыз."
+  },
+  "kk:1c81596d4e877089": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A circular segment is cut off by a chord subtending a 90° central angle. Find the area of the segment.",
+    "text": "90° орталық бұрышқа сәйкес келетін хорда арқылы шеңберден қиылған сегменттің ауданын тап"
+  },
+  "kk:1c96a459f90d870b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Which value of x is excluded from the domain?",
+    "text": "Қай x мәні анықталу облысына кірмейді?"
+  },
+  "kk:1ec7f9c030df13e7": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many congruent triangular faces does a regular tetrahedron have?",
+    "text": "Дұрыс тетраэдрдің неше тең үшбұрышты беті бар?"
+  },
+  "kk:208fb55b99f9bc93": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the system using the substitution t=a^x",
+    "text": "Жүйені $t=a^x$ алмастыру арқылы шешіңіз"
+  },
+  "kk:21fbc95c5d0c329c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Write as a single radical and give the radicand N",
+    "text": "Бір түбір ретінде жазып, түбір ішіндегі $N$-ді көрсет"
+  },
+  "kk:255497a39eb4223f": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A frustum of a pyramid has n-gonal bases. Find the total number of faces.",
+    "text": "Табандары $n$ қырлы болатын қиық пирамиданың жалпы беттер санын табыңыз"
+  },
+  "kk:285669f042939a10": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "In a 30°–60°–90° triangle, the side opposite 30° is given. Find the side opposite 60°.",
+    "text": "$30°–60°–90°$ үшбұрышта $30°$-қа қарама-қарсы қабырға берілген. $60°$-қа қарама-қарсы қабырғаны табыңыз."
+  },
+  "kk:2937ce29388df19c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the logarithmic system",
+    "text": "Логарифмдік жүйені шеш"
+  },
+  "kk:298dd99a43dfa422": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the common difference of the arithmetic progression",
+    "text": "Арифметикалық прогрессияның айырымын табыңыз"
+  },
+  "kk:2aff37a7cf81baed": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Convert to the smaller unit and write the result in standard scientific notation",
+    "text": "Кіші бірлікке түрлендіріп, нәтижесін стандартты ғылыми түрде жазыңыз"
+  },
+  "kk:2e459d24739d3dad": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the length of the midline of the trapezoid.",
+    "text": "Трапецияның орта сызығының ұзындығын табыңыз"
+  },
+  "kk:2eefa1be76c690a5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many circles appear in a standard net of a cylinder?",
+    "text": "Цилиндрдің стандартты жаймасында қанша шеңбер болады?"
+  },
+  "kk:30a491b1402f23e7": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{square}",
+    "text": "\\text{шаршы}"
+  },
+  "kk:31cbb85d54b4acd3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two lines intersect. One angle is given. Find its vertical angle.",
+    "text": "Екі түзу қиылысады. Бір бұрыш берілген. Оның вертикаль бұрышын табыңыз."
+  },
+  "kk:326ab525abb70c53": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two lines do not lie in one plane. Classify their mutual position.",
+    "text": "Екі түзу бір жазықтықта жатпайды. Олардың өзара орналасуын анықтаңыз."
+  },
+  "kk:32ce006f2d91ba51": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find (g\\circ f)(x)",
+    "text": "Табу $(g\\circ f)(x)$"
+  },
+  "kk:3375f7e407ecbc05": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the equation of the tangent line at x=x_0",
+    "text": "$x=x_0$ нүктесіндегі жанаманың теңдеуін табыңыз"
+  },
+  "kk:352e3499c9a7b792": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane is at distance r from the center of a sphere of radius r. Describe their intersection.",
+    "text": "Радиусы $r$ болатын шардың орталығынан жазықтықтың қашықтығы $r$-ге тең. Олардың қиылысын сипаттаңыз."
+  },
+  "kk:36088c9c3bf51e25": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the system of exponential inequalities",
+    "text": "Экспоненциалдық теңсіздіктер жүйесін шешіңіз"
+  },
+  "kk:3614181b038fb58c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Rationalize the denominator and simplify",
+    "text": "Бөлімді рационалдандыр және ықшамда"
+  },
+  "kk:385694b13c228dd9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Use S=pr to find the inradius r.",
+    "text": "$S=pr$ формуласы арқылы іштей сызылған шеңбердің радиусы $r$-ті табыңыз."
+  },
+  "kk:39635eec3f53d998": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two sides of a triangle are given. Find the greatest possible integer length of the third side.",
+    "text": "Үшбұрыштың екі қабырғасы берілген. Үшінші қабырғаның бүтін ұзындығының ең үлкен мүмкін мәнін тап."
+  },
+  "kk:39d25c06ac13211b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A segment joins the midpoints of two sides of a triangle. Find its length.",
+    "text": "Үшбұрыштың екі қабырғасының орта нүктелерін қосатын кесіндінің ұзындығын табыңыз."
+  },
+  "kk:39f10223c2cba033": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Use the sine theorem to find side b.",
+    "text": "Синус теоремасын қолданып $b$ қабырғаны табыңыз."
+  },
+  "kk:39fe021884516829": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{parallel planes}",
+    "text": "\\text{параллель жазықтықтар}"
+  },
+  "kk:3ba8a7d7a58be2ad": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the nonlinear system",
+    "text": "Сызықтық емес жүйені шешіңіз"
+  },
+  "kk:3bc9959d58872aeb": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the exponential inequality",
+    "text": "Экспоненциалдық теңсіздікті шешіңіз"
+  },
+  "kk:3e440371bc3aa4a2": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane cuts a pentagonal pyramid parallel to its base. What is the shape of the section?",
+    "text": "Жазықтық бесбұрышты пирамиданы табанымен параллель етіп қиып өтсе, қима қандай пішінді болады?"
+  },
+  "kk:3fdcbe0aa8777098": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the area of the triangle from two sides and the included angle.",
+    "text": "Екі қабырғасы мен олардың арасындағы бұрыш бойынша үшбұрыштың ауданын табыңыз"
+  },
+  "kk:44823c4e149c5292": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A quantity starts at g1 and is multiplied by q at each step. Find its value at step n.",
+    "text": "$g1$-ден басталған шама әр қадамда $q$-ға көбейеді. $n$-ші қадамдағы мәнін табыңыз."
+  },
+  "kk:46005afaad2bf5de": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find vector AB.",
+    "text": "$AB$ векторын табыңыз"
+  },
+  "kk:4622da2e60028640": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the quadratic inequality",
+    "text": "Квадрат теңсіздікті шешіңіз"
+  },
+  "kk:465a6db11853e2f9": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{intersecting planes}",
+    "text": "\\text{қиылысатын жазықтықтар}"
+  },
   "kk:476eb15afd2e8953": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Factor completely",
     "text": "Толық жіктеңіз"
+  },
+  "kk:48722afe67dcb673": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the area bounded by the parabola and the x-axis",
+    "text": "Парабола мен $x$ осі арасындағы ауданды табыңыз"
+  },
+  "kk:4882277f0b3101fd": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two similar figures have similarity coefficient k. Find the ratio of their areas S_2/S_1.",
+    "text": "Ұқсас фигуралардың ұқсастық коэффициенті $k$ болса, олардың аудандарының қатысын $S_2/S_1$ табыңдар"
+  },
+  "kk:49fccd1b34bd5721": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two parallel lines are cut by a transversal. Find the corresponding angle.",
+    "text": "Қиюшы түзу екі параллель түзуді қиып өтеді. Сәйкес бұрышты табыңыз."
+  },
+  "kk:4c9569202056ebdf": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the length of the circular arc.",
+    "text": "Шеңбер доғасының ұзындығын табыңыз."
+  },
+  "kk:4cbdbd33aa93bd82": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the x-coordinate of the inflection point",
+    "text": "Иілу нүктесінің $x$-координатын табыңыз"
+  },
+  "kk:4d4a185ac8f26728": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A pyramid has an n-gonal base. Find the total number of faces.",
+    "text": "Пирамида $n$-бұрышты негізге ие. Беттерінің жалпы санын табыңыз."
+  },
+  "kk:4dbaf680ded7beb3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many vertices does a tetrahedron have?",
+    "text": "Тетраэдрдің неше төбесі бар?"
+  },
+  "kk:4df28f7bae0e27af": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Use proportional segments formed by parallel lines to find x.",
+    "text": "Параллель түзулер түзетін пропорционалды кесінділерді пайдаланып, $x$-ті табыңыз"
+  },
+  "kk:53c403c02fcadd70": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the distance between the two points.",
+    "text": "Екі нүкте арасындағы қашықтықты табыңыз."
   },
   "kk:5475cbd1165623f8": {
     "kind": "instruction",
@@ -11,10 +371,2008 @@
     "source": "Simplify the expression, taking its domain restrictions into account",
     "text": "Өрнекті ықшамдаңыз, анықталу облысын ескеріңіз"
   },
+  "kk:5515a9a7155e1155": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Transform the product into a sum",
+    "text": "Көбейтіндіні қосындыға түрлендір"
+  },
+  "kk:56e5559d27720bf1": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A quadrilateral is inscribed in a circle. Find the angle opposite the given angle.",
+    "text": "Төртбұрыш шеңберге іштей сызылған. Берілген бұрышқа қарама-қарсы бұрышты табыңыз."
+  },
+  "kk:589c4627bb663265": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the n-th term of the geometric progression",
+    "text": "Геометриялық прогрессияның $n$-ші мүшесін табыңыз"
+  },
+  "kk:58a2d2009446d47c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the irrational system",
+    "text": "Иррационал теңдеулер жүйесін шешіңіз"
+  },
+  "kk:5a32c4f7fe0bdb78": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Write the result in standard scientific notation",
+    "text": "Нәтижені стандартты ғылыми жазуда жазыңыз"
+  },
+  "kk:5a7e11b79d3b4a29": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Which of the following numbers is a root of the polynomial?",
+    "text": "Келесі сандардың қайсысы көпмүшенің түбірі?"
+  },
+  "kk:5d99d58bac7eeeaf": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the midpoint of the segment.",
+    "text": "Кесіндінің орта нүктесін табыңыз."
+  },
+  "kk:5fbcd0be7bc66fb7": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the length of the vector.",
+    "text": "Вектордың ұзындығын тап"
+  },
+  "kk:60c6518d25ff7fb3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the missing exponent n",
+    "text": "Жоғалған көрсеткіш $n$-ді тап"
+  },
+  "kk:619e0a512f50b2aa": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{pentagon}",
+    "text": "\\text{бесбұрыш}"
+  },
+  "kk:61e0611d56ffca11": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{circle}",
+    "text": "\\text{шеңбер}"
+  },
+  "kk:63029ba58233470c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find f'(x)",
+    "text": "$f'(x)$-ті табыңыз"
+  },
+  "kk:6443065e6fa26c31": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many circular bases does a cone have?",
+    "text": "Конустың неше дөңгелек негізі бар?"
+  },
+  "kk:650a7456b14f3769": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{skew lines}",
+    "text": "\\text{айқас түзулер}"
+  },
+  "kk:65ba4a2dfdc3c5f1": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the rational equation",
+    "text": "Рационал теңдеуді шешіңіз"
+  },
+  "kk:67eef9be8b785c9b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two chords intersect inside a circle. Find the unknown segment x.",
+    "text": "Шеңбердің ішінде екі хорда қиылысады. Белгісіз $x$ кесіндісін табыңыз."
+  },
+  "kk:69771380d27eb4b0": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many faces does a tetrahedron have?",
+    "text": "Тетраэдрде неше бет бар?"
+  },
+  "kk:69b3590e46e08e4a": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane cuts a tetrahedron parallel to one face. What is the shape of the section?",
+    "text": "Тетраэдрді бір бетіне параллель жазықтық қиып өтсе, қима қандай пішінді болады?"
+  },
+  "kk:69bc08021e0e77a2": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{no common points}",
+    "text": "\\text{ортақ нүктелері жоқ}"
+  },
+  "kk:6aa0312d44e3dda2": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A line intersects a plane at point O and is perpendicular to two intersecting lines of that plane passing through O. What is the relation between the line and the plane?",
+    "text": "Түзу O нүктесінде жазықтықты кесіп өтіп, O арқылы өтетін және бір-біріне қиылысатын жазықтықтағы екі түзуге перпендикуляр болса, түзу мен жазықтықтың қандай қатынасы бар?"
+  },
+  "kk:6b520f89113473a0": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the system of inequalities",
+    "text": "Теңсіздік жүйесін шешіңіз"
+  },
+  "kk:6d41b7a922579806": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find \\vec a+\\vec b.",
+    "text": "$\\vec a+\\vec b$-ны тап."
+  },
+  "kk:6d9ba194c76e499e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Simplify and find the exact value",
+    "text": "Қарапайымдастырып, дәл мәнін табыңыз"
+  },
+  "kk:6da79c35b42f7d23": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the exponential system using a substitution",
+    "text": "Ауыстыру арқылы көрсеткіштік теңдеулер жүйесін шешіңіз"
+  },
+  "kk:6eeb6b1b454d8031": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{line}",
+    "text": "\\text{түзу}"
+  },
+  "kk:6ef9c565e8d67b7d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A quadrilateral is circumscribed about a circle. Three side lengths are given. Find the fourth side.",
+    "text": "Шеңберге сырттай сызылған төртбұрыш берілген. Оның үш қабырғасының ұзындығы берілген. Төртінші қабырғаның ұзындығын табыңыз."
+  },
+  "kk:755a305aa86fbafc": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{parallel lines}",
+    "text": "\\text{параллель түзулер}"
+  },
+  "kk:772b7698a2cb8439": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many congruent square faces does a cube have?",
+    "text": "Кубтың қанша бірдей шаршы беті бар?"
+  },
+  "kk:794d964324a7da36": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the interval on which the function is increasing",
+    "text": "Функцияның өсу аралығын анықтаңдар"
+  },
+  "kk:7b2bd60d677cf1bf": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the area of the rhombus from its diagonals.",
+    "text": "Диагональдары арқылы ромбтың ауданын тап"
+  },
+  "kk:7b5aa53ef1575658": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the exterior angle of the triangle at the third vertex.",
+    "text": "Үшбұрыштың үшінші төбесіндегі сыртқы бұрышты табыңыз."
+  },
+  "kk:7c0a9dba25d7ea98": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{intersecting lines}",
+    "text": "\\text{қиылысатын түзулер}"
+  },
+  "kk:7eb84c8c182d0eaa": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{quadrilateral}",
+    "text": "\\text{төртбұрыш}"
+  },
+  "kk:82efeccf93ef4a8d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the sum of the roots using Vieta's theorem",
+    "text": "Виетаның теоремасын пайдаланып, түбірлерінің қосындысын табыңыз"
+  },
+  "kk:82f182f7ac78b39e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A pyramid has an n-gonal base. Find the number of edges.",
+    "text": "Негізі $n$-бұрышты пирамиданың қырларының санын табыңыз"
+  },
+  "kk:83a68db6475076d0": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the inequality",
+    "text": "Теңсіздікті шешіңіз"
+  },
+  "kk:8430babdaa378c2b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two distinct lines lie in one plane and have no common point. Classify their mutual position.",
+    "text": "Бір жазықтықта жататын және ортақ нүктесі жоқ әр түрлі екі түзу берілген. Олардың өзара орналасуын жіктеңіз."
+  },
+  "kk:8459d83bf946aad7": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the sum of the infinite decreasing geometric progression",
+    "text": "Шексіз кемімелі геометриялық прогрессияның қосындысын табыңыз"
+  },
+  "kk:85e7579158ba1e4b": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{hexagon}",
+    "text": "\\text{алтыбұрыш}"
+  },
+  "kk:87d6bf9e7fb8453c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane cuts a rectangular parallelepiped parallel to one of its faces. What is the shape of the section?",
+    "text": "Жазықтық тіктөртбұрышты параллелепипедті оның бір бетіне параллель кеседі. Кесіктің пішіні қандай?"
+  },
+  "kk:8a0375bff6b34523": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the exponential system",
+    "text": "Экспоненциалдық теңдеулер жүйесін шешіңіз"
+  },
+  "kk:8a9dc8f8f7650663": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many bases does a sphere have?",
+    "text": "Шардың неше негізі бар?"
+  },
+  "kk:8cba04adf08a1141": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the system",
+    "text": "Жүйені шеш"
+  },
+  "kk:8dfccca81ebcf46a": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Use the characteristic property of an arithmetic progression to find x",
+    "text": "Арифметикалық прогрессияның айрықша қасиетін пайдаланып $x$-ті табыңыз"
+  },
+  "kk:902d184883dfd669": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two sides and their included 60° angle are given. Find the third side c.",
+    "text": "Екі қабырға мен олардың арасындағы $60°$ бұрыш берілген. Үшінші қабырға $c$-ны табыңыз."
+  },
+  "kk:92613de7aedd5ece": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "AD is the angle bisector of ∠A. Find BD.",
+    "text": "$AD$ — $∠A$ бұрышының биссектрисасы. $BD$-ні табыңыз."
+  },
+  "kk:932f50744bebeab9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Which ordered pair satisfies the system?",
+    "text": "Қай реттелген жұп жүйені қанағаттандырады?"
+  },
+  "kk:93c72715c4900d34": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the equation using a substitution",
+    "text": "Алмастыру арқылы теңдеуді шешіңіз"
+  },
+  "kk:94aa24f38fcee87d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the value of the function",
+    "text": "Функцияның мәнін табыңыз"
+  },
+  "kk:94d3416616176342": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A rectangle has x+y equal to the given value. Find x for which the area xy is maximal.",
+    "text": "Тіктөртбұрыштың $x+y$-і берілген мәнге тең. Ауданы $xy$ максималды болатын $x$ табыңыз."
+  },
+  "kk:965a00d9ba9665ad": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Simplify",
+    "text": "Ықшамдаңыз"
+  },
+  "kk:97350997d086e6c4": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A frustum of a pyramid has n-gonal bases. Find the number of lateral faces.",
+    "text": "Кесілген пирамиданың табандары $n$-қырлы. Бүйір беттерінің санын табыңыз."
+  },
+  "kk:9862aa4c5640b3f9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A hall has a1 seats in the first row, and each next row has d more seats than the previous row. Find the total number of seats in the first n rows.",
+    "text": "Залда бірінші қатарда $a1$ орын бар, ал әр келесі қатар алдыңғыдан $d$ орынға артық. Бірінші $n$ қатардағы орындардың жалпы санын табыңыз."
+  },
+  "kk:99a101d3bb91975b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "In the right triangle, find cos α.",
+    "text": "Тікбұрышты үшбұрышта $cos α$ табыңыз"
+  },
+  "kk:9a8085f144de3e11": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the rational inequality",
+    "text": "Рационал теңсіздікті шешіңіз"
+  },
+  "kk:9b81d24f3ae31658": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many edges does a tetrahedron have?",
+    "text": "Тетраэдрдің қанша қыры бар?"
+  },
+  "kk:9bad488c845c819a": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A polygon is circumscribed about a circle. Find its area.",
+    "text": "Көпбұрыш шеңберге сырттай сызылған. Оның ауданын табыңыз."
+  },
+  "kk:9c2f93240ff53457": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the vertex of the parabola",
+    "text": "Параболаның төбесін табыңыз"
+  },
+  "kk:9c6f6038b7de559e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the logarithmic equation",
+    "text": "Логарифмдік теңдеуді шешіңіз"
+  },
+  "kk:a1424fea9f7e2a78": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane cuts a sphere. Find the radius ρ of the circular section.",
+    "text": "Жазықтық сфераны кеседі. Пайда болған шеңбердің радиусы ρ-ні табыңыз."
+  },
+  "kk:a1768b74f7fff96d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the equation",
+    "text": "Теңдеуді шешіңіз"
+  },
+  "kk:a2d2544edcfb902c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the exponential inequality using a substitution",
+    "text": "Алмастыру арқылы көрсеткіштік теңсіздікті шешіңіз"
+  },
+  "kk:a2f6b8701dbcecfe": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Evaluate the definite integral using substitution",
+    "text": "Айнымалыны ауыстыру арқылы анықталған интегралды есептеңіз"
+  },
+  "kk:a45a072c03f39d37": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Convert to degrees",
+    "text": "Градусқа аудар"
+  },
+  "kk:a4620038e65e1080": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the n-th term of the arithmetic progression",
+    "text": "Арифметикалық прогрессияның $n$-ші мүшесін табыңыз"
+  },
+  "kk:a5380c2a0a4d24a9": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{one common point}",
+    "text": "\\text{бір ортақ нүкте}"
+  },
+  "kk:a59f12f772199e25": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A net of a cube contains how many square faces?",
+    "text": "Кубтың желісі қанша шаршы беттен тұрады?"
+  },
+  "kk:a5a5ccf660be2ea8": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many circular bases does a frustum of a cone have?",
+    "text": "Кесілген конустың қанша дөңгелек табаны бар?"
+  },
+  "kk:a606aa09789dc243": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two distinct planes have no common points. Classify their mutual position.",
+    "text": "Екі әртүрлі жазықтықтың ортақ нүктелері жоқ. Олардың өзара орналасуын жіктеңіз."
+  },
+  "kk:a8db93e87c28b5d7": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the trigonometric system",
+    "text": "Тригонометриялық теңдеулер жүйесін шеш"
+  },
+  "kk:aa517f8a0be0c6b3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the sum of the first n terms of the geometric progression",
+    "text": "Геометриялық прогрессияның алғашқы $n$ мүшесінің қосындысын табыңыз"
+  },
+  "kk:aaf3c39b26b0fd30": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{triangle}",
+    "text": "\\text{үшбұрыш}"
+  },
+  "kk:ab1e11bf885a3e40": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Convert to radians",
+    "text": "Радианға айналдырыңдар"
+  },
+  "kk:ab4da21f87df9bb7": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the irrational equation",
+    "text": "Иррационал теңдеуді шешіңіз"
+  },
+  "kk:acdeafe87d1fe26e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Use S=abc/(4R) to find the triangle area.",
+    "text": "$S=abc/(4R)$ формуласын пайдаланып үшбұрыштың ауданын табыңыз."
+  },
+  "kk:aef2386b20884ff9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "At how many common vertex points do the generatrices of a cone meet?",
+    "text": "Конустың жасаушылары неше ортақ төбелік нүктеде қиылысады?"
+  },
+  "kk:afc5a2a7a3e34bb4": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "An inscribed angle subtends the given arc. Find the inscribed angle.",
+    "text": "Шеңберге жазылған бұрыш берілген доғаға сүйенеді. Шеңберге жазылған бұрышты табыңыз."
+  },
+  "kk:b6b3a81ab0a6c771": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the equation of the line through the two points.",
+    "text": "Екі нүктеден өтетін түзудің теңдеуін табыңыз."
+  },
   "kk:b9af6034884f3cd2": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Expand and simplify",
     "text": "Кеңейтіп, ықшамдаңыз"
+  },
+  "kk:bbfacdacbb7c099e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A line does not lie in a plane and has no common point with it. Classify the relation.",
+    "text": "Түзу жазықтыққа жатпайды және онымен ортақ нүктесі жоқ. Қатынасты жіктеңіз."
+  },
+  "kk:bc0d6f488a3d4731": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the positive missing term so that the three numbers form a geometric progression",
+    "text": "Үш сан геометриялық прогрессия болатындай оң жетіспейтін мүшені табыңыз"
+  },
+  "kk:bdb1eed7196614fd": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the union of the solution sets",
+    "text": "Шешім жиындарының бірлестігін табыңыз"
+  },
+  "kk:bf9da4f6e58807c4": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{line parallel to plane}",
+    "text": "\\text{жазықтыққа параллель түзу}"
+  },
+  "kk:c054655a1b96ca3c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The altitude to the hypotenuse creates two similar right triangles. Find h.",
+    "text": "Гипотенузасына түсірілген биіктік екі ұқсас тікбұрышты үшбұрыш түзеді. $h$-ты табыңыз."
+  },
+  "kk:c1e316c9d7cd2562": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the system on the given domain",
+    "text": "Берілген анықталу облысында жүйені шешіңіз"
+  },
+  "kk:c32de8d15ee42606": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the system of logarithmic inequalities",
+    "text": "Логарифмдік теңсіздіктер жүйесін шешіңіз"
+  },
+  "kk:c43da7a29c6560e5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A right triangle has the given hypotenuse and one leg. Find the other leg.",
+    "text": "Тікбұрышты үшбұрыштың гипотенузасы мен бір катеті берілген. Екінші катетті табыңыз."
+  },
+  "kk:c572302e830e8de1": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{the whole sphere}",
+    "text": "\\text{бүкіл шар}"
+  },
+  "kk:c863ec47f2b8cb02": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Evaluate the definite integral",
+    "text": "Анықталған интегралды есептеңіз"
+  },
+  "kk:c936d9a3b6d8dd5d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the area of the sector.",
+    "text": "Сектордың ауданын тап"
+  },
+  "kk:c95bd7a8423402ac": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the equation on the given interval",
+    "text": "Берілген интервалда теңдеуді шешіңіз"
+  },
+  "kk:cacf82c13ff0996b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "An isosceles right triangle has a leg of the given length. Find its hypotenuse.",
+    "text": "Теңбүйірлі тікбұрышты үшбұрыштың катеті берілген. Гипотенузасын табыңыз."
+  },
+  "kk:cc1af4e403b8e7fb": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the principal value",
+    "text": "Негізгі мәнін табыңыз"
+  },
+  "kk:cd0ac2e6266920a3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the missing term so that the three numbers form an arithmetic progression",
+    "text": "Үш сан арифметикалық прогрессия түзетіндей жоғалған мүшені табыңыз"
+  },
+  "kk:ce87a5b54a347ccf": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Point P divides AB internally in the ratio AP:PB=m:n. Find P.",
+    "text": "$P$ нүктесі $AB$ кесіндісін $AP:PB=m:n$ қатынасымен іштен бөледі. $P$ нүктесін табыңыз."
+  },
+  "kk:cf8ae245b85f9b78": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "For a right circular cylinder, how many distinct directions do all generatrices have?",
+    "text": "Тік дөңгелек цилиндрдің барлық құраушы түзулерінің бағыттары неше түрлі?"
+  },
+  "kk:d071198435578e73": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane is at distance d from the center of a sphere of radius r. Describe their intersection.",
+    "text": "Радиусы $r$ болатын шардың ортасынан жазықтыққа дейінгі қашықтық $d$. Олардың қиылысуын сипаттаңыз"
+  },
+  "kk:d2f44c951c0a1302": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the exact value",
+    "text": "Дәл мәнін табыңыз"
+  },
+  "kk:d4195c6473f481b9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the x-coordinate of the intersection with the x-axis",
+    "text": "$x$-осьпен қиылысатын нүктенің $x$-координатын тап"
+  },
+  "kk:d5a665b89ac7e006": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find c using Vieta's theorem",
+    "text": "Виет теоремасын пайдаланып $c$-тің мәнін табыңыз"
+  },
+  "kk:d7132581b3dcb277": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Evaluate",
+    "text": "Есептеңіз"
+  },
+  "kk:d78863b6a367f1d5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Transform the sum into a product",
+    "text": "Қосындыны көбейтіндіге түрлендір"
+  },
+  "kk:d79e9ebb3395c303": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Use S=abc/(4R) to find the circumradius R.",
+    "text": "$S=abc/(4R)$ формуласын пайдаланып сырттай сызылған шеңбердің радиусы R-ді табыңыз"
+  },
+  "kk:d8538c9483624727": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two similar triangles have similarity coefficient k. Find the corresponding side in the larger triangle.",
+    "text": "Екі ұқсас үшбұрыштың ұқсастық коэффициенті $k$. Үлкен үшбұрыштағы сәйкес қабырғаны тап."
+  },
+  "kk:da41180f919e62a9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find k\\vec a.",
+    "text": "$k\\vec a$ табыңыз."
+  },
+  "kk:db6974d924caee4e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the number of roots on the interval",
+    "text": "Аралықтағы түбірлер санын тап"
+  },
+  "kk:de0b0619a34fd9dd": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the third angle of the triangle.",
+    "text": "Үшбұрыштың үшінші бұрышын табыңыз"
+  },
+  "kk:e06027aba0d2a5a9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the system of quadratic inequalities",
+    "text": "Квадрат теңсіздіктер жүйесін шешіңіз"
+  },
+  "kk:e1f722b0c857c0e9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the vertical and horizontal asymptotes",
+    "text": "Тік және көлденең асимптоталарды табыңыз"
+  },
+  "kk:e2869c9df9813ed4": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Given \\vec e_1=(1,1) and \\vec e_2=(1,-1), find (m,n) if \\vec v=m\\vec e_1+n\\vec e_2.",
+    "text": "Берілген $\\vec e_1=(1,1)$ және $\\vec e_2=(1,-1)$, $\\vec v=m\\vec e_1+n\\vec e_2$ болса, $(m,n)$-ді тап."
+  },
+  "kk:e2d37e72cb7be4f5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the area of the triangle.",
+    "text": "Үшбұрыштың ауданын табыңыз."
+  },
+  "kk:e50fc7994b8ee7b5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many vertices does a parallelepiped have?",
+    "text": "Параллелепипедтің төбелері нешеу?"
+  },
+  "kk:e5e0875e63b091d0": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the hypotenuse of the right triangle.",
+    "text": "Тікбұрышты үшбұрыштың гипотенузасын табыңыз"
+  },
+  "kk:e65d4bc8430276fc": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane cuts a cube parallel to one of its faces. What is the shape of the section?",
+    "text": "Кубты оның бір бетіне параллель жазықтық қиып өтсе, қиманың пішіні қандай?"
+  },
+  "kk:e6a5121e04cb98e0": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve for x",
+    "text": "x-тің мәнін табыңыз"
+  },
+  "kk:e7a4ea4f9a54c097": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the equation on the given interval using an auxiliary angle",
+    "text": "Көмекші бұрышты пайдаланып теңдеуді берілген интервалда шешіңіз"
+  },
+  "kk:e89a0c70145ddd1d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Reduce the homogeneous trigonometric equation and find all possible values of tan x",
+    "text": "Біртекті тригонометриялық теңдеуді ықшамдап, $\\tan x$-тің барлық мүмкін мәндерін табыңыз"
+  },
+  "kk:e8d4cd4ea15dc790": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Convert the repeating decimal to an ordinary fraction",
+    "text": "Периодты ондық бөлшекті жай бөлшекке түрлендір"
+  },
+  "kk:e8de8674b399f8c9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many circles appear in a standard net of a frustum of a cone?",
+    "text": "Кесілген конустың қалыпты ашылуында неше шеңбер бар?"
+  },
+  "kk:e9d744861e9f9536": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A quantity follows the exponential model P(t)=P_0 b^t. Find its value at the given time.",
+    "text": "Шама $P(t)=P_0 b^t$ түріндегі экспоненциалдық модельге бағынады. Берілген уақытта оның мәнін табыңыз."
+  },
+  "kk:e9fb96f7ce91af60": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the quadratic equation",
+    "text": "Квадрат теңдеуді шешіңіз"
+  },
+  "kk:eaf6e8ad67320604": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the positive common ratio of the geometric progression",
+    "text": "Геометриялық прогрессияның оң еселік қатынасын табыңыз"
+  },
+  "kk:eb4bfcdf945920fc": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many edges does a parallelepiped have?",
+    "text": "Параллелепипедтің қанша қыры бар?"
+  },
+  "kk:eb839213e8f30d70": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "From one external point, a tangent and a secant are drawn to a circle. Find the tangent length.",
+    "text": "Сыртқы нүктеден шеңберге жанама мен қиюшы жүргізілген. Жанаманың ұзындығын табыңыз."
+  },
+  "kk:ecc2ca8cedcc7cb7": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many pairs of opposite faces does a rectangular parallelepiped have?",
+    "text": "Тікбұрышты параллелепипедтің қанша жұп қарама-қарсы беті бар?"
+  },
+  "kk:ee211ad7f8078de0": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two adjacent angles form a straight line. Find the second angle.",
+    "text": "Екі іргелес бұрыш бір түзуді құрайды. Екінші бұрышты табыңыз"
+  },
+  "kk:ee385cf93cb19460": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many faces does a parallelepiped have?",
+    "text": "Параллелепипедтің неше жағы бар?"
+  },
+  "kk:efc3c6e426e51a63": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the irrational inequality",
+    "text": "Иррационал теңсіздікті шеш"
+  },
+  "kk:efd221e4cf9f5d65": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Use the characteristic property of a geometric progression to find the positive x",
+    "text": "Геометриялық прогрессияның негізгі қасиетін пайдаланып оң x-ты табыңыз"
+  },
+  "kk:f4b3e5d26f5b2046": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the logarithmic inequality",
+    "text": "Логарифмдік теңсіздікті шешіңіз"
+  },
+  "kk:f67c514fdc0bd583": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The centroid divides a median in the ratio 2:1 from the vertex. Find the distance from the vertex to the centroid.",
+    "text": "Ауырлық орталығы медиананы төбеден бастап 2:1 қатынасымен бөледі. Төбеден ауырлық орталығына дейінгі қашықтықты табыңыз."
+  },
+  "kk:fa661d17b35c1b78": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The altitude from the right angle divides the hypotenuse into segments p and q. Find the altitude h.",
+    "text": "Тік бұрыштан түсірілген биіктік гипотенузаны $p$ және $q$ кесінділерге бөледі. $h$ биіктігін табыңыз."
+  },
+  "kk:facad0ccfe09f52e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the trigonometric inequality on the given interval",
+    "text": "Берілген аралықта тригонометриялық теңсіздікті шешіңдер"
+  },
+  "kk:fb9ca466565d7991": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane cuts a triangular prism parallel to its base. What is the shape of the section?",
+    "text": "Үшбұрышты призманы табанына параллель жазықтық кеседі. Қиманың пішіні қандай?"
+  },
+  "kk:fd03a781b183ac48": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the center and radius of the circle.",
+    "text": "Шеңбердің орталығын және радиусын тап"
+  },
+  "kk:fee4331d8f76d010": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the area of the trapezoid.",
+    "text": "Трапецияның ауданын тап."
+  },
+  "ru:009ba6a7171b7b1c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the scalar product \\vec a\\cdot\\vec b.",
+    "text": "Найдите скалярное произведение $\\vec a\\cdot\\vec b$."
+  },
+  "ru:012f7d07d7831502": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many circular bases does a cylinder have?",
+    "text": "Сколько круглых оснований у цилиндра?"
+  },
+  "ru:069e15f4272a237b": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{rectangle}",
+    "text": "\\text{прямоугольник}"
+  },
+  "ru:0722257e2831c234": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the inverse function f^{-1}(x)",
+    "text": "Найдите обратную функцию $f^{-1}(x)$"
+  },
+  "ru:0789ef939fccff2e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the exponential equation",
+    "text": "Решите показательное уравнение"
+  },
+  "ru:082d2a24ea09aa34": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "In the right triangle, find sin α.",
+    "text": "В прямоугольном треугольнике найдите $sin α$."
+  },
+  "ru:08593456a47cc7c0": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the area of the parallelogram.",
+    "text": "Найдите площадь параллелограмма"
+  },
+  "ru:0a07c2f4e51bd318": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{two common points}",
+    "text": "\\text{две общие точки}"
+  },
+  "ru:1107967deaa890e4": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the domain of the function",
+    "text": "Найдите область определения функции"
+  },
+  "ru:11d453e109c4aba5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the fundamental period of the function",
+    "text": "Найдите наименьший положительный период функции"
+  },
+  "ru:1681ddf0b3759cc2": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many circles appear in a standard net of a cone?",
+    "text": "Сколько кругов в стандартной развёртке конуса?"
+  },
+  "ru:17ebf29c09f21dec": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find one interior angle of the regular polygon.",
+    "text": "Найдите один внутренний угол правильного многоугольника"
+  },
+  "ru:195b8470d16926b2": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The vectors are collinear. Find the scalar k such that \\vec b=k\\vec a.",
+    "text": "Векторы коллинеарны. Найдите скаляр $k$, при котором $\\vec b=k\\vec a$."
+  },
+  "ru:1960d352f94cc381": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{line perpendicular to plane}",
+    "text": "\\text{прямая, перпендикулярная плоскости}"
+  },
+  "ru:19c2f9f7bb471c5c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the sum of the first n terms of the arithmetic progression",
+    "text": "Найдите сумму первых $n$ членов арифметической прогрессии"
+  },
+  "ru:1a8be995fbfecfc1": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "An isosceles triangle has the given vertex angle. Find each base angle.",
+    "text": "В равнобедренном треугольнике дан угол при вершине. Найдите каждый из углов при основании."
+  },
+  "ru:1bad9b9d28bd3ec8": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A net of a rectangular parallelepiped contains how many rectangular faces?",
+    "text": "Сколько прямоугольных граней содержит развертка прямоугольного параллелепипеда?"
+  },
+  "ru:1bf1fbfa59c6e17e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A pyramid has an n-gonal base. Find the number of vertices.",
+    "text": "Основание пирамиды — $n$-угольник. Найдите число вершин."
+  },
+  "ru:1c81596d4e877089": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A circular segment is cut off by a chord subtending a 90° central angle. Find the area of the segment.",
+    "text": "Сегмент круга отсекается хордой, опирающейся на центральный угол $90°$. Найдите площадь сегмента."
+  },
+  "ru:1c96a459f90d870b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Which value of x is excluded from the domain?",
+    "text": "Какое значение x исключено из области определения?"
+  },
+  "ru:1ec7f9c030df13e7": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many congruent triangular faces does a regular tetrahedron have?",
+    "text": "Сколько равных треугольных граней имеет правильный тетраэдр?"
+  },
+  "ru:208fb55b99f9bc93": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the system using the substitution t=a^x",
+    "text": "Решите систему, используя замену $t=a^x$"
+  },
+  "ru:21fbc95c5d0c329c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Write as a single radical and give the radicand N",
+    "text": "Запишите в виде одного корня и укажите подкоренное выражение $N$"
+  },
+  "ru:255497a39eb4223f": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A frustum of a pyramid has n-gonal bases. Find the total number of faces.",
+    "text": "У усечённой пирамиды с $n$-угольными основаниями найдите общее количество граней"
+  },
+  "ru:285669f042939a10": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "In a 30°–60°–90° triangle, the side opposite 30° is given. Find the side opposite 60°.",
+    "text": "В треугольнике 30°–60°–90° дана сторона, противолежащая углу 30°. Найдите сторону, противолежащую углу 60°."
+  },
+  "ru:2937ce29388df19c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the logarithmic system",
+    "text": "Решите логарифмическую систему"
+  },
+  "ru:298dd99a43dfa422": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the common difference of the arithmetic progression",
+    "text": "Найдите разность арифметической прогрессии"
+  },
+  "ru:2aff37a7cf81baed": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Convert to the smaller unit and write the result in standard scientific notation",
+    "text": "Переведите в меньшую единицу и запишите результат в стандартной форме (в научной нотации)"
+  },
+  "ru:2e459d24739d3dad": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the length of the midline of the trapezoid.",
+    "text": "Найдите длину средней линии трапеции"
+  },
+  "ru:2eefa1be76c690a5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many circles appear in a standard net of a cylinder?",
+    "text": "Сколько окружностей изображено на стандартной развертке цилиндра?"
+  },
+  "ru:30a491b1402f23e7": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{square}",
+    "text": "\\text{квадрат}"
+  },
+  "ru:31cbb85d54b4acd3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two lines intersect. One angle is given. Find its vertical angle.",
+    "text": "Две прямые пересекаются. Один угол дан. Найдите его вертикальный угол."
+  },
+  "ru:326ab525abb70c53": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two lines do not lie in one plane. Classify their mutual position.",
+    "text": "Две прямые не лежат в одной плоскости. Классифицируйте их взаимное расположение."
+  },
+  "ru:32ce006f2d91ba51": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find (g\\circ f)(x)",
+    "text": "Найдите $(g\\circ f)(x)$"
+  },
+  "ru:3375f7e407ecbc05": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the equation of the tangent line at x=x_0",
+    "text": "Найдите уравнение касательной в точке $x=x_0$"
+  },
+  "ru:352e3499c9a7b792": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane is at distance r from the center of a sphere of radius r. Describe their intersection.",
+    "text": "Плоскость находится на расстоянии $r$ от центра сферы радиуса $r$. Опишите их пересечение."
+  },
+  "ru:36088c9c3bf51e25": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the system of exponential inequalities",
+    "text": "Решите систему показательных неравенств"
+  },
+  "ru:3614181b038fb58c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Rationalize the denominator and simplify",
+    "text": "Рационализируйте знаменатель и упростите"
+  },
+  "ru:385694b13c228dd9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Use S=pr to find the inradius r.",
+    "text": "Используя $S=pr$, найдите радиус вписанной окружности $r$."
+  },
+  "ru:39635eec3f53d998": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two sides of a triangle are given. Find the greatest possible integer length of the third side.",
+    "text": "Даны две стороны треугольника. Найдите наибольшую возможную целую длину третьей стороны."
+  },
+  "ru:39d25c06ac13211b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A segment joins the midpoints of two sides of a triangle. Find its length.",
+    "text": "Найдите длину отрезка, соединяющего середины двух сторон треугольника."
+  },
+  "ru:39f10223c2cba033": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Use the sine theorem to find side b.",
+    "text": "Найдите сторону $b$, используя теорему синусов"
+  },
+  "ru:39fe021884516829": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{parallel planes}",
+    "text": "\\text{параллельные плоскости}"
+  },
+  "ru:3ba8a7d7a58be2ad": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the nonlinear system",
+    "text": "Решите нелинейную систему"
+  },
+  "ru:3bc9959d58872aeb": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the exponential inequality",
+    "text": "Решите показательное неравенство"
+  },
+  "ru:3e440371bc3aa4a2": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane cuts a pentagonal pyramid parallel to its base. What is the shape of the section?",
+    "text": "Плоскость, параллельная основанию, пересекает пятиугольную пирамиду. Какова форма сечения?"
+  },
+  "ru:3fdcbe0aa8777098": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the area of the triangle from two sides and the included angle.",
+    "text": "Найдите площадь треугольника по двум сторонам и углу между ними."
+  },
+  "ru:44823c4e149c5292": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A quantity starts at g1 and is multiplied by q at each step. Find its value at step n.",
+    "text": "Начальное значение равно $g1$, при каждом шаге оно умножается на $q$. Найдите значение на шаге $n$"
+  },
+  "ru:46005afaad2bf5de": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find vector AB.",
+    "text": "Найдите вектор $AB$."
+  },
+  "ru:4622da2e60028640": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the quadratic inequality",
+    "text": "Решите квадратное неравенство"
+  },
+  "ru:465a6db11853e2f9": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{intersecting planes}",
+    "text": "\\text{пересекающиеся плоскости}"
+  },
+  "ru:476eb15afd2e8953": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Factor completely",
+    "text": "Разложите на множители"
+  },
+  "ru:48722afe67dcb673": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the area bounded by the parabola and the x-axis",
+    "text": "Найдите площадь, ограниченную параболой и осью $x$"
+  },
+  "ru:4882277f0b3101fd": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two similar figures have similarity coefficient k. Find the ratio of their areas S_2/S_1.",
+    "text": "У двух подобных фигур коэффициент подобия $k$. Найдите отношение их площадей $S_2/S_1$"
+  },
+  "ru:49fccd1b34bd5721": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two parallel lines are cut by a transversal. Find the corresponding angle.",
+    "text": "Две параллельные прямые пересечены секущей. Найдите соответственный угол."
+  },
+  "ru:4c9569202056ebdf": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the length of the circular arc.",
+    "text": "Найдите длину дуги окружности."
+  },
+  "ru:4cbdbd33aa93bd82": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the x-coordinate of the inflection point",
+    "text": "Найдите абсциссу точки перегиба"
+  },
+  "ru:4d4a185ac8f26728": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A pyramid has an n-gonal base. Find the total number of faces.",
+    "text": "У пирамиды $n$-угольное основание. Найдите общее число граней."
+  },
+  "ru:4dbaf680ded7beb3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many vertices does a tetrahedron have?",
+    "text": "Сколько вершин у тетраэдра?"
+  },
+  "ru:4df28f7bae0e27af": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Use proportional segments formed by parallel lines to find x.",
+    "text": "Используя пропорции отрезков, образованных параллельными прямыми, найдите $x$."
+  },
+  "ru:53c403c02fcadd70": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the distance between the two points.",
+    "text": "Найдите расстояние между двумя точками."
+  },
+  "ru:5475cbd1165623f8": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Simplify the expression, taking its domain restrictions into account",
+    "text": "Упростите выражение, учитывая область определения"
+  },
+  "ru:5515a9a7155e1155": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Transform the product into a sum",
+    "text": "Преобразуйте произведение в сумму"
+  },
+  "ru:56e5559d27720bf1": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A quadrilateral is inscribed in a circle. Find the angle opposite the given angle.",
+    "text": "Четырехугольник вписан в окружность. Найдите угол, противоположный данному углу."
+  },
+  "ru:589c4627bb663265": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the n-th term of the geometric progression",
+    "text": "Найдите $n$-й член геометрической прогрессии"
+  },
+  "ru:58a2d2009446d47c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the irrational system",
+    "text": "Решите иррациональную систему"
+  },
+  "ru:5a32c4f7fe0bdb78": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Write the result in standard scientific notation",
+    "text": "Запишите результат в стандартном виде"
+  },
+  "ru:5a7e11b79d3b4a29": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Which of the following numbers is a root of the polynomial?",
+    "text": "Какое из следующих чисел является корнем многочлена?"
+  },
+  "ru:5d99d58bac7eeeaf": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the midpoint of the segment.",
+    "text": "Найдите середину отрезка"
+  },
+  "ru:5fbcd0be7bc66fb7": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the length of the vector.",
+    "text": "Найдите длину вектора."
+  },
+  "ru:60c6518d25ff7fb3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the missing exponent n",
+    "text": "Найдите пропущенный показатель $n$"
+  },
+  "ru:619e0a512f50b2aa": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{pentagon}",
+    "text": "\\text{пятиугольник}"
+  },
+  "ru:61e0611d56ffca11": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{circle}",
+    "text": "\\text{окружность}"
+  },
+  "ru:63029ba58233470c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find f'(x)",
+    "text": "Найдите $f'(x)$"
+  },
+  "ru:6443065e6fa26c31": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many circular bases does a cone have?",
+    "text": "Сколько круглых оснований у конуса?"
+  },
+  "ru:650a7456b14f3769": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{skew lines}",
+    "text": "\\text{скрещивающиеся прямые}"
+  },
+  "ru:65ba4a2dfdc3c5f1": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the rational equation",
+    "text": "Решите рациональное уравнение"
+  },
+  "ru:67eef9be8b785c9b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two chords intersect inside a circle. Find the unknown segment x.",
+    "text": "Две хорды пересекаются внутри окружности. Найдите неизвестный отрезок $x$."
+  },
+  "ru:69771380d27eb4b0": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many faces does a tetrahedron have?",
+    "text": "Сколько граней у тетраэдра?"
+  },
+  "ru:69b3590e46e08e4a": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane cuts a tetrahedron parallel to one face. What is the shape of the section?",
+    "text": "Плоскость пересекает тетраэдр, параллельно одной из граней. Какой формы сечение?"
+  },
+  "ru:69bc08021e0e77a2": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{no common points}",
+    "text": "\\text{нет общих точек}"
+  },
+  "ru:6aa0312d44e3dda2": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A line intersects a plane at point O and is perpendicular to two intersecting lines of that plane passing through O. What is the relation between the line and the plane?",
+    "text": "Прямая пересекает плоскость в точке $O$ и перпендикулярна двум пересекающимся прямым этой плоскости, проходящим через $O$. Каково взаимное положение прямой и плоскости?"
+  },
+  "ru:6b520f89113473a0": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the system of inequalities",
+    "text": "Решите систему неравенств"
+  },
+  "ru:6d41b7a922579806": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find \\vec a+\\vec b.",
+    "text": "Найдите $\\vec a+\\vec b$."
+  },
+  "ru:6d9ba194c76e499e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Simplify and find the exact value",
+    "text": "Упростите и найдите точное значение"
+  },
+  "ru:6da79c35b42f7d23": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the exponential system using a substitution",
+    "text": "Решите систему показательных уравнений, сделав замену"
+  },
+  "ru:6eeb6b1b454d8031": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{line}",
+    "text": "\\text{прямая}"
+  },
+  "ru:6ef9c565e8d67b7d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A quadrilateral is circumscribed about a circle. Three side lengths are given. Find the fourth side.",
+    "text": "В четырёхугольник вписана окружность. Известны длины трёх сторон. Найдите четвёртую сторону."
+  },
+  "ru:755a305aa86fbafc": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{parallel lines}",
+    "text": "\\text{параллельные прямые}"
+  },
+  "ru:772b7698a2cb8439": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many congruent square faces does a cube have?",
+    "text": "Сколько равных квадратных граней имеет куб?"
+  },
+  "ru:794d964324a7da36": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the interval on which the function is increasing",
+    "text": "Найдите промежуток возрастания функции"
+  },
+  "ru:7b2bd60d677cf1bf": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the area of the rhombus from its diagonals.",
+    "text": "Найдите площадь ромба по его диагоналям"
+  },
+  "ru:7b5aa53ef1575658": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the exterior angle of the triangle at the third vertex.",
+    "text": "Найдите внешний угол треугольника при третьей вершине."
+  },
+  "ru:7c0a9dba25d7ea98": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{intersecting lines}",
+    "text": "\\text{пересекающиеся прямые}"
+  },
+  "ru:7eb84c8c182d0eaa": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{quadrilateral}",
+    "text": "\\text{четырехугольник}"
+  },
+  "ru:82efeccf93ef4a8d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the sum of the roots using Vieta's theorem",
+    "text": "Найдите сумму корней по теореме Виета"
+  },
+  "ru:82f182f7ac78b39e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A pyramid has an n-gonal base. Find the number of edges.",
+    "text": "Пирамида имеет $n$-угольное основание. Найдите число рёбер."
+  },
+  "ru:83a68db6475076d0": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the inequality",
+    "text": "Решите неравенство"
+  },
+  "ru:8430babdaa378c2b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two distinct lines lie in one plane and have no common point. Classify their mutual position.",
+    "text": "Две различные прямые лежат в одной плоскости и не имеют общих точек. Определите их взаимное положение."
+  },
+  "ru:8459d83bf946aad7": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the sum of the infinite decreasing geometric progression",
+    "text": "Найдите сумму бесконечной убывающей геометрической прогрессии"
+  },
+  "ru:85e7579158ba1e4b": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{hexagon}",
+    "text": "\\text{шестиугольник}"
+  },
+  "ru:87d6bf9e7fb8453c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane cuts a rectangular parallelepiped parallel to one of its faces. What is the shape of the section?",
+    "text": "Плоскость пересекает прямоугольный параллелепипед, параллельно одной из его граней. Какова форма сечения?"
+  },
+  "ru:8a0375bff6b34523": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the exponential system",
+    "text": "Решите систему показательных уравнений"
+  },
+  "ru:8a9dc8f8f7650663": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many bases does a sphere have?",
+    "text": "Сколько оснований у сферы?"
+  },
+  "ru:8cba04adf08a1141": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the system",
+    "text": "Решите систему"
+  },
+  "ru:8dfccca81ebcf46a": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Use the characteristic property of an arithmetic progression to find x",
+    "text": "Воспользуйтесь характерным свойством арифметической прогрессии, чтобы найти $x$"
+  },
+  "ru:902d184883dfd669": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two sides and their included 60° angle are given. Find the third side c.",
+    "text": "Даны две стороны и угол между ними $60°$. Найдите третью сторону $c$."
+  },
+  "ru:92613de7aedd5ece": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "AD is the angle bisector of ∠A. Find BD.",
+    "text": "$AD$ — биссектриса угла $∠A$. Найдите $BD$."
+  },
+  "ru:932f50744bebeab9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Which ordered pair satisfies the system?",
+    "text": "Какая упорядоченная пара удовлетворяет системе?"
+  },
+  "ru:93c72715c4900d34": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the equation using a substitution",
+    "text": "Решите уравнение путём подстановки"
+  },
+  "ru:94aa24f38fcee87d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the value of the function",
+    "text": "Найдите значение функции"
+  },
+  "ru:94d3416616176342": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A rectangle has x+y equal to the given value. Find x for which the area xy is maximal.",
+    "text": "У прямоугольника $x+y$ равно заданному значению. Найдите $x$, при котором площадь $xy$ максимальна."
+  },
+  "ru:965a00d9ba9665ad": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Simplify",
+    "text": "Упростите"
+  },
+  "ru:97350997d086e6c4": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A frustum of a pyramid has n-gonal bases. Find the number of lateral faces.",
+    "text": "Усечённая пирамида имеет основания — $n$-угольники. Найдите число боковых граней."
+  },
+  "ru:9862aa4c5640b3f9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A hall has a1 seats in the first row, and each next row has d more seats than the previous row. Find the total number of seats in the first n rows.",
+    "text": "Найдите общее число мест в первых $n$ рядах, если в первом ряду $a1$ мест, а в каждом следующем на $d$ мест больше, чем в предыдущем."
+  },
+  "ru:99a101d3bb91975b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "In the right triangle, find cos α.",
+    "text": "В прямоугольном треугольнике найдите cos α."
+  },
+  "ru:9a8085f144de3e11": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the rational inequality",
+    "text": "Решите рациональное неравенство"
+  },
+  "ru:9b81d24f3ae31658": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many edges does a tetrahedron have?",
+    "text": "Сколько рёбер у тетраэдра?"
+  },
+  "ru:9bad488c845c819a": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A polygon is circumscribed about a circle. Find its area.",
+    "text": "Около окружности описан многоугольник. Найдите его площадь."
+  },
+  "ru:9c2f93240ff53457": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the vertex of the parabola",
+    "text": "Найдите вершину параболы"
+  },
+  "ru:9c6f6038b7de559e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the logarithmic equation",
+    "text": "Решите логарифмическое уравнение"
+  },
+  "ru:a1424fea9f7e2a78": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane cuts a sphere. Find the radius ρ of the circular section.",
+    "text": "Плоскость пересекает шар. Найдите радиус $ρ$ кругового сечения."
+  },
+  "ru:a1768b74f7fff96d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the equation",
+    "text": "Решите уравнение"
+  },
+  "ru:a2d2544edcfb902c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the exponential inequality using a substitution",
+    "text": "Решите показательное неравенство заменой переменной"
+  },
+  "ru:a2f6b8701dbcecfe": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Evaluate the definite integral using substitution",
+    "text": "Вычислите определённый интеграл методом замены переменной"
+  },
+  "ru:a45a072c03f39d37": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Convert to degrees",
+    "text": "Переведите в градусы"
+  },
+  "ru:a4620038e65e1080": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the n-th term of the arithmetic progression",
+    "text": "Найдите $n$-й член арифметической прогрессии"
+  },
+  "ru:a5380c2a0a4d24a9": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{one common point}",
+    "text": "\\text{одна общая точка}"
+  },
+  "ru:a59f12f772199e25": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A net of a cube contains how many square faces?",
+    "text": "Сколько квадратных граней содержит развертка куба?"
+  },
+  "ru:a5a5ccf660be2ea8": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many circular bases does a frustum of a cone have?",
+    "text": "Сколько круглых оснований имеет усечённый конус?"
+  },
+  "ru:a606aa09789dc243": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two distinct planes have no common points. Classify their mutual position.",
+    "text": "Две различные плоскости не имеют общих точек. Классифицируйте их взаимное расположение."
+  },
+  "ru:a8db93e87c28b5d7": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the trigonometric system",
+    "text": "Решите тригонометрическую систему"
+  },
+  "ru:aa517f8a0be0c6b3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the sum of the first n terms of the geometric progression",
+    "text": "Найдите сумму первых $n$ членов геометрической прогрессии"
+  },
+  "ru:aaf3c39b26b0fd30": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{triangle}",
+    "text": "\\text{треугольник}"
+  },
+  "ru:ab1e11bf885a3e40": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Convert to radians",
+    "text": "Переведите в радианы"
+  },
+  "ru:ab4da21f87df9bb7": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the irrational equation",
+    "text": "Решите иррациональное уравнение"
+  },
+  "ru:acdeafe87d1fe26e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Use S=abc/(4R) to find the triangle area.",
+    "text": "Используя $S=abc/(4R)$, найдите площадь треугольника"
+  },
+  "ru:aef2386b20884ff9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "At how many common vertex points do the generatrices of a cone meet?",
+    "text": "В скольких общих вершинах пересекаются образующие конуса?"
+  },
+  "ru:afc5a2a7a3e34bb4": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "An inscribed angle subtends the given arc. Find the inscribed angle.",
+    "text": "Вписанный угол опирается на данную дугу. Найдите вписанный угол."
+  },
+  "ru:b6b3a81ab0a6c771": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the equation of the line through the two points.",
+    "text": "Найдите уравнение прямой, проходящей через две точки"
+  },
+  "ru:b9af6034884f3cd2": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Expand and simplify",
+    "text": "Раскройте скобки и упростите"
+  },
+  "ru:bbfacdacbb7c099e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A line does not lie in a plane and has no common point with it. Classify the relation.",
+    "text": "Прямая не лежит в плоскости и не имеет с ней общих точек. Определите взаимное расположение"
+  },
+  "ru:bc0d6f488a3d4731": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the positive missing term so that the three numbers form a geometric progression",
+    "text": "Найдите положительный пропущенный член так, чтобы три числа образовали геометрическую прогрессию"
+  },
+  "ru:bdb1eed7196614fd": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the union of the solution sets",
+    "text": "Найдите объединение множеств решений"
+  },
+  "ru:bf9da4f6e58807c4": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{line parallel to plane}",
+    "text": "\\text{прямая, параллельная плоскости}"
+  },
+  "ru:c054655a1b96ca3c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The altitude to the hypotenuse creates two similar right triangles. Find h.",
+    "text": "Высота, опущенная на гипотенузу, делит прямоугольный треугольник на два подобных прямоугольных треугольника. Найдите $h$."
+  },
+  "ru:c1e316c9d7cd2562": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the system on the given domain",
+    "text": "Решите систему в заданной области определения"
+  },
+  "ru:c32de8d15ee42606": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the system of logarithmic inequalities",
+    "text": "Решите систему логарифмических неравенств"
+  },
+  "ru:c43da7a29c6560e5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A right triangle has the given hypotenuse and one leg. Find the other leg.",
+    "text": "В прямоугольном треугольнике даны гипотенуза и один катет. Найдите другой катет."
+  },
+  "ru:c572302e830e8de1": {
+    "kind": "answer_label",
+    "reviewed": false,
+    "source": "\\text{the whole sphere}",
+    "text": "\\text{вся сфера}"
+  },
+  "ru:c863ec47f2b8cb02": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Evaluate the definite integral",
+    "text": "Вычислите определённый интеграл"
+  },
+  "ru:c936d9a3b6d8dd5d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the area of the sector.",
+    "text": "Найдите площадь сектора."
+  },
+  "ru:c95bd7a8423402ac": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the equation on the given interval",
+    "text": "Решите уравнение на заданном промежутке"
+  },
+  "ru:cacf82c13ff0996b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "An isosceles right triangle has a leg of the given length. Find its hypotenuse.",
+    "text": "В равнобедренном прямоугольном треугольнике катет заданной длины. Найдите гипотенузу"
+  },
+  "ru:cc1af4e403b8e7fb": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the principal value",
+    "text": "Найдите главное значение"
+  },
+  "ru:cd0ac2e6266920a3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the missing term so that the three numbers form an arithmetic progression",
+    "text": "Найдите недостающий член, чтобы три числа образовали арифметическую прогрессию"
+  },
+  "ru:ce87a5b54a347ccf": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Point P divides AB internally in the ratio AP:PB=m:n. Find P.",
+    "text": "Найдите точку $P$, делящую отрезок $AB$ внутренне в отношении $AP:PB=m:n$."
+  },
+  "ru:cf8ae245b85f9b78": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "For a right circular cylinder, how many distinct directions do all generatrices have?",
+    "text": "Во сколько различных направлений направлены все образующие прямого кругового цилиндра?"
+  },
+  "ru:d071198435578e73": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane is at distance d from the center of a sphere of radius r. Describe their intersection.",
+    "text": "Плоскость находится на расстоянии $d$ от центра сферы радиуса $r$. Опишите их пересечение."
+  },
+  "ru:d2f44c951c0a1302": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the exact value",
+    "text": "Найдите точное значение"
+  },
+  "ru:d4195c6473f481b9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the x-coordinate of the intersection with the x-axis",
+    "text": "Найдите абсциссу точки пересечения с осью $x$"
+  },
+  "ru:d5a665b89ac7e006": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find c using Vieta's theorem",
+    "text": "Найдите $c$ по теореме Виета"
+  },
+  "ru:d7132581b3dcb277": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Evaluate",
+    "text": "Вычислите"
+  },
+  "ru:d78863b6a367f1d5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Transform the sum into a product",
+    "text": "Преобразуйте сумму в произведение"
+  },
+  "ru:d79e9ebb3395c303": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Use S=abc/(4R) to find the circumradius R.",
+    "text": "Используйте $S=abc/(4R)$, чтобы найти радиус описанной окружности $R$."
+  },
+  "ru:d8538c9483624727": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two similar triangles have similarity coefficient k. Find the corresponding side in the larger triangle.",
+    "text": "Даны подобные треугольники с коэффициентом подобия $k$. Найдите соответствующую сторону в большем треугольнике."
+  },
+  "ru:da41180f919e62a9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find k\\vec a.",
+    "text": "Найдите $k\\vec a$."
+  },
+  "ru:db6974d924caee4e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the number of roots on the interval",
+    "text": "Найдите число корней на интервале"
+  },
+  "ru:de0b0619a34fd9dd": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the third angle of the triangle.",
+    "text": "Найдите третий угол треугольника."
+  },
+  "ru:e06027aba0d2a5a9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the system of quadratic inequalities",
+    "text": "Решите систему квадратных неравенств"
+  },
+  "ru:e1f722b0c857c0e9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the vertical and horizontal asymptotes",
+    "text": "Найдите вертикальные и горизонтальные асимптоты"
+  },
+  "ru:e2869c9df9813ed4": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Given \\vec e_1=(1,1) and \\vec e_2=(1,-1), find (m,n) if \\vec v=m\\vec e_1+n\\vec e_2.",
+    "text": "Даны $\\vec e_1=(1,1)$ и $\\vec e_2=(1,-1)$, найдите $(m,n)$, если $\\vec v=m\\vec e_1+n\\vec e_2$."
+  },
+  "ru:e2d37e72cb7be4f5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the area of the triangle.",
+    "text": "Найдите площадь треугольника."
+  },
+  "ru:e50fc7994b8ee7b5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many vertices does a parallelepiped have?",
+    "text": "Сколько вершин у параллелепипеда?"
+  },
+  "ru:e5e0875e63b091d0": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the hypotenuse of the right triangle.",
+    "text": "Найдите гипотенузу прямоугольного треугольника."
+  },
+  "ru:e65d4bc8430276fc": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane cuts a cube parallel to one of its faces. What is the shape of the section?",
+    "text": "Плоскость пересекает куб параллельно одной из его граней. Какова форма сечения?"
+  },
+  "ru:e6a5121e04cb98e0": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve for x",
+    "text": "Найдите $x$"
+  },
+  "ru:e7a4ea4f9a54c097": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the equation on the given interval using an auxiliary angle",
+    "text": "Решите уравнение на данном интервале, введя вспомогательный угол"
+  },
+  "ru:e89a0c70145ddd1d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Reduce the homogeneous trigonometric equation and find all possible values of tan x",
+    "text": "Сведите однородное тригонометрическое уравнение и найдите все возможные значения $\\tan x$"
+  },
+  "ru:e8d4cd4ea15dc790": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Convert the repeating decimal to an ordinary fraction",
+    "text": "Переведите периодическую десятичную дробь в обыкновенную дробь"
+  },
+  "ru:e8de8674b399f8c9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many circles appear in a standard net of a frustum of a cone?",
+    "text": "Сколько кругов изображено на стандартной развёртке усечённого конуса?"
+  },
+  "ru:e9d744861e9f9536": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A quantity follows the exponential model P(t)=P_0 b^t. Find its value at the given time.",
+    "text": "Величина подчиняется экспоненциальной модели $P(t)=P_0 b^t$. Найдите её значение в заданный момент времени."
+  },
+  "ru:e9fb96f7ce91af60": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the quadratic equation",
+    "text": "Решите квадратное уравнение"
+  },
+  "ru:eaf6e8ad67320604": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the positive common ratio of the geometric progression",
+    "text": "Найдите положительный знаменатель геометрической прогрессии"
+  },
+  "ru:eb4bfcdf945920fc": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many edges does a parallelepiped have?",
+    "text": "Сколько ребер у параллелепипеда?"
+  },
+  "ru:eb839213e8f30d70": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "From one external point, a tangent and a secant are drawn to a circle. Find the tangent length.",
+    "text": "Из одной внешней точки к окружности проведены касательная и секущая. Найдите длину касательной."
+  },
+  "ru:ecc2ca8cedcc7cb7": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many pairs of opposite faces does a rectangular parallelepiped have?",
+    "text": "Сколько пар противоположных граней у прямоугольного параллелепипеда?"
+  },
+  "ru:ee211ad7f8078de0": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Two adjacent angles form a straight line. Find the second angle.",
+    "text": "Два смежных угла образуют развёрнутый угол. Найдите второй угол."
+  },
+  "ru:ee385cf93cb19460": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "How many faces does a parallelepiped have?",
+    "text": "Сколько граней у параллелепипеда?"
+  },
+  "ru:efc3c6e426e51a63": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the irrational inequality",
+    "text": "Решите иррациональное неравенство"
+  },
+  "ru:efd221e4cf9f5d65": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Use the characteristic property of a geometric progression to find the positive x",
+    "text": "Используйте характерное свойство геометрической прогрессии, чтобы найти положительный $x$"
+  },
+  "ru:f4b3e5d26f5b2046": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the logarithmic inequality",
+    "text": "Решите логарифмическое неравенство"
+  },
+  "ru:f67c514fdc0bd583": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The centroid divides a median in the ratio 2:1 from the vertex. Find the distance from the vertex to the centroid.",
+    "text": "Центроид делит медиану в отношении $2:1$, считая от вершины. Найдите расстояние от вершины до центроида."
+  },
+  "ru:fa661d17b35c1b78": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The altitude from the right angle divides the hypotenuse into segments p and q. Find the altitude h.",
+    "text": "Высота, опущенная из прямого угла, делит гипотенузу на отрезки $p$ и $q$. Найдите высоту $h$."
+  },
+  "ru:facad0ccfe09f52e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Solve the trigonometric inequality on the given interval",
+    "text": "Решите тригонометрическое неравенство на заданном промежутке"
+  },
+  "ru:fb9ca466565d7991": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane cuts a triangular prism parallel to its base. What is the shape of the section?",
+    "text": "Плоскость, параллельная основанию треугольной призмы, пересекает её. Какова фигура сечения?"
+  },
+  "ru:fd03a781b183ac48": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the center and radius of the circle.",
+    "text": "Найдите центр и радиус окружности."
+  },
+  "ru:fee4331d8f76d010": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the area of the trapezoid.",
+    "text": "Найдите площадь трапеции."
   }
 }
