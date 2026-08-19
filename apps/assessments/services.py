@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import datetime
 import logging
+import random
 from dataclasses import dataclass
 from datetime import timedelta
 from typing import Optional
@@ -21,8 +22,19 @@ from agents_and_engine.llm import chat_anthropic
 from ubt_question_engine import tutor as ubt_tutor
 
 from django.conf import settings
+from django.core.cache import cache
 from django.db import IntegrityError, transaction
-from django.db.models import Prefetch, ExpressionWrapper, F, Q, DateTimeField
+from django.db.models import (
+    Case,
+    DateTimeField,
+    ExpressionWrapper,
+    F,
+    IntegerField,
+    Max,
+    Prefetch,
+    Q,
+    When,
+)
 from django.shortcuts import get_object_or_404
 from django.utils import timezone, translation
 from rest_framework.exceptions import NotFound, ValidationError
@@ -73,9 +85,103 @@ class AnswerResult:
 # ---------------------------------------------------------------------------
 
 
+UBT_TOP_UP_DEBOUNCE_SECONDS = 10 * 60
+
+
+def _micro_pool_state(user, test: Test) -> tuple[list[int], dict[int, datetime.datetime]]:
+    """Return the current-language pool and each answered row's last use."""
+    pool_ids = list(
+        Question.objects.filter(tests=test, language=_current_language())
+        .order_by("testquestion__order", "testquestion__id")
+        .values_list("pk", flat=True)
+    )
+    if not pool_ids:
+        return pool_ids, {}
+
+    last_answered = dict(
+        AttemptAnswer.objects.filter(
+            attempt__student=user,
+            question_id__in=pool_ids,
+        )
+        .values("question_id")
+        .annotate(last_attempt_at=Max("attempt__started_at"))
+        .values_list("question_id", "last_attempt_at")
+    )
+    return pool_ids, last_answered
+
+
+def _sample_micro_question_ids(
+    pool_ids: list[int],
+    last_answered: dict[int, datetime.datetime],
+) -> list[int]:
+    sample_size = settings.MICRO_TEST_QUESTION_COUNT
+    if len(pool_ids) <= sample_size:
+        return []
+
+    unseen_ids = [
+        question_id for question_id in pool_ids if question_id not in last_answered
+    ]
+    random.shuffle(unseen_ids)
+    selected = unseen_ids[:sample_size]
+    if len(selected) < sample_size:
+        # Stable PK ordering only breaks equal-timestamp ties; the primary
+        # ordering keeps the questions least recently practiced at the front.
+        seen_ids = sorted(
+            last_answered,
+            key=lambda question_id: (last_answered[question_id], question_id),
+        )
+        selected.extend(seen_ids[: sample_size - len(selected)])
+    return selected
+
+
+def _enqueue_micro_top_up(test: Test, unseen_count: int) -> None:
+    """Best-effort bank refill; attempt creation must never depend on Celery."""
+    topic = test.lesson.topic if test.lesson_id and test.lesson else ""
+    shortfall = settings.MICRO_TEST_QUESTION_COUNT - unseen_count
+    if not topic or shortfall <= 0:
+        return
+
+    cache_key = f"ubt-bank-top-up:{topic}"
+    try:
+        acquired = cache.add(cache_key, True, timeout=UBT_TOP_UP_DEBOUNCE_SECONDS)
+    except Exception:
+        # Without the lock, enqueueing anyway would turn a Redis outage into a
+        # thundering herd precisely when the system is already degraded.
+        logger.exception("UBT top-up debounce unavailable for topic %s", topic)
+        return
+    if not acquired:
+        return
+
+    try:
+        # Lazy import avoids making every assessment service import initialize
+        # the generation task module and its blueprint engine dependencies.
+        from apps.generation.ubt_tasks import generate_ubt_topic
+
+        generate_ubt_topic.delay(topic, count=shortfall)
+    except Exception:
+        # A failed publish to the broker did not queue work, so release the key
+        # and let the next attempt retry instead of suppressing refills for 10m.
+        try:
+            cache.delete(cache_key)
+        except Exception:
+            logger.exception(
+                "Could not clear failed UBT top-up debounce for %s", topic
+            )
+        logger.exception("Could not enqueue UBT top-up for topic %s", topic)
+
+
 def start_attempt(user, test: Test) -> TestAttempt:
-    """Create a fresh attempt for the student on a given test."""
-    return TestAttempt.objects.create(student=user, test=test)
+    """Create a fresh attempt, freezing a bounded micro-question selection."""
+    question_ids: list[int] = []
+    if test.type == "micro":
+        pool_ids, last_answered = _micro_pool_state(user, test)
+        question_ids = _sample_micro_question_ids(pool_ids, last_answered)
+        _enqueue_micro_top_up(test, len(pool_ids) - len(last_answered))
+    return TestAttempt.objects.create(
+        student=user,
+        test=test,
+        question_ids=question_ids,
+    )
 
 
 def _award_correct_answer_xp(user) -> int:
@@ -105,6 +211,11 @@ def record_answer(
     """
     if attempt.is_completed:
         raise ValidationError({"detail": "attempt already finished", "code": "attempt_finished"})
+
+    if attempt.question_ids and question_id not in attempt.question_ids:
+        raise NotFound(
+            {"detail": "question not in test", "code": "question_not_in_test"}
+        )
 
     # Ensure the question belongs to this test.
     try:
@@ -167,7 +278,7 @@ def finish_attempt(attempt: TestAttempt) -> TestAttempt:
 
     # Ladder attempts have no Test; score off the answers actually recorded.
     if attempt.test_id is not None:
-        total_count = attempt.test.questions.count()
+        total_count = get_attempt_questions(attempt).count()
     else:
         total_count = attempt.answers.count()
     correct_count = attempt.answers.filter(is_correct=True).count()
@@ -694,9 +805,39 @@ def get_test_questions_ordered(test: Test):
     )
 
 
+def get_attempt_questions(attempt: TestAttempt):
+    """Return the exact ordered rows assigned to an attempt.
+
+    Stored IDs intentionally bypass the active locale: changing language in the
+    middle of an attempt must not replace the questions used for scoring and
+    review. Empty remains the backwards-compatible whole-test path.
+    """
+    if not attempt.question_ids:
+        return get_test_questions_ordered(attempt.test)
+
+    preserved_order = Case(
+        *[
+            When(pk=question_id, then=position)
+            for position, question_id in enumerate(attempt.question_ids)
+        ],
+        output_field=IntegerField(),
+    )
+    return (
+        Question.objects.filter(pk__in=attempt.question_ids)
+        .annotate(_attempt_order=preserved_order)
+        .prefetch_related(
+            Prefetch(
+                "options",
+                queryset=AnswerOption.objects.order_by("id"),
+            )
+        )
+        .order_by("_attempt_order")
+    )
+
+
 def build_attempt_start_payload(attempt: TestAttempt) -> dict:
     """Serializer-friendly payload for AttemptStart."""
-    questions = list(get_test_questions_ordered(attempt.test))
+    questions = list(get_attempt_questions(attempt))
     return {
         "attempt_id": attempt.pk,
         "test": attempt.test,
@@ -708,7 +849,7 @@ def build_attempt_start_payload(attempt: TestAttempt) -> dict:
 def build_attempt_result_payload(attempt: TestAttempt) -> dict:
     # Denominator is the current-language question set — the same rows the
     # student was served — so the score fraction matches what they saw.
-    total_count = attempt.test.questions.filter(language=_current_language()).count()
+    total_count = get_attempt_questions(attempt).count()
     correct_count = attempt.answers.filter(is_correct=True).count()
     return {
         "attempt_id": attempt.pk,
@@ -729,16 +870,7 @@ def build_attempt_review_payload(attempt: TestAttempt) -> dict:
         for ans in attempt.answers.select_related("selected_option").all()
     }
 
-    questions = list(
-        Question.objects.filter(tests=attempt.test, language=_current_language())
-        .prefetch_related(
-            Prefetch(
-                "options",
-                queryset=AnswerOption.objects.order_by("id"),
-            )
-        )
-        .order_by("testquestion__order", "testquestion__id")
-    )
+    questions = list(get_attempt_questions(attempt))
 
     items: list[dict] = []
     for question in questions:

@@ -224,6 +224,10 @@ class TestAttempt(models.Model):
         related_name="attempts",
     )
     source = models.CharField(max_length=20, choices=SOURCE_CHOICES, default="test")
+    # A non-empty list freezes the exact rows and order served by a sampled
+    # micro attempt. Empty is deliberately the legacy sentinel: old attempts,
+    # mock tests, and ladder flows keep reading the whole test as before.
+    question_ids = models.JSONField(default=list, blank=True)
     started_at = models.DateTimeField(auto_now_add=True)
     finished_at = models.DateTimeField(null=True, blank=True)
     score = models.FloatField(null=True, blank=True)

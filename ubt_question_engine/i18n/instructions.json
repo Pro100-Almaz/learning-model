@@ -11,6 +11,18 @@
     "source": "How many circular bases does a cylinder have?",
     "text": "Цилиндрдің қанша шеңберлі табаны бар?"
   },
+  "kk:016d1e424ed9aadf": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the total surface area of the cylinder with the given radius and height.",
+    "text": "Берілген радиусы мен биіктігі бар цилиндрдің толық бет ауданын табыңыз"
+  },
+  "kk:057c40c496276e8f": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the space diagonal of the cube with the given edge.",
+    "text": "Қабырғасы берілген кубтың кеңістік диагоналін тап"
+  },
   "kk:069e15f4272a237b": {
     "kind": "answer_label",
     "reviewed": false,
@@ -47,6 +59,18 @@
     "source": "\\text{two common points}",
     "text": "\\text{екі ортақ нүкте}"
   },
+  "kk:0b6243a782f150a3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the coefficients of v in the ordered basis i, j, k.",
+    "text": "Вектор $v$-тың реттелген негіз $i, j, k$ бойынша координаттарын табыңыз."
+  },
+  "kk:0db22f8b723d8a13": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The points lie on parallel planes with the given normal, and segment PQ follows the normal direction. Find the distance PQ.",
+    "text": "Нүктелер берілген нормалі бар параллель жазықтықтарда жатады, ал $PQ$ кесіндісі сол нормаль бағытымен өтеді. $PQ$ қашықтығын тап."
+  },
   "kk:1107967deaa890e4": {
     "kind": "instruction",
     "reviewed": false,
@@ -59,17 +83,35 @@
     "source": "Find the fundamental period of the function",
     "text": "Функцияның негізгі периодын табыңыз"
   },
+  "kk:156f12d850cffb51": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find vector AB to use as a direction vector for the line through the two points.",
+    "text": "Екі нүкте арқылы өтетін түзудің бағыттауыш векторы ретінде қолдану үшін $AB$ векторын табыңыз"
+  },
   "kk:1681ddf0b3759cc2": {
     "kind": "instruction",
     "reviewed": false,
     "source": "How many circles appear in a standard net of a cone?",
     "text": "Конустың стандартты жаймасында қанша шеңбер бар?"
   },
+  "kk:175ecc5da2b8bb9a": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane at the given distance from the centre of a sphere cuts it in a circle. Find the area of that circle.",
+    "text": "Шар ортасынан берілген қашықтықта орналасқан жазықтық шарды шеңберге кеседі. Осы шеңбердің ауданын табыңыз."
+  },
   "kk:17ebf29c09f21dec": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Find one interior angle of the regular polygon.",
     "text": "Дұрыс көпбұрыштың бір ішкі бұрышын табыңыз."
+  },
+  "kk:18749dae56171fd1": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find C so that the two planes are parallel.",
+    "text": "Екі жазықтық параллель болатындай $C$ мәнін табыңыз"
   },
   "kk:195b8470d16926b2": {
     "kind": "instruction",
@@ -119,6 +161,12 @@
     "source": "Which value of x is excluded from the domain?",
     "text": "Қай x мәні анықталу облысына кірмейді?"
   },
+  "kk:1e88aee1101bc828": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the slant height of the cone with the given base radius and height.",
+    "text": "Берілген негіз радиусы мен биіктігі бар конустың жасаушысын табыңдар."
+  },
   "kk:1ec7f9c030df13e7": {
     "kind": "instruction",
     "reviewed": false,
@@ -130,6 +178,12 @@
     "reviewed": false,
     "source": "Solve the system using the substitution t=a^x",
     "text": "Жүйені $t=a^x$ алмастыру арқылы шешіңіз"
+  },
+  "kk:2197e8edfd84d0fd": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the unit vector in the direction of the given vector.",
+    "text": "Берілген вектор бағытына сәйкес бірлік векторды табыңыз"
   },
   "kk:21fbc95c5d0c329c": {
     "kind": "instruction",
@@ -149,6 +203,18 @@
     "source": "In a 30°–60°–90° triangle, the side opposite 30° is given. Find the side opposite 60°.",
     "text": "$30°–60°–90°$ үшбұрышта $30°$-қа қарама-қарсы қабырға берілген. $60°$-қа қарама-қарсы қабырғаны табыңыз."
   },
+  "kk:28867d942058764e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the distance from the point to the origin.",
+    "text": "Нүктенің координаталар басынан қашықтығын табыңыз."
+  },
+  "kk:28ffd8ba912ebfc4": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A sphere passes through all vertices of the rectangular parallelepiped with the given edges. Find the radius of the sphere.",
+    "text": "Берілген қырлары бар тікбұрышты параллелепипедтің барлық төбелерінен өтетін сфераның радиусын тап."
+  },
   "kk:2937ce29388df19c": {
     "kind": "instruction",
     "reviewed": false,
@@ -166,6 +232,12 @@
     "reviewed": false,
     "source": "Convert to the smaller unit and write the result in standard scientific notation",
     "text": "Кіші бірлікке түрлендіріп, нәтижесін стандартты ғылыми түрде жазыңыз"
+  },
+  "kk:2b2e17e8771a88e9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the height of the regular tetrahedron with the given edge.",
+    "text": "Қабырғасы берілген дұрыс тетраэдрдің биіктігін табыңыз."
   },
   "kk:2e459d24739d3dad": {
     "kind": "instruction",
@@ -233,6 +305,12 @@
     "source": "Use S=pr to find the inradius r.",
     "text": "$S=pr$ формуласы арқылы іштей сызылған шеңбердің радиусы $r$-ті табыңыз."
   },
+  "kk:38fd6104be8b9d9f": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A frustum of a pyramid has square bases with the given sides and the given height. Find its volume.",
+    "text": "Негіздері шаршы, қабырғалары мен биіктігі берілген қиық пирамиданың көлемін табыңыз."
+  },
   "kk:39635eec3f53d998": {
     "kind": "instruction",
     "reviewed": false,
@@ -257,6 +335,18 @@
     "source": "\\text{parallel planes}",
     "text": "\\text{параллель жазықтықтар}"
   },
+  "kk:3a04a2a7f81209b1": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A regular pyramid has a base with n equal sides and the given slant height of a lateral face. Find its lateral surface area.",
+    "text": "$n$ тең қабырғалы негізі бар дұрыс пирамида берілген және оның бүйір бетінің апофемасы белгілі. Оның бүйір бетінің ауданын табыңыз."
+  },
+  "kk:3b5c5127e13a6e5c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the lateral surface area of the cylinder with the given radius and height.",
+    "text": "Берілген радиусы мен биіктігі бар цилиндрдің бүйір бетінің ауданын табыңыз."
+  },
   "kk:3ba8a7d7a58be2ad": {
     "kind": "instruction",
     "reviewed": false,
@@ -269,11 +359,23 @@
     "source": "Solve the exponential inequality",
     "text": "Экспоненциалдық теңсіздікті шешіңіз"
   },
+  "kk:3d6c064b00a61236": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane through the axis of the cylinder cuts it in a rectangle. Find the area of this axial section.",
+    "text": "Цилиндр осі арқылы өтетін жазықтық цилиндрді тік төртбұрышпен қиып өтеді. Осы осьтік қиманың ауданын табыңыз."
+  },
   "kk:3e440371bc3aa4a2": {
     "kind": "instruction",
     "reviewed": false,
     "source": "A plane cuts a pentagonal pyramid parallel to its base. What is the shape of the section?",
     "text": "Жазықтық бесбұрышты пирамиданы табанымен параллель етіп қиып өтсе, қима қандай пішінді болады?"
+  },
+  "kk:3f2ea582f14e6911": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the sine of the acute angle between the line and the plane.",
+    "text": "Түзу мен жазықтық арасындағы өткір бұрыштың синусын табыңыз"
   },
   "kk:3fdcbe0aa8777098": {
     "kind": "instruction",
@@ -329,6 +431,24 @@
     "source": "Two parallel lines are cut by a transversal. Find the corresponding angle.",
     "text": "Қиюшы түзу екі параллель түзуді қиып өтеді. Сәйкес бұрышты табыңыз."
   },
+  "kk:4ac55d275a9ddad4": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find t so that the three vectors are coplanar.",
+    "text": "Үш вектордың бір жазықтықта жатуы үшін $t$-ны тап"
+  },
+  "kk:4b966981eb092804": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane parallel to the base cuts a pyramid at the given fraction of its height, measured from the apex. The base area is given. Find the area of the section.",
+    "text": "Төбеден өлшенген биіктігінің берілген бөлшегінде табанымен параллель жазықтық пирамиданы қиып өтеді. Табанның ауданы берілген. Қиманың ауданын табыңыз."
+  },
+  "kk:4c37809642afc9c9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the distance from the point to the plane.",
+    "text": "Нүктеден жазықтыққа дейінгі қашықтықты табыңыз."
+  },
   "kk:4c9569202056ebdf": {
     "kind": "instruction",
     "reviewed": false,
@@ -340,6 +460,12 @@
     "reviewed": false,
     "source": "Find the x-coordinate of the inflection point",
     "text": "Иілу нүктесінің $x$-координатын табыңыз"
+  },
+  "kk:4cc632d0caa4e509": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find vector AB from the given points.",
+    "text": "Берілген нүктелерден $AB$ векторын табыңыз."
   },
   "kk:4d4a185ac8f26728": {
     "kind": "instruction",
@@ -358,6 +484,24 @@
     "reviewed": false,
     "source": "Use proportional segments formed by parallel lines to find x.",
     "text": "Параллель түзулер түзетін пропорционалды кесінділерді пайдаланып, $x$-ті табыңыз"
+  },
+  "kk:4fb8f6a9742f8086": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane parallel to the base cuts a cone at the given fraction of its height, measured from the apex. The base radius is given. Find the area of the section.",
+    "text": "Табанына параллель жазықтық конусты ұшынан бастап биіктігінің берілген бөлігінде кеседі. Табан радиусы берілген. Қиманың ауданын табыңыз."
+  },
+  "kk:51dea6e246069c35": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A frustum of a cone has the given base radii and height. Find its volume.",
+    "text": "Негіздерінің радиустары мен биіктігі берілген кесілген конустың көлемін табыңыз."
+  },
+  "kk:52f6441311e8e29c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The edges of a rectangular parallelepiped are given. Find its total surface area.",
+    "text": "Тікбұрышты параллелепипедтің қырлары берілген. Оның жалпы бет ауданын табыңыз."
   },
   "kk:53c403c02fcadd70": {
     "kind": "instruction",
@@ -382,6 +526,12 @@
     "reviewed": false,
     "source": "A quadrilateral is inscribed in a circle. Find the angle opposite the given angle.",
     "text": "Төртбұрыш шеңберге іштей сызылған. Берілген бұрышқа қарама-қарсы бұрышты табыңыз."
+  },
+  "kk:584006f0ee16ed44": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the scalar projection of vector a on vector b.",
+    "text": "Вектор $a$-ның вектор $b$ бағытына скалярлық проекциясын тап."
   },
   "kk:589c4627bb663265": {
     "kind": "instruction",
@@ -443,6 +593,12 @@
     "source": "Find f'(x)",
     "text": "$f'(x)$-ті табыңыз"
   },
+  "kk:640f87efbc21a5f8": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The edges of a rectangular parallelepiped are given. Find its volume.",
+    "text": "Тіктөртбұрышты параллелепипедтің қырлары берілген. Оның көлемін табыңыз."
+  },
   "kk:6443065e6fa26c31": {
     "kind": "instruction",
     "reviewed": false,
@@ -455,11 +611,23 @@
     "source": "\\text{skew lines}",
     "text": "\\text{айқас түзулер}"
   },
+  "kk:65535e3fc4e0b16b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the scalar product of the two vectors.",
+    "text": "Екі вектордың скалярлық көбейтіндісін табыңыз."
+  },
   "kk:65ba4a2dfdc3c5f1": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Solve the rational equation",
     "text": "Рационал теңдеуді шешіңіз"
+  },
+  "kk:6629304269439638": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A regular pyramid has a square base with the given side and the given height. Find the length of a lateral edge.",
+    "text": "Негізі шаршы дұрыс пирамидада негіздің қыры мен биіктігі берілген. Бүйір қырының ұзындығын табыңыз."
   },
   "kk:67eef9be8b785c9b": {
     "kind": "instruction",
@@ -490,6 +658,12 @@
     "reviewed": false,
     "source": "A line intersects a plane at point O and is perpendicular to two intersecting lines of that plane passing through O. What is the relation between the line and the plane?",
     "text": "Түзу O нүктесінде жазықтықты кесіп өтіп, O арқылы өтетін және бір-біріне қиылысатын жазықтықтағы екі түзуге перпендикуляр болса, түзу мен жазықтықтың қандай қатынасы бар?"
+  },
+  "kk:6ad8e192940214e3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Read the ordered coefficient triple (A, B, C) that gives the displayed normal vector of the plane.",
+    "text": "Көрсетілген жазықтықтың нормальдық векторын беретін реттелген коэффициент үштігін (A, B, C) оқыңыз"
   },
   "kk:6b520f89113473a0": {
     "kind": "instruction",
@@ -527,11 +701,29 @@
     "source": "A quadrilateral is circumscribed about a circle. Three side lengths are given. Find the fourth side.",
     "text": "Шеңберге сырттай сызылған төртбұрыш берілген. Оның үш қабырғасының ұзындығы берілген. Төртінші қабырғаның ұзындығын табыңыз."
   },
+  "kk:71e3efefa9a55aa5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A pyramid has a square base with the given side and the given height. Find its volume.",
+    "text": "Табаны квадрат, табанының қабырғасы мен биіктігі берілген пирамиданың көлемін табыңыз."
+  },
+  "kk:755097bab8e57d8a": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the volume of the regular tetrahedron with the given edge.",
+    "text": "Берілген қабырғасы бар дұрыс тетраэдрдің көлемін табыңыз"
+  },
   "kk:755a305aa86fbafc": {
     "kind": "answer_label",
     "reviewed": false,
     "source": "\\text{parallel lines}",
     "text": "\\text{параллель түзулер}"
+  },
+  "kk:75e1306e2e7bc154": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Calculate the scalar triple-product determinant to test the vectors for coplanarity.",
+    "text": "Векторлардың бір жазықтықта жатқанын тексеру үшін скалярлық үштік көбейтіндінің анықтауышын есептеңіз"
   },
   "kk:772b7698a2cb8439": {
     "kind": "instruction",
@@ -539,17 +731,35 @@
     "source": "How many congruent square faces does a cube have?",
     "text": "Кубтың қанша бірдей шаршы беті бар?"
   },
+  "kk:78258799c29d5f88": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the parameter t at the given point on the line.",
+    "text": "Түзудің берілген нүктесіндегі $t$ параметрін табыңыз."
+  },
   "kk:794d964324a7da36": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Find the interval on which the function is increasing",
     "text": "Функцияның өсу аралығын анықтаңдар"
   },
+  "kk:7ac0e50e424ada7c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the volume of the ball with the given radius.",
+    "text": "Берілген радиусы бар шардың көлемін табыңыз"
+  },
   "kk:7b2bd60d677cf1bf": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Find the area of the rhombus from its diagonals.",
     "text": "Диагональдары арқылы ромбтың ауданын тап"
+  },
+  "kk:7b52cb2736043ae6": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the volume of the cylinder with the given radius and height.",
+    "text": "Радиусы мен биіктігі берілген цилиндрдің көлемін табыңыз."
   },
   "kk:7b5aa53ef1575658": {
     "kind": "instruction",
@@ -563,11 +773,35 @@
     "source": "\\text{intersecting lines}",
     "text": "\\text{қиылысатын түзулер}"
   },
+  "kk:7c28392ee9808b8f": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find t so that the two vectors are collinear.",
+    "text": "Екі вектордың коллинеар болуы үшін $t$ табыңыз"
+  },
+  "kk:7ea1913929f27952": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the total surface area of the hemisphere with the given radius, including its flat circular face.",
+    "text": "Берілген радиусы бар жарты шардың толық бет ауданын жазық шеңберлік бетін қоса есептеп табыңыз"
+  },
   "kk:7eb84c8c182d0eaa": {
     "kind": "answer_label",
     "reviewed": false,
     "source": "\\text{quadrilateral}",
     "text": "\\text{төртбұрыш}"
+  },
+  "kk:7ecf6112b5724c76": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the volume of the ball with the given diameter.",
+    "text": "Берілген диаметрі бар шардың көлемін табыңыз"
+  },
+  "kk:7eef4f8921937014": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find vector a minus vector b.",
+    "text": "$a$ және $b$ векторларының айырмасын табыңыз."
   },
   "kk:82efeccf93ef4a8d": {
     "kind": "instruction",
@@ -605,11 +839,23 @@
     "source": "\\text{hexagon}",
     "text": "\\text{алтыбұрыш}"
   },
+  "kk:86845eb1ad54f524": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the sum of the two vectors.",
+    "text": "Екі вектордың қосындысын табыңыз."
+  },
   "kk:87d6bf9e7fb8453c": {
     "kind": "instruction",
     "reviewed": false,
     "source": "A plane cuts a rectangular parallelepiped parallel to one of its faces. What is the shape of the section?",
     "text": "Жазықтық тіктөртбұрышты параллелепипедті оның бір бетіне параллель кеседі. Кесіктің пішіні қандай?"
+  },
+  "kk:894f3be520d4012d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the total surface area of the cone with the given base radius and height.",
+    "text": "Табанының радиусы мен биіктігі берілген конустың толық бетінің ауданын табыңыз."
   },
   "kk:8a0375bff6b34523": {
     "kind": "instruction",
@@ -617,11 +863,23 @@
     "source": "Solve the exponential system",
     "text": "Экспоненциалдық теңдеулер жүйесін шешіңіз"
   },
+  "kk:8a1f84be7cae0bb2": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A regular prism has a base with n equal sides of the given length. Find its lateral surface area.",
+    "text": "Қабырғаларының ұзындығы берілген n тең қабырғалы негізі бар дұрыс призманың бүйір бетінің ауданын табыңыз."
+  },
   "kk:8a9dc8f8f7650663": {
     "kind": "instruction",
     "reviewed": false,
     "source": "How many bases does a sphere have?",
     "text": "Шардың неше негізі бар?"
+  },
+  "kk:8c7b80a18b323109": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A regular pyramid has a square base with the given side and the given height. Find the slant height of a lateral face.",
+    "text": "Дұрыс пирамиданың табаны квадрат, оның қабырғасы мен биіктігі берілген. Бүйір беттің көлбеу биіктігін табыңыз"
   },
   "kk:8cba04adf08a1141": {
     "kind": "instruction",
@@ -629,11 +887,23 @@
     "source": "Solve the system",
     "text": "Жүйені шеш"
   },
+  "kk:8d1f223ce374b90d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the midpoint of the segment with the given endpoints.",
+    "text": "Ұштары берілген кесіндінің орта нүктесін табыңыз."
+  },
   "kk:8dfccca81ebcf46a": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Use the characteristic property of an arithmetic progression to find x",
     "text": "Арифметикалық прогрессияның айрықша қасиетін пайдаланып $x$-ті табыңыз"
+  },
+  "kk:8fef679e3eeeb0fc": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane through two opposite lateral edges cuts a rectangular parallelepiped in a rectangle. Find the area of that section.",
+    "text": "Екі қарама-қарсы бүйір қыры арқылы өтетін жазықтық тікбұрышты параллелепипедті тіктөртбұрышпен кеседі. Осы қиманың ауданын табыңыз."
   },
   "kk:902d184883dfd669": {
     "kind": "instruction",
@@ -647,11 +917,23 @@
     "source": "AD is the angle bisector of ∠A. Find BD.",
     "text": "$AD$ — $∠A$ бұрышының биссектрисасы. $BD$-ні табыңыз."
   },
+  "kk:9313358bf320a2bb": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the ordered triple of denominators in the canonical equation of the line through the point with the given direction vector.",
+    "text": "Берілген нүкте арқылы өтетін және берілген бағыттаушы векторы бар түзудің канондық теңдеуіндегі бөлімдерінің реттелген үштігін табыңыз."
+  },
   "kk:932f50744bebeab9": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Which ordered pair satisfies the system?",
     "text": "Қай реттелген жұп жүйені қанағаттандырады?"
+  },
+  "kk:93c3999bd99d1a55": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the cosine of the acute angle between the two lines from their direction vectors.",
+    "text": "Екі түзудің бағыт векторларынан олардың сүйір бұрышының косинусын табыңыз"
   },
   "kk:93c72715c4900d34": {
     "kind": "instruction",
@@ -671,11 +953,23 @@
     "source": "A rectangle has x+y equal to the given value. Find x for which the area xy is maximal.",
     "text": "Тіктөртбұрыштың $x+y$-і берілген мәнге тең. Ауданы $xy$ максималды болатын $x$ табыңыз."
   },
+  "kk:9539e583b67040c5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the distance between the two parallel planes.",
+    "text": "Екі параллель жазықтық арасындағы қашықтықты табыңыз."
+  },
   "kk:965a00d9ba9665ad": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Simplify",
     "text": "Ықшамдаңыз"
+  },
+  "kk:97044092dda14a96": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A sphere is inscribed in a cube with the given edge. Find the radius of the sphere.",
+    "text": "Қабырғасы берілген текшенің ішіне жазылған шардың радиусын табыңыз"
   },
   "kk:97350997d086e6c4": {
     "kind": "instruction",
@@ -701,6 +995,12 @@
     "source": "Solve the rational inequality",
     "text": "Рационал теңсіздікті шешіңіз"
   },
+  "kk:9b572f6ed838e79e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the volume of the cone with the given base radius and height.",
+    "text": "Негізінің радиусы мен биіктігі берілген конустың көлемін табыңыз."
+  },
   "kk:9b81d24f3ae31658": {
     "kind": "instruction",
     "reviewed": false,
@@ -713,6 +1013,12 @@
     "source": "A polygon is circumscribed about a circle. Find its area.",
     "text": "Көпбұрыш шеңберге сырттай сызылған. Оның ауданын табыңыз."
   },
+  "kk:9bea4b506a5dde43": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the cosine of the acute angle between the planes.",
+    "text": "Жазықтықтар арасындағы өткір бұрыштың косинусын табыңыз."
+  },
   "kk:9c2f93240ff53457": {
     "kind": "instruction",
     "reviewed": false,
@@ -724,6 +1030,12 @@
     "reviewed": false,
     "source": "Solve the logarithmic equation",
     "text": "Логарифмдік теңдеуді шешіңіз"
+  },
+  "kk:a0d7c501234cd885": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The edges of a rectangular parallelepiped are given. Find the length of its space diagonal.",
+    "text": "Тіктөртбұрышты параллелепипедтің қырлары берілген. Кеңістіктік диагоналінің ұзындығын табыңыз."
   },
   "kk:a1424fea9f7e2a78": {
     "kind": "instruction",
@@ -749,6 +1061,12 @@
     "source": "Evaluate the definite integral using substitution",
     "text": "Айнымалыны ауыстыру арқылы анықталған интегралды есептеңіз"
   },
+  "kk:a347a737fa5cceb9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane parallel to the base cuts a regular triangular prism whose base edge is given. The section is a triangle. Find its area.",
+    "text": "Табанының қабырғасы белгілі дұрыс үшбұрышты призманы табанға параллель жазықтық қияды. Қимасы — үшбұрыш. Оның ауданын табыңыз"
+  },
   "kk:a45a072c03f39d37": {
     "kind": "instruction",
     "reviewed": false,
@@ -761,11 +1079,23 @@
     "source": "Find the n-th term of the arithmetic progression",
     "text": "Арифметикалық прогрессияның $n$-ші мүшесін табыңыз"
   },
+  "kk:a4efb6af9a5c381c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find t so that n is perpendicular to both direction vectors and is therefore a normal vector.",
+    "text": "$n$ екі бағыт векторларына перпендикуляр болатындай $t$ табыңыз; сонда $n$ нормаль вектор болады"
+  },
   "kk:a5380c2a0a4d24a9": {
     "kind": "answer_label",
     "reviewed": false,
     "source": "\\text{one common point}",
     "text": "\\text{бір ортақ нүкте}"
+  },
+  "kk:a53fadcf378b1d38": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the volume of the cylinder with the given base diameter and height.",
+    "text": "Берілген негіздің диаметрі мен биіктігі бойынша цилиндрдің көлемін табыңыз."
   },
   "kk:a59f12f772199e25": {
     "kind": "instruction",
@@ -784,6 +1114,12 @@
     "reviewed": false,
     "source": "Two distinct planes have no common points. Classify their mutual position.",
     "text": "Екі әртүрлі жазықтықтың ортақ нүктелері жоқ. Олардың өзара орналасуын жіктеңіз."
+  },
+  "kk:a71981243ae7bab8": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Multiply the vector by the given scalar.",
+    "text": "Векторды берілген скалярға көбейтіңіз."
   },
   "kk:a8db93e87c28b5d7": {
     "kind": "instruction",
@@ -821,17 +1157,47 @@
     "source": "Use S=abc/(4R) to find the triangle area.",
     "text": "$S=abc/(4R)$ формуласын пайдаланып үшбұрыштың ауданын табыңыз."
   },
+  "kk:ad24e23680272a92": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane at the given distance from the centre of a sphere cuts it in a circle. Find the radius of that circle.",
+    "text": "Сфераның ортасынан берілген қашықтықтағы жазықтық сфераны кесіп шеңбер түзеді. Сол шеңбердің радиусын табыңыз."
+  },
   "kk:aef2386b20884ff9": {
     "kind": "instruction",
     "reviewed": false,
     "source": "At how many common vertex points do the generatrices of a cone meet?",
     "text": "Конустың жасаушылары неше ортақ төбелік нүктеде қиылысады?"
   },
+  "kk:af572849971abe3f": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the cosine of the angle between the two vectors.",
+    "text": "Екі вектор арасындағы бұрыштың косинусын табыңыз."
+  },
   "kk:afc5a2a7a3e34bb4": {
     "kind": "instruction",
     "reviewed": false,
     "source": "An inscribed angle subtends the given arc. Find the inscribed angle.",
     "text": "Шеңберге жазылған бұрыш берілген доғаға сүйенеді. Шеңберге жазылған бұрышты табыңыз."
+  },
+  "kk:b0505e24fdcc649b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the centroid of the triangle.",
+    "text": "Үшбұрыштың ауырлық орталығын табыңыз"
+  },
+  "kk:b0dcff1503784e25": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the distance from the point to the yz-coordinate plane.",
+    "text": "Нүктенің $yz$-координаталар жазықтығына дейінгі қашықтығын табыңыз."
+  },
+  "kk:b3e59cd762395dd3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the distance from the origin to the plane.",
+    "text": "Координаталар басы мен жазықтық арасындағы қашықтықты табыңыз"
   },
   "kk:b6b3a81ab0a6c771": {
     "kind": "instruction",
@@ -844,6 +1210,12 @@
     "reviewed": false,
     "source": "Expand and simplify",
     "text": "Кеңейтіп, ықшамдаңыз"
+  },
+  "kk:b9d686c05bbb1a48": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The vectors are collinear and b equals k times a. Find k.",
+    "text": "Векторлар коллинеарлы және $b = k a$. $k$-ны тап."
   },
   "kk:bbfacdacbb7c099e": {
     "kind": "instruction",
@@ -863,11 +1235,29 @@
     "source": "Find the union of the solution sets",
     "text": "Шешім жиындарының бірлестігін табыңыз"
   },
+  "kk:bdde6389a33e81c3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The volume and the base radius of a cylinder are given. Find its height.",
+    "text": "Цилиндрдің көлемі мен негізінің радиусы берілген. Биіктігін табыңыз."
+  },
+  "kk:bf61a1d2f9faf62e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A right prism has a square base with the given side and the given height. Find the tangent of the angle between its space diagonal and the base plane.",
+    "text": "Қыры берілген квадрат табаны және биіктігі берілген тік призма бар. Оның кеңістік диагоналі мен табан жазықтығы арасындағы бұрыштың тангенсін табыңыз"
+  },
   "kk:bf9da4f6e58807c4": {
     "kind": "answer_label",
     "reviewed": false,
     "source": "\\text{line parallel to plane}",
     "text": "\\text{жазықтыққа параллель түзу}"
+  },
+  "kk:bfab3b8ff3bb46b5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the cosine of the acute angle between the two planes.",
+    "text": "Екі жазықтық арасындағы өткір бұрыштың косинусын табыңыз"
   },
   "kk:c054655a1b96ca3c": {
     "kind": "instruction",
@@ -875,11 +1265,23 @@
     "source": "The altitude to the hypotenuse creates two similar right triangles. Find h.",
     "text": "Гипотенузасына түсірілген биіктік екі ұқсас тікбұрышты үшбұрыш түзеді. $h$-ты табыңыз."
   },
+  "kk:c128586966148d73": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the square of the vector, defined as its scalar product with itself.",
+    "text": "Вектордың квадратының мәнін табыңыз, ол вектордың өзімен скаляр көбейтіндісі ретінде анықталады."
+  },
   "kk:c1e316c9d7cd2562": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Solve the system on the given domain",
     "text": "Берілген анықталу облысында жүйені шешіңіз"
+  },
+  "kk:c2a3c748f1cf1147": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Return 1 if the lines are parallel and 0 if they are not.",
+    "text": "Түзулер параллель болса 1 қайтарыңыз, ал параллель болмаса 0 қайтарыңыз"
   },
   "kk:c32de8d15ee42606": {
     "kind": "instruction",
@@ -893,11 +1295,23 @@
     "source": "A right triangle has the given hypotenuse and one leg. Find the other leg.",
     "text": "Тікбұрышты үшбұрыштың гипотенузасы мен бір катеті берілген. Екінші катетті табыңыз."
   },
+  "kk:c524f3bce1d7d4c6": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane parallel to the axis of a cylinder, at the given distance from it, cuts the cylinder in a rectangle. Find the area of that section.",
+    "text": "Цилиндр осінен берілген қашықтықтағы, онымен параллель жазықтық цилиндрді тіктөртбұрышпен кеседі. Сол қиманың ауданын табыңыз"
+  },
   "kk:c572302e830e8de1": {
     "kind": "answer_label",
     "reviewed": false,
     "source": "\\text{the whole sphere}",
     "text": "\\text{бүкіл шар}"
+  },
+  "kk:c727ef7fdb8e6d9c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the ordered triple of coordinate-axis intercepts of the plane.",
+    "text": "Жазықтықтың координаталық осьтермен қиылысатын нүктелерінің реттелген үштігін табыңыз"
   },
   "kk:c863ec47f2b8cb02": {
     "kind": "instruction",
@@ -911,11 +1325,23 @@
     "source": "Find the area of the sector.",
     "text": "Сектордың ауданын тап"
   },
+  "kk:c93e93218a48dac7": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane through two opposite lateral edges cuts a cube in a rectangle. Find the area of that section.",
+    "text": "Екі қарама-қарсы бүйір қыры арқылы өтетін жазықтық кубты тіктөртбұрыш қимамен қияды. Осы қиманың ауданын табыңыз."
+  },
   "kk:c95bd7a8423402ac": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Solve the equation on the given interval",
     "text": "Берілген интервалда теңдеуді шешіңіз"
+  },
+  "kk:c987c4374390f901": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the lateral surface area of the cone with the given base radius and height.",
+    "text": "Берілген табан радиусы мен биіктігі бар конустың бүйір бетінің ауданын табыңыз."
   },
   "kk:cacf82c13ff0996b": {
     "kind": "instruction",
@@ -1013,6 +1439,12 @@
     "source": "Find the third angle of the triangle.",
     "text": "Үшбұрыштың үшінші бұрышын табыңыз"
   },
+  "kk:e0350f404e21691d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A regular triangular prism has the given base edge and height. Find its volume.",
+    "text": "Дұрыс үшбұрышты призманың табан қабырғасы мен биіктігі берілген. Көлемін табыңыз."
+  },
   "kk:e06027aba0d2a5a9": {
     "kind": "instruction",
     "reviewed": false,
@@ -1061,6 +1493,12 @@
     "source": "Solve for x",
     "text": "x-тің мәнін табыңыз"
   },
+  "kk:e6dc308fe9847025": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A pyramid has the given base area and height. Find its volume.",
+    "text": "Пирамиданың табанының ауданы мен биіктігі берілген. Оның көлемін табыңыз."
+  },
   "kk:e7a4ea4f9a54c097": {
     "kind": "instruction",
     "reviewed": false,
@@ -1096,6 +1534,18 @@
     "reviewed": false,
     "source": "Solve the quadratic equation",
     "text": "Квадрат теңдеуді шешіңіз"
+  },
+  "kk:ea198b0781e0f8ee": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the coordinate t that makes the vectors perpendicular.",
+    "text": "Векторлар перпендикуляр болатындай $t$ мәнін табыңыз"
+  },
+  "kk:ea6e25d7b5db115a": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane through the axis of the cone cuts it in a triangle. Find the area of this axial section.",
+    "text": "Конустың осінен өтетін жазықтық оны үшбұрышқа кеседі. Осы осьтік қиманың ауданын табыңыз."
   },
   "kk:eaf6e8ad67320604": {
     "kind": "instruction",
@@ -1145,6 +1595,12 @@
     "source": "Use the characteristic property of a geometric progression to find the positive x",
     "text": "Геометриялық прогрессияның негізгі қасиетін пайдаланып оң x-ты табыңыз"
   },
+  "kk:f1fc0891f6484b15": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the surface area of the sphere with the given radius.",
+    "text": "Берілген радиусы бар шардың беттік ауданын табыңыз."
+  },
   "kk:f4b3e5d26f5b2046": {
     "kind": "instruction",
     "reviewed": false,
@@ -1156,6 +1612,18 @@
     "reviewed": false,
     "source": "The centroid divides a median in the ratio 2:1 from the vertex. Find the distance from the vertex to the centroid.",
     "text": "Ауырлық орталығы медиананы төбеден бастап 2:1 қатынасымен бөледі. Төбеден ауырлық орталығына дейінгі қашықтықты табыңыз."
+  },
+  "kk:f90c37e88d7169f1": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane passes through the point and has the given normal vector. Find D in Ax plus By plus Cz plus D equals zero.",
+    "text": "Жазықтық берілген нүктеден өтеді және оның нормаль векторы берілген. $Ax+By+Cz+D=0$ теңдеудегі $D$ табыңыз."
+  },
+  "kk:fa4c0f74686c15a4": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Point P divides segment AB internally in the given ratio. Find the coordinates of P.",
+    "text": "Нүкте $P$ $AB$ кесіндісін берілген қатынаста ішкі түрде бөледі. $P$ нүктесінің координаталарын табыңыз."
   },
   "kk:fa661d17b35c1b78": {
     "kind": "instruction",
@@ -1169,11 +1637,29 @@
     "source": "Solve the trigonometric inequality on the given interval",
     "text": "Берілген аралықта тригонометриялық теңсіздікті шешіңдер"
   },
+  "kk:fb42424e6e6ac9dc": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Return 1 if the point lies on the line and 0 if it does not.",
+    "text": "Нүкте түзудің бойында жатса, 1-ді қайтар, әйтпесе 0-ді қайтар"
+  },
   "kk:fb9ca466565d7991": {
     "kind": "instruction",
     "reviewed": false,
     "source": "A plane cuts a triangular prism parallel to its base. What is the shape of the section?",
     "text": "Үшбұрышты призманы табанына параллель жазықтық кеседі. Қиманың пішіні қандай?"
+  },
+  "kk:fba894459dee2f85": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the diagonal of a face of the rectangular parallelepiped with the given edges of that face.",
+    "text": "Берілген қырлары бойынша тікбұрышты параллелепипедтің бетінің диагоналін табыңыз."
+  },
+  "kk:fbccf4178a1a6f33": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The vector lengths and their angle are given. Find their scalar product.",
+    "text": "Векторлардың ұзындықтары мен олардың арасындағы бұрыш берілген. Олардың скалярлық көбейтіндісін табыңыз."
   },
   "kk:fd03a781b183ac48": {
     "kind": "instruction",
@@ -1198,6 +1684,18 @@
     "reviewed": false,
     "source": "How many circular bases does a cylinder have?",
     "text": "Сколько круглых оснований у цилиндра?"
+  },
+  "ru:016d1e424ed9aadf": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the total surface area of the cylinder with the given radius and height.",
+    "text": "Найдите полную площадь поверхности цилиндра при заданных радиусе и высоте."
+  },
+  "ru:057c40c496276e8f": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the space diagonal of the cube with the given edge.",
+    "text": "Найдите пространственную диагональ куба по данному ребру."
   },
   "ru:069e15f4272a237b": {
     "kind": "answer_label",
@@ -1235,6 +1733,18 @@
     "source": "\\text{two common points}",
     "text": "\\text{две общие точки}"
   },
+  "ru:0b6243a782f150a3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the coefficients of v in the ordered basis i, j, k.",
+    "text": "Найдите коэффициенты вектора $v$ в упорядоченном базисе $i, j, k$."
+  },
+  "ru:0db22f8b723d8a13": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The points lie on parallel planes with the given normal, and segment PQ follows the normal direction. Find the distance PQ.",
+    "text": "Точки лежат на параллельных плоскостях с данным нормальным вектором, и отрезок $PQ$ направлен по нормали. Найдите расстояние $PQ$."
+  },
   "ru:1107967deaa890e4": {
     "kind": "instruction",
     "reviewed": false,
@@ -1247,17 +1757,35 @@
     "source": "Find the fundamental period of the function",
     "text": "Найдите наименьший положительный период функции"
   },
+  "ru:156f12d850cffb51": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find vector AB to use as a direction vector for the line through the two points.",
+    "text": "Найдите вектор $AB$, который можно взять за направляющий вектор прямой, проходящей через две точки."
+  },
   "ru:1681ddf0b3759cc2": {
     "kind": "instruction",
     "reviewed": false,
     "source": "How many circles appear in a standard net of a cone?",
     "text": "Сколько кругов в стандартной развёртке конуса?"
   },
+  "ru:175ecc5da2b8bb9a": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane at the given distance from the centre of a sphere cuts it in a circle. Find the area of that circle.",
+    "text": "Плоскость на заданном расстоянии от центра сферы пересекает её по кругу. Найдите площадь этого круга."
+  },
   "ru:17ebf29c09f21dec": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Find one interior angle of the regular polygon.",
     "text": "Найдите один внутренний угол правильного многоугольника"
+  },
+  "ru:18749dae56171fd1": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find C so that the two planes are parallel.",
+    "text": "Найдите $C$, при котором две плоскости параллельны."
   },
   "ru:195b8470d16926b2": {
     "kind": "instruction",
@@ -1307,6 +1835,12 @@
     "source": "Which value of x is excluded from the domain?",
     "text": "Какое значение x исключено из области определения?"
   },
+  "ru:1e88aee1101bc828": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the slant height of the cone with the given base radius and height.",
+    "text": "Найдите образующую конуса, если заданы радиус основания и высота"
+  },
   "ru:1ec7f9c030df13e7": {
     "kind": "instruction",
     "reviewed": false,
@@ -1318,6 +1852,12 @@
     "reviewed": false,
     "source": "Solve the system using the substitution t=a^x",
     "text": "Решите систему, используя замену $t=a^x$"
+  },
+  "ru:2197e8edfd84d0fd": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the unit vector in the direction of the given vector.",
+    "text": "Найдите единичный вектор, направленный вдоль данного вектора"
   },
   "ru:21fbc95c5d0c329c": {
     "kind": "instruction",
@@ -1337,6 +1877,18 @@
     "source": "In a 30°–60°–90° triangle, the side opposite 30° is given. Find the side opposite 60°.",
     "text": "В треугольнике 30°–60°–90° дана сторона, противолежащая углу 30°. Найдите сторону, противолежащую углу 60°."
   },
+  "ru:28867d942058764e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the distance from the point to the origin.",
+    "text": "Найдите расстояние от точки до начала координат."
+  },
+  "ru:28ffd8ba912ebfc4": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A sphere passes through all vertices of the rectangular parallelepiped with the given edges. Find the radius of the sphere.",
+    "text": "Сфера проходит через все вершины прямоугольного параллелепипеда с заданными рёбрами. Найдите радиус сферы."
+  },
   "ru:2937ce29388df19c": {
     "kind": "instruction",
     "reviewed": false,
@@ -1354,6 +1906,12 @@
     "reviewed": false,
     "source": "Convert to the smaller unit and write the result in standard scientific notation",
     "text": "Переведите в меньшую единицу и запишите результат в стандартной форме (в научной нотации)"
+  },
+  "ru:2b2e17e8771a88e9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the height of the regular tetrahedron with the given edge.",
+    "text": "Найдите высоту правильного тетраэдра с данным ребром"
   },
   "ru:2e459d24739d3dad": {
     "kind": "instruction",
@@ -1421,6 +1979,12 @@
     "source": "Use S=pr to find the inradius r.",
     "text": "Используя $S=pr$, найдите радиус вписанной окружности $r$."
   },
+  "ru:38fd6104be8b9d9f": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A frustum of a pyramid has square bases with the given sides and the given height. Find its volume.",
+    "text": "Усечённая пирамида имеет квадратные основания со сторонами и высотой, указанными на рисунке. Найдите её объём"
+  },
   "ru:39635eec3f53d998": {
     "kind": "instruction",
     "reviewed": false,
@@ -1445,6 +2009,18 @@
     "source": "\\text{parallel planes}",
     "text": "\\text{параллельные плоскости}"
   },
+  "ru:3a04a2a7f81209b1": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A regular pyramid has a base with n equal sides and the given slant height of a lateral face. Find its lateral surface area.",
+    "text": "У правильной пирамиды основание имеет $n$ равных сторон и апофема боковой грани задана. Найдите площадь боковой поверхности."
+  },
+  "ru:3b5c5127e13a6e5c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the lateral surface area of the cylinder with the given radius and height.",
+    "text": "Найдите площадь боковой поверхности цилиндра, если заданы радиус и высота"
+  },
   "ru:3ba8a7d7a58be2ad": {
     "kind": "instruction",
     "reviewed": false,
@@ -1457,11 +2033,23 @@
     "source": "Solve the exponential inequality",
     "text": "Решите показательное неравенство"
   },
+  "ru:3d6c064b00a61236": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane through the axis of the cylinder cuts it in a rectangle. Find the area of this axial section.",
+    "text": "Плоскость, проходящая через ось цилиндра, пересекает его по прямоугольнику. Найдите площадь этого осевого сечения."
+  },
   "ru:3e440371bc3aa4a2": {
     "kind": "instruction",
     "reviewed": false,
     "source": "A plane cuts a pentagonal pyramid parallel to its base. What is the shape of the section?",
     "text": "Плоскость, параллельная основанию, пересекает пятиугольную пирамиду. Какова форма сечения?"
+  },
+  "ru:3f2ea582f14e6911": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the sine of the acute angle between the line and the plane.",
+    "text": "Найдите синус острого угла между прямой и плоскостью"
   },
   "ru:3fdcbe0aa8777098": {
     "kind": "instruction",
@@ -1517,6 +2105,24 @@
     "source": "Two parallel lines are cut by a transversal. Find the corresponding angle.",
     "text": "Две параллельные прямые пересечены секущей. Найдите соответственный угол."
   },
+  "ru:4ac55d275a9ddad4": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find t so that the three vectors are coplanar.",
+    "text": "Найдите t, при котором три вектора компланарны."
+  },
+  "ru:4b966981eb092804": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane parallel to the base cuts a pyramid at the given fraction of its height, measured from the apex. The base area is given. Find the area of the section.",
+    "text": "Плоскость, параллельная основанию, пересекает пирамиду на заданной доле её высоты, отсчитываемой от вершины. Площадь основания дана. Найдите площадь сечения."
+  },
+  "ru:4c37809642afc9c9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the distance from the point to the plane.",
+    "text": "Найдите расстояние от точки до плоскости"
+  },
   "ru:4c9569202056ebdf": {
     "kind": "instruction",
     "reviewed": false,
@@ -1528,6 +2134,12 @@
     "reviewed": false,
     "source": "Find the x-coordinate of the inflection point",
     "text": "Найдите абсциссу точки перегиба"
+  },
+  "ru:4cc632d0caa4e509": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find vector AB from the given points.",
+    "text": "Найдите вектор $AB$ по заданным точкам."
   },
   "ru:4d4a185ac8f26728": {
     "kind": "instruction",
@@ -1546,6 +2158,24 @@
     "reviewed": false,
     "source": "Use proportional segments formed by parallel lines to find x.",
     "text": "Используя пропорции отрезков, образованных параллельными прямыми, найдите $x$."
+  },
+  "ru:4fb8f6a9742f8086": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane parallel to the base cuts a cone at the given fraction of its height, measured from the apex. The base radius is given. Find the area of the section.",
+    "text": "Плоскость, параллельная основанию, пересекает конус на заданной доле его высоты, отсчитываемой от вершины. Дан радиус основания. Найдите площадь сечения."
+  },
+  "ru:51dea6e246069c35": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A frustum of a cone has the given base radii and height. Find its volume.",
+    "text": "Дан усечённый конус с заданными радиусами оснований и высотой. Найдите его объём."
+  },
+  "ru:52f6441311e8e29c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The edges of a rectangular parallelepiped are given. Find its total surface area.",
+    "text": "Даны ребра прямоугольного параллелепипеда. Найдите полную площадь поверхности"
   },
   "ru:53c403c02fcadd70": {
     "kind": "instruction",
@@ -1570,6 +2200,12 @@
     "reviewed": false,
     "source": "A quadrilateral is inscribed in a circle. Find the angle opposite the given angle.",
     "text": "Четырехугольник вписан в окружность. Найдите угол, противоположный данному углу."
+  },
+  "ru:584006f0ee16ed44": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the scalar projection of vector a on vector b.",
+    "text": "Найдите скалярную проекцию вектора $a$ на вектор $b$."
   },
   "ru:589c4627bb663265": {
     "kind": "instruction",
@@ -1631,6 +2267,12 @@
     "source": "Find f'(x)",
     "text": "Найдите $f'(x)$"
   },
+  "ru:640f87efbc21a5f8": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The edges of a rectangular parallelepiped are given. Find its volume.",
+    "text": "Даны ребра прямоугольного параллелепипеда. Найдите его объём."
+  },
   "ru:6443065e6fa26c31": {
     "kind": "instruction",
     "reviewed": false,
@@ -1643,11 +2285,23 @@
     "source": "\\text{skew lines}",
     "text": "\\text{скрещивающиеся прямые}"
   },
+  "ru:65535e3fc4e0b16b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the scalar product of the two vectors.",
+    "text": "Найдите скалярное произведение двух векторов."
+  },
   "ru:65ba4a2dfdc3c5f1": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Solve the rational equation",
     "text": "Решите рациональное уравнение"
+  },
+  "ru:6629304269439638": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A regular pyramid has a square base with the given side and the given height. Find the length of a lateral edge.",
+    "text": "В правильной пирамиде с квадратным основанием даны сторона основания и высота. Найдите длину бокового ребра."
   },
   "ru:67eef9be8b785c9b": {
     "kind": "instruction",
@@ -1678,6 +2332,12 @@
     "reviewed": false,
     "source": "A line intersects a plane at point O and is perpendicular to two intersecting lines of that plane passing through O. What is the relation between the line and the plane?",
     "text": "Прямая пересекает плоскость в точке $O$ и перпендикулярна двум пересекающимся прямым этой плоскости, проходящим через $O$. Каково взаимное положение прямой и плоскости?"
+  },
+  "ru:6ad8e192940214e3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Read the ordered coefficient triple (A, B, C) that gives the displayed normal vector of the plane.",
+    "text": "Запишите упорядоченную тройку коэффициентов $(A, B, C)$, задающую изображённый нормальный вектор плоскости."
   },
   "ru:6b520f89113473a0": {
     "kind": "instruction",
@@ -1715,11 +2375,29 @@
     "source": "A quadrilateral is circumscribed about a circle. Three side lengths are given. Find the fourth side.",
     "text": "В четырёхугольник вписана окружность. Известны длины трёх сторон. Найдите четвёртую сторону."
   },
+  "ru:71e3efefa9a55aa5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A pyramid has a square base with the given side and the given height. Find its volume.",
+    "text": "Пирамида имеет квадратное основание со стороной и высотой, заданными в условии. Найдите её объём."
+  },
+  "ru:755097bab8e57d8a": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the volume of the regular tetrahedron with the given edge.",
+    "text": "Найдите объём правильного тетраэдра с данным ребром."
+  },
   "ru:755a305aa86fbafc": {
     "kind": "answer_label",
     "reviewed": false,
     "source": "\\text{parallel lines}",
     "text": "\\text{параллельные прямые}"
+  },
+  "ru:75e1306e2e7bc154": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Calculate the scalar triple-product determinant to test the vectors for coplanarity.",
+    "text": "Вычислите определитель смешанного произведения векторов для проверки их компланарности."
   },
   "ru:772b7698a2cb8439": {
     "kind": "instruction",
@@ -1727,17 +2405,35 @@
     "source": "How many congruent square faces does a cube have?",
     "text": "Сколько равных квадратных граней имеет куб?"
   },
+  "ru:78258799c29d5f88": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the parameter t at the given point on the line.",
+    "text": "Найдите параметр $t$, соответствующий заданной точке на прямой."
+  },
   "ru:794d964324a7da36": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Find the interval on which the function is increasing",
     "text": "Найдите промежуток возрастания функции"
   },
+  "ru:7ac0e50e424ada7c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the volume of the ball with the given radius.",
+    "text": "Найдите объём шара с данным радиусом."
+  },
   "ru:7b2bd60d677cf1bf": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Find the area of the rhombus from its diagonals.",
     "text": "Найдите площадь ромба по его диагоналям"
+  },
+  "ru:7b52cb2736043ae6": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the volume of the cylinder with the given radius and height.",
+    "text": "Найдите объём цилиндра с заданными радиусом и высотой."
   },
   "ru:7b5aa53ef1575658": {
     "kind": "instruction",
@@ -1751,11 +2447,35 @@
     "source": "\\text{intersecting lines}",
     "text": "\\text{пересекающиеся прямые}"
   },
+  "ru:7c28392ee9808b8f": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find t so that the two vectors are collinear.",
+    "text": "Найдите $t$, при котором два вектора коллинеарны."
+  },
+  "ru:7ea1913929f27952": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the total surface area of the hemisphere with the given radius, including its flat circular face.",
+    "text": "Найдите полную площадь поверхности полусферы с данным радиусом, включая её плоское круглое основание."
+  },
   "ru:7eb84c8c182d0eaa": {
     "kind": "answer_label",
     "reviewed": false,
     "source": "\\text{quadrilateral}",
     "text": "\\text{четырехугольник}"
+  },
+  "ru:7ecf6112b5724c76": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the volume of the ball with the given diameter.",
+    "text": "Найдите объём шара по заданному диаметру."
+  },
+  "ru:7eef4f8921937014": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find vector a minus vector b.",
+    "text": "Найдите вектор $a-b$."
   },
   "ru:82efeccf93ef4a8d": {
     "kind": "instruction",
@@ -1793,11 +2513,23 @@
     "source": "\\text{hexagon}",
     "text": "\\text{шестиугольник}"
   },
+  "ru:86845eb1ad54f524": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the sum of the two vectors.",
+    "text": "Найдите сумму двух векторов"
+  },
   "ru:87d6bf9e7fb8453c": {
     "kind": "instruction",
     "reviewed": false,
     "source": "A plane cuts a rectangular parallelepiped parallel to one of its faces. What is the shape of the section?",
     "text": "Плоскость пересекает прямоугольный параллелепипед, параллельно одной из его граней. Какова форма сечения?"
+  },
+  "ru:894f3be520d4012d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the total surface area of the cone with the given base radius and height.",
+    "text": "Найдите площадь полной поверхности конуса по данному радиусу основания и высоте"
   },
   "ru:8a0375bff6b34523": {
     "kind": "instruction",
@@ -1805,11 +2537,23 @@
     "source": "Solve the exponential system",
     "text": "Решите систему показательных уравнений"
   },
+  "ru:8a1f84be7cae0bb2": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A regular prism has a base with n equal sides of the given length. Find its lateral surface area.",
+    "text": "Правильная призма имеет основание — n-угольник со сторонами заданной длины. Найдите площадь боковой поверхности."
+  },
   "ru:8a9dc8f8f7650663": {
     "kind": "instruction",
     "reviewed": false,
     "source": "How many bases does a sphere have?",
     "text": "Сколько оснований у сферы?"
+  },
+  "ru:8c7b80a18b323109": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A regular pyramid has a square base with the given side and the given height. Find the slant height of a lateral face.",
+    "text": "Правильная пирамида имеет квадратное основание со стороной, равной заданной, и высотой, равной заданной. Найдите апофему боковой грани."
   },
   "ru:8cba04adf08a1141": {
     "kind": "instruction",
@@ -1817,11 +2561,23 @@
     "source": "Solve the system",
     "text": "Решите систему"
   },
+  "ru:8d1f223ce374b90d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the midpoint of the segment with the given endpoints.",
+    "text": "Найдите середину отрезка, заданного концами."
+  },
   "ru:8dfccca81ebcf46a": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Use the characteristic property of an arithmetic progression to find x",
     "text": "Воспользуйтесь характерным свойством арифметической прогрессии, чтобы найти $x$"
+  },
+  "ru:8fef679e3eeeb0fc": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane through two opposite lateral edges cuts a rectangular parallelepiped in a rectangle. Find the area of that section.",
+    "text": "Плоскость, проходящая через два противоположных боковых ребра, пересекает прямоугольный параллелепипед по прямоугольнику. Найдите площадь этого сечения."
   },
   "ru:902d184883dfd669": {
     "kind": "instruction",
@@ -1835,11 +2591,23 @@
     "source": "AD is the angle bisector of ∠A. Find BD.",
     "text": "$AD$ — биссектриса угла $∠A$. Найдите $BD$."
   },
+  "ru:9313358bf320a2bb": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the ordered triple of denominators in the canonical equation of the line through the point with the given direction vector.",
+    "text": "Найдите упорядоченную тройку знаменателей в каноническом уравнении прямой, проходящей через данную точку с заданным направляющим вектором."
+  },
   "ru:932f50744bebeab9": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Which ordered pair satisfies the system?",
     "text": "Какая упорядоченная пара удовлетворяет системе?"
+  },
+  "ru:93c3999bd99d1a55": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the cosine of the acute angle between the two lines from their direction vectors.",
+    "text": "Найдите косинус острого угла между прямыми по их направляющим векторам"
   },
   "ru:93c72715c4900d34": {
     "kind": "instruction",
@@ -1859,11 +2627,23 @@
     "source": "A rectangle has x+y equal to the given value. Find x for which the area xy is maximal.",
     "text": "У прямоугольника $x+y$ равно заданному значению. Найдите $x$, при котором площадь $xy$ максимальна."
   },
+  "ru:9539e583b67040c5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the distance between the two parallel planes.",
+    "text": "Найдите расстояние между двумя параллельными плоскостями."
+  },
   "ru:965a00d9ba9665ad": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Simplify",
     "text": "Упростите"
+  },
+  "ru:97044092dda14a96": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A sphere is inscribed in a cube with the given edge. Find the radius of the sphere.",
+    "text": "В куб с заданным ребром вписана сфера. Найдите радиус сферы."
   },
   "ru:97350997d086e6c4": {
     "kind": "instruction",
@@ -1889,6 +2669,12 @@
     "source": "Solve the rational inequality",
     "text": "Решите рациональное неравенство"
   },
+  "ru:9b572f6ed838e79e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the volume of the cone with the given base radius and height.",
+    "text": "Найдите объём конуса по заданным радиусу основания и высоте."
+  },
   "ru:9b81d24f3ae31658": {
     "kind": "instruction",
     "reviewed": false,
@@ -1901,6 +2687,12 @@
     "source": "A polygon is circumscribed about a circle. Find its area.",
     "text": "Около окружности описан многоугольник. Найдите его площадь."
   },
+  "ru:9bea4b506a5dde43": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the cosine of the acute angle between the planes.",
+    "text": "Найдите косинус острого угла между плоскостями."
+  },
   "ru:9c2f93240ff53457": {
     "kind": "instruction",
     "reviewed": false,
@@ -1912,6 +2704,12 @@
     "reviewed": false,
     "source": "Solve the logarithmic equation",
     "text": "Решите логарифмическое уравнение"
+  },
+  "ru:a0d7c501234cd885": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The edges of a rectangular parallelepiped are given. Find the length of its space diagonal.",
+    "text": "Даны ребра прямоугольного параллелепипеда. Найдите длину его пространственной диагонали."
   },
   "ru:a1424fea9f7e2a78": {
     "kind": "instruction",
@@ -1937,6 +2735,12 @@
     "source": "Evaluate the definite integral using substitution",
     "text": "Вычислите определённый интеграл методом замены переменной"
   },
+  "ru:a347a737fa5cceb9": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane parallel to the base cuts a regular triangular prism whose base edge is given. The section is a triangle. Find its area.",
+    "text": "Плоскость, параллельная основанию, пересекает правильную треугольную призму с заданной длиной ребра основания. Сечение — треугольник. Найдите его площадь."
+  },
   "ru:a45a072c03f39d37": {
     "kind": "instruction",
     "reviewed": false,
@@ -1949,11 +2753,23 @@
     "source": "Find the n-th term of the arithmetic progression",
     "text": "Найдите $n$-й член арифметической прогрессии"
   },
+  "ru:a4efb6af9a5c381c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find t so that n is perpendicular to both direction vectors and is therefore a normal vector.",
+    "text": "Найдите $t$ так, чтобы $n$ был перпендикулярен обоим направляющим векторам и поэтому являлся нормальным вектором."
+  },
   "ru:a5380c2a0a4d24a9": {
     "kind": "answer_label",
     "reviewed": false,
     "source": "\\text{one common point}",
     "text": "\\text{одна общая точка}"
+  },
+  "ru:a53fadcf378b1d38": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the volume of the cylinder with the given base diameter and height.",
+    "text": "Найдите объём цилиндра по заданному диаметру основания и высоте."
   },
   "ru:a59f12f772199e25": {
     "kind": "instruction",
@@ -1972,6 +2788,12 @@
     "reviewed": false,
     "source": "Two distinct planes have no common points. Classify their mutual position.",
     "text": "Две различные плоскости не имеют общих точек. Классифицируйте их взаимное расположение."
+  },
+  "ru:a71981243ae7bab8": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Multiply the vector by the given scalar.",
+    "text": "Умножьте вектор на заданный скаляр."
   },
   "ru:a8db93e87c28b5d7": {
     "kind": "instruction",
@@ -2009,17 +2831,47 @@
     "source": "Use S=abc/(4R) to find the triangle area.",
     "text": "Используя $S=abc/(4R)$, найдите площадь треугольника"
   },
+  "ru:ad24e23680272a92": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane at the given distance from the centre of a sphere cuts it in a circle. Find the radius of that circle.",
+    "text": "Плоскость, находящаяся на заданном расстоянии от центра сферы, пересекает её по окружности. Найдите радиус этой окружности."
+  },
   "ru:aef2386b20884ff9": {
     "kind": "instruction",
     "reviewed": false,
     "source": "At how many common vertex points do the generatrices of a cone meet?",
     "text": "В скольких общих вершинах пересекаются образующие конуса?"
   },
+  "ru:af572849971abe3f": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the cosine of the angle between the two vectors.",
+    "text": "Найдите косинус угла между двумя векторами"
+  },
   "ru:afc5a2a7a3e34bb4": {
     "kind": "instruction",
     "reviewed": false,
     "source": "An inscribed angle subtends the given arc. Find the inscribed angle.",
     "text": "Вписанный угол опирается на данную дугу. Найдите вписанный угол."
+  },
+  "ru:b0505e24fdcc649b": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the centroid of the triangle.",
+    "text": "Найдите центр тяжести треугольника."
+  },
+  "ru:b0dcff1503784e25": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the distance from the point to the yz-coordinate plane.",
+    "text": "Найдите расстояние от точки до координатной плоскости $yz$."
+  },
+  "ru:b3e59cd762395dd3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the distance from the origin to the plane.",
+    "text": "Найдите расстояние от начала координат до плоскости."
   },
   "ru:b6b3a81ab0a6c771": {
     "kind": "instruction",
@@ -2032,6 +2884,12 @@
     "reviewed": false,
     "source": "Expand and simplify",
     "text": "Раскройте скобки и упростите"
+  },
+  "ru:b9d686c05bbb1a48": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The vectors are collinear and b equals k times a. Find k.",
+    "text": "Векторы коллинеарны и $b = k a$. Найдите $k$."
   },
   "ru:bbfacdacbb7c099e": {
     "kind": "instruction",
@@ -2051,11 +2909,29 @@
     "source": "Find the union of the solution sets",
     "text": "Найдите объединение множеств решений"
   },
+  "ru:bdde6389a33e81c3": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The volume and the base radius of a cylinder are given. Find its height.",
+    "text": "Даны объём цилиндра и радиус основания. Найдите его высоту."
+  },
+  "ru:bf61a1d2f9faf62e": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A right prism has a square base with the given side and the given height. Find the tangent of the angle between its space diagonal and the base plane.",
+    "text": "Прямая призма имеет квадратное основание, сторона основания и высота которой заданы. Найдите тангенс угла между её пространственной диагональю и плоскостью основания."
+  },
   "ru:bf9da4f6e58807c4": {
     "kind": "answer_label",
     "reviewed": false,
     "source": "\\text{line parallel to plane}",
     "text": "\\text{прямая, параллельная плоскости}"
+  },
+  "ru:bfab3b8ff3bb46b5": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the cosine of the acute angle between the two planes.",
+    "text": "Найдите косинус острого угла между двумя плоскостями"
   },
   "ru:c054655a1b96ca3c": {
     "kind": "instruction",
@@ -2063,11 +2939,23 @@
     "source": "The altitude to the hypotenuse creates two similar right triangles. Find h.",
     "text": "Высота, опущенная на гипотенузу, делит прямоугольный треугольник на два подобных прямоугольных треугольника. Найдите $h$."
   },
+  "ru:c128586966148d73": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the square of the vector, defined as its scalar product with itself.",
+    "text": "Найдите квадрат вектора, равный его скалярному произведению с самим собой"
+  },
   "ru:c1e316c9d7cd2562": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Solve the system on the given domain",
     "text": "Решите систему в заданной области определения"
+  },
+  "ru:c2a3c748f1cf1147": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Return 1 if the lines are parallel and 0 if they are not.",
+    "text": "Запишите 1, если прямые параллельны, и 0, если нет"
   },
   "ru:c32de8d15ee42606": {
     "kind": "instruction",
@@ -2081,11 +2969,23 @@
     "source": "A right triangle has the given hypotenuse and one leg. Find the other leg.",
     "text": "В прямоугольном треугольнике даны гипотенуза и один катет. Найдите другой катет."
   },
+  "ru:c524f3bce1d7d4c6": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane parallel to the axis of a cylinder, at the given distance from it, cuts the cylinder in a rectangle. Find the area of that section.",
+    "text": "Плоскость, параллельная оси цилиндра и удалённая от неё на заданное расстояние, пересекает цилиндр по прямоугольнику. Найдите площадь этого сечения."
+  },
   "ru:c572302e830e8de1": {
     "kind": "answer_label",
     "reviewed": false,
     "source": "\\text{the whole sphere}",
     "text": "\\text{вся сфера}"
+  },
+  "ru:c727ef7fdb8e6d9c": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the ordered triple of coordinate-axis intercepts of the plane.",
+    "text": "Найдите упорядоченную тройку точек пересечения плоскости с осями координат."
   },
   "ru:c863ec47f2b8cb02": {
     "kind": "instruction",
@@ -2099,11 +2999,23 @@
     "source": "Find the area of the sector.",
     "text": "Найдите площадь сектора."
   },
+  "ru:c93e93218a48dac7": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane through two opposite lateral edges cuts a cube in a rectangle. Find the area of that section.",
+    "text": "Плоскость, проходящая через противоположные боковые рёбра, пересекает куб по прямоугольнику. Найдите площадь этого сечения."
+  },
   "ru:c95bd7a8423402ac": {
     "kind": "instruction",
     "reviewed": false,
     "source": "Solve the equation on the given interval",
     "text": "Решите уравнение на заданном промежутке"
+  },
+  "ru:c987c4374390f901": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the lateral surface area of the cone with the given base radius and height.",
+    "text": "Найдите площадь боковой поверхности конуса при заданном радиусе основания и высоте."
   },
   "ru:cacf82c13ff0996b": {
     "kind": "instruction",
@@ -2201,6 +3113,12 @@
     "source": "Find the third angle of the triangle.",
     "text": "Найдите третий угол треугольника."
   },
+  "ru:e0350f404e21691d": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A regular triangular prism has the given base edge and height. Find its volume.",
+    "text": "У правильной треугольной призмы даны ребро основания и высота. Найдите её объём."
+  },
   "ru:e06027aba0d2a5a9": {
     "kind": "instruction",
     "reviewed": false,
@@ -2249,6 +3167,12 @@
     "source": "Solve for x",
     "text": "Найдите $x$"
   },
+  "ru:e6dc308fe9847025": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A pyramid has the given base area and height. Find its volume.",
+    "text": "У пирамиды заданы площадь основания и высота. Найдите её объём."
+  },
   "ru:e7a4ea4f9a54c097": {
     "kind": "instruction",
     "reviewed": false,
@@ -2284,6 +3208,18 @@
     "reviewed": false,
     "source": "Solve the quadratic equation",
     "text": "Решите квадратное уравнение"
+  },
+  "ru:ea198b0781e0f8ee": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the coordinate t that makes the vectors perpendicular.",
+    "text": "Найдите координату $t$, при которой векторы перпендикулярны."
+  },
+  "ru:ea6e25d7b5db115a": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane through the axis of the cone cuts it in a triangle. Find the area of this axial section.",
+    "text": "Плоскость, проходящая через ось конуса, пересекает его по треугольнику. Найдите площадь этого осевого сечения."
   },
   "ru:eaf6e8ad67320604": {
     "kind": "instruction",
@@ -2333,6 +3269,12 @@
     "source": "Use the characteristic property of a geometric progression to find the positive x",
     "text": "Используйте характерное свойство геометрической прогрессии, чтобы найти положительный $x$"
   },
+  "ru:f1fc0891f6484b15": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the surface area of the sphere with the given radius.",
+    "text": "Найдите площадь поверхности шара заданного радиуса"
+  },
   "ru:f4b3e5d26f5b2046": {
     "kind": "instruction",
     "reviewed": false,
@@ -2344,6 +3286,18 @@
     "reviewed": false,
     "source": "The centroid divides a median in the ratio 2:1 from the vertex. Find the distance from the vertex to the centroid.",
     "text": "Центроид делит медиану в отношении $2:1$, считая от вершины. Найдите расстояние от вершины до центроида."
+  },
+  "ru:f90c37e88d7169f1": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "A plane passes through the point and has the given normal vector. Find D in Ax plus By plus Cz plus D equals zero.",
+    "text": "Плоскость проходит через данную точку и имеет заданный вектор нормали. Найдите D в уравнении $Ax + By + Cz + D = 0$."
+  },
+  "ru:fa4c0f74686c15a4": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Point P divides segment AB internally in the given ratio. Find the coordinates of P.",
+    "text": "Точка $P$ внутренне делит отрезок $AB$ в заданном отношении. Найдите координаты точки $P$."
   },
   "ru:fa661d17b35c1b78": {
     "kind": "instruction",
@@ -2357,11 +3311,29 @@
     "source": "Solve the trigonometric inequality on the given interval",
     "text": "Решите тригонометрическое неравенство на заданном промежутке"
   },
+  "ru:fb42424e6e6ac9dc": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Return 1 if the point lies on the line and 0 if it does not.",
+    "text": "Вернуть 1, если точка принадлежит прямой, и 0, если не принадлежит."
+  },
   "ru:fb9ca466565d7991": {
     "kind": "instruction",
     "reviewed": false,
     "source": "A plane cuts a triangular prism parallel to its base. What is the shape of the section?",
     "text": "Плоскость, параллельная основанию треугольной призмы, пересекает её. Какова фигура сечения?"
+  },
+  "ru:fba894459dee2f85": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "Find the diagonal of a face of the rectangular parallelepiped with the given edges of that face.",
+    "text": "Найдите диагональ грани прямоугольного параллелепипеда, если заданы ребра этой грани"
+  },
+  "ru:fbccf4178a1a6f33": {
+    "kind": "instruction",
+    "reviewed": false,
+    "source": "The vector lengths and their angle are given. Find their scalar product.",
+    "text": "Даны длины векторов и угол между ними. Найдите их скалярное произведение."
   },
   "ru:fd03a781b183ac48": {
     "kind": "instruction",

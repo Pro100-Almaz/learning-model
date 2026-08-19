@@ -4,6 +4,7 @@ from pathlib import Path
 
 import environ
 import sentry_sdk
+from celery.schedules import crontab
 
 env = environ.Env()
 root_path = environ.Path(__file__) - 2
@@ -32,6 +33,7 @@ LANGUAGES = [
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
+MICRO_TEST_QUESTION_COUNT = env.int("MICRO_TEST_QUESTION_COUNT", default=10)
 
 # -----------------------------------------------------------------------------
 # Content translation (django-modeltranslation)
@@ -192,6 +194,12 @@ CLERK_JWKS_URL = env("CLERK_JWKS_URL", default="")
 CLERK_ISSUER = env("CLERK_ISSUER", default="")
 CLERK_AUDIENCE = env("CLERK_AUDIENCE", default="")
 CLERK_SECRET_KEY = env("CLERK_SECRET_KEY", default="")
+# The Svix signing secret for the webhook ENDPOINT ("whsec_..."), which Clerk
+# issues separately from CLERK_SECRET_KEY and shows once, per endpoint. Without
+# it the webhook refuses every request outside DEBUG: that endpoint is
+# unauthenticated by design and creates, renames and deactivates user rows, so
+# an unverified one lets anybody who knows the URL deactivate any account.
+CLERK_WEBHOOK_SECRET = env("CLERK_WEBHOOK_SECRET", default="")
 
 # -----------------------------------------------------------------------------
 # Business config
@@ -279,6 +287,12 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"
 CELERY_RESULT_EXTENDED = True
+CELERY_BEAT_SCHEDULE = {
+    "daily-ubt-bank-top-up": {
+        "task": "generation.ubt_top_up",
+        "schedule": crontab(hour=3, minute=17),
+    },
+}
 
 # -----------------------------------------------------------------------------
 # Email

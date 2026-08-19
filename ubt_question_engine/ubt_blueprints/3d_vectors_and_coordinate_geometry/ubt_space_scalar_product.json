@@ -1,0 +1,362 @@
+{
+  "topic": "ubt_space_scalar_product",
+  "parent_topic": "3d_vectors_and_coordinate_geometry",
+  "parent_topic_number": 10,
+  "display_name": "Scalar product of vectors in space",
+  "curriculum_ref": "KZ 2026 UBT - 3D vectors and coordinate geometry - Scalar product",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Exact scalar-product applications; angle modes ask for cosine or scalar projection rather than an inverse-trigonometric value.",
+  "tag": {
+    "name": "Векторы и координаты в пространстве",
+    "slug": "kenistik-vektorlar-koordinatalar"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "dot_product_coordinates",
+        "cosine_between_vectors",
+        "perpendicular_unknown_coordinate",
+        "dot_product_lengths_angle",
+        "vector_square",
+        "scalar_projection"
+      ]
+    },
+    "p": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "q": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "r": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "u": {
+      "type": "int",
+      "min": 2,
+      "max": 9
+    },
+    "v": {
+      "type": "int",
+      "min": 2,
+      "max": 9
+    },
+    "scale": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "dot_product_coordinates",
+          "vector_square"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "cosine_between_vectors",
+          "dot_product_lengths_angle"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "perpendicular_unknown_coordinate",
+          "scalar_projection"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "dot_product_coordinates": {
+      "uses": [
+        "p",
+        "q",
+        "r"
+      ],
+      "question": {
+        "instruction": "Find the scalar product of the two vectors.",
+        "latex": "\\vec{{a}}=({p};{q};{r}),\\qquad\\vec{{b}}=(1;2;3)"
+      }
+    },
+    "cosine_between_vectors": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "ax": "scale",
+        "bx": "scale",
+        "by": "scale"
+      },
+      "question": {
+        "instruction": "Find the cosine of the angle between the two vectors.",
+        "latex": "\\vec{{a}}=({ax};0;0),\\qquad\\vec{{b}}=({bx};{by};0)"
+      }
+    },
+    "perpendicular_unknown_coordinate": {
+      "uses": [
+        "p",
+        "q",
+        "r"
+      ],
+      "question": {
+        "instruction": "Find the coordinate t that makes the vectors perpendicular.",
+        "latex": "\\vec{{a}}=({p};{q};{r}),\\qquad\\vec{{b}}=(1;2;t)"
+      }
+    },
+    "dot_product_lengths_angle": {
+      "uses": [
+        "u",
+        "v"
+      ],
+      "question": {
+        "instruction": "The vector lengths and their angle are given. Find their scalar product.",
+        "latex": "|\\vec{{a}}|={u},\\qquad|\\vec{{b}}|={v},\\qquad\\angle(\\vec{{a}},\\vec{{b}})=60^\\circ"
+      }
+    },
+    "vector_square": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "vx": "2*scale",
+        "vy": "3*scale",
+        "vz": "6*scale"
+      },
+      "question": {
+        "instruction": "Find the square of the vector, defined as its scalar product with itself.",
+        "latex": "\\vec{{v}}=({vx};{vy};{vz})"
+      }
+    },
+    "scalar_projection": {
+      "uses": [
+        "p",
+        "q",
+        "r",
+        "scale"
+      ],
+      "derived": {
+        "bx": "2*scale",
+        "by": "3*scale",
+        "bz": "6*scale"
+      },
+      "question": {
+        "instruction": "Find the scalar projection of vector a on vector b.",
+        "latex": "\\vec{{a}}=({p};{q};{r}),\\qquad\\vec{{b}}=({bx};{by};{bz})"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "dot_product_coordinates": "p+2*q+3*r",
+      "cosine_between_vectors": "sqrt(2)/2",
+      "perpendicular_unknown_coordinate": "-(p+2*q)/r",
+      "dot_product_lengths_angle": "u*v/2",
+      "vector_square": "49*scale**2",
+      "scalar_projection": "(2*p+3*q+6*r)/7"
+    }
+  },
+  "answer_render": {
+    "dot_product_coordinates": "scalar",
+    "cosine_between_vectors": "exact_expression",
+    "perpendicular_unknown_coordinate": "exact_expression",
+    "dot_product_lengths_angle": "exact_expression",
+    "vector_square": "scalar",
+    "scalar_projection": "exact_expression"
+  },
+  "distractors": {
+    "dot_product_coordinates": [
+      {
+        "id": "changed_the_dot_product_sign",
+        "transform": "-(p+2*q+3*r)"
+      },
+      {
+        "id": "halved_the_dot_product",
+        "transform": "(p+2*q+3*r)/2"
+      },
+      {
+        "id": "doubled_the_dot_product",
+        "transform": "2*(p+2*q+3*r)"
+      },
+      {
+        "id": "tripled_the_dot_product",
+        "transform": "3*(p+2*q+3*r)"
+      },
+      {
+        "id": "multiplied_dot_product_by_four",
+        "transform": "4*(p+2*q+3*r)"
+      },
+      {
+        "id": "multiplied_dot_product_by_five",
+        "transform": "5*(p+2*q+3*r)"
+      }
+    ],
+    "cosine_between_vectors": [
+      {
+        "id": "forgot_to_divide_by_lengths",
+        "transform": "2*scale**2"
+      },
+      {
+        "id": "added_lengths_in_the_denominator",
+        "transform": "1/(1+sqrt(2))"
+      },
+      {
+        "id": "forgot_the_square_root",
+        "transform": "Rational(1,2)"
+      },
+      {
+        "id": "inverted_the_cosine_ratio",
+        "transform": "sqrt(2)"
+      },
+      {
+        "id": "used_angle_ratio_without_normalizing",
+        "transform": "1"
+      },
+      {
+        "id": "halved_the_cosine",
+        "transform": "sqrt(2)/4"
+      },
+      {
+        "id": "changed_the_sign",
+        "transform": "-sqrt(2)/2"
+      }
+    ],
+    "perpendicular_unknown_coordinate": [
+      {
+        "id": "forgot_the_negative_sign",
+        "transform": "(p+2*q)/r"
+      },
+      {
+        "id": "divided_by_two_r",
+        "transform": "-(p+2*q)/(2*r)"
+      },
+      {
+        "id": "doubled_the_required_coordinate",
+        "transform": "-2*(p+2*q)/r"
+      },
+      {
+        "id": "tripled_the_required_coordinate",
+        "transform": "-3*(p+2*q)/r"
+      },
+      {
+        "id": "multiplied_required_coordinate_by_four",
+        "transform": "-4*(p+2*q)/r"
+      },
+      {
+        "id": "multiplied_required_coordinate_by_five",
+        "transform": "-5*(p+2*q)/r"
+      }
+    ],
+    "dot_product_lengths_angle": [
+      {
+        "id": "changed_the_sign",
+        "transform": "-u*v/2"
+      },
+      {
+        "id": "halved_the_correct_product",
+        "transform": "u*v/4"
+      },
+      {
+        "id": "forgot_the_cosine_factor",
+        "transform": "u*v"
+      },
+      {
+        "id": "doubled_before_applying_cosine",
+        "transform": "2*u*v"
+      },
+      {
+        "id": "tripled_before_applying_cosine",
+        "transform": "3*u*v"
+      },
+      {
+        "id": "multiplied_by_four_before_cosine",
+        "transform": "4*u*v"
+      }
+    ],
+    "vector_square": [
+      {
+        "id": "took_the_vector_length",
+        "transform": "7*scale"
+      },
+      {
+        "id": "summed_components",
+        "transform": "11*scale"
+      },
+      {
+        "id": "squared_component_sum",
+        "transform": "121*scale**2"
+      },
+      {
+        "id": "omitted_third_square",
+        "transform": "13*scale**2"
+      },
+      {
+        "id": "multiplied_components",
+        "transform": "36*scale**3"
+      },
+      {
+        "id": "halved_the_scalar_product",
+        "transform": "49*scale**2/2"
+      }
+    ],
+    "scalar_projection": [
+      {
+        "id": "projected_in_the_opposite_direction",
+        "transform": "-(2*p+3*q+6*r)/7"
+      },
+      {
+        "id": "halved_the_projection",
+        "transform": "(2*p+3*q+6*r)/14"
+      },
+      {
+        "id": "doubled_the_projection",
+        "transform": "2*(2*p+3*q+6*r)/7"
+      },
+      {
+        "id": "tripled_the_projection",
+        "transform": "3*(2*p+3*q+6*r)/7"
+      },
+      {
+        "id": "multiplied_projection_by_four",
+        "transform": "4*(2*p+3*q+6*r)/7"
+      },
+      {
+        "id": "multiplied_projection_by_five",
+        "transform": "5*(2*p+3*q+6*r)/7"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "positive_volume_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

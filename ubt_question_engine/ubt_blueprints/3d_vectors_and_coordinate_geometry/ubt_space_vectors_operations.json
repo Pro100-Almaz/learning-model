@@ -1,0 +1,365 @@
+{
+  "topic": "ubt_space_vectors_operations",
+  "parent_topic": "3d_vectors_and_coordinate_geometry",
+  "parent_topic_number": 10,
+  "display_name": "Vector operations in three-dimensional space",
+  "curriculum_ref": "KZ 2026 UBT - 3D vectors and coordinate geometry - Vector operations",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Coordinate vector operations in space, including a clean-length unit vector.",
+  "tag": {
+    "name": "Векторы и координаты в пространстве",
+    "slug": "kenistik-vektorlar-koordinatalar"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "vector_from_two_points",
+        "vector_length",
+        "vector_sum",
+        "vector_difference",
+        "scalar_multiple",
+        "unit_vector"
+      ]
+    },
+    "p": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "q": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "r": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "scale": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "k": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "vector_from_two_points",
+          "vector_length"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "vector_sum",
+          "vector_difference"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "scalar_multiple",
+          "unit_vector"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "vector_from_two_points": {
+      "uses": [
+        "p",
+        "q",
+        "r",
+        "scale"
+      ],
+      "derived": {
+        "bx": "p+2*scale",
+        "by": "q+3*scale",
+        "bz": "r+6*scale"
+      },
+      "question": {
+        "instruction": "Find vector AB from the given points.",
+        "latex": "A({p};{q};{r}),\\qquad B({bx};{by};{bz})"
+      }
+    },
+    "vector_length": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "vx": "2*scale",
+        "vy": "3*scale",
+        "vz": "6*scale"
+      },
+      "question": {
+        "instruction": "Find the length of the vector.",
+        "latex": "\\vec{{v}}=({vx};{vy};{vz})"
+      }
+    },
+    "vector_sum": {
+      "uses": [
+        "p",
+        "q",
+        "r"
+      ],
+      "derived": {
+        "bx": "p+1",
+        "by": "q+2",
+        "bz": "r+3"
+      },
+      "question": {
+        "instruction": "Find the sum of the two vectors.",
+        "latex": "\\vec{{a}}=({p};{q};{r}),\\qquad\\vec{{b}}=({bx};{by};{bz})"
+      }
+    },
+    "vector_difference": {
+      "uses": [
+        "p",
+        "q",
+        "r"
+      ],
+      "derived": {
+        "bx": "p+2",
+        "by": "q+4",
+        "bz": "r+6"
+      },
+      "question": {
+        "instruction": "Find vector a minus vector b.",
+        "latex": "\\vec{{a}}=({p};{q};{r}),\\qquad\\vec{{b}}=({bx};{by};{bz})"
+      }
+    },
+    "scalar_multiple": {
+      "uses": [
+        "p",
+        "q",
+        "r",
+        "k"
+      ],
+      "question": {
+        "instruction": "Multiply the vector by the given scalar.",
+        "latex": "{k}\\vec{{a}},\\qquad\\vec{{a}}=({p};{q};{r})"
+      }
+    },
+    "unit_vector": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "vx": "2*scale",
+        "vy": "3*scale",
+        "vz": "6*scale"
+      },
+      "question": {
+        "instruction": "Find the unit vector in the direction of the given vector.",
+        "latex": "\\vec{{v}}=({vx};{vy};{vz})"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "vector_from_two_points": "Tuple(2*scale,3*scale,6*scale)",
+      "vector_length": "7*scale",
+      "vector_sum": "Tuple(2*p+1,2*q+2,2*r+3)",
+      "vector_difference": "Tuple(-2,-4,-6)",
+      "scalar_multiple": "Tuple(k*p,k*q,k*r)",
+      "unit_vector": "Tuple(Rational(2,7),Rational(3,7),Rational(6,7))"
+    }
+  },
+  "answer_render": {
+    "vector_from_two_points": "exact_expression",
+    "vector_length": "scalar",
+    "vector_sum": "exact_expression",
+    "vector_difference": "exact_expression",
+    "scalar_multiple": "exact_expression",
+    "unit_vector": "exact_expression"
+  },
+  "distractors": {
+    "vector_from_two_points": [
+      {
+        "id": "reversed_endpoint_order",
+        "transform": "Tuple(-2*scale,-3*scale,-6*scale)"
+      },
+      {
+        "id": "added_endpoint_coordinates",
+        "transform": "Tuple(2*p+2*scale,2*q+3*scale,2*r+6*scale)"
+      },
+      {
+        "id": "subtracted_only_first_coordinate",
+        "transform": "Tuple(2*scale,2*q+3*scale,2*r+6*scale)"
+      },
+      {
+        "id": "swapped_second_and_third_coordinates",
+        "transform": "Tuple(2*scale,6*scale,3*scale)"
+      },
+      {
+        "id": "used_absolute_end_coordinates",
+        "transform": "Tuple(p+2*scale,q+3*scale,r+6*scale)"
+      },
+      {
+        "id": "halved_each_component",
+        "transform": "Tuple(scale,Rational(3,2)*scale,3*scale)"
+      }
+    ],
+    "vector_length": [
+      {
+        "id": "forgot_the_square_root",
+        "transform": "49*scale**2"
+      },
+      {
+        "id": "summed_components",
+        "transform": "11*scale"
+      },
+      {
+        "id": "omitted_third_component",
+        "transform": "sqrt(13)*scale"
+      },
+      {
+        "id": "used_largest_component",
+        "transform": "6*scale"
+      },
+      {
+        "id": "halved_the_length",
+        "transform": "7*scale/2"
+      },
+      {
+        "id": "multiplied_components",
+        "transform": "36*scale**3"
+      }
+    ],
+    "vector_sum": [
+      {
+        "id": "subtracted_vectors",
+        "transform": "Tuple(-1,-2,-3)"
+      },
+      {
+        "id": "added_only_the_offsets",
+        "transform": "Tuple(1,2,3)"
+      },
+      {
+        "id": "doubled_the_second_vector",
+        "transform": "Tuple(2*p+2,2*q+4,2*r+6)"
+      },
+      {
+        "id": "forgot_second_vector_offsets",
+        "transform": "Tuple(2*p,2*q,2*r)"
+      },
+      {
+        "id": "swapped_second_and_third_components",
+        "transform": "Tuple(2*p+1,2*r+3,2*q+2)"
+      },
+      {
+        "id": "changed_the_sum_sign",
+        "transform": "Tuple(-2*p-1,-2*q-2,-2*r-3)"
+      }
+    ],
+    "vector_difference": [
+      {
+        "id": "reversed_subtraction",
+        "transform": "Tuple(2,4,6)"
+      },
+      {
+        "id": "added_vectors",
+        "transform": "Tuple(2*p+2,2*q+4,2*r+6)"
+      },
+      {
+        "id": "ignored_the_sign",
+        "transform": "Tuple(2,4,-6)"
+      },
+      {
+        "id": "subtracted_offsets_from_wrong_components",
+        "transform": "Tuple(-6,-4,-2)"
+      },
+      {
+        "id": "halved_the_difference",
+        "transform": "Tuple(-1,-2,-3)"
+      },
+      {
+        "id": "used_component_products",
+        "transform": "Tuple(p*(p+2),q*(q+4),r*(r+6))"
+      }
+    ],
+    "scalar_multiple": [
+      {
+        "id": "added_one_after_scaling",
+        "transform": "Tuple(k*p+1,k*q,k*r)"
+      },
+      {
+        "id": "divided_components_by_scalar",
+        "transform": "Tuple(p/k,q/k,r/k)"
+      },
+      {
+        "id": "multiplied_only_first_component",
+        "transform": "Tuple(k*p,q,r)"
+      },
+      {
+        "id": "multiplied_only_last_component",
+        "transform": "Tuple(p,q,k*r)"
+      },
+      {
+        "id": "used_negative_scalar",
+        "transform": "Tuple(-k*p,-k*q,-k*r)"
+      },
+      {
+        "id": "squared_the_scalar",
+        "transform": "Tuple(k**2*p,k**2*q,k**2*r)"
+      }
+    ],
+    "unit_vector": [
+      {
+        "id": "divided_by_squared_length",
+        "transform": "Tuple(Rational(2,49)/scale,Rational(3,49)/scale,Rational(6,49)/scale)"
+      },
+      {
+        "id": "kept_the_original_vector",
+        "transform": "Tuple(2*scale,3*scale,6*scale)"
+      },
+      {
+        "id": "divided_by_component_sum",
+        "transform": "Tuple(Rational(2,11),Rational(3,11),Rational(6,11))"
+      },
+      {
+        "id": "normalized_each_component_separately",
+        "transform": "Tuple(1,1,1)"
+      },
+      {
+        "id": "used_the_opposite_direction",
+        "transform": "Tuple(Rational(-2,7),Rational(-3,7),Rational(-6,7))"
+      },
+      {
+        "id": "swapped_second_and_third_components",
+        "transform": "Tuple(Rational(2,7),Rational(6,7),Rational(3,7))"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "positive_volume_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}
