@@ -1,0 +1,437 @@
+{
+  "topic": "irrational_inequalities_part1",
+  "display_name": "Иррационал теңсіздіктер (1-бөлім)",
+  "curriculum_ref": "Сынып көрсетілмеген — 11-бөлім: Иррационал теңсіздіктер (1-бөлім)",
+  "constraints_template": "irrational_inequalities_part1.j2",
+  "_comment": "Генеративті blueprint: видеодағы дайын мысалдар сақталмайды. Жұп дәрежелі түбір тармақтарында алдымен ММЖ құрылады және қажет болса теңсіздік жұп дәрежеге шығарылады; тақ дәрежелі түбір тармақтарында монотондылық бойынша теңсіздік белгісі сақталып, радикал жойылады. Квадрат және бөлшек-рационал өрнектердің критикалық нүктелері жауаптан кері бағытта таңдалып, коэффициенттер содан кейін есептеледі.",
+  "tag": {
+    "name": "Иррационал теңсіздік",
+    "slug": "irrational-inequality"
+  },
+  "default_difficulty": 2,
+  "parameters": {
+    "structure": {
+      "type": "string",
+      "options": [
+        "even_linear_compare",
+        "even_quadratic_compare",
+        "even_domain_only_polynomial",
+        "even_domain_only_rational",
+        "odd_linear_power",
+        "odd_quadratic_power",
+        "odd_rational_power"
+      ],
+      "desc": "Иррационал теңсіздіктің негізгі құрылымы"
+    },
+    "relation": {
+      "type": "string",
+      "options": [
+        ">",
+        "<",
+        ">=",
+        "<="
+      ],
+      "desc": "Теңсіздік белгісі"
+    },
+    "anchor": {
+      "type": "integer",
+      "options": [
+        -8,
+        -7,
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "Шекара немесе ең сол жақ критикалық нүкте"
+    },
+    "gap_1": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "Бірінші оң аралық"
+    },
+    "gap_2": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "Екінші оң аралық"
+    },
+    "center": {
+      "type": "integer",
+      "options": [
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "Квадрат радикал тармағындағы симметрия центрі"
+    },
+    "pyth_scale": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3
+      ],
+      "desc": "3-4-5 құрылымын масштабтайтын оң сан"
+    },
+    "even_index": {
+      "type": "integer",
+      "options": [
+        2,
+        4
+      ],
+      "desc": "Жұп дәрежелі түбір көрсеткіші"
+    },
+    "even_bound": {
+      "type": "integer",
+      "options": [
+        2,
+        3
+      ],
+      "desc": "Жұп түбірмен салыстырылатын оң бүтін сан"
+    },
+    "odd_index": {
+      "type": "integer",
+      "options": [
+        3,
+        5
+      ],
+      "desc": "Тақ дәрежелі түбір көрсеткіші"
+    },
+    "odd_bound": {
+      "type": "integer",
+      "options": [
+        -3,
+        -2,
+        2,
+        3
+      ],
+      "desc": "Тақ түбірмен салыстырылатын нөлден өзге бүтін сан"
+    },
+    "lead_sign": {
+      "type": "integer",
+      "options": [
+        -1,
+        1
+      ],
+      "desc": "Тақ түбірдің ішіндегі квадрат өрнектің жетекші таңбасы"
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "structure": {
+        "options": [
+          "even_linear_compare",
+          "odd_linear_power"
+        ]
+      },
+      "relation": {
+        "options": [
+          ">",
+          "<",
+          ">=",
+          "<="
+        ]
+      },
+      "anchor": {
+        "options": [
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "even_index": {
+        "options": [
+          2
+        ]
+      },
+      "even_bound": {
+        "options": [
+          2,
+          3
+        ]
+      },
+      "odd_index": {
+        "options": [
+          3
+        ]
+      },
+      "odd_bound": {
+        "options": [
+          -2,
+          2,
+          3
+        ]
+      }
+    },
+    "2": {
+      "structure": {
+        "options": [
+          "even_quadratic_compare",
+          "even_domain_only_polynomial",
+          "odd_quadratic_power"
+        ]
+      },
+      "relation": {
+        "options": [
+          ">",
+          "<",
+          ">=",
+          "<="
+        ]
+      },
+      "anchor": {
+        "options": [
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "center": {
+        "options": [
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "pyth_scale": {
+        "options": [
+          1,
+          2
+        ]
+      },
+      "odd_index": {
+        "options": [
+          3
+        ]
+      },
+      "odd_bound": {
+        "options": [
+          -3,
+          -2,
+          2,
+          3
+        ]
+      },
+      "lead_sign": {
+        "options": [
+          -1,
+          1
+        ]
+      }
+    },
+    "3": {
+      "structure": {
+        "options": [
+          "even_domain_only_rational",
+          "odd_quadratic_power",
+          "odd_rational_power",
+          "even_linear_compare"
+        ]
+      },
+      "relation": {
+        "options": [
+          ">",
+          "<",
+          ">=",
+          "<="
+        ]
+      },
+      "anchor": {
+        "options": [
+          -8,
+          -7,
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "gap_2": {
+        "options": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "even_index": {
+        "options": [
+          2,
+          4
+        ]
+      },
+      "even_bound": {
+        "options": [
+          2,
+          3
+        ]
+      },
+      "odd_index": {
+        "options": [
+          3,
+          5
+        ]
+      },
+      "odd_bound": {
+        "options": [
+          -3,
+          -2,
+          2,
+          3
+        ]
+      },
+      "lead_sign": {
+        "options": [
+          -1,
+          1
+        ]
+      }
+    }
+  },
+  "derived": {
+    "relation": "('>=' if relation in ['>=','<='] else '>') if structure in ['even_domain_only_polynomial','even_domain_only_rational'] else relation",
+    "anchor": "anchor if structure in ['even_linear_compare','even_domain_only_polynomial','even_domain_only_rational','odd_linear_power','odd_quadratic_power','odd_rational_power'] else 0",
+    "gap_1": "gap_1 if structure in ['even_domain_only_polynomial','even_domain_only_rational','odd_quadratic_power','odd_rational_power'] else 0",
+    "gap_2": "gap_2 if structure == 'even_domain_only_rational' else 0",
+    "center": "center if structure == 'even_quadratic_compare' else 0",
+    "pyth_scale": "pyth_scale if structure == 'even_quadratic_compare' else 0",
+    "even_index": "even_index if structure == 'even_linear_compare' else 0",
+    "even_bound": "even_bound if structure == 'even_linear_compare' else (4*pyth_scale if structure == 'even_quadratic_compare' else (2 if structure in ['even_domain_only_polynomial','even_domain_only_rational'] else 0))",
+    "odd_index": "odd_index if structure in ['odd_linear_power','odd_quadratic_power','odd_rational_power'] else 0",
+    "odd_bound": "odd_bound if structure in ['odd_linear_power','odd_quadratic_power','odd_rational_power'] else 0",
+    "lead_sign": "lead_sign if structure == 'odd_quadratic_power' else 1",
+    "p1": "anchor",
+    "p2": "anchor + (even_bound**even_index if structure == 'even_linear_compare' else gap_1)",
+    "p3": "p2 + gap_2",
+    "d1": "center - 3*pyth_scale",
+    "d2": "center + 3*pyth_scale",
+    "t1": "center - 5*pyth_scale",
+    "t2": "center + 5*pyth_scale",
+    "even_quad_b": "-2*center",
+    "even_quad_c": "center**2 - 9*pyth_scale**2",
+    "domain_poly_b": "-(p1+p2)",
+    "domain_poly_c": "p1*p2",
+    "domain_rat_den_b": "p1+p3",
+    "domain_rat_den_c": "-p1*p3",
+    "odd_linear_shift": "p1 - odd_bound**odd_index",
+    "odd_quad_b": "-lead_sign*(p1+p2)",
+    "odd_quad_c": "lead_sign*p1*p2 + odd_bound**odd_index",
+    "odd_rat_power": "odd_bound**odd_index",
+    "odd_rat_num_a": "odd_rat_power + 1",
+    "odd_rat_num_b": "-(odd_rat_power*p2 + p1)",
+    "relation_latex": "'\\\\ge' if relation == '>=' else ('\\\\le' if relation == '<=' else relation)"
+  },
+  "constraints": [],
+  "integer_clean": true,
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% set closed = relation in ['>=','<='] %}{% if structure == 'even_linear_compare' %}{% if relation in ['<','<='] %}$[{{ p1 }};{{ p2 }}{{ ']' if closed else ')' }}${% else %}${{ '[' if closed else '(' }}{{ p2 }};+\\infty)${% endif %}{% elif structure == 'even_quadratic_compare' %}{% if relation in ['>','>='] %}$(-\\infty;{{ t1 }}{{ ']' if closed else ')' }}\\cup{{ '[' if closed else '(' }}{{ t2 }};+\\infty)${% else %}${{ '[' if closed else '(' }}{{ t1 }};{{ d1 }}]\\cup[{{ d2 }};{{ t2 }}{{ ']' if closed else ')' }}${% endif %}{% elif structure == 'even_domain_only_polynomial' %}$(-\\infty;{{ p1 }}]\\cup[{{ p2 }};+\\infty)${% elif structure == 'even_domain_only_rational' %}$(-\\infty;{{ p1 }})\\cup[{{ p2 }};{{ p3 }})${% elif structure == 'odd_linear_power' %}{% if relation in ['>','>='] %}${{ '[' if closed else '(' }}{{ p1 }};+\\infty)${% else %}$(-\\infty;{{ p1 }}{{ ']' if closed else ')' }}${% endif %}{% elif structure == 'odd_quadratic_power' %}{% set outside = (lead_sign > 0 and relation in ['>','>=']) or (lead_sign < 0 and relation in ['<','<=']) %}{% if outside %}$(-\\infty;{{ p1 }}{{ ']' if closed else ')' }}\\cup{{ '[' if closed else '(' }}{{ p2 }};+\\infty)${% else %}${{ '[' if closed else '(' }}{{ p1 }};{{ p2 }}{{ ']' if closed else ')' }}${% endif %}{% else %}{% if relation in ['>','>='] %}$(-\\infty;{{ p1 }}{{ ']' if closed else ')' }}\\cup({{ p2 }};+\\infty)${% else %}${{ '[' if closed else '(' }}{{ p1 }};{{ p2 }})${% endif %}{% endif %}",
+    "desc": "Шешім аралықтар түрінде беріледі. Жұп түбірде ММЖ міндетті түрде ескеріледі; тақ түбірде түбір функциясының монотондылығы теңсіздікті тақ дәрежеге шығаруға мүмкіндік береді."
+  },
+  "distractors": [
+    {
+      "id": "opposite_inequality_region",
+      "desc": "Теңсіздік белгісіне сәйкес келетін аралықтардың орнына қарама-қарсы таңбалы аймақты таңдады.",
+      "transform": {
+        "correct": "{% set closed = relation in ['>=','<='] %}{% if structure == 'even_linear_compare' %}{% if relation in ['<','<='] %}${{ '[' if closed else '(' }}{{ p2 }};+\\infty)${% else %}$[{{ p1 }};{{ p2 }}{{ ']' if closed else ')' }}${% endif %}{% elif structure == 'even_quadratic_compare' %}{% if relation in ['>','>='] %}${{ '[' if closed else '(' }}{{ t1 }};{{ d1 }}]\\cup[{{ d2 }};{{ t2 }}{{ ']' if closed else ')' }}${% else %}$(-\\infty;{{ t1 }}{{ ']' if closed else ')' }}\\cup{{ '[' if closed else '(' }}{{ t2 }};+\\infty)${% endif %}{% elif structure == 'even_domain_only_polynomial' %}$({{ p1 }};{{ p2 }})${% elif structure == 'even_domain_only_rational' %}$({{ p1 }};{{ p2 }})\\cup({{ p3 }};+\\infty)${% elif structure == 'odd_linear_power' %}{% if relation in ['>','>='] %}$(-\\infty;{{ p1 }}{{ ']' if closed else ')' }}${% else %}${{ '[' if closed else '(' }}{{ p1 }};+\\infty)${% endif %}{% elif structure == 'odd_quadratic_power' %}{% set outside = (lead_sign > 0 and relation in ['>','>=']) or (lead_sign < 0 and relation in ['<','<=']) %}{% if outside %}${{ '[' if closed else '(' }}{{ p1 }};{{ p2 }}{{ ']' if closed else ')' }}${% else %}$(-\\infty;{{ p1 }}{{ ']' if closed else ')' }}\\cup{{ '[' if closed else '(' }}{{ p2 }};+\\infty)${% endif %}{% else %}{% if relation in ['>','>='] %}${{ '[' if closed else '(' }}{{ p1 }};{{ p2 }})${% else %}$(-\\infty;{{ p1 }}{{ ']' if closed else ')' }}\\cup({{ p2 }};+\\infty)${% endif %}{% endif %}"
+      }
+    },
+    {
+      "id": "domain_or_denominator_error",
+      "desc": "Жұп түбірде тек ММЖ-ны жауап деп алды немесе бөлшек өрнектің бөлімін нөлге айналдыратын нүктені қате қосты.",
+      "transform": {
+        "correct": "{% set closed = relation in ['>=','<='] %}{% if structure == 'even_linear_compare' %}$[{{ p1 }};+\\infty)${% elif structure == 'even_quadratic_compare' %}$(-\\infty;{{ d1 }}]\\cup[{{ d2 }};+\\infty)${% elif structure == 'even_domain_only_polynomial' %}$(-\\infty;+\\infty)${% elif structure == 'even_domain_only_rational' %}$(-\\infty;{{ p1 }}]\\cup[{{ p2 }};{{ p3 }}]${% elif structure == 'odd_linear_power' %}$\\{ {{ p1 }} \\}${% elif structure == 'odd_quadratic_power' %}$\\{ {{ p1 }};{{ p2 }} \\}${% else %}{% if relation in ['>','>='] %}$(-\\infty;{{ p1 }}{{ ']' if closed else ')' }}\\cup[{{ p2 }};+\\infty)${% else %}${{ '[' if closed else '(' }}{{ p1 }};{{ p2 }}]${% endif %}{% endif %}"
+      }
+    },
+    {
+      "id": "endpoint_or_equation_only",
+      "desc": "Теңсіздікті теңдеу сияқты шешіп тек шекараларды қалдырды немесе қатаң/қатаң емес шекараны шатастырды.",
+      "transform": {
+        "correct": "{% set closed = relation in ['>=','<='] %}{% if structure == 'even_linear_compare' %}$\\{ {{ p2 }} \\}${% elif structure == 'even_quadratic_compare' %}$\\{ {{ t1 }};{{ t2 }} \\}${% elif structure == 'even_domain_only_polynomial' %}$\\{ {{ p1 }};{{ p2 }} \\}${% elif structure == 'even_domain_only_rational' %}$[{{ p2 }};+\\infty)${% elif structure == 'odd_linear_power' %}{% if relation in ['>','<'] %}{% if relation == '>' %}$[{{ p1 }};+\\infty)${% else %}$(-\\infty;{{ p1 }}]${% endif %}{% else %}{% if relation == '>=' %}$({{ p1 }};+\\infty)${% else %}$(-\\infty;{{ p1 }})${% endif %}{% endif %}{% elif structure == 'odd_quadratic_power' %}{% set outside = (lead_sign > 0 and relation in ['>','>=']) or (lead_sign < 0 and relation in ['<','<=']) %}{% if outside %}{% if closed %}$(-\\infty;{{ p1 }})\\cup({{ p2 }};+\\infty)${% else %}$(-\\infty;{{ p1 }}]\\cup[{{ p2 }};+\\infty)${% endif %}{% else %}{% if closed %}$({{ p1 }};{{ p2 }})${% else %}$[{{ p1 }};{{ p2 }}]${% endif %}{% endif %}{% else %}$\\{ {{ p1 }};{{ p2 }} \\}${% endif %}"
+      }
+    }
+  ],
+  "_dropped_distractors": [
+    {
+      "id": "raised_even_root_without_domain_check",
+      "why_dropped": "Жұп дәрежеге шығарып, бірақ ММЖ-ны мүлде елемеу кейбір тармақтарда соңғы сандық жауапты өзгертпеуі мүмкін; сондықтан ол барлық генерацияда determinate қате жауап бермейді."
+    },
+    {
+      "id": "stopped_after_removing_radical",
+      "why_dropped": "Радикалды жойғаннан кейін алынған квадрат немесе бөлшек-рационал теңсіздікті шешпей тоқтау бір ғана анық қате жауап тудырмайды."
+    }
+  ],
+  "narrative_settings": [
+    "түбір арқылы берілген физикалық шаманың рұқсат етілетін мәндер аралығын табу",
+    "геометриялық ұзындықтың түбірлік шартты қанағаттандыратын параметрлерін анықтау",
+    "рационал өрнек түбір астында тұрған қолданбалы шектеудің шешім жиынын табу"
+  ]
+}

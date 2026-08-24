@@ -1,0 +1,162 @@
+{
+  "topic": "quadratic_equations_factorization",
+  "display_name": "Решение квадратных уравнений методом разложения на множители",
+  "curriculum_ref": "8 класс — Квадратные уравнения. Разложение квадратного трёхчлена на множители",
+  "constraints_template": "quadratic_equations_factorization.j2",
+
+  "_comment": "Генеративный blueprint: генератор всегда строит одно и то же скрытое ядро (p*x+q)(r*x+s)=0, а presentation_form решает, в каком виде уравнение предъявляется. Уровень задаётся движком через difficulty_overrides, а НЕ случайным параметром. Косметические параметры формы (scale, shift_b, shift_c) ВЫЧИСЛЯЮТСЯ из ядра, а не бросаются: как отдельные параметры они крутились бы даже там, где форма их не использует, и порождали бы сотни разных content_hash для одного и того же уравнения. По той же причине derived ПЕРЕЗАПИСЫВАЕТ r и s для формы repeated_root: derived выполняется после броска, поэтому канонизация там бесплатна, тогда как ограничение 'p == r и q == s' ловило бы совпадение двух независимых бросков примерно в 1% случаев — форма объявлена, но практически не встречалась бы. Ответ считает agents_and_engine/quad_eq.py (точная арифметика, без float).",
+
+  "tag": { "name": "Разложение квадратного уравнения на множители", "slug": "quad-eq-factorization" },
+  "default_difficulty": 2,
+
+  "parameters": {
+    "presentation_form": {
+      "type": "string",
+      "options": ["standard", "scaled", "both_sides", "repeated_root"],
+      "desc": "Форма предъявления уравнения; закрепляется уровнем сложности"
+    },
+    "p": {
+      "type": "integer",
+      "options": [1, 2, 3, 4, 5],
+      "desc": "Коэффициент при x в первом линейном множителе p*x+q"
+    },
+    "q": {
+      "type": "integer",
+      "options": [-12, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12],
+      "desc": "Свободный член первого линейного множителя"
+    },
+    "r": {
+      "type": "integer",
+      "options": [1, 2, 3, 4, 5],
+      "desc": "Коэффициент при x во втором линейном множителе r*x+s"
+    },
+    "s": {
+      "type": "integer",
+      "options": [-12, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12],
+      "desc": "Свободный член второго линейного множителя"
+    }
+  },
+
+  "difficulty_overrides": {
+    "1": {
+      "presentation_form": { "options": ["standard"] },
+      "p": { "options": [1] },
+      "r": { "options": [1] },
+      "q": { "options": [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+      "s": { "options": [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] }
+    },
+    "2": {
+      "presentation_form": { "options": ["standard"] },
+      "p": { "options": [1, 2, 3, 4] },
+      "r": { "options": [2, 3, 4, 5] }
+    },
+    "3": {
+      "presentation_form": {
+        "options": ["scaled", "scaled", "scaled", "both_sides", "both_sides", "both_sides", "repeated_root"],
+        "_weighting": "Веса заданы повторами: движок выбирает из options равномерно. repeated_root канонизируется в derived и потому проходит ограничения ВСЕГДА, тогда как две другие формы теряют около половины бросков на каноническом порядке множителей. Без этого перекоса repeated_root занимал бы ~60% уровня 3."
+      }
+    }
+  },
+
+  "derived": {
+    "r": "p if presentation_form == 'repeated_root' else r",
+    "s": "q if presentation_form == 'repeated_root' else s",
+    "a": "p * r",
+    "b": "p * s + q * r",
+    "c": "q * s",
+    "D": "(p * s - q * r) ** 2",
+    "scale": "2 + (abs(q) + abs(s)) % 4",
+    "shift_b": "3 + (abs(p) + abs(s)) % 5",
+    "shift_c": "-(4 + (abs(q) + abs(r)) % 6)"
+  },
+
+  "constraints": [
+    "q != 0",
+    "s != 0",
+    "gcd(abs(p), abs(q)) == 1  // иначе из множителя можно вынести число и он не в каноническом виде",
+    "gcd(abs(r), abs(s)) == 1",
+    "presentation_form != 'repeated_root' -> p * s - q * r != 0  // иначе множители пропорциональны и корень один",
+    "presentation_form != 'repeated_root' -> p < r or (p == r and q < s)  // канонический порядок: (p,q)(r,s) и (r,s)(p,q) раскрываются в одно уравнение"
+  ],
+
+  "integer_clean": true,
+
+  "generation_logic": {
+    "base_factorization": {
+      "hidden_form": "(p*x+q)*(r*x+s)=0",
+      "expanded_form": "(p*r)*x^2 + (p*s+q*r)*x + q*s = 0",
+      "roots": ["-q/p", "-s/r"]
+    },
+    "standard": { "present": "a*x^2+b*x+c=0" },
+    "scaled": {
+      "present": "scale*a*x^2 + scale*b*x + scale*c = 0",
+      "solution_hint": "Сначала вынести или сократить общий множитель scale."
+    },
+    "both_sides": {
+      "present": "a*x^2 + (b+shift_b)*x + (c+shift_c) = shift_b*x + shift_c",
+      "solution_hint": "Перенести все члены в одну часть и получить базовое уравнение."
+    },
+    "repeated_root": {
+      "hidden_form": "(p*x+q)^2=0",
+      "expanded_form": "p^2*x^2 + 2*p*q*x + q^2 = 0"
+    }
+  },
+
+  "answer": {
+    "type": "quadratic_factorization",
+    "step_1_standard_form": "Привести уравнение к виду a*x^2+b*x+c=0; при наличии общего множителя сократить его.",
+    "step_2_monic_pair": "Если a=1, найти m и n: m*n=c и m+n=b, затем получить (x+m)(x+n)=0.",
+    "step_2_non_monic_pair": "Если a!=1, найти линейные множители (p*x+q)(r*x+s), где p*r=a, q*s=c, p*s+q*r=b.",
+    "step_3_zero_product": "Приравнять каждый линейный множитель к нулю.",
+    "step_4_roots": "Получить x1=-q/p и x2=-s/r; при одинаковых множителях указать один двукратный корень.",
+    "desc": "answer_key: точные рациональные корни, вычисленные agents_and_engine/quad_eq.py прямо из скрытых множителей. Факторизация гарантирована самой генерацией коэффициентов, поэтому D=(p*s-q*r)^2 — всегда точный квадрат."
+  },
+
+  "distractors": [
+    {
+      "id": "correct_product_wrong_sum",
+      "desc": "Выбрана пара с правильным произведением, но неправильной суммой.",
+      "transform": { "factor_pair_check": "product_only" }
+    },
+    {
+      "id": "wrong_signs_for_negative_c",
+      "desc": "При отрицательном c выбраны множители одинаковых знаков.",
+      "transform": { "factor_signs": "same_sign_when_c_negative" }
+    },
+    {
+      "id": "root_sign_not_changed",
+      "desc": "Из p*x+q=0 записано x=q/p вместо x=-q/p.",
+      "transform": { "root_from_factor": "keep_constant_sign" }
+    },
+    {
+      "id": "only_one_factor_zero",
+      "desc": "К нулю приравнен только один множитель.",
+      "transform": { "zero_product": "first_factor_only" }
+    },
+    {
+      "id": "wrong_cross_sum",
+      "desc": "Для неприведённого уравнения не проверена сумма перекрёстных произведений.",
+      "transform": { "cross_check": "ignore_middle_coefficient" }
+    },
+    {
+      "id": "forgot_standardization",
+      "desc": "Ученик начал факторизацию до переноса всех членов в одну часть.",
+      "transform": { "skip": "standard_form" }
+    },
+    {
+      "id": "repeated_root_count_error",
+      "desc": "Одинаковый линейный множитель интерпретирован как два различных корня.",
+      "transform": { "repeated_root": "two_distinct_roots" }
+    }
+  ],
+
+  "_dropped_distractors": {
+    "forgot_common_factor": "Не сокращён общий числовой множитель в масштабированном уравнении. УБРАН как вариант ответа: k*(p*x+q)*(r*x+s)=0 и (p*x+q)*(r*x+s)=0 имеют одно и то же множество корней, поэтому эта ошибка процесса не даёт отличного от верного ответа. Осталась бы вечно неиспользуемым id."
+  },
+
+  "narrative_settings": [
+    "определение размеров прямоугольной площадки",
+    "нахождение моментов пересечения траектории с заданным уровнем",
+    "поиск нулей факторизуемой параболы"
+  ]
+}

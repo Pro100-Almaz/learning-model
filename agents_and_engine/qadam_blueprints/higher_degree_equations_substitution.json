@@ -1,0 +1,482 @@
+{
+  "topic": "higher_degree_equations_substitution",
+  "display_name": "Решение уравнений высокой степени методом замены переменной",
+  "curriculum_ref": "8 класс — Уравнения высокой степени. Метод замены переменной (Жоғары дәрежелі теңдеу)",
+  "constraints_template": "higher_degree_equations_substitution.j2",
+  "_comment": "Генеративный blueprint по материалу урока «6.4. Жоғары дәрежелі теңдеу». Готовых задач нет: каждое уравнение строится ОТ ОТВЕТА. Сначала выбираются целые значения x, из них получаются корни вспомогательного уравнения t_1 и t_2, и только потом собираются коэффициенты. Поэтому все корни целые, а обратная замена никогда не даёт иррациональностей. Решение считает agents_and_engine/higher_degree.py.",
+  "_eval_dialect_note": "В выражениях НЕЛЬЗЯ использовать целочисленное деление '//': _eval обрезает выражение по '//' как по комментарию. Все формулы здесь обходятся умножением и вычитанием.",
+  "tag": {
+    "name": "Уравнения высокой степени",
+    "slug": "higher-degree-equations"
+  },
+  "default_difficulty": 2,
+  "parameters": {
+    "structure": {
+      "type": "string",
+      "options": [
+        "power_substitution",
+        "linear_square_substitution",
+        "repeated_quadratic_product",
+        "paired_products",
+        "hidden_shift_substitution"
+      ],
+      "desc": "Структурный шаблон уравнения; определяет, что именно обозначается через t"
+    },
+    "query_type": {
+      "type": "string",
+      "options": [
+        "solve",
+        "root_sum",
+        "root_product"
+      ],
+      "desc": "Что требуется найти: все корни, их сумму или их произведение"
+    },
+    "power": {
+      "type": "integer",
+      "options": [
+        2,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "desc": "Степень n в замене t=x^n. Только 2 и 3: при n=4 исходное уравнение имело бы восьмую степень",
+      "_weighting": "power=3 проходит через ограничения примерно в 6 раз реже (leading_t==1 и обе базы <=3), поэтому взвешено 6:1. Без веса на уровне 2 выходило 282 против 38."
+    },
+    "leading_t": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3
+      ],
+      "desc": "Старший коэффициент квадратного уравнения относительно t"
+    },
+    "x_base_1": {
+      "type": "integer",
+      "options": [
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "Целый корень, порождающий первое значение t (уравнение строится от него)"
+    },
+    "x_base_2": {
+      "type": "integer",
+      "options": [
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "Целый корень (или база модуля), порождающий второе значение t"
+    },
+    "t_sign_2": {
+      "type": "integer",
+      "options": [
+        1,
+        1,
+        -1
+      ],
+      "desc": "Знак второго корня t. При -1 и чётной степени это значение недопустимо и должно быть отброшено — именно на этом строится проверка области допустимых t",
+      "_weighting": "t_sign_2=1 требует ещё и упорядоченности баз, поэтому проходит вдвое реже; вес 2:1 выравнивает. Это важно: именно при +1 чётная степень даёт ЧЕТЫРЕ корня, а не два."
+    },
+    "inner_a": {
+      "type": "integer",
+      "options": [
+        1,
+        2
+      ],
+      "desc": "Коэффициент a во внутреннем выражении ax+b"
+    },
+    "inner_b": {
+      "type": "integer",
+      "options": [
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "desc": "Свободный член b во внутреннем выражении ax+b"
+    },
+    "quad_p": {
+      "type": "integer",
+      "options": [
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "desc": "Коэффициент p в повторяющемся выражении Q(x)=x^2+p*x+q"
+    },
+    "quad_q": {
+      "type": "integer",
+      "options": [
+        -10,
+        -9,
+        -8,
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10
+      ],
+      "desc": "Свободный член q в Q(x)=x^2+p*x+q"
+    },
+    "second_branch": {
+      "type": "string",
+      "options": [
+        "real",
+        "real",
+        "real",
+        "real",
+        "real",
+        "none"
+      ],
+      "desc": "Даёт ли вторая ветвь обратной замены действительные корни. 'none' — дискриминант отрицателен, ветвь пуста; это и есть повод проверять КАЖДУЮ ветвь, а не только первую",
+      "_weighting": "У 'real' четыре дополнительных ограничения, поэтому без веса он проигрывал 809:178. Вес 5:1 даёт примерно поровну. Перекос был вреден вдвойне: без второй ветви невозможны ни incomplete_root_aggregation, ни wrong_delta_sign."
+    },
+    "gap": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3
+      ],
+      "desc": "Запас, на который второе значение t уводится ниже границы существования корней (используется только при second_branch='none')"
+    },
+    "pair_center": {
+      "type": "integer",
+      "options": [
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "Центр симметрии четырёх линейных множителей"
+    },
+    "pair_offset_1": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3
+      ],
+      "desc": "Первый симметричный сдвиг относительно центра"
+    },
+    "pair_offset_2": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3
+      ],
+      "desc": "Второй симметричный сдвиг относительно центра"
+    },
+    "pair_k": {
+      "type": "integer",
+      "options": [
+        3,
+        4,
+        5,
+        6
+      ],
+      "desc": "Отклонение корней от центра: x = pair_center ± pair_k. Берётся заведомо больше обоих сдвигов, поэтому второе значение t отрицательно и отбрасывается"
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "structure": {
+        "options": [
+          "power_substitution"
+        ]
+      },
+      "query_type": {
+        "options": [
+          "solve"
+        ]
+      },
+      "leading_t": {
+        "options": [
+          1,
+          2
+        ]
+      },
+      "x_base_1": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "x_base_2": {
+        "options": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "power": {
+        "options": [
+          2,
+          3,
+          3,
+          3
+        ],
+        "_weighting": "На уровне 1 leading_t всего из двух значений, поэтому штраф за power=3 меньше, чем в базовых опциях: здесь хватает веса 3:1, а не 6:1."
+      }
+    },
+    "2": {
+      "structure": {
+        "options": [
+          "power_substitution",
+          "power_substitution",
+          "power_substitution",
+          "power_substitution",
+          "power_substitution",
+          "linear_square_substitution",
+          "linear_square_substitution",
+          "linear_square_substitution",
+          "linear_square_substitution",
+          "repeated_quadratic_product"
+        ],
+        "_weighting": "Веса подобраны по замеру, а не по интуиции: при 1:1:1 выходило 320:193:987, при 3:5:1 — 151:329:220. Текущие 5:4:1 дают примерно поровну."
+      },
+      "query_type": {
+        "options": [
+          "solve"
+        ]
+      }
+    },
+    "3": {
+      "structure": {
+        "options": [
+          "repeated_quadratic_product",
+          "repeated_quadratic_product",
+          "repeated_quadratic_product",
+          "repeated_quadratic_product",
+          "paired_products",
+          "paired_products",
+          "hidden_shift_substitution",
+          "hidden_shift_substitution",
+          "hidden_shift_substitution",
+          "hidden_shift_substitution"
+        ],
+        "_weighting": "При 1:1:1 было 414:626:460, при 3:2:3 — 191:298:211. Текущие 4:2:4 выравнивают полосу."
+      },
+      "query_type": {
+        "options": [
+          "solve",
+          "solve",
+          "root_sum",
+          "root_product"
+        ],
+        "_weighting": "solve вдвое чаще: сумма и произведение проверяют только последний шаг, а поиск самих корней — весь метод."
+      }
+    }
+  },
+  "_derived_notes": {
+    "_note": "Первые тринадцать строк — канонизация. compute_content_hash хеширует ВЕСЬ spec, поэтому параметр, который данная structure не использует, обязан принимать ровно одно значение: иначе одна и та же задача получит разные хеши и дедупликация банка молча перестанет работать. difficulty_overrides сюда не дотягивается — на уровне 2 и 3 в одной полосе живут по три структуры.",
+    "_note_build": "Дальше — построение от ответа. w — значение внутреннего линейного выражения в корне, q_1/q_2 — значение Q(x) в корне; они и становятся корнями вспомогательного уравнения по t.",
+    "_note_coeffs": "Коэффициенты собираются из t_1 и t_2 обратным ходом Виета. red_b/red_c — для степенной и линейно-квадратной форм, delta/rhs — для трёх остальных."
+  },
+  "derived": {
+    "power": "power if structure == 'power_substitution' else 2",
+    "leading_t": "leading_t if structure == 'power_substitution' or structure == 'linear_square_substitution' else 1",
+    "inner_a": "inner_a if structure == 'linear_square_substitution' else 1",
+    "inner_b": "inner_b if structure == 'linear_square_substitution' else 0",
+    "t_sign_2": "t_sign_2 if structure == 'power_substitution' or structure == 'linear_square_substitution' else 1",
+    "quad_p": "quad_p if structure == 'repeated_quadratic_product' or structure == 'hidden_shift_substitution' else 0",
+    "quad_q": "quad_q if structure == 'repeated_quadratic_product' else 0",
+    "second_branch": "second_branch if structure == 'repeated_quadratic_product' or structure == 'hidden_shift_substitution' else 'real'",
+    "gap": "gap if second_branch == 'none' else 1",
+    "pair_center": "pair_center if structure == 'paired_products' else 0",
+    "pair_offset_1": "pair_offset_1 if structure == 'paired_products' else 1",
+    "pair_offset_2": "pair_offset_2 if structure == 'paired_products' else 2",
+    "pair_k": "pair_k if structure == 'paired_products' else 3",
+    "x_base_1": "1 if structure == 'paired_products' else x_base_1",
+    "x_base_2": "x_base_2 if structure != 'paired_products' and second_branch == 'real' else 1",
+    "w_1": "inner_a * x_base_1 + inner_b",
+    "w_2": "inner_a * x_base_2 + inner_b",
+    "q_1": "x_base_1 * x_base_1 + quad_p * x_base_1 + quad_q",
+    "q_2": "x_base_2 * x_base_2 + quad_p * x_base_2 + quad_q",
+    "q_none": "quad_q - gap - quad_p * quad_p",
+    "t_1": "x_base_1 ** power if structure == 'power_substitution' else (w_1 * w_1 if structure == 'linear_square_substitution' else (pair_k * pair_k if structure == 'paired_products' else q_1))",
+    "t_2": "t_sign_2 * x_base_2 ** power if structure == 'power_substitution' else (t_sign_2 * w_2 * w_2 if structure == 'linear_square_substitution' else (pair_offset_1 ** 2 + pair_offset_2 ** 2 - pair_k * pair_k if structure == 'paired_products' else (q_2 if second_branch == 'real' else q_none)))",
+    "red_b": "-leading_t * (t_1 + t_2)",
+    "red_c": "leading_t * t_1 * t_2",
+    "delta": "-(t_1 + t_2)",
+    "rhs": "pair_offset_1 ** 2 * pair_offset_2 ** 2 - t_1 * t_2 if structure == 'paired_products' else -(t_1 * t_2)"
+  },
+  "constraints": [
+    "t_1 != t_2",
+    "t_1 != 0",
+    "t_2 != 0",
+    "t_sign_2 == -1 -> abs(t_1) != abs(t_2)",
+    "structure == 'power_substitution' -> x_base_1 > 0",
+    "structure == 'power_substitution' -> x_base_2 > 0",
+    "structure == 'power_substitution' and t_sign_2 == 1 -> x_base_1 < x_base_2",
+    "structure == 'power_substitution' -> x_base_1 <= 4",
+    "structure == 'power_substitution' -> x_base_2 <= 4",
+    "power == 3 -> x_base_1 <= 3",
+    "power == 3 -> x_base_2 <= 3",
+    "power == 3 -> leading_t == 1",
+    "structure == 'linear_square_substitution' -> (2 * inner_b) % inner_a == 0",
+    "structure == 'linear_square_substitution' -> w_1 < 0",
+    "structure == 'linear_square_substitution' -> w_2 < 0",
+    "structure == 'linear_square_substitution' -> w_1 >= -5",
+    "structure == 'linear_square_substitution' -> w_2 >= -5",
+    "structure == 'linear_square_substitution' and t_sign_2 == 1 -> t_1 < t_2",
+    "structure == 'linear_square_substitution' -> leading_t <= 2",
+    "structure == 'repeated_quadratic_product' or structure == 'hidden_shift_substitution' -> 2 * x_base_1 + quad_p < 0",
+    "structure == 'repeated_quadratic_product' or structure == 'hidden_shift_substitution' -> delta != 0",
+    "structure == 'repeated_quadratic_product' or structure == 'hidden_shift_substitution' -> abs(t_1) <= 30",
+    "structure == 'repeated_quadratic_product' or structure == 'hidden_shift_substitution' -> abs(t_2) <= 45",
+    "second_branch == 'real' and (structure == 'repeated_quadratic_product' or structure == 'hidden_shift_substitution') -> 2 * x_base_2 + quad_p < 0",
+    "second_branch == 'real' and (structure == 'repeated_quadratic_product' or structure == 'hidden_shift_substitution') -> t_1 < t_2",
+    "second_branch == 'none' -> abs(quad_p) <= 5",
+    "structure == 'repeated_quadratic_product' -> quad_q != t_1",
+    "structure == 'repeated_quadratic_product' -> quad_q != t_2",
+    "structure == 'paired_products' -> pair_offset_1 < pair_offset_2",
+    "structure == 'paired_products' -> pair_k * pair_k > pair_offset_1 ** 2 + pair_offset_2 ** 2",
+    "structure == 'paired_products' -> abs(pair_center) != pair_k"
+  ],
+  "integer_clean": true,
+  "answer": {
+    "type": "higher_degree_substitution",
+    "step_1_recognize_structure": "Найти повторяющееся выражение или две степени, связанные отношением 2:1. Скобки НЕ раскрывать.",
+    "step_2_substitution": "Обозначить повторяющееся выражение новой переменной t.",
+    "step_3_reduced_equation": "Решить полученное квадратное уравнение относительно t: его корни лежат в spec как t_1 и t_2.",
+    "step_4_domain_filter": "Если t — квадрат или чётная степень, отбросить t<0. Для нечётной степени отрицательное t допустимо. Для замены t=Q(x) проверить дискриминант обратной замены.",
+    "step_5_back_substitution": "Для каждого допустимого t решить исходную замену относительно x.",
+    "step_6_collect_roots": "Объединить все действительные корни, убрать повторы, упорядочить.",
+    "step_7_query": "solve — вернуть множество корней; root_sum — их сумму; root_product — их произведение.",
+    "desc": "answer_key: считается agents_and_engine/higher_degree.py. Уравнение построено ОТ ЦЕЛЫХ КОРНЕЙ, поэтому обратная замена всегда точная; если она вдруг даёт нецелое, модуль поднимает ValueError — это признак того, что ограничение выше сломано, а не повод округлять."
+  },
+  "distractors": [
+    {
+      "id": "rhs_treated_as_zero",
+      "desc": "Уравнение вида (…)(…)(…)(…)=N прочитано так, будто справа ноль: ученик приравнял каждую скобку к нулю и проигнорировал правую часть.",
+      "_applies_to": "paired_products",
+      "transform": {
+        "rhs": "0"
+      }
+    },
+    {
+      "id": "reject_negative_odd_power",
+      "desc": "Ученик отбросил отрицательное t при t=x^n с нечётным n, хотя такое значение допустимо.",
+      "_applies_to": "power_substitution с нечётной степенью и отрицательным t_2",
+      "transform": {
+        "odd_power_negative": "reject"
+      }
+    },
+    {
+      "id": "forgot_square_domain",
+      "desc": "Ученик сохранил отрицательное t, хотя t было квадратом или чётной степенью, и подставил его как положительное.",
+      "_applies_to": "power_substitution с чётной степенью, linear_square_substitution, paired_products",
+      "transform": {
+        "skip": "t_nonnegative_check"
+      }
+    },
+    {
+      "id": "wrong_delta_sign",
+      "desc": "Вторая скобка прочитана как t-delta вместо t+delta, поэтому второй корень вспомогательного уравнения получился с неверным знаком.",
+      "_applies_to": "repeated_quadratic_product, hidden_shift_substitution",
+      "transform": {
+        "delta": "-delta"
+      }
+    },
+    {
+      "id": "incomplete_root_aggregation",
+      "desc": "Ученик выполнил обратную замену только для одного значения t и на этом остановился.",
+      "transform": {
+        "root_aggregation": "single_branch_only"
+      }
+    },
+    {
+      "id": "lost_plus_minus",
+      "desc": "При обратной замене ученик взял только одну ветвь из двух (потерял ±).",
+      "transform": {
+        "square_backsolve": "positive_branch_only"
+      }
+    },
+    {
+      "id": "forgot_back_substitution",
+      "desc": "Ученик назвал значения t окончательными корнями и не вернулся к x.",
+      "transform": {
+        "answer_variable": "t"
+      }
+    }
+  ],
+  "_dropped_distractors": [
+    {
+      "id": "wrong_power_substitution",
+      "desc": "Ученик выбрал слишком высокую степень для замены (t=x^(2n)) и не получил квадратное уравнение.",
+      "why_dropped": "Приводит к ТУПИКУ, а не к неверному числу: после такой замены уравнение перестаёт быть квадратным и решать становится нечего, поэтому единственного ответа, который ученик бы записал, не существует. Вариант ответа для него сфабриковать нельзя, не выдумав за ученика шаг, которого он сделать не может. power_substitution и без него закрыт пятью дистракторами."
+    },
+    {
+      "id": "bad_grouping",
+      "desc": "Ученик сгруппировал линейные множители так, что общей квадратичной части не получилось.",
+      "why_dropped": "Тот же тупик: при неверной группировке две скобки отличаются и коэффициентом при x, общей части нет, замена не вводится. Определённого неверного ответа не возникает. Сигнатурную ошибку этой формы закрывает rhs_treated_as_zero, который как раз даёт конкретный набор корней."
+    },
+    {
+      "id": "full_expansion",
+      "desc": "Ученик полностью раскрыл скобки и потерял структуру замены.",
+      "why_dropped": "Раскрытие скобок само по себе не ошибка знака или шага — оно даёт верное уравнение четвёртой степени, которое ученик просто не умеет решать. Ответа отсюда не получается."
+    }
+  ],
+  "narrative_settings": [
+    "анализ повторяющейся степенной зависимости",
+    "поиск состояний системы через замену повторяющейся величины",
+    "решение симметричной алгебраической модели без полного раскрытия скобок"
+  ],
+  "_constraint_notes": {
+    "t_sign_2 == -1 -> abs(t_1) != abs(t_2)": "При равных модулях и разных знаках forgot_square_domain даёт РОВНО правильный ответ: подставив |t_2| = t_1, ученик получает те же корни, и дистрактор молча исчезает при дедупликации. Заодно это убирает вырожденное уравнение без среднего члена: red_b = -leading_t*(t_1+t_2) обращается в ноль ровно в этом случае."
+  }
+}

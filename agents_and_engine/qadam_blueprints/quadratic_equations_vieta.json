@@ -1,0 +1,187 @@
+{
+  "topic": "quadratic_equations_vieta",
+  "display_name": "Теорема Виета: связь корней и коэффициентов",
+  "curriculum_ref": "8 класс — Квадратные уравнения. Теорема Виета (Виет теоремасы)",
+  "constraints_template": "quadratic_equations_vieta.j2",
+
+  "_comment": "Генеративный blueprint по теореме Виета в обе стороны. Пять task_type используют ПЯТЬ НЕПЕРЕСЕКАЮЩИХСЯ групп параметров (21 условный параметр), а difficulty_overrides не достаёт внутрь уровня: на уровне 2 живут два task_type, на уровне 3 — два плюс три root_family. Поэтому блок derived КАНОНИЗИРУЕТ каждый неактивный параметр в константу: derived выполняется после броска и перезаписывает параметр с тем же именем. Без этого крутящиеся неиспользуемые параметры давали бы тысячи разных content_hash для одной и той же задачи, и дедупликация банка не срабатывала бы никогда. Ответ считает agents_and_engine/quad_eq.py (точная арифметика, без float).",
+
+  "tag": { "name": "Теорема Виета", "slug": "quad-eq-vieta" },
+  "default_difficulty": 2,
+
+  "parameters": {
+    "task_type": {
+      "type": "string",
+      "options": ["sum_product", "root_expression", "find_second_root", "construct_equation", "construct_from_sum_difference"],
+      "desc": "Тип задания; закрепляется уровнем сложности"
+    },
+    "a_scale": {
+      "type": "integer",
+      "options": [1, 2, 3, 4, 5],
+      "desc": "Старший коэффициент предъявляемого уравнения"
+    },
+    "S": {
+      "type": "integer",
+      "options": [-12, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12],
+      "desc": "Сумма корней x1+x2"
+    },
+    "P": {
+      "type": "integer",
+      "options": [-20, -16, -15, -12, -10, -8, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 16, 20],
+      "desc": "Произведение корней x1*x2 (ноль исключён, поэтому 1/x1+1/x2 всегда определено)"
+    },
+    "expression_type": {
+      "type": "string",
+      "options": ["x1_sq_x2_plus_x1_x2_sq", "reciprocal_sum", "sum_squares", "ratio_sum"],
+      "desc": "Какое симметрическое выражение от корней вычислять"
+    },
+    "p": { "type": "integer", "options": [1, 2, 3, 4, 5], "desc": "Коэффициент при x в первом множителе p*x+q" },
+    "q": { "type": "integer", "options": [-10, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 10], "desc": "Свободный член первого множителя" },
+    "r": { "type": "integer", "options": [1, 2, 3, 4, 5], "desc": "Коэффициент при x во втором множителе r*x+s" },
+    "s": { "type": "integer", "options": [-10, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 10], "desc": "Свободный член второго множителя" },
+    "known_root_index": { "type": "integer", "options": [1, 2], "desc": "Какой из двух корней даётся ученику" },
+    "root_family": {
+      "type": "string",
+      "options": ["integer", "rational", "conjugate_radical"],
+      "desc": "Природа корней при построении уравнения"
+    },
+    "root_int_1": { "type": "integer", "options": [-10, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 10], "desc": "Первый целый корень" },
+    "root_int_2": { "type": "integer", "options": [-10, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 10], "desc": "Второй целый корень" },
+    "num_1": { "type": "integer", "options": [-9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9], "desc": "Числитель первого рационального корня" },
+    "den_1": { "type": "integer", "options": [2, 3, 4, 5], "desc": "Знаменатель первого рационального корня" },
+    "num_2": { "type": "integer", "options": [-9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9], "desc": "Числитель второго рационального корня" },
+    "den_2": { "type": "integer", "options": [2, 3, 4, 5], "desc": "Знаменатель второго рационального корня" },
+    "rad_center": { "type": "integer", "options": [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6], "desc": "Центр a сопряжённой пары a ± b*sqrt(m)" },
+    "rad_coeff": { "type": "integer", "options": [1, 2, 3], "desc": "Коэффициент b при sqrt(m)" },
+    "rad_base": { "type": "integer", "options": [2, 3, 5, 6, 7, 10], "desc": "Подкоренное число m" },
+    "roots_sum": { "type": "integer", "options": [-10, -8, -6, -5, -4, -3, 3, 4, 5, 6, 8, 10], "desc": "Заданная сумма корней" },
+    "roots_difference": { "type": "integer", "options": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "desc": "Заданная разность x1-x2" }
+  },
+
+  "difficulty_overrides": {
+    "1": {
+      "task_type": { "options": ["sum_product"] },
+      "a_scale": { "options": [1, 2, 3] }
+    },
+    "2": {
+      "task_type": { "options": ["root_expression", "find_second_root", "find_second_root", "find_second_root"],
+        "_weighting": "find_second_root проходит четыре ограничения (два gcd, непропорциональность, канонический порядок) и терял бы ~3/4 бросков: без веса он занимал бы 23% уровня 2 вместо половины." }
+    },
+    "3": {
+      "task_type": { "options": ["construct_equation", "construct_equation", "construct_equation", "construct_equation", "construct_equation", "construct_equation", "construct_from_sum_difference"],
+        "_weighting": "construct_equation делится на три root_family, поэтому уровень 3 несёт ЧЕТЫРЕ разные формы вопроса, а не две. Вес подобран замером: 3:1 давало 18/18/17/47, 6:1 даёт 26/24/22/27 (max/min 1.23). Без веса construct_from_sum_difference одна занимала бы столько же, сколько три семейства вместе." },
+      "root_family": { "options": ["rational", "rational", "rational", "rational", "integer", "integer", "conjugate_radical"],
+        "_weighting": "Веса обратны давлению ограничений: rational проходит два gcd плюс канонический порядок, integer — только порядок, conjugate_radical — ничего. Без весов было 52 / 113 / 196." }
+    }
+  },
+
+  "derived": {
+    "a_scale": "a_scale if task_type in ['sum_product', 'root_expression'] else 1",
+    "S": "S if task_type in ['sum_product', 'root_expression'] else 1",
+    "P": "P if task_type in ['sum_product', 'root_expression'] else 1",
+    "expression_type": "expression_type if task_type == 'root_expression' else 'sum_squares'",
+
+    "p": "p if task_type == 'find_second_root' else 1",
+    "q": "q if task_type == 'find_second_root' else 1",
+    "r": "r if task_type == 'find_second_root' else 2",
+    "s": "s if task_type == 'find_second_root' else 1",
+    "known_root_index": "known_root_index if task_type == 'find_second_root' else 1",
+
+    "root_family": "root_family if task_type == 'construct_equation' else 'integer'",
+    "root_int_1": "root_int_1 if task_type == 'construct_equation' and root_family == 'integer' else 1",
+    "root_int_2": "root_int_2 if task_type == 'construct_equation' and root_family == 'integer' else 2",
+    "num_1": "num_1 if task_type == 'construct_equation' and root_family == 'rational' else 1",
+    "den_1": "den_1 if task_type == 'construct_equation' and root_family == 'rational' else 2",
+    "num_2": "num_2 if task_type == 'construct_equation' and root_family == 'rational' else 1",
+    "den_2": "den_2 if task_type == 'construct_equation' and root_family == 'rational' else 3",
+    "rad_center": "rad_center if task_type == 'construct_equation' and root_family == 'conjugate_radical' else 1",
+    "rad_coeff": "rad_coeff if task_type == 'construct_equation' and root_family == 'conjugate_radical' else 1",
+    "rad_base": "rad_base if task_type == 'construct_equation' and root_family == 'conjugate_radical' else 2",
+
+    "roots_sum": "roots_sum if task_type == 'construct_from_sum_difference' else 3",
+    "roots_difference": "roots_difference if task_type == 'construct_from_sum_difference' else 1",
+
+    "a": "a_scale if task_type in ['sum_product', 'root_expression'] else (p * r if task_type == 'find_second_root' else 1)",
+    "b": "-a_scale * S if task_type in ['sum_product', 'root_expression'] else (p * s + q * r if task_type == 'find_second_root' else 0)",
+    "c": "a_scale * P if task_type in ['sum_product', 'root_expression'] else (q * s if task_type == 'find_second_root' else 0)"
+  },
+
+  "constraints": [
+    "task_type in ['sum_product', 'root_expression'] -> S ** 2 - 4 * P >= 0  // иначе корней нет и говорить об x1, x2 бессмысленно",
+    "task_type == 'root_expression' and expression_type == 'ratio_sum' -> abs(P) != 1  // при |P|=1 деление на P ничего не меняет, и ошибка 'забыл знаменатель' даёт ВЕРНЫЙ ответ — задание перестаёт проверять то, ради чего создано",
+    "task_type == 'root_expression' and expression_type == 'reciprocal_sum' -> abs(S) != abs(P)  // при |S|=|P| перевёрнутая дробь P/S совпадает с S/P",
+    "task_type == 'find_second_root' -> p * s - q * r != 0  // иначе множители пропорциональны и второй корень совпадает с данным",
+    "task_type == 'find_second_root' -> b + c != 0  // x2 = P/x1 совпадает с ошибочным P-x1 ровно когда S=P, то есть b+c=0: тогда ключевая ошибка темы даёт верный ответ (одинаково для обоих known_root_index)",
+    "task_type == 'find_second_root' -> gcd(abs(p), abs(q)) == 1",
+    "task_type == 'find_second_root' -> gcd(abs(r), abs(s)) == 1",
+    "task_type == 'find_second_root' -> p < r or (p == r and q < s)  // канонический порядок множителей",
+    "task_type == 'construct_equation' and root_family == 'integer' -> root_int_1 < root_int_2  // строгий порядок: пара и её перестановка дают одно уравнение",
+    "task_type == 'construct_equation' and root_family == 'rational' -> gcd(abs(num_1), den_1) == 1",
+    "task_type == 'construct_equation' and root_family == 'rational' -> gcd(abs(num_2), den_2) == 1",
+    "task_type == 'construct_equation' and root_family == 'rational' -> num_1 * den_2 < num_2 * den_1  // строгий порядок корней",
+    "task_type == 'construct_from_sum_difference' -> roots_difference != 0  // иначе корень один, а задача обещает два",
+    "task_type == 'construct_from_sum_difference' -> abs(roots_sum) != abs(roots_difference)  // при |S|=|d| один корень равен нулю, P=0, и дистрактор wrong_product_sign схлопывается на верный ответ"
+  ],
+
+  "integer_clean": true,
+
+  "generation_logic": {
+    "sum_product": {
+      "build_equation": "a_scale*x^2 - a_scale*S*x + a_scale*P = 0",
+      "present": "Показывается уравнение; S и P ученик читает из коэффициентов."
+    },
+    "root_expression": {
+      "build_equation": "a_scale*x^2 - a_scale*S*x + a_scale*P = 0",
+      "present": "Симметрическое выражение переписывается через S=-b/a и P=c/a, корни не вычисляются."
+    },
+    "find_second_root": {
+      "hidden_factorization": "(p*x+q)(r*x+s)=0",
+      "expanded_equation": "(p*r)*x^2 + (p*s+q*r)*x + q*s = 0",
+      "present": "Даётся уравнение и один корень; второй ищется из x1*x2 = c/a."
+    },
+    "construct_equation": {
+      "integer": { "roots": ["root_int_1", "root_int_2"] },
+      "rational": { "roots": ["num_1/den_1", "num_2/den_2"], "integerize": "Умножить на общий знаменатель S и P, затем сократить." },
+      "conjugate_radical": { "roots": ["rad_center-rad_coeff*sqrt(rad_base)", "rad_center+rad_coeff*sqrt(rad_base)"], "note": "Радикал сокращается и в сумме, и в произведении." }
+    },
+    "construct_from_sum_difference": {
+      "derive_roots": ["(roots_sum+roots_difference)/2", "(roots_sum-roots_difference)/2"],
+      "integerize": "Если корни полуцелые, умножить уравнение на 4 и сократить."
+    }
+  },
+
+  "answer": {
+    "type": "quadratic_vieta",
+    "step_1_coefficients": "Для a*x^2+b*x+c=0 определить a, b, c.",
+    "step_2_vieta": "Применить S=x1+x2=-b/a и P=x1*x2=c/a.",
+    "root_expression": {
+      "x1_sq_x2_plus_x1_x2_sq": "x1^2*x2+x1*x2^2 = P*S",
+      "reciprocal_sum": "1/x1+1/x2 = S/P",
+      "sum_squares": "x1^2+x2^2 = S^2-2P",
+      "ratio_sum": "x1/x2+x2/x1 = (S^2-2P)/P"
+    },
+    "find_second_root": "Из x1*x2 = P = c/a получить x2 = P/x1 (делением, не вычитанием).",
+    "inverse_vieta": "x^2 - S*x + P = 0, затем привести к целым коэффициентам и сократить.",
+    "construct_from_sum_difference": "x1=(S+d)/2, x2=(S-d)/2, затем обратная теорема Виета.",
+    "desc": "answer_key: форма ответа зависит от task_type — пара (S, P), одно рациональное число или само уравнение. Всё вычисляет agents_and_engine/quad_eq.py точной арифметикой; уравнение возвращается в СОКРАЩЁННОМ целочисленном виде, поэтому правильно сокративший ученик не считается ошибшимся."
+  },
+
+  "distractors": [
+    { "id": "wrong_sum_sign", "desc": "Применено x1+x2=b/a вместо -b/a.", "transform": { "sum_formula": "b/a" } },
+    { "id": "wrong_product_sign", "desc": "Применено x1*x2=-c/a вместо c/a.", "transform": { "product_formula": "-c/a" } },
+    { "id": "ignored_leading_coefficient", "desc": "При a!=1 забыли поделить на a.", "transform": { "sum_formula": "-b", "product_formula": "c" } },
+    { "id": "sum_squares_missing_2p", "desc": "x1^2+x2^2 посчитано просто как S^2.", "transform": { "expression_formula": "S**2" } },
+    { "id": "reciprocal_sum_inverted", "desc": "Для 1/x1+1/x2 взято P/S вместо S/P.", "transform": { "expression_formula": "P/S" } },
+    { "id": "ratio_sum_wrong_denominator", "desc": "В x1/x2+x2/x1 забыт знаменатель x1*x2.", "transform": { "expression_formula": "S**2-2*P" } },
+    { "id": "second_root_wrong_operation", "desc": "Второй корень найден как P-x1 вместо P/x1.", "transform": { "second_root": "P-known_root" } },
+    { "id": "inverse_vieta_wrong_x_sign", "desc": "Составлено x^2+S*x+P=0 вместо x^2-S*x+P=0.", "transform": { "inverse_formula": "x^2 + S*x + P = 0" } },
+    { "id": "conjugate_product_error", "desc": "Для сопряжённой пары произведение посчитано как сумма квадратов.", "transform": { "product_formula": "rad_center**2 + rad_coeff**2*rad_base" } },
+    { "id": "sum_difference_halving_error", "desc": "Из S и d корни взяты без деления на 2.", "transform": { "roots": ["S+d", "S-d"] } }
+  ],
+
+  "narrative_settings": [
+    "подбор двух чисел по их сумме и произведению",
+    "восстановление параметров модели по известным характеристикам корней",
+    "проверка найденных решений без повторного вычисления"
+  ]
+}

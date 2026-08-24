@@ -1,0 +1,110 @@
+{#- Higher-degree equation solved by introducing a new variable.
+
+    Every `structure` hides the same skeleton — a quadratic in some expression t
+    whose roots the blueprint carries as t_1 and t_2 — and they differ only in
+    what t is and in how well the repetition is disguised:
+
+      power_substitution            t = x^power                (biquadratic-style)
+      linear_square_substitution    t = (inner_a·x + inner_b)^2
+      repeated_quadratic_product    t = x^2 + quad_p·x + quad_q, shown as
+                                    Q(x)·(Q(x) + delta) = rhs — repetition visible
+      paired_products               t = (x - pair_center)^2, hidden behind four
+                                    linear factors that only pair up into a
+                                    common quadratic
+      hidden_shift_substitution     t = x^2 + quad_p·x, hidden behind a fully
+                                    expanded quartic
+
+    EVERY number below comes from the blueprint's `derived` block — red_b, red_c,
+    delta, rhs. Nothing is recomputed here. That is deliberate: the template and
+    higher_degree.py must never be able to disagree about which equation was
+    posed, and the only way to guarantee that is for both to read the same spec. -#}
+{%- macro lterm(co, sym) -%}
+{%- if co == 1 %}{{ sym }}{% elif co == -1 %}-{{ sym }}{% else %}{{ co }}{{ sym }}{% endif -%}
+{%- endmacro -%}
+{%- macro sterm(co, sym) -%}
+{%- if co != 0 %} {{ '+' if co > 0 else '-' }} {{ '' if co in (1, -1) and sym != '' else (co if co > 0 else -co) }}{{ sym }}{% endif -%}
+{%- endmacro -%}
+{%- macro fac(root) -%}
+{%- if root == 0 %}x{% else %}(x {{ '-' if root > 0 else '+' }} {{ root if root > 0 else -root }}){% endif -%}
+{%- endmacro -%}
+{%- macro inner() -%}
+({{ '' if inner_a == 1 else inner_a }}x {{ '+' if inner_b > 0 else '-' }} {{ inner_b if inner_b > 0 else -inner_b }})
+{%- endmacro -%}
+{%- macro qpoly(k) -%}
+(x^2{{ sterm(quad_p, 'x') }}{{ sterm(k, '') }})
+{%- endmacro -%}
+{%- set pair_roots = [pair_center - pair_offset_1, pair_center + pair_offset_1,
+                      pair_center - pair_offset_2, pair_center + pair_offset_2] | sort -%}
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
+{% if structure == 'power_substitution' -%}
+- Equation: {{ lterm(leading_t, 'x^' ~ (2 * power)) }}{{ sterm(red_b, 'x^' ~ power) }}{{ sterm(red_c, '') }} = 0
+{%- elif structure == 'linear_square_substitution' -%}
+- Equation: {{ lterm(leading_t, inner() ~ '^4') }}{{ sterm(red_b, inner() ~ '^2') }}{{ sterm(red_c, '') }} = 0
+{%- elif structure == 'repeated_quadratic_product' -%}
+- Equation: {{ qpoly(quad_q) }}·{{ qpoly(quad_q + delta) }} = {{ rhs }}
+{%- elif structure == 'paired_products' -%}
+- Equation: {% for root in pair_roots %}{{ fac(root) }}{% endfor %} = {{ rhs }}
+{%- else -%}
+- Equation: x^4{{ sterm(2 * quad_p, 'x^3') }}{{ sterm(quad_p ** 2 + delta, 'x^2') }}{{ sterm(delta * quad_p, 'x') }} = {{ rhs }}
+{%- endif %}
+{% if query_type == 'root_sum' -%}
+- Ask the student for the SUM of all real roots of this equation.
+{%- elif query_type == 'root_product' -%}
+- Ask the student for the PRODUCT of all real roots of this equation.
+{%- else -%}
+- Ask the student to find every real root of this equation.
+{%- endif %}
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
+- Method to recall: do NOT expand the brackets. Spot the repeating expression first,
+  call it t, solve the resulting quadratic in t, check which values of t are admissible,
+  and only then substitute back to recover x.
+{% if structure == 'power_substitution' -%}
+- The two exponents stand in a 2:1 ratio, so the substitution is t = x^{{ power }} — taking
+  t as the higher power instead leaves an equation that is not quadratic.
+{% if power % 2 == 0 -%}
+- {{ power }} is even, so t = x^{{ power }} can never be negative: a negative root of the
+  t-equation must be discarded before substituting back, and each positive one gives a
+  PAIR of x values (±), not one.
+{%- else -%}
+- {{ power }} is odd, so a negative value of t is perfectly admissible here — discarding it
+  is a mistake — and each t yields exactly one real x.
+{%- endif %}
+{%- elif structure == 'linear_square_substitution' -%}
+- The repeating expression is the bracket itself: t = {{ inner() }}^2, since the fourth power
+  is that square, squared. t is a square, so negative values of t are inadmissible; each
+  admissible positive t then gives TWO linear equations (±), hence up to two x values each.
+{%- elif structure == 'repeated_quadratic_product' -%}
+- Both brackets share the same quadratic part and differ only by a constant, so with
+  t = the first bracket the second one is t {{ '+' if delta > 0 else '-' }} {{ delta if delta > 0 else -delta }}.
+  The equation becomes a quadratic in t; expanding the product instead produces a quartic
+  and loses the structure.
+- Each admissible t then sends the student back to a quadratic in x, which may have two,
+  one, or no real roots — every branch has to be checked, not just the first.
+{%- elif structure == 'paired_products' -%}
+- The four linear factors are symmetric about the same centre, x = {{ pair_center }}. Pair the
+  OUTER two together and the INNER two together: each pair multiplies out to a quadratic that
+  differs from the other only by a constant, which is what makes one substitution cover both.
+  Pairing them any other way destroys the common part.
+- The right-hand side is NOT zero, so the factors cannot simply be set to zero one by one —
+  that shortcut is the single most tempting error on this form.
+{%- else -%}
+- The first three terms of the left-hand side are a perfect square: they are exactly
+  (x^2 {{ '+' if quad_p > 0 else '-' }} {{ quad_p if quad_p > 0 else -quad_p }}x) squared, plus
+  a multiple of that same expression. So t = x^2 {{ '+' if quad_p > 0 else '-' }} {{ quad_p if quad_p > 0 else -quad_p }}x
+  turns the whole quartic into a quadratic in t. Expanding further, or trying to factor the
+  quartic directly, is the wrong road.
+{%- endif %}
+{% if query_type in ('root_sum', 'root_product') -%}
+- Only the aggregate over the REAL roots is asked for. Values of t that are inadmissible, and
+  back-substitutions that yield no real x, contribute nothing and must not be counted.
+{%- else -%}
+- The final answer is a set of x values, never the values of t. Stopping at t is the most
+  common error, so the question must clearly ask for x.
+{%- endif %}
+- The equation must be posed exactly in the form given above — same brackets, same powers,
+  same right-hand side. Never present it expanded, never name the substitution, and never
+  mention the auxiliary variable.
+- Render all math as LaTeX inside $...$.
+- Do NOT state or hint at the answer: the substitution, the values of t, the roots, and their
+  sum or product must NOT appear in the problem text.

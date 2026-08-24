@@ -27,7 +27,7 @@ from __future__ import annotations
 from typing import Annotated, Any, TypedDict
 
 import config
-from . import inv_trig
+from . import answer_modules
 from .llm import chat_openai_structured
 from .math_ques_types import compute_answer_key
 from .math_engine import (
@@ -46,6 +46,31 @@ from .state import GraphState
 # Every published Question carries exactly this many answer options (one correct
 # + distractors). The Architect builds them; the Publisher enforces the count.
 N_ANSWER_OPTIONS = 4
+
+
+def _assert_architect_options(options: list[dict[str, Any]]) -> None:
+    """Fail before an LLM call when a blueprint produced an invalid option slate."""
+    if len(options) != N_ANSWER_OPTIONS:
+        raise ValueError(
+            f"Architect expected {N_ANSWER_OPTIONS} answer options, got {len(options)}."
+        )
+    correct_count = sum(bool(option.get("is_correct")) for option in options)
+    if correct_count != 1:
+        raise ValueError(
+            f"Architect expected exactly 1 correct option, got {correct_count}."
+        )
+
+    texts = [option.get("text") for option in options]
+    if any(not isinstance(value, str) or not value.strip() for value in texts):
+        raise ValueError("Architect produced an empty or non-text answer option.")
+    if len(set(texts)) != len(texts):
+        raise ValueError(f"Architect produced duplicate answer options: {texts}.")
+
+    unresolved = [text for text in texts if "{{" in text or "{%" in text]
+    if unresolved:
+        raise ValueError(
+            f"Architect produced answer options with unresolved Jinja: {unresolved}."
+        )
 
 
 class StoryDraft(TypedDict):
@@ -106,11 +131,13 @@ def architect_node(state: GraphState) -> dict[str, Any]:
 
     blueprint_distractors = blueprint.get("distractors", [])
     answer_type = blueprint["answer"]["type"]
-    if answer_type in inv_trig.ANSWER_TYPES:
-        # Inverse-trig answers are symbolic (angles / surds); their options come
-        # from the dedicated engine, which computes each named misconception
-        # exactly and tops up with plausible wrong angles/values.
-        answer_options = inv_trig.build_options(
+    engine = answer_modules.module_for(answer_type)
+    if engine is not None:
+        # These answers are symbolic (angles, surds, root sets, a whole equation),
+        # so the generic "shift the number by 1" distractor machinery is
+        # meaningless for them. The dedicated engine recomputes every named
+        # misconception exactly and tops the slate up from its own pool.
+        answer_options = engine.build_options(
             answer_type, math_spec, n_options=N_ANSWER_OPTIONS
         )
     else:
@@ -123,6 +150,7 @@ def architect_node(state: GraphState) -> dict[str, Any]:
             # literally and skip the numeric-shift fallback.
             literal=answer_type == "static_choice",
         )
+    _assert_architect_options(answer_options)
     # Carry the human description for only the misconceptions that actually
     # became options (some collapse to duplicates on a given roll). The Tutor
     # maps a wrong option's tag -> this text without reloading the blueprint.

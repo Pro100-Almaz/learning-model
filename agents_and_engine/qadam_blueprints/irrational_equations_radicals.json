@@ -1,0 +1,331 @@
+{
+  "topic": "irrational_equations_radicals",
+  "display_name": "Иррационал теңдеулер",
+  "curriculum_ref": "Сынып көрсетілмеген — 11-бөлім: Иррационал теңдеулер",
+  "constraints_template": "irrational_equations_radicals.j2",
+  "_comment": "Генеративті blueprint: видеодағы дайын теңдеулер сақталмайды. Әр құрылым жауаптан кері құрылады: мақсатты түбір, алмастырудың оң мәні, ММЖ-ға кіретін/кірмейтін кандидат немесе түбірлердің көбейтіндісі алдын ала таңдалып, теңдеудің коэффициенттері содан кейін есептеледі. Құрылымдар n-дәрежелі түбірді оқшаулау, квадраттаудан кейін бөгде түбірді тексеру, түбірлі кері өрнекке алмастыру, өзара кері радикалдар, куб/алтыншы дәрежелі түбір алмастыруы, түбір астындағы ММЖ арқылы көбейтінді түбірлерін сүзу және түйіндес өрнек арқылы мән табуды қамтиды.",
+  "tag": {
+    "name": "Иррационал теңдеу",
+    "slug": "irrational-equation"
+  },
+  "default_difficulty": 2,
+  "parameters": {
+    "structure": {
+      "type": "string",
+      "options": [
+        "single_nth_root",
+        "sqrt_equals_linear_extraneous",
+        "reciprocal_sqrt_substitution",
+        "reciprocal_ratio_substitution",
+        "sixth_cube_substitution",
+        "product_domain_root_product",
+        "conjugate_value"
+      ],
+      "desc": "Есептің негізгі иррационал теңдеу құрылымы"
+    },
+    "anchor": {
+      "type": "integer",
+      "options": [
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "Мақсатты түбір, шек нүктесі немесе айнымалы ығысуы ретінде қолданылатын негізгі бүтін сан"
+    },
+    "gap_1": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "Бірінші оң аралық немесе алмастыру мәні"
+    },
+    "gap_2": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "Екінші оң аралық немесе алмастыру мәндерінің айырмасы"
+    },
+    "gap_3": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3
+      ],
+      "desc": "Көбейтінді тармағындағы ММЖ-дан тыс полином түбірінің ығысуы"
+    },
+    "root_index": {
+      "type": "integer",
+      "options": [
+        2,
+        3,
+        5
+      ],
+      "desc": "Қарапайым n-дәрежелі түбір теңдеуіндегі түбір көрсеткіші"
+    },
+    "scale": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3
+      ],
+      "desc": "Қарапайым n-дәрежелі түбірдің алдындағы оң коэффициент"
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "structure": {
+        "options": [
+          "single_nth_root",
+          "sqrt_equals_linear_extraneous"
+        ]
+      },
+      "anchor": {
+        "options": [
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "gap_2": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "root_index": {
+        "options": [
+          2,
+          3,
+          5
+        ]
+      },
+      "scale": {
+        "options": [
+          1,
+          2
+        ]
+      }
+    },
+    "2": {
+      "structure": {
+        "options": [
+          "sqrt_equals_linear_extraneous",
+          "reciprocal_sqrt_substitution",
+          "conjugate_value"
+        ]
+      },
+      "anchor": {
+        "options": [
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "gap_2": {
+        "options": [
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    "3": {
+      "structure": {
+        "options": [
+          "reciprocal_ratio_substitution",
+          "sixth_cube_substitution",
+          "product_domain_root_product"
+        ]
+      },
+      "anchor": {
+        "options": [
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2
+        ]
+      },
+      "gap_2": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "gap_3": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      }
+    }
+  },
+  "derived": {
+    "anchor": "abs(anchor) if structure == 'product_domain_root_product' else anchor",
+    "gap_1": "max(gap_1, 2) if structure in ['single_nth_root', 'conjugate_value'] else gap_1",
+    "gap_2": "0 if structure == 'single_nth_root' else gap_2",
+    "gap_3": "gap_3 if structure == 'product_domain_root_product' else 0",
+    "root_index": "root_index if structure == 'single_nth_root' else 0",
+    "scale": "scale if structure == 'single_nth_root' else 0",
+    "single_target": "anchor",
+    "single_t": "gap_1",
+    "single_offset": "single_t**root_index - single_target if structure == 'single_nth_root' else 0",
+    "single_rhs": "scale * single_t if structure == 'single_nth_root' else 0",
+    "single_wrong_no_power": "single_t - single_offset if structure == 'single_nth_root' else 0",
+    "linear_threshold": "anchor",
+    "linear_bad": "linear_threshold - gap_1",
+    "linear_good": "linear_threshold + gap_1 + gap_2",
+    "linear_m": "gap_2",
+    "linear_n": "linear_threshold**2 - linear_bad * linear_good",
+    "reciprocal_u": "gap_1",
+    "reciprocal_v": "gap_1 + gap_2",
+    "reciprocal_target": "anchor",
+    "reciprocal_boundary": "reciprocal_target + reciprocal_u**2",
+    "reciprocal_A": "reciprocal_u * reciprocal_v",
+    "reciprocal_C": "reciprocal_v - reciprocal_u",
+    "reciprocal_wrong": "reciprocal_boundary - reciprocal_v**2",
+    "ratio_k": "gap_1 + 1",
+    "ratio_d": "gap_2",
+    "ratio_target": "anchor",
+    "ratio_left": "ratio_target - ratio_k**2 * ratio_d",
+    "ratio_right": "ratio_target + ratio_d",
+    "ratio_rhs_num": "ratio_k**2 - 1",
+    "ratio_rhs_den": "ratio_k",
+    "ratio_wrong": "ratio_target - ratio_d * (ratio_k**2 - 1)",
+    "sixth_shift": "anchor",
+    "sixth_u": "gap_1",
+    "sixth_v": "gap_1 + gap_2",
+    "sixth_A": "sixth_u + sixth_v",
+    "sixth_B": "sixth_u * sixth_v",
+    "sixth_x1": "sixth_shift + sixth_u**6",
+    "sixth_x2": "sixth_shift + sixth_v**6",
+    "sixth_cube_x1": "sixth_shift + sixth_u**3",
+    "sixth_cube_x2": "sixth_shift + sixth_v**3",
+    "sixth_square_x1": "sixth_shift + sixth_u**2",
+    "sixth_square_x2": "sixth_shift + sixth_v**2",
+    "product_left": "anchor + 5",
+    "product_inside": "product_left + gap_1",
+    "product_right": "product_inside + gap_2",
+    "product_outside": "product_left - gap_3",
+    "product_poly_b": "-(product_outside + product_inside)",
+    "product_poly_c": "product_outside * product_inside",
+    "product_rad_b": "product_left + product_right",
+    "product_rad_c": "-product_left * product_right",
+    "product_correct": "product_left * product_inside * product_right",
+    "product_all_factor_zeros": "product_outside * product_correct",
+    "product_polynomial_only": "product_outside * product_inside",
+    "product_radical_only": "product_left * product_right",
+    "conjugate_diff": "gap_1",
+    "conjugate_sum": "gap_1 + gap_2",
+    "conjugate_delta": "conjugate_diff * conjugate_sum",
+    "conjugate_first_c": "conjugate_delta - anchor",
+    "conjugate_second_c": "-anchor"
+  },
+  "constraints": [],
+  "integer_clean": true,
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% if structure == 'single_nth_root' %}$\\{ {{ single_target }} \\}${% elif structure == 'sqrt_equals_linear_extraneous' %}$\\{ {{ linear_good }} \\}${% elif structure == 'reciprocal_sqrt_substitution' %}$\\{ {{ reciprocal_target }} \\}${% elif structure == 'reciprocal_ratio_substitution' %}$\\{ {{ ratio_target }} \\}${% elif structure == 'sixth_cube_substitution' %}$\\{ {{ sixth_x1 }}; {{ sixth_x2 }} \\}${% elif structure == 'product_domain_root_product' %}${{ product_correct }}${% else %}${{ conjugate_diff }}${% endif %}",
+    "desc": "Теңдеу тармақтарында нақты шешімдер жиыны беріледі; көбейтінді тармағында барлық рұқсат етілген түбірлердің көбейтіндісі, ал conjugate_value тармағында сұралған түйіндес радикал өрнектің дәл мәні беріледі."
+  },
+  "distractors": [
+    {
+      "id": "kept_invalid_or_unsubstituted_candidate",
+      "desc": "Квадраттаудан кейінгі бөгде түбірді немесе алмастырудың теріс мәнін қалдырды; алтыншы түбір алмастыруында t мәндерін x деп жазды; жай түбір теңдеуінде түбір дәрежесіне көтеруді ұмытты.",
+      "transform": {
+        "correct": "{% if structure == 'single_nth_root' %}$\\{ {{ single_wrong_no_power }} \\}${% elif structure == 'sqrt_equals_linear_extraneous' %}$\\{ {{ linear_bad }}; {{ linear_good }} \\}${% elif structure == 'reciprocal_sqrt_substitution' %}$\\{ {{ reciprocal_wrong }}; {{ reciprocal_target }} \\}${% elif structure == 'reciprocal_ratio_substitution' %}$\\{ {{ ratio_wrong }}; {{ ratio_target }} \\}${% elif structure == 'sixth_cube_substitution' %}$\\{ {{ sixth_u }}; {{ sixth_v }} \\}${% elif structure == 'product_domain_root_product' %}${{ product_all_factor_zeros }}${% else %}${{ conjugate_sum }}${% endif %}"
+      }
+    },
+    {
+      "id": "used_wrong_back_substitution",
+      "desc": "ММЖ-ға кірмейтін кандидатты ғана таңдады, алтыншы түбірден x-ке қайтқанда куб дәрежесін қолданды, немесе көбейтінді теңдеуде тек полином көбейткішінің түбірлерін есепке алды.",
+      "transform": {
+        "correct": "{% if structure == 'single_nth_root' %}$\\{ {{ single_target - 1 }} \\}${% elif structure == 'sqrt_equals_linear_extraneous' %}$\\{ {{ linear_bad }} \\}${% elif structure == 'reciprocal_sqrt_substitution' %}$\\{ {{ reciprocal_wrong }} \\}${% elif structure == 'reciprocal_ratio_substitution' %}$\\{ {{ ratio_wrong }} \\}${% elif structure == 'sixth_cube_substitution' %}$\\{ {{ sixth_cube_x1 }}; {{ sixth_cube_x2 }} \\}${% elif structure == 'product_domain_root_product' %}${{ product_polynomial_only }}${% else %}${{ conjugate_delta }}${% endif %}"
+      }
+    },
+    {
+      "id": "domain_or_power_rule_error",
+      "desc": "Бөлімдегі түбір нөл болатын шекараны шешім деп алды, алтыншы түбірден қайтқанда квадрат дәрежесін қолданды, көбейтінді теңдеуде тек радикалдың шекараларын алды немесе түйіндес өрнекте қатынасты кері құрды.",
+      "transform": {
+        "correct": "{% if structure == 'single_nth_root' %}$\\{ {{ single_target + 1 }} \\}${% elif structure == 'sqrt_equals_linear_extraneous' %}$\\{ {{ linear_threshold }} \\}${% elif structure == 'reciprocal_sqrt_substitution' %}$\\{ {{ reciprocal_boundary }} \\}${% elif structure == 'reciprocal_ratio_substitution' %}$\\{ {{ ratio_left }} \\}${% elif structure == 'sixth_cube_substitution' %}$\\{ {{ sixth_square_x1 }}; {{ sixth_square_x2 }} \\}${% elif structure == 'product_domain_root_product' %}${{ product_radical_only }}${% else %}$\\dfrac{ {{ conjugate_diff }} }{ {{ conjugate_sum }} }${% endif %}"
+      }
+    }
+  ],
+  "_dropped_distractors": [
+    {
+      "id": "stopped_after_first_squaring",
+      "why_dropped": "Бір рет квадраттап, қалған радикалды оқшауламай тоқтау нақты бір сандық қате жауапты анықтамайды; бұл determinate емес dead-end қате."
+    },
+    {
+      "id": "forgot_domain_but_no_candidate_is_forbidden",
+      "why_dropped": "ММЖ-ны жазбау кейбір генерацияланған теңдеулерде соңғы түбірлер жиынын өзгертпейді. Сондықтан ол барлық тармақта тұрақты қате жауап беретін distractor бола алмайды."
+    }
+  ],
+  "narrative_settings": [
+    "геометриялық ұзындықтар квадрат түбір арқылы байланысатын есеп",
+    "қашықтық немесе уақыт шамалары түбірлік тәуелділікпен берілетін есеп",
+    "екі физикалық шаманың түбір және кері түбір арқылы байланысы бар есеп"
+  ]
+}

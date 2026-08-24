@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import random
 import re
 from fractions import Fraction
@@ -30,15 +31,29 @@ from typing import Any
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from . import inv_trig
+from . import answer_modules
+
+
+class BlueprintSchemaError(Exception):
+    """A blueprint value has a shape the deterministic engine cannot execute."""
 
 # ---------------------------------------------------------------------------
 # Where the topic blueprints + Jinja templates live, and the Jinja engine that
 # renders them. Built once at import time so we don't rebuild it per call.
+#
+# Two directories, searched in order:
+#   blueprints/        the original MAIQE topic set
+#   qadam_blueprints/  the Qadam curriculum set
+# A topic is addressed by its bare stem, so stems must stay UNIQUE across both
+# directories; on a collision the first directory wins (see `_blueprint_path`).
+# The Jinja loader gets both, so a blueprint's `constraints_template` resolves
+# no matter which directory it lives in.
 # ---------------------------------------------------------------------------
 BLUEPRINT_DIR = Path(__file__).parent / "blueprints"
+QADAM_BLUEPRINT_DIR = Path(__file__).parent / "qadam_blueprints"
+BLUEPRINT_DIRS = (BLUEPRINT_DIR, QADAM_BLUEPRINT_DIR)
 TEMPLATE_ENV = Environment(
-    loader=FileSystemLoader(str(BLUEPRINT_DIR)),
+    loader=FileSystemLoader([str(d) for d in BLUEPRINT_DIRS]),
     autoescape=select_autoescape(),
 )
 
@@ -57,14 +72,24 @@ DIFFICULTY_BY_TARGET = [
 # ---------------------------------------------------------------------------
 # Blueprint loading + template rendering
 # ---------------------------------------------------------------------------
+def _blueprint_path(topic: str) -> Path:
+    """Locate <topic>.json across BLUEPRINT_DIRS, first directory wins."""
+    for directory in BLUEPRINT_DIRS:
+        candidate = directory / f"{topic}.json"
+        if candidate.exists():
+            return candidate
+    searched = ", ".join(str(d) for d in BLUEPRINT_DIRS)
+    raise FileNotFoundError(f"No blueprint named {topic!r} under: {searched}")
+
+
 def load_blueprint(topic: str) -> dict[str, Any]:
-    """Load blueprints/<topic>.json."""
-    return json.loads((BLUEPRINT_DIR / f"{topic}.json").read_text("utf-8"))
+    """Load <topic>.json from whichever blueprint directory holds it."""
+    return json.loads(_blueprint_path(topic).read_text("utf-8"))
 
 
 def available_topics() -> list[str]:
-    """List available topics."""
-    return sorted(p.stem for p in BLUEPRINT_DIR.glob("*.json"))
+    """List available topics across every blueprint directory."""
+    return sorted({p.stem for d in BLUEPRINT_DIRS for p in d.glob("*.json")})
 
 
 def render_constraints(blueprint: dict, spec: dict) -> str:
@@ -254,14 +279,14 @@ def build_solution(blueprint: dict, spec: dict, answer_key: Any) -> dict[str, An
     answer = blueprint["answer"]
     kind = answer["type"]
 
-    if kind in inv_trig.ANSWER_TYPES:
-        steps = inv_trig.solution_steps(kind, spec)
+    engine = answer_modules.module_for(kind)
+    if engine is not None:
         return {
             "answer_type": kind,
             "curriculum_ref": blueprint.get("curriculum_ref", ""),
             "spec": dict(spec),
             "answer_key": answer_key,
-            "steps": steps,
+            "steps": engine.solution_steps(kind, spec),
         }
 
     builders = {
@@ -469,19 +494,44 @@ def _apply_misconception(
 
     `literal=True` (declarative / static_choice answers): the transform carries
     replacement TEXT, applied without evaluation or int-coercion. A dict transform
-    overrides just the named fields of the correct answer (the other properties
-    stay correct, so only the targeted misconception is wrong); a list/scalar
-    transform replaces the answer outright.
+    overrides just the named fields of a dict answer (the other properties stay
+    correct, so only the targeted misconception is wrong); a list transform replaces
+    a list answer. A scalar answer accepts either direct replacement text or the
+    imported Qadam wrapper ``{"correct": replacement_text}``.
 
         static dict  -> transform overrides fields:    {"четность": "четная"}
     """
     if literal:
         if isinstance(answer_key, dict):
+            if not isinstance(transform, dict):
+                raise BlueprintSchemaError(
+                    "A dict static_choice answer requires a dict distractor transform."
+                )
             # Render each override vs the spec, then override only those fields.
             overrides = {key: render_value(val, spec) for key, val in transform.items()}
             return {**answer_key, **overrides}
         if isinstance(answer_key, (list, tuple)):
+            if not isinstance(transform, (list, tuple)):
+                raise BlueprintSchemaError(
+                    "A list static_choice answer requires a list distractor transform."
+                )
             return [render_value(v, spec) for v in transform]
+
+        # Qadam's imported scalar blueprints wrap replacement text in a named
+        # ``correct`` field. This is an explicit supported representation, not a
+        # generic dict coercion: accepting any other keys would recreate the bug
+        # where ``format_answer`` persisted raw Jinja as ``key = {% ... %}``.
+        if isinstance(transform, dict):
+            if set(transform) != {"correct"}:
+                raise BlueprintSchemaError(
+                    "A scalar static_choice distractor wrapper must contain only "
+                    "the 'correct' key."
+                )
+            transform = transform["correct"]
+        if not isinstance(transform, str):
+            raise BlueprintSchemaError(
+                "A scalar static_choice distractor transform must be text."
+            )
         return render_value(transform, spec)
 
     if isinstance(answer_key, dict):
@@ -529,15 +579,47 @@ def _ranges_for_difficulty(blueprint: dict, difficulty: int) -> dict[str, dict]:
     return ranges
 
 
+# The only callables a blueprint expression may reach. `__builtins__` stays
+# empty, so this dict is the entire callable surface — nothing here can import,
+# open a file, or reach an attribute. Merged UNDER the rolled parameters, so a
+# blueprint that happens to name a parameter `min` shadows the helper rather
+# than colliding with it.
+_EVAL_FUNCS = {"abs": abs, "gcd": math.gcd, "min": min, "max": max}
+
+
+def _desugar_implication(code: str) -> str:
+    """Rewrite the implication `A -> B` into Python's `(not (A)) or (B)`.
+
+    Blueprints state most of their rules as implications ("the monic structure
+    means an integer-root pair"), which reads far better than the hand-negated
+    or-form. `->` is a SyntaxError in Python, so adopting it cannot change the
+    meaning of any expression that already parses.
+
+    Right-associative — `A -> B -> C` is `A -> (B -> C)` — and implication binds
+    loosest of all operators, which is why each side is parenthesised wholesale
+    rather than spliced in raw.
+
+    Note the deliberately opposite call on `^`: that one ALREADY means XOR in
+    Python, so it is not remapped to exponentiation. A blueprint must spell
+    powers `**`; silently redefining a live operator is how a constraint starts
+    passing for the wrong reason.
+    """
+    if "->" not in code:
+        return code
+    lhs, rhs = code.split("->", 1)
+    return f"(not ({lhs})) or ({_desugar_implication(rhs)})"
+
+
 def _eval(expr: str, scope: dict) -> Any:
     """Evaluate a small arithmetic/boolean expression from a blueprint string.
 
     Blueprint strings may carry a trailing `// comment` for humans; we strip
-    that first. `__builtins__` is emptied so the expression can only touch the
-    numbers in `scope` — it can't call functions or import anything.
+    that first, then desugar any `->` implication. `__builtins__` is emptied so
+    the expression can only touch the numbers in `scope` and the small
+    `_EVAL_FUNCS` whitelist — it can't call anything else or import.
     """
-    code = expr.split("//")[0].strip()
-    return eval(code, {"__builtins__": {}}, scope)
+    code = _desugar_implication(expr.split("//")[0].strip())
+    return eval(code, {"__builtins__": {}}, {**_EVAL_FUNCS, **scope})
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,422 @@
+{
+  "topic": "higher_degree_inequalities",
+  "display_name": "Жоғары дәрежелі теңсіздіктерді шешу",
+  "curriculum_ref": "8 сынып — Жоғары дәрежелі теңсіздік",
+  "constraints_template": "higher_degree_inequalities.j2",
+  "_comment": "Генеративті blueprint: видеодағы дайын теңсіздіктер көшірілмейді. Тапсырмалар кері бағытта құрылады: ауыстыру тармақтарында алдымен x бойынша симметриялы шекаралар таңдалып, содан кейін t=x^2, t=x^4 немесе t=(x+s)^2 үшін квадрат үшмүше құрылады; көбейткіштер тармақтарында түбірлер мен олардың еселіктері алдын ала таңдалып, таңба кестесінің құрылымы солардан шығады. Қиын тармақтар мүшелерді бір жаққа жинауды және жасырын квадрат көбейткішті жіктеуді талап етеді.",
+  "tag": {
+    "name": "Жоғары дәрежелі теңсіздік",
+    "slug": "higher-degree-inequality"
+  },
+  "default_difficulty": 2,
+  "parameters": {
+    "structure": {
+      "type": "string",
+      "options": [
+        "biquadratic_x2",
+        "even_power_x4",
+        "shifted_square",
+        "difference_of_fourth_powers",
+        "factored_middle_even",
+        "hidden_quadratic_repeat"
+      ],
+      "desc": "Тапсырманың алгебралық құрылымы"
+    },
+    "relation": {
+      "type": "string",
+      "options": [
+        ">",
+        "<",
+        ">=",
+        "<="
+      ],
+      "desc": "Теңсіздік белгісі"
+    },
+    "a": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3
+      ],
+      "desc": "Ауыстыру арқылы алынатын квадрат үшмүшенің оң жетекші коэффициенті"
+    },
+    "u": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3
+      ],
+      "desc": "Ауыстыру тармағындағы кіші оң |өрнек| шекарасы"
+    },
+    "u_gap": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3
+      ],
+      "desc": "v=u+u_gap болатын оң аралық"
+    },
+    "shift": {
+      "type": "integer",
+      "options": [
+        -4,
+        -3,
+        -2,
+        -1,
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "t=(x+shift)^2 тармағындағы бүтін ығысу"
+    },
+    "k": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "x(x^4-k^4) типіндегі нақты түбірлердің модулі"
+    },
+    "common5": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "Екі жақты бесінші дәрежелі түрде екі жаққа ортақ x^5 коэффициенті"
+    },
+    "common1": {
+      "type": "integer",
+      "options": [
+        -12,
+        -8,
+        -6,
+        -4,
+        4,
+        6,
+        8,
+        12
+      ],
+      "desc": "Екі жақты бесінші дәрежелі түрде екі жаққа ортақ x коэффициенті"
+    },
+    "delta": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3
+      ],
+      "desc": "Екі жақты өрнектердің айырмасын delta*x*(x^4-k^4) ететін оң коэффициент"
+    },
+    "anchor": {
+      "type": "integer",
+      "options": [
+        -8,
+        -7,
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        0,
+        1,
+        2
+      ],
+      "desc": "Көбейткіштер тармағындағы ең сол жақ түбір r1"
+    },
+    "root_gap_1": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "r2-r1 оң айырмасы"
+    },
+    "root_gap_2": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "r3-r2 оң айырмасы"
+    },
+    "lead": {
+      "type": "integer",
+      "options": [
+        -2,
+        -1,
+        1,
+        2
+      ],
+      "desc": "Көбейткіштер түріндегі көпмүшенің нөлден өзге жетекші көбейткіші"
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "structure": {
+        "options": [
+          "biquadratic_x2"
+        ]
+      },
+      "relation": {
+        "options": [
+          ">",
+          "<"
+        ]
+      },
+      "a": {
+        "options": [
+          1
+        ]
+      },
+      "u": {
+        "options": [
+          1,
+          2
+        ]
+      },
+      "u_gap": {
+        "options": [
+          1,
+          2
+        ]
+      }
+    },
+    "2": {
+      "structure": {
+        "options": [
+          "biquadratic_x2",
+          "shifted_square",
+          "difference_of_fourth_powers",
+          "factored_middle_even"
+        ]
+      },
+      "relation": {
+        "options": [
+          ">",
+          "<",
+          ">=",
+          "<="
+        ]
+      },
+      "a": {
+        "options": [
+          1,
+          2
+        ]
+      },
+      "u": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "u_gap": {
+        "options": [
+          1,
+          2
+        ]
+      },
+      "shift": {
+        "options": [
+          -3,
+          -2,
+          -1,
+          1,
+          2,
+          3
+        ]
+      },
+      "k": {
+        "options": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "delta": {
+        "options": [
+          1,
+          2
+        ]
+      },
+      "lead": {
+        "options": [
+          -1,
+          1
+        ]
+      }
+    },
+    "3": {
+      "structure": {
+        "options": [
+          "even_power_x4",
+          "shifted_square",
+          "difference_of_fourth_powers",
+          "factored_middle_even",
+          "hidden_quadratic_repeat"
+        ]
+      },
+      "relation": {
+        "options": [
+          ">",
+          "<",
+          ">=",
+          "<="
+        ]
+      },
+      "a": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "u": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "u_gap": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "shift": {
+        "options": [
+          -4,
+          -3,
+          -2,
+          -1,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "k": {
+        "options": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "delta": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "lead": {
+        "options": [
+          -2,
+          -1,
+          1,
+          2
+        ]
+      }
+    }
+  },
+  "derived": {
+    "a": "a if structure in ['biquadratic_x2', 'even_power_x4', 'shifted_square'] else 1",
+    "u": "u if structure in ['biquadratic_x2', 'even_power_x4', 'shifted_square'] else 0",
+    "u_gap": "u_gap if structure in ['biquadratic_x2', 'even_power_x4', 'shifted_square'] else 0",
+    "shift": "shift if structure == 'shifted_square' else 0",
+    "k": "k if structure == 'difference_of_fourth_powers' else 0",
+    "common5": "common5 if structure == 'difference_of_fourth_powers' else 0",
+    "common1": "common1 if structure == 'difference_of_fourth_powers' else 0",
+    "delta": "delta if structure == 'difference_of_fourth_powers' else 0",
+    "anchor": "anchor if structure in ['factored_middle_even', 'hidden_quadratic_repeat'] else 0",
+    "root_gap_1": "root_gap_1 if structure in ['factored_middle_even', 'hidden_quadratic_repeat'] else 0",
+    "root_gap_2": "root_gap_2 if structure in ['factored_middle_even', 'hidden_quadratic_repeat'] else 0",
+    "lead": "lead if structure in ['factored_middle_even', 'hidden_quadratic_repeat'] else 1",
+    "power_base": "4 if structure == 'even_power_x4' else 2",
+    "v": "u + u_gap if structure in ['biquadratic_x2', 'even_power_x4', 'shifted_square'] else 0",
+    "t1": "u**power_base if structure in ['biquadratic_x2', 'even_power_x4', 'shifted_square'] else 0",
+    "t2": "v**power_base if structure in ['biquadratic_x2', 'even_power_x4', 'shifted_square'] else 0",
+    "sub_b": "-a * (t1 + t2) if structure in ['biquadratic_x2', 'even_power_x4', 'shifted_square'] else 0",
+    "sub_c": "a * t1 * t2 if structure in ['biquadratic_x2', 'even_power_x4', 'shifted_square'] else 0",
+    "q1": "-shift - v if structure == 'shifted_square' else (-v if structure in ['biquadratic_x2', 'even_power_x4'] else 0)",
+    "q2": "-shift - u if structure == 'shifted_square' else (-u if structure in ['biquadratic_x2', 'even_power_x4'] else 0)",
+    "q3": "-shift + u if structure == 'shifted_square' else (u if structure in ['biquadratic_x2', 'even_power_x4'] else 0)",
+    "q4": "-shift + v if structure == 'shifted_square' else (v if structure in ['biquadratic_x2', 'even_power_x4'] else 0)",
+    "lhs5": "common5 + delta if structure == 'difference_of_fourth_powers' else 0",
+    "lhs1": "common1 - delta * k**4 if structure == 'difference_of_fourth_powers' else 0",
+    "rhs5": "common5 if structure == 'difference_of_fourth_powers' else 0",
+    "rhs1": "common1 if structure == 'difference_of_fourth_powers' else 0",
+    "r1": "anchor if structure in ['factored_middle_even', 'hidden_quadratic_repeat'] else 0",
+    "r2": "anchor + root_gap_1 if structure in ['factored_middle_even', 'hidden_quadratic_repeat'] else 0",
+    "r3": "anchor + root_gap_1 + root_gap_2 if structure in ['factored_middle_even', 'hidden_quadratic_repeat'] else 0",
+    "quad_b": "-(r1 + r3) if structure == 'hidden_quadratic_repeat' else 0",
+    "quad_c": "r1 * r3 if structure == 'hidden_quadratic_repeat' else 0",
+    "relation_latex": "'\\\\ge' if relation == '>=' else ('\\\\le' if relation == '<=' else relation)"
+  },
+  "constraints": [],
+  "integer_clean": true,
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% set closed = relation in ['>=', '<='] %}{% set wants_positive = relation in ['>', '>='] %}{% set effective_positive = (lead > 0 and wants_positive) or (lead < 0 and not wants_positive) %}{% if structure in ['biquadratic_x2', 'even_power_x4', 'shifted_square'] %}{% if wants_positive %}{% if closed %}$(-\\infty;{{ q1 }}]\\cup[{{ q2 }};{{ q3 }}]\\cup[{{ q4 }};+\\infty)${% else %}$(-\\infty;{{ q1 }})\\cup({{ q2 }};{{ q3 }})\\cup({{ q4 }};+\\infty)${% endif %}{% else %}{% if closed %}$[{{ q1 }};{{ q2 }}]\\cup[{{ q3 }};{{ q4 }}]${% else %}$({{ q1 }};{{ q2 }})\\cup({{ q3 }};{{ q4 }})${% endif %}{% endif %}{% elif structure == 'difference_of_fourth_powers' %}{% if wants_positive %}{% if closed %}$[-{{ k }};0]\\cup[{{ k }};+\\infty)${% else %}$(-{{ k }};0)\\cup({{ k }};+\\infty)${% endif %}{% else %}{% if closed %}$(-\\infty;-{{ k }}]\\cup[0;{{ k }}]${% else %}$(-\\infty;-{{ k }})\\cup(0;{{ k }})${% endif %}{% endif %}{% elif structure == 'factored_middle_even' %}{% if effective_positive %}{% if closed %}$(-\\infty;{{ r1 }}]\\cup\\{ {{ r2 }} \\}\\cup[{{ r3 }};+\\infty)${% else %}$(-\\infty;{{ r1 }})\\cup({{ r3 }};+\\infty)${% endif %}{% else %}{% if closed %}$[{{ r1 }};{{ r3 }}]${% else %}$({{ r1 }};{{ r2 }})\\cup({{ r2 }};{{ r3 }})${% endif %}{% endif %}{% else %}{% if effective_positive %}{% if closed %}$[{{ r1 }};{{ r2 }}]\\cup[{{ r3 }};+\\infty)${% else %}$({{ r1 }};{{ r2 }})\\cup({{ r3 }};+\\infty)${% endif %}{% else %}{% if closed %}$(-\\infty;{{ r1 }}]\\cup[{{ r2 }};{{ r3 }}]${% else %}$(-\\infty;{{ r1 }})\\cup({{ r2 }};{{ r3 }})${% endif %}{% endif %}{% endif %}",
+    "desc": "Ауыстырудан кейін t бойынша квадрат теңсіздік шешіліп, қайта x-ке оралады; көбейткіштер тармағында нақты түбірлер мен олардың еселіктері бойынша таңба кестесі құрылады."
+  },
+  "distractors": [
+    {
+      "id": "opposite_sign_intervals",
+      "desc": "Таңба кестесіндегі қажетті таңбаның орнына қарама-қарсы таңбалы аралықтарды таңдады.",
+      "transform": {
+        "correct": "{% set closed = relation in ['>=', '<='] %}{% set wants_positive = relation in ['>', '>='] %}{% set effective_positive = (lead > 0 and wants_positive) or (lead < 0 and not wants_positive) %}{% if structure in ['biquadratic_x2', 'even_power_x4', 'shifted_square'] %}{% if wants_positive %}{% if closed %}$[{{ q1 }};{{ q2 }}]\\cup[{{ q3 }};{{ q4 }}]${% else %}$({{ q1 }};{{ q2 }})\\cup({{ q3 }};{{ q4 }})${% endif %}{% else %}{% if closed %}$(-\\infty;{{ q1 }}]\\cup[{{ q2 }};{{ q3 }}]\\cup[{{ q4 }};+\\infty)${% else %}$(-\\infty;{{ q1 }})\\cup({{ q2 }};{{ q3 }})\\cup({{ q4 }};+\\infty)${% endif %}{% endif %}{% elif structure == 'difference_of_fourth_powers' %}{% if wants_positive %}{% if closed %}$(-\\infty;-{{ k }}]\\cup[0;{{ k }}]${% else %}$(-\\infty;-{{ k }})\\cup(0;{{ k }})${% endif %}{% else %}{% if closed %}$[-{{ k }};0]\\cup[{{ k }};+\\infty)${% else %}$(-{{ k }};0)\\cup({{ k }};+\\infty)${% endif %}{% endif %}{% elif structure == 'factored_middle_even' %}{% if effective_positive %}{% if closed %}$[{{ r1 }};{{ r3 }}]${% else %}$({{ r1 }};{{ r2 }})\\cup({{ r2 }};{{ r3 }})${% endif %}{% else %}{% if closed %}$(-\\infty;{{ r1 }}]\\cup\\{ {{ r2 }} \\}\\cup[{{ r3 }};+\\infty)${% else %}$(-\\infty;{{ r1 }})\\cup({{ r3 }};+\\infty)${% endif %}{% endif %}{% else %}{% if effective_positive %}{% if closed %}$(-\\infty;{{ r1 }}]\\cup[{{ r2 }};{{ r3 }}]${% else %}$(-\\infty;{{ r1 }})\\cup({{ r2 }};{{ r3 }})${% endif %}{% else %}{% if closed %}$[{{ r1 }};{{ r2 }}]\\cup[{{ r3 }};+\\infty)${% else %}$({{ r1 }};{{ r2 }})\\cup({{ r3 }};+\\infty)${% endif %}{% endif %}{% endif %}"
+      }
+    },
+    {
+      "id": "multiplicity_or_substitution_branch_error",
+      "desc": "Ауыстыруда теріс түбір тармағын жоғалтты немесе еселігі жұп түбірде таңба ауысады деп қате есептеді.",
+      "transform": {
+        "correct": "{% set closed = relation in ['>=', '<='] %}{% set wants_positive = relation in ['>', '>='] %}{% set effective_positive = (lead > 0 and wants_positive) or (lead < 0 and not wants_positive) %}{% if structure in ['biquadratic_x2', 'even_power_x4', 'shifted_square'] %}{% if wants_positive %}{% if closed %}$[{{ q2 }};{{ q3 }}]\\cup[{{ q4 }};+\\infty)${% else %}$({{ q2 }};{{ q3 }})\\cup({{ q4 }};+\\infty)${% endif %}{% else %}{% if closed %}$[{{ q3 }};{{ q4 }}]${% else %}$({{ q3 }};{{ q4 }})${% endif %}{% endif %}{% elif structure == 'difference_of_fourth_powers' %}{% if wants_positive %}{% if closed %}$(-\\infty;-{{ k }}]\\cup[{{ k }};+\\infty)${% else %}$(-\\infty;-{{ k }})\\cup({{ k }};+\\infty)${% endif %}{% else %}{% if closed %}$[-{{ k }};{{ k }}]${% else %}$(-{{ k }};{{ k }})${% endif %}{% endif %}{% elif structure == 'factored_middle_even' %}{% if effective_positive %}{% if closed %}$[{{ r1 }};{{ r2 }}]\\cup[{{ r3 }};+\\infty)${% else %}$({{ r1 }};{{ r2 }})\\cup({{ r3 }};+\\infty)${% endif %}{% else %}{% if closed %}$(-\\infty;{{ r1 }}]\\cup[{{ r2 }};{{ r3 }}]${% else %}$(-\\infty;{{ r1 }})\\cup({{ r2 }};{{ r3 }})${% endif %}{% endif %}{% else %}{% if effective_positive %}{% if closed %}$(-\\infty;{{ r2 }}]\\cup[{{ r3 }};+\\infty)${% else %}$(-\\infty;{{ r1 }})\\cup({{ r1 }};{{ r2 }})\\cup({{ r3 }};+\\infty)${% endif %}{% else %}{% if closed %}$[{{ r2 }};{{ r3 }}]${% else %}$({{ r2 }};{{ r3 }})${% endif %}{% endif %}{% endif %}"
+      }
+    },
+    {
+      "id": "kept_only_leftmost_interval",
+      "desc": "Барлық таңба аралықтарын біріктірудің орнына тек ең сол жақ аралықты жауап ретінде қалдырды.",
+      "transform": {
+        "correct": "{% set closed = relation in ['>=', '<='] %}{% if structure in ['biquadratic_x2', 'even_power_x4', 'shifted_square'] %}{% if closed %}$(-\\infty;{{ q1 }}]${% else %}$(-\\infty;{{ q1 }})${% endif %}{% elif structure == 'difference_of_fourth_powers' %}{% if closed %}$(-\\infty;-{{ k }}]${% else %}$(-\\infty;-{{ k }})${% endif %}{% else %}{% if closed %}$(-\\infty;{{ r1 }}]${% else %}$(-\\infty;{{ r1 }})${% endif %}{% endif %}"
+      }
+    }
+  ],
+  "_dropped_distractors": [
+    {
+      "id": "stopped_at_substitution_variable",
+      "why_dropped": "t айнымалысындағы аралықты x-ке қайтармай тоқтау әр құрылымда бір ғана бірмәнді қате жауап бермейді, сондықтан determinate distractor ретінде қолданылмады."
+    },
+    {
+      "id": "did_not_factor_completely",
+      "why_dropped": "Толық жіктемей тоқтау — жауап емес, dead-end қате; төрт нақты нұсқаның біріне жарамайды."
+    }
+  ],
+  "narrative_settings": [
+    "жоғары дәрежелі модельдің оң немесе теріс болатын параметр аралығын табу",
+    "бірнеше шекті мәннен өтетін функцияның рұқсат етілген аймақтарын анықтау",
+    "симметриялы тәуелділігі бар шаманың шартты қанағаттандыратын мәндерін табу"
+  ]
+}

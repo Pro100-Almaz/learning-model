@@ -32,7 +32,8 @@ class Command(BaseCommand):
         parser.add_argument(
             "--topic",
             default="calculus_integrals",
-            help="Blueprint name under blueprints/ (default: calculus_integrals).",
+            help="Blueprint name under blueprints/ or qadam_blueprints/ "
+                 "(default: calculus_integrals).",
         )
         parser.add_argument(
             "--count",
