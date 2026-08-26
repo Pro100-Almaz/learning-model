@@ -1,0 +1,73 @@
+{% macro x_plus_c(c) -%}
+x{%- if c > 0 %}+{{ c }}{%- elif c < 0 %}-{{ -c }}{%- endif -%}
+{%- endmacro %}
+
+{% macro ax_plus_b(a, b) -%}
+{%- if a == 1 -%}x
+{%- elif a == -1 -%}-x
+{%- else -%}{{ a }}x
+{%- endif -%}
+{%- if b > 0 %}+{{ b }}
+{%- elif b < 0 %}-{{ -b }}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro const_minus_x(c) -%}
+{%- if c > 0 -%}{{ c }}-x
+{%- elif c < 0 -%}-{{ -c }}-x
+{%- else -%}-x
+{%- endif -%}
+{%- endmacro %}
+
+{% macro poly2(a, b, c) -%}
+{%- if a == 1 -%}x^2
+{%- elif a == -1 -%}-x^2
+{%- else -%}{{ a }}x^2
+{%- endif -%}
+{%- if b > 0 %}+{% if b != 1 %}{{ b }}{% endif %}x
+{%- elif b < 0 %}-{% if b != -1 %}{{ -b }}{% endif %}x
+{%- endif -%}
+{%- if c > 0 %}+{{ c }}
+{%- elif c < 0 %}-{{ -c }}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro nthroot(n, body) -%}
+{%- if n == 2 -%}\sqrt{ {{ body }} }
+{%- else -%}\sqrt[{{ n }}]{ {{ body }} }
+{%- endif -%}
+{%- endmacro %}
+
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
+{% if structure == 'single_nth_root' -%}
+- ${% if scale != 1 %}{{ scale }}{% endif %}{{ nthroot(root_index, x_plus_c(single_offset)) }}={{ single_rhs }}$
+- Теңдеуді шешіңіз.
+{% elif structure == 'sqrt_equals_linear_extraneous' -%}
+- $\sqrt{ {{ ax_plus_b(linear_m, linear_n) }} }={{ x_plus_c(-linear_threshold) }}$
+- Теңдеуді шешіңіз және шыққан кандидат түбірлерді бастапқы теңдеумен тексеріңіз.
+{% elif structure == 'reciprocal_sqrt_substitution' -%}
+- $\dfrac{ {{ reciprocal_A }} }{\sqrt{ {{ const_minus_x(reciprocal_boundary) }} }}-\sqrt{ {{ const_minus_x(reciprocal_boundary) }} }={{ reciprocal_C }}$
+- Теңдеуді шешіңіз.
+{% elif structure == 'reciprocal_ratio_substitution' -%}
+- $\sqrt{\dfrac{ {{ x_plus_c(-ratio_left) }} }{ {{ const_minus_x(ratio_right) }} }}-\sqrt{\dfrac{ {{ const_minus_x(ratio_right) }} }{ {{ x_plus_c(-ratio_left) }} }}=\dfrac{ {{ ratio_rhs_num }} }{ {{ ratio_rhs_den }} }$
+- Теңдеуді шешіңіз.
+{% elif structure == 'sixth_cube_substitution' -%}
+- $\sqrt[3]{ {{ x_plus_c(-sixth_shift) }} }-{{ sixth_A }}\sqrt[6]{ {{ x_plus_c(-sixth_shift) }} }+{{ sixth_B }}=0$
+- Теңдеуді шешіңіз.
+{% elif structure == 'product_domain_root_product' -%}
+- $({{ poly2(1, product_poly_b, product_poly_c) }})\sqrt{ {{ poly2(-1, product_rad_b, product_rad_c) }} }=0$
+- Теңдеудің барлық нақты түбірлерінің көбейтіндісін табыңыз.
+{% else -%}
+- Егер $\sqrt{ {{ x_plus_c(conjugate_first_c) }} }+\sqrt{ {{ x_plus_c(conjugate_second_c) }} }={{ conjugate_sum }}$ болса, $\sqrt{ {{ x_plus_c(conjugate_first_c) }} }-\sqrt{ {{ x_plus_c(conjugate_second_c) }} }$ өрнегінің мәнін табыңыз.
+{% endif %}
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
+- Treat every radical as a principal real radical and enforce its real-domain restrictions.
+- When a radical is isolated and both sides are squared, check every resulting candidate in the original equation; squaring may introduce an extraneous root.
+- In the reciprocal-square-root branch, substitute the positive square root itself. A negative algebraic root of the substitution equation is inadmissible.
+- In the reciprocal-ratio branch, substitute the first square root. The substitution variable is positive, so reject the negative reciprocal root before back-substitution.
+- In the cube/sixth-root branch, let the sixth root be the substitution variable; the cube root of the same nonnegative radicand is its square.
+- In the product branch, first find the domain of the square root. A zero of the polynomial factor is a solution only if it lies in that domain; zeros of the radicand are also valid when the full product is defined.
+- In the conjugate-value branch, multiply the given sum by the requested difference and use the difference of the radicands.
+- Render all math as LaTeX inside $...$.
+- Do NOT state or hint at the answer: do not reveal domain endpoints, substitution values, candidate roots, rejected roots, accepted roots, root products, or the requested conjugate value.

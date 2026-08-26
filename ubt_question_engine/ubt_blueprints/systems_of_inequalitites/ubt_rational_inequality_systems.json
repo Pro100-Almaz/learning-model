@@ -1,0 +1,126 @@
+{
+  "topic": "ubt_rational_inequality_systems",
+  "parent_topic": "systems_of_inequalities",
+  "parent_topic_number": 11,
+  "display_name": "Systems containing rational inequalities",
+  "curriculum_ref": "KZ 2026 UBT — Systems of inequalities — Topic 11",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 11. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Теңсіздіктер жүйесі",
+    "slug": "tensizdikter-zhuyesi"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "rational_system"
+      ],
+      "desc": "question structure"
+    },
+    "r1": {
+      "type": "int",
+      "min": -7,
+      "max": 2
+    },
+    "r2": {
+      "type": "int",
+      "min": -2,
+      "max": 8
+    },
+    "width": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    }
+  },
+  "supported_difficulties": [
+    3
+  ],
+  "default_difficulty": 3,
+  "difficulty_overrides": {
+    "3": {
+      "mode": {
+        "values": [
+          "rational_system"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "rational_system": {
+      "uses": [
+        "r1",
+        "r2",
+        "width"
+      ],
+      "constraints": [
+        "r1 < r2"
+      ],
+      "derived": {
+        "upper_bound": "r2+width",
+        "neg_r1": "-r1",
+        "neg_r2": "-r2"
+      },
+      "question": {
+        "instruction": "Solve the system of inequalities",
+        "latex": "\\begin{{cases}} \\frac{{x{neg_r1:+d}}}{{x{neg_r2:+d}}}>0 \\\\ x<{upper_bound} \\end{{cases}}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "rational_system": "Union(Interval.open(-oo,r1),Interval.open(r2,r2+width))"
+    }
+  },
+  "answer_render": {
+    "rational_system": "interval_union"
+  },
+  "distractors": {
+    "rational_system": [
+      {
+        "id": "rational_only",
+        "transform": "Union(Interval.open(-oo,r1),Interval.open(r2,oo))"
+      },
+      {
+        "id": "between_critical_points",
+        "transform": "Interval.open(r1,r2)"
+      },
+      {
+        "id": "right_piece_only",
+        "transform": "Interval.open(r2,r2+width)"
+      },
+      {
+        "id": "left_piece_only",
+        "transform": "Interval.open(-oo,r1)"
+      },
+      {
+        "id": "include_denominator_zero",
+        "transform": "Union(Interval.open(-oo,r1),Interval(r2,r2+width))"
+      },
+      {
+        "id": "include_upper_bound",
+        "transform": "Union(Interval.open(-oo,r1),Interval.Lopen(r2,r2+width))"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "interval_equivalence": true,
+    "tuple_equivalence": true,
+    "ordered_pairs": true,
+    "respect_open_closed_boundaries": true,
+    "respect_rational_domain": true,
+    "respect_log_domain": true,
+    "reject_undefined_choices": true,
+    "exact_answers_only": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

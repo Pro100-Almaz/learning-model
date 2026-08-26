@@ -1,0 +1,55 @@
+{% macro lin_minus(v) -%}
+{%- if v == 0 -%}x
+{%- elif v > 0 -%}x-{{ v }}
+{%- else -%}x+{{ -v }}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro lin_plus(v) -%}
+{%- if v == 0 -%}x
+{%- elif v > 0 -%}x+{{ v }}
+{%- else -%}x-{{ -v }}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro poly2(a, b, c) -%}
+{%- if a == 1 -%}x^2
+{%- elif a == -1 -%}-x^2
+{%- else -%}{{ a }}x^2
+{%- endif -%}
+{%- if b > 0 %}+{% if b != 1 %}{{ b }}{% endif %}x
+{%- elif b < 0 %}-{% if b != -1 %}{{ -b }}{% endif %}x
+{%- endif -%}
+{%- if c > 0 %}+{{ c }}
+{%- elif c < 0 %}-{{ -c }}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro signed_const(v) -%}
+{%- if v > 0 %}+{{ v }}{%- elif v < 0 %}-{{ -v }}{%- endif -%}
+{%- endmacro %}
+
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
+{% if structure == 'common_linear_pair' -%}
+- $\dfrac{ {{ k }}({{ lin_minus(r) }}) }{ {{ lin_minus(p) }} }+\dfrac{ {{ k }}({{ lin_minus(r) }}) }{ {{ lin_minus(q) }} }=0$
+{% elif structure == 'factor_quadratic_denominator' -%}
+- $\dfrac{ {{ lin_minus(r) }} }{ {{ lin_minus(p) }} }-\dfrac{ {{ gap_2 }}({{ lin_minus(r) }}) }{ {{ poly2(1, quad_den_b, quad_den_c) }} }=0$
+{% elif structure == 'domain_filters_candidate' -%}
+- $\dfrac{ {{ poly2(1, domain_num_b, domain_num_c) }} }{ {{ poly2(1, quad_den_b, quad_den_c) }} }=\dfrac{ {{ k }} }{ {{ poly2(1, quad_den_b, quad_den_c) }} }$
+{% elif structure == 'cubic_sum_factorization' -%}
+- $\dfrac{ {{ poly2(cubic_num_a, cubic_num_b, cubic_num_c) }} }{ x^3+{{ cubic_s3 }} }=\dfrac{ {{ cubic_u }} }{ {{ poly2(1, cubic_q_b, cubic_q_c) }} }+\dfrac{ {{ cubic_v }} }{ {{ lin_plus(cubic_s) }} }$
+{% elif structure == 'quadratic_expression_substitution' -%}
+- ${{ k }}(x^2-{{ sub_s }}x){{ signed_const(sub_A) }}=\dfrac{ {{ sub_B }} }{ x^2-{{ sub_s }}x }$
+{% else -%}
+- $\dfrac{ {{ ratio_left_coeff }}({{ lin_minus(p) }}) }{ {{ lin_minus(q) }} }+\dfrac{ {{ ratio_recip_coeff }}({{ lin_minus(q) }}) }{ {{ lin_minus(p) }} }={{ ratio_rhs }}$
+{% endif -%}
+- Теңдеуді шешіңіз. Алдымен ММЖ-ны ескеріп, жауапта тек рұқсат етілген $x$ мәндерін жазыңыз.
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
+- State and use the domain restrictions from every denominator before accepting any candidate root.
+- For common-denominator forms, factor denominators when needed, clear the least common denominator, then solve the resulting polynomial equation.
+- In the cubic-sum branch, use $x^3+s^3=(x+s)(x^2-sx+s^2)$ and note that the quadratic factor has no real zero for the generated positive $s$.
+- In the quadratic-expression branch, use one substitution for the repeated expression $x^2-sx$, solve the resulting quadratic in the substitution variable, and back-substitute both values.
+- In the reciprocal-ratio branch, set the repeated ratio to a temporary variable; the generated transformed quadratic has two values, but one of them corresponds to an impossible ratio equation rather than an $x$ solution.
+- Render all math as LaTeX inside $...$.
+- Do NOT state or hint at the answer: do not reveal the domain values, factorization, substitution values, candidate roots, rejected roots, or final solution set.

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from apps.assessments import figures
 from apps.assessments.models import (
     AnswerOption,
     AttemptAnswer,
@@ -37,10 +38,11 @@ class AnswerOptionPublicSerializer(serializers.ModelSerializer):
 class QuestionPublicSerializer(serializers.ModelSerializer):
     options = AnswerOptionPublicSerializer(many=True, read_only=True)
     image = serializers.SerializerMethodField()
+    figure = serializers.SerializerMethodField()
 
     class Meta:
         model = Question
-        fields = ["id", "text", "image", "options"]
+        fields = ["id", "text", "image", "figure", "options"]
 
     def get_image(self, obj: Question) -> str | None:
         if not obj.image:
@@ -49,6 +51,16 @@ class QuestionPublicSerializer(serializers.ModelSerializer):
             return obj.image.url
         except ValueError:
             return None
+
+    def get_figure(self, obj: Question) -> dict | None:
+        """Inline SVG diagram for generated questions, or None.
+
+        Separate from `image`, which is an uploaded file on a hand-authored
+        question. This one is shared by every question of the same blueprint
+        mode and is served as markup, so there is no URL to hand back. The
+        lookup is cached table-wide -- see assessments.figures.
+        """
+        return figures.figure_for(obj.solution, language=obj.language)
 
 
 class AttemptStartSerializer(serializers.Serializer):
@@ -82,6 +94,10 @@ class AttemptReviewItemSerializer(serializers.Serializer):
     is_correct = serializers.BooleanField()
     explanation = serializers.CharField()
     mistake_reason = serializers.CharField(allow_blank=True)
+    # Same diagram the student saw while answering. Without it the review shows
+    # "find x" with no picture, which is unreadable for exactly the geometry
+    # questions people most need to review.
+    figure = serializers.JSONField(allow_null=True)
     options = _ReviewOptionSerializer(many=True)
 
 

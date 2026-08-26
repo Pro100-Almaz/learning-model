@@ -46,9 +46,8 @@ def test_static_choice_blueprint_generates(topic):
     assert blueprint["answer"]["type"] == "static_choice", topic
     assert blueprint["topic"] == topic  # filename == topic (the #1 alignment)
 
-    # A topic that declares >= N_OPTIONS-1 distractors must always fill the slate;
-    # one with fewer yields (distractors + correct). Either way: never below 2.
-    expected = min(N_OPTIONS, len(blueprint["distractors"]) + 1)
+    # The Publisher requires one correct answer plus three distinct distractors.
+    assert len(blueprint["distractors"]) >= N_OPTIONS - 1, topic
 
     for seed in range(60):
         random.seed(seed)
@@ -76,4 +75,4 @@ def test_static_choice_blueprint_generates(topic):
         assert len(set(texts)) == len(texts), (topic, seed, texts)
         for t in texts:
             assert "{{" not in t and "{%" not in t and "1/0" not in t, (topic, seed, t)
-        assert len(options) == expected, (topic, seed, texts)
+        assert len(options) == N_OPTIONS, (topic, seed, texts)

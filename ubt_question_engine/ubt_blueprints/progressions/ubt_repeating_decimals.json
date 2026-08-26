@@ -1,0 +1,117 @@
+{
+  "topic": "ubt_repeating_decimals",
+  "parent_topic": "arithmetic_geometric_progressions",
+  "parent_topic_number": 12,
+  "display_name": "Repeating decimals via infinite geometric progression",
+  "curriculum_ref": "KZ 2026 UBT — Sequences — Topic 12",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 12. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Прогрессиялар",
+    "slug": "progressiyalar"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "repeating_decimal_fraction"
+      ],
+      "desc": "question structure"
+    },
+    "integer_part": {
+      "type": "int",
+      "min": 0,
+      "max": 4
+    },
+    "block": {
+      "type": "choice",
+      "values": [
+        12,
+        18,
+        24,
+        27,
+        36,
+        45,
+        54,
+        63,
+        72,
+        81
+      ]
+    }
+  },
+  "supported_difficulties": [
+    3
+  ],
+  "default_difficulty": 3,
+  "difficulty_overrides": {
+    "3": {
+      "mode": {
+        "values": [
+          "repeating_decimal_fraction"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "repeating_decimal_fraction": {
+      "uses": [
+        "integer_part",
+        "block"
+      ],
+      "question": {
+        "instruction": "Convert the repeating decimal to an ordinary fraction",
+        "latex": "{integer_part}.\\overline{{{block}}}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "repeating_decimal_fraction": "integer_part+Rational(block,99)"
+    }
+  },
+  "answer_render": {
+    "repeating_decimal_fraction": "exact_fraction"
+  },
+  "distractors": {
+    "repeating_decimal_fraction": [
+      {
+        "id": "divide_by_90",
+        "transform": "integer_part+Rational(block,90)"
+      },
+      {
+        "id": "divide_by_100",
+        "transform": "integer_part+Rational(block,100)"
+      },
+      {
+        "id": "divide_by_9",
+        "transform": "integer_part+Rational(block,9)"
+      },
+      {
+        "id": "omit_integer_part",
+        "transform": "Rational(block,99)"
+      },
+      {
+        "id": "add_one_hundredth",
+        "transform": "integer_part+Rational(block+1,99)"
+      },
+      {
+        "id": "terminating_decimal",
+        "transform": "integer_part+Rational(block,100)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "rational_simplification": true,
+    "positive_ratio_when_required": true,
+    "infinite_series_requires_abs_ratio_lt_one": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

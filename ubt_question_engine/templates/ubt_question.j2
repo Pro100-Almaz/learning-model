@@ -1,0 +1,32 @@
+{#-
+  The English source statement of one question.
+
+  One shape, two readers. The Localizer receives this as the ground truth it
+  must translate, and preview.py shows a human exactly the same block. If the
+  human blessed one shape and the model read another, the blessing would be
+  worth nothing.
+
+  Contains no logic beyond laying blocks out. No sign handling, no arithmetic,
+  not even the answer markers -- present.py builds those. A line here must never
+  END in a block tag either: trim_blocks eats the newline that follows one, and
+  the whole option list collapses onto a single line.
+-#}
+{{ instruction }}
+{% if latex %}
+
+$$
+{{ latex }}
+$$
+{% endif %}
+{% if text_context %}
+
+Given:
+{% for name, value in text_context.items() %}
+  {{ name }} = {{ value }}
+{% endfor %}
+{% endif %}
+
+Options:
+{% for option in options %}
+  {{ option.label }}) {{ option.latex }}{{ option.marker }}
+{% endfor %}

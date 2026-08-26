@@ -1,0 +1,379 @@
+{
+  "topic": "ubt_plane_equation",
+  "parent_topic": "3d_vectors_and_coordinate_geometry",
+  "parent_topic_number": 10,
+  "display_name": "Equations of planes in space",
+  "curriculum_ref": "KZ 2026 UBT - 3D vectors and coordinate geometry - Equation of a plane",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Plane equations, normals, intercepts, distances, parallelism, and exact angle cosines.",
+  "tag": {
+    "name": "Векторы и координаты в пространстве",
+    "slug": "kenistik-vektorlar-koordinatalar"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "plane_through_point_normal",
+        "read_plane_normal",
+        "intercept_form_intercepts",
+        "point_to_plane_distance",
+        "parallel_planes",
+        "cosine_between_planes"
+      ]
+    },
+    "p": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "q": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "r": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "a": {
+      "type": "int",
+      "min": 2,
+      "max": 8
+    },
+    "b": {
+      "type": "int",
+      "min": 2,
+      "max": 8
+    },
+    "c": {
+      "type": "int",
+      "min": 2,
+      "max": 8
+    },
+    "k": {
+      "type": "int",
+      "min": 2,
+      "max": 6
+    },
+    "scale": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "plane_through_point_normal",
+          "read_plane_normal"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "intercept_form_intercepts",
+          "point_to_plane_distance"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "parallel_planes",
+          "cosine_between_planes"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "plane_through_point_normal": {
+      "uses": [
+        "p",
+        "q",
+        "r"
+      ],
+      "question": {
+        "instruction": "A plane passes through the point and has the given normal vector. Find D in Ax plus By plus Cz plus D equals zero.",
+        "latex": "P({p};{q};{r}),\\qquad\\vec{{n}}=(2;3;6),\\qquad2x+3y+6z+D=0"
+      }
+    },
+    "read_plane_normal": {
+      "uses": [
+        "p",
+        "q",
+        "r",
+        "a"
+      ],
+      "constraints": [
+        "p != q",
+        "q != r",
+        "p != r",
+        "a != r"
+      ],
+      "question": {
+        "instruction": "Read the ordered coefficient triple (A, B, C) that gives the displayed normal vector of the plane.",
+        "latex": "{p}x+{q}y+{r}z+{a}=0"
+      }
+    },
+    "intercept_form_intercepts": {
+      "uses": [
+        "a",
+        "b",
+        "c"
+      ],
+      "constraints": [
+        "a != b",
+        "b != c",
+        "a != c"
+      ],
+      "question": {
+        "instruction": "Find the ordered triple of coordinate-axis intercepts of the plane.",
+        "latex": "\\frac{{x}}{{{a}}}+\\frac{{y}}{{{b}}}+\\frac{{z}}{{{c}}}=1"
+      }
+    },
+    "point_to_plane_distance": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "px": "2*scale",
+        "py": "3*scale",
+        "pz": "6*scale"
+      },
+      "question": {
+        "instruction": "Find the distance from the point to the plane.",
+        "latex": "P({px};{py};{pz}),\\qquad2x+3y+6z=0"
+      }
+    },
+    "parallel_planes": {
+      "uses": [
+        "k",
+        "a",
+        "b"
+      ],
+      "derived": {
+        "ak": "2*k",
+        "bk": "3*k"
+      },
+      "question": {
+        "instruction": "Find C so that the two planes are parallel.",
+        "latex": "2x+3y+6z+{a}=0,\\qquad {ak}x+{bk}y+Cz+{b}=0"
+      }
+    },
+    "cosine_between_planes": {
+      "uses": [
+        "a",
+        "b"
+      ],
+      "question": {
+        "instruction": "Find the cosine of the acute angle between the planes.",
+        "latex": "x+{a}=0,\\qquad x+y+{b}=0"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "plane_through_point_normal": "-(2*p+3*q+6*r)",
+      "read_plane_normal": "Tuple(p,q,r)",
+      "intercept_form_intercepts": "Tuple(a,b,c)",
+      "point_to_plane_distance": "7*scale",
+      "parallel_planes": "6*k",
+      "cosine_between_planes": "sqrt(2)/2"
+    }
+  },
+  "answer_render": {
+    "plane_through_point_normal": "scalar",
+    "read_plane_normal": "exact_expression",
+    "intercept_form_intercepts": "exact_expression",
+    "point_to_plane_distance": "scalar",
+    "parallel_planes": "scalar",
+    "cosine_between_planes": "exact_expression"
+  },
+  "distractors": {
+    "plane_through_point_normal": [
+      {
+        "id": "forgot_the_negative_sign",
+        "transform": "2*p+3*q+6*r"
+      },
+      {
+        "id": "halved_the_constant",
+        "transform": "-(2*p+3*q+6*r)/2"
+      },
+      {
+        "id": "doubled_the_constant",
+        "transform": "-2*(2*p+3*q+6*r)"
+      },
+      {
+        "id": "tripled_the_constant",
+        "transform": "-3*(2*p+3*q+6*r)"
+      },
+      {
+        "id": "multiplied_constant_by_four",
+        "transform": "-4*(2*p+3*q+6*r)"
+      },
+      {
+        "id": "multiplied_constant_by_five",
+        "transform": "-5*(2*p+3*q+6*r)"
+      }
+    ],
+    "read_plane_normal": [
+      {
+        "id": "included_constant_as_component",
+        "transform": "Tuple(p,q,a)"
+      },
+      {
+        "id": "used_negative_coefficients",
+        "transform": "Tuple(-p,-q,-r)"
+      },
+      {
+        "id": "reversed_coefficient_order",
+        "transform": "Tuple(r,q,p)"
+      },
+      {
+        "id": "swapped_first_two_coefficients",
+        "transform": "Tuple(q,p,r)"
+      },
+      {
+        "id": "used_point_like_coordinates",
+        "transform": "Tuple(p,q,r+a)"
+      },
+      {
+        "id": "normalized_by_constant",
+        "transform": "Tuple(p/a,q/a,r/a)"
+      }
+    ],
+    "intercept_form_intercepts": [
+      {
+        "id": "inverted_all_intercepts",
+        "transform": "Tuple(1/a,1/b,1/c)"
+      },
+      {
+        "id": "reversed_intercept_order",
+        "transform": "Tuple(c,b,a)"
+      },
+      {
+        "id": "swapped_first_two_intercepts",
+        "transform": "Tuple(b,a,c)"
+      },
+      {
+        "id": "changed_intercept_signs",
+        "transform": "Tuple(-a,-b,-c)"
+      },
+      {
+        "id": "used_pairwise_products",
+        "transform": "Tuple(b*c,a*c,a*b)"
+      },
+      {
+        "id": "multiplied_intercepts_by_neighbors",
+        "transform": "Tuple(a*b,b*c,a*c)"
+      },
+      {
+        "id": "summed_intercepts",
+        "transform": "a+b+c"
+      }
+    ],
+    "point_to_plane_distance": [
+      {
+        "id": "forgot_to_divide_by_normal_length",
+        "transform": "49*scale"
+      },
+      {
+        "id": "divided_by_squared_normal_length",
+        "transform": "scale"
+      },
+      {
+        "id": "used_coordinate_sum",
+        "transform": "11*scale"
+      },
+      {
+        "id": "used_largest_coordinate",
+        "transform": "6*scale"
+      },
+      {
+        "id": "halved_the_distance",
+        "transform": "7*scale/2"
+      },
+      {
+        "id": "changed_the_distance_sign",
+        "transform": "-7*scale"
+      }
+    ],
+    "parallel_planes": [
+      {
+        "id": "used_first_coefficient",
+        "transform": "2*k"
+      },
+      {
+        "id": "used_second_coefficient",
+        "transform": "3*k"
+      },
+      {
+        "id": "inverted_the_scale_factor",
+        "transform": "6/k"
+      },
+      {
+        "id": "added_one_after_scaling",
+        "transform": "6*k+1"
+      },
+      {
+        "id": "changed_the_sign",
+        "transform": "-6*k"
+      },
+      {
+        "id": "squared_the_factor",
+        "transform": "6*k**2"
+      }
+    ],
+    "cosine_between_planes": [
+      {
+        "id": "forgot_to_normalize_normals",
+        "transform": "1"
+      },
+      {
+        "id": "inverted_the_cosine_ratio",
+        "transform": "sqrt(2)"
+      },
+      {
+        "id": "forgot_the_square_root",
+        "transform": "Rational(1,2)"
+      },
+      {
+        "id": "halved_the_cosine",
+        "transform": "sqrt(2)/4"
+      },
+      {
+        "id": "changed_the_sign",
+        "transform": "-sqrt(2)/2"
+      },
+      {
+        "id": "used_sum_of_normal_lengths",
+        "transform": "1/(1+sqrt(2))"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "positive_volume_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

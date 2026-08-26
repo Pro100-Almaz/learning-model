@@ -1,0 +1,394 @@
+{
+  "topic": "ubt_polyhedron_sections_metric",
+  "parent_topic": "stereometry_geometric_figures",
+  "parent_topic_number": 16,
+  "display_name": "Stereometry — areas of plane sections of solids",
+  "curriculum_ref": "KZ 2026 UBT — Stereometry — Sections of solids",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Replaces the generator that asked what SHAPE a section is -- a question whose answer is given away by any diagram of the solid. Here the shape is stated and the area is computed. The similarity modes are the point of the family: a section parallel to the base of a cone or pyramid scales areas by k squared, and answering with k instead is the classic error. Python/SymPy owns generation, mathematics, validation and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Стереометрия",
+    "slug": "stereometriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "triangular_prism_section_parallel_to_base",
+        "cuboid_diagonal_section_area",
+        "cube_diagonal_section_area",
+        "pyramid_section_parallel_to_base",
+        "cone_section_parallel_to_base",
+        "cylinder_section_parallel_to_axis"
+      ],
+      "desc": "question structure"
+    },
+    "a": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "b": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "c": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "edge": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "r": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "height": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "base_area": {
+      "type": "choice",
+      "values": [
+        12,
+        16,
+        24,
+        36,
+        48,
+        64,
+        72,
+        100
+      ]
+    },
+    "ratio_m": {
+      "type": "int",
+      "min": 1,
+      "max": 3,
+      "desc": "numerator of the similarity ratio, measured from the apex"
+    },
+    "ratio_n": {
+      "type": "int",
+      "min": 2,
+      "max": 4,
+      "desc": "denominator of the similarity ratio"
+    },
+    "scale": {
+      "type": "int",
+      "min": 1,
+      "max": 4,
+      "desc": "multiplier on the 3-4-5 triple, so the half-chord is an integer"
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "triangular_prism_section_parallel_to_base",
+          "cuboid_diagonal_section_area"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "cube_diagonal_section_area",
+          "pyramid_section_parallel_to_base"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "cone_section_parallel_to_base",
+          "cylinder_section_parallel_to_axis"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "triangular_prism_section_parallel_to_base": {
+      "uses": [
+        "a"
+      ],
+      "comment": "A section parallel to the base of a PRISM is congruent to the base -- no scaling at all. The pyramid and cone modes then contrast with it.",
+      "question": {
+        "instruction": "A plane parallel to the base cuts a regular triangular prism whose base edge is given. The section is a triangle. Find its area.",
+        "latex": "a={a}"
+      }
+    },
+    "cuboid_diagonal_section_area": {
+      "uses": [
+        "a",
+        "b",
+        "c"
+      ],
+      "comment": "The section through two opposite lateral edges is a rectangle: the base diagonal by the height.",
+      "constraints": [
+        "a != b"
+      ],
+      "question": {
+        "instruction": "A plane through two opposite lateral edges cuts a rectangular parallelepiped in a rectangle. Find the area of that section.",
+        "latex": "a={a},\\qquad b={b},\\qquad h={c}"
+      }
+    },
+    "cube_diagonal_section_area": {
+      "uses": [
+        "edge"
+      ],
+      "question": {
+        "instruction": "A plane through two opposite lateral edges cuts a cube in a rectangle. Find the area of that section.",
+        "latex": "a={edge}"
+      }
+    },
+    "pyramid_section_parallel_to_base": {
+      "uses": [
+        "base_area",
+        "ratio_m",
+        "ratio_n"
+      ],
+      "comment": "The plane is at m/n of the way down from the apex, so lengths scale by m/n and areas by the square of it. Of the six pairs with m<n in these ranges only (2,4) is reducible, and it is the only one summing to 6 -- cheaper than a gcd the expression language does not expose.",
+      "constraints": [
+        "ratio_m < ratio_n",
+        "ratio_m + ratio_n != 6"
+      ],
+      "question": {
+        "instruction": "A plane parallel to the base cuts a pyramid at the given fraction of its height, measured from the apex. The base area is given. Find the area of the section.",
+        "latex": "S_{{\\text{{base}}}}={base_area},\\qquad \\frac{{m}}{{n}}=\\frac{{{ratio_m}}}{{{ratio_n}}}"
+      }
+    },
+    "cone_section_parallel_to_base": {
+      "uses": [
+        "r",
+        "ratio_m",
+        "ratio_n"
+      ],
+      "comment": "Same reducibility guard as the pyramid mode above.",
+      "constraints": [
+        "ratio_m < ratio_n",
+        "ratio_m + ratio_n != 6"
+      ],
+      "question": {
+        "instruction": "A plane parallel to the base cuts a cone at the given fraction of its height, measured from the apex. The base radius is given. Find the area of the section.",
+        "latex": "R={r},\\qquad \\frac{{m}}{{n}}=\\frac{{{ratio_m}}}{{{ratio_n}}}"
+      }
+    },
+    "cylinder_section_parallel_to_axis": {
+      "uses": [
+        "scale",
+        "height"
+      ],
+      "comment": "The section is a rectangle: the chord cut by the plane, times the height. The chord is 2*sqrt(R^2-d^2), made an integer by the 3-4-5 triple.",
+      "derived": {
+        "cylinder_radius": "5*scale",
+        "axis_distance": "3*scale",
+        "half_chord": "4*scale"
+      },
+      "question": {
+        "instruction": "A plane parallel to the axis of a cylinder, at the given distance from it, cuts the cylinder in a rectangle. Find the area of that section.",
+        "latex": "R={cylinder_radius},\\qquad d={axis_distance},\\qquad h={height}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "triangular_prism_section_parallel_to_base": "sqrt(3)*a**2/4",
+      "cuboid_diagonal_section_area": "c*sqrt(a**2+b**2)",
+      "cube_diagonal_section_area": "edge**2*sqrt(2)",
+      "pyramid_section_parallel_to_base": "base_area*ratio_m**2/ratio_n**2",
+      "cone_section_parallel_to_base": "pi*r**2*ratio_m**2/ratio_n**2",
+      "cylinder_section_parallel_to_axis": "2*half_chord*height"
+    }
+  },
+  "answer_render": {
+    "triangular_prism_section_parallel_to_base": "exact_expression",
+    "cuboid_diagonal_section_area": "exact_expression",
+    "cube_diagonal_section_area": "exact_expression",
+    "pyramid_section_parallel_to_base": "scalar",
+    "cone_section_parallel_to_base": "exact_expression",
+    "cylinder_section_parallel_to_axis": "scalar"
+  },
+  "distractors": {
+    "triangular_prism_section_parallel_to_base": [
+      {
+        "id": "used_half_base_times_height_of_a_square",
+        "transform": "a**2/2"
+      },
+      {
+        "id": "used_the_square_of_the_edge",
+        "transform": "a**2"
+      },
+      {
+        "id": "used_root_three_over_two",
+        "transform": "sqrt(3)*a**2/2"
+      },
+      {
+        "id": "used_the_altitude_not_the_area",
+        "transform": "sqrt(3)*a/2"
+      },
+      {
+        "id": "halved_the_correct_area",
+        "transform": "sqrt(3)*a**2/8"
+      },
+      {
+        "id": "used_the_perimeter",
+        "transform": "3*a"
+      }
+    ],
+    "cuboid_diagonal_section_area": [
+      {
+        "id": "used_one_edge_not_the_base_diagonal",
+        "transform": "a*c"
+      },
+      {
+        "id": "used_the_space_diagonal",
+        "transform": "c*sqrt(a**2+b**2+c**2)"
+      },
+      {
+        "id": "added_the_base_edges",
+        "transform": "c*(a+b)"
+      },
+      {
+        "id": "volume_instead_of_section_area",
+        "transform": "a*b*c"
+      },
+      {
+        "id": "halved_as_if_triangle",
+        "transform": "c*sqrt(a**2+b**2)/2"
+      },
+      {
+        "id": "forgot_the_square_root",
+        "transform": "c*(a**2+b**2)"
+      }
+    ],
+    "cube_diagonal_section_area": [
+      {
+        "id": "used_a_face_not_the_diagonal_section",
+        "transform": "edge**2"
+      },
+      {
+        "id": "used_root_three",
+        "transform": "edge**2*sqrt(3)"
+      },
+      {
+        "id": "halved_as_if_triangle",
+        "transform": "edge**2*sqrt(2)/2"
+      },
+      {
+        "id": "diagonal_length_instead_of_area",
+        "transform": "edge*sqrt(2)"
+      },
+      {
+        "id": "volume_instead_of_area",
+        "transform": "edge**3"
+      },
+      {
+        "id": "total_surface_area_instead",
+        "transform": "6*edge**2"
+      }
+    ],
+    "pyramid_section_parallel_to_base": [
+      {
+        "id": "scaled_by_the_ratio_not_its_square",
+        "transform": "base_area*ratio_m/ratio_n"
+      },
+      {
+        "id": "inverted_the_ratio",
+        "transform": "base_area*ratio_n**2/ratio_m**2"
+      },
+      {
+        "id": "measured_the_fraction_from_the_base",
+        "transform": "base_area*(ratio_n-ratio_m)**2/ratio_n**2"
+      },
+      {
+        "id": "cubed_the_ratio_as_for_volume",
+        "transform": "base_area*ratio_m**3/ratio_n**3"
+      },
+      {
+        "id": "base_area_unchanged",
+        "transform": "base_area"
+      },
+      {
+        "id": "squared_the_numerator_only",
+        "transform": "base_area*ratio_m**2/ratio_n"
+      }
+    ],
+    "cone_section_parallel_to_base": [
+      {
+        "id": "scaled_by_the_ratio_not_its_square",
+        "transform": "pi*r**2*ratio_m/ratio_n"
+      },
+      {
+        "id": "inverted_the_ratio",
+        "transform": "pi*r**2*ratio_n**2/ratio_m**2"
+      },
+      {
+        "id": "measured_the_fraction_from_the_base",
+        "transform": "pi*r**2*(ratio_n-ratio_m)**2/ratio_n**2"
+      },
+      {
+        "id": "base_area_unchanged",
+        "transform": "pi*r**2"
+      },
+      {
+        "id": "section_radius_instead_of_area",
+        "transform": "r*ratio_m/ratio_n"
+      },
+      {
+        "id": "omitted_pi",
+        "transform": "r**2*ratio_m**2/ratio_n**2"
+      }
+    ],
+    "cylinder_section_parallel_to_axis": [
+      {
+        "id": "used_the_half_chord",
+        "transform": "half_chord*height"
+      },
+      {
+        "id": "used_the_diameter_as_the_chord",
+        "transform": "2*cylinder_radius*height"
+      },
+      {
+        "id": "added_pi_although_section_is_a_rectangle",
+        "transform": "2*pi*half_chord*height"
+      },
+      {
+        "id": "used_the_axis_distance_as_the_chord",
+        "transform": "2*axis_distance*height"
+      },
+      {
+        "id": "halved_as_if_triangle",
+        "transform": "half_chord*height/2"
+      },
+      {
+        "id": "base_area_instead_of_section",
+        "transform": "pi*cylinder_radius**2"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

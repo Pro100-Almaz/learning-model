@@ -1,0 +1,347 @@
+{
+  "topic": "ubt_spatial_angles_distances",
+  "parent_topic": "stereometry_geometric_figures",
+  "parent_topic_number": 16,
+  "display_name": "Stereometry — angles and distances in space",
+  "curriculum_ref": "KZ 2026 UBT — Stereometry — Angles and distances in space",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Replaces the classification generator that asked whether two lines were parallel, intersecting or skew. Every mode measures something inside a standard solid instead of naming a relationship. The angle mode asks for a tangent rather than a degree value, because the arctangent of a rolled ratio is not a number a student can pick from five options. Python/SymPy owns generation, mathematics, validation and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Стереометрия",
+    "slug": "stereometriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "cuboid_face_diagonal",
+        "inscribed_sphere_radius_cube",
+        "square_pyramid_lateral_edge",
+        "cuboid_diagonal_angle_tangent",
+        "regular_tetrahedron_height",
+        "circumscribed_sphere_radius_cuboid"
+      ],
+      "desc": "question structure"
+    },
+    "a": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "b": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "c": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "height": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "edge": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "cuboid_face_diagonal",
+          "inscribed_sphere_radius_cube"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "square_pyramid_lateral_edge",
+          "cuboid_diagonal_angle_tangent"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "regular_tetrahedron_height",
+          "circumscribed_sphere_radius_cuboid"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "cuboid_face_diagonal": {
+      "uses": [
+        "a",
+        "b"
+      ],
+      "constraints": [
+        "a != b"
+      ],
+      "question": {
+        "instruction": "Find the diagonal of a face of the rectangular parallelepiped with the given edges of that face.",
+        "latex": "a={a},\\qquad b={b}"
+      }
+    },
+    "inscribed_sphere_radius_cube": {
+      "uses": [
+        "edge"
+      ],
+      "comment": "The inscribed sphere touches the six faces, so its radius is half the edge; the circumscribed one passes through the vertices and is the distractor that matters.",
+      "question": {
+        "instruction": "A sphere is inscribed in a cube with the given edge. Find the radius of the sphere.",
+        "latex": "a={edge}"
+      }
+    },
+    "square_pyramid_lateral_edge": {
+      "uses": [
+        "a",
+        "height"
+      ],
+      "comment": "The lateral edge reaches a vertex of the base, so the horizontal leg is half the base diagonal, a*sqrt(2)/2 -- not half the base side, which is the slant-height leg.",
+      "question": {
+        "instruction": "A regular pyramid has a square base with the given side and the given height. Find the length of a lateral edge.",
+        "latex": "a={a},\\qquad h={height}"
+      }
+    },
+    "cuboid_diagonal_angle_tangent": {
+      "uses": [
+        "a",
+        "height"
+      ],
+      "comment": "The space diagonal projects onto the base diagonal, of length a*sqrt(2), so the tangent is h/(a*sqrt(2)).",
+      "question": {
+        "instruction": "A right prism has a square base with the given side and the given height. Find the tangent of the angle between its space diagonal and the base plane.",
+        "latex": "a={a},\\qquad h={height}"
+      }
+    },
+    "regular_tetrahedron_height": {
+      "uses": [
+        "edge"
+      ],
+      "question": {
+        "instruction": "Find the height of the regular tetrahedron with the given edge.",
+        "latex": "a={edge}"
+      }
+    },
+    "circumscribed_sphere_radius_cuboid": {
+      "uses": [
+        "a",
+        "b",
+        "c"
+      ],
+      "comment": "The centre is the midpoint of the space diagonal, so the radius is half of it.",
+      "constraints": [
+        "a != b",
+        "b != c",
+        "a != c"
+      ],
+      "question": {
+        "instruction": "A sphere passes through all vertices of the rectangular parallelepiped with the given edges. Find the radius of the sphere.",
+        "latex": "a={a},\\qquad b={b},\\qquad c={c}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "cuboid_face_diagonal": "sqrt(a**2+b**2)",
+      "inscribed_sphere_radius_cube": "edge/2",
+      "square_pyramid_lateral_edge": "sqrt(height**2+a**2/2)",
+      "cuboid_diagonal_angle_tangent": "height*sqrt(2)/(2*a)",
+      "regular_tetrahedron_height": "edge*sqrt(6)/3",
+      "circumscribed_sphere_radius_cuboid": "sqrt(a**2+b**2+c**2)/2"
+    }
+  },
+  "answer_render": {
+    "cuboid_face_diagonal": "exact_expression",
+    "inscribed_sphere_radius_cube": "scalar",
+    "square_pyramid_lateral_edge": "exact_expression",
+    "cuboid_diagonal_angle_tangent": "exact_expression",
+    "regular_tetrahedron_height": "exact_expression",
+    "circumscribed_sphere_radius_cuboid": "exact_expression"
+  },
+  "distractors": {
+    "cuboid_face_diagonal": [
+      {
+        "id": "added_the_edges",
+        "transform": "a+b"
+      },
+      {
+        "id": "forgot_the_square_root",
+        "transform": "a**2+b**2"
+      },
+      {
+        "id": "root_of_the_sum",
+        "transform": "sqrt(a+b)"
+      },
+      {
+        "id": "subtracted_instead_of_added",
+        "transform": "sqrt(a**2-b**2)"
+      },
+      {
+        "id": "face_area_instead_of_diagonal",
+        "transform": "a*b"
+      },
+      {
+        "id": "used_the_square_face_formula",
+        "transform": "a*sqrt(2)"
+      }
+    ],
+    "inscribed_sphere_radius_cube": [
+      {
+        "id": "circumscribed_sphere_instead_of_inscribed",
+        "transform": "edge*sqrt(3)/2"
+      },
+      {
+        "id": "edge_taken_as_radius",
+        "transform": "edge"
+      },
+      {
+        "id": "used_the_face_diagonal",
+        "transform": "edge*sqrt(2)/2"
+      },
+      {
+        "id": "diameter_instead_of_radius",
+        "transform": "2*edge"
+      },
+      {
+        "id": "quartered_the_edge",
+        "transform": "edge/4"
+      },
+      {
+        "id": "sphere_volume_instead_of_radius",
+        "transform": "4*pi*(edge/2)**3/3"
+      }
+    ],
+    "square_pyramid_lateral_edge": [
+      {
+        "id": "used_half_the_side_as_for_the_slant_height",
+        "transform": "sqrt(height**2+a**2/4)"
+      },
+      {
+        "id": "used_the_whole_base_diagonal",
+        "transform": "sqrt(height**2+2*a**2)"
+      },
+      {
+        "id": "used_the_whole_side",
+        "transform": "sqrt(height**2+a**2)"
+      },
+      {
+        "id": "forgot_the_square_root",
+        "transform": "height**2+a**2/2"
+      },
+      {
+        "id": "added_the_lengths",
+        "transform": "height+a*sqrt(2)/2"
+      },
+      {
+        "id": "height_taken_as_lateral_edge",
+        "transform": "height"
+      }
+    ],
+    "cuboid_diagonal_angle_tangent": [
+      {
+        "id": "used_the_side_not_the_base_diagonal",
+        "transform": "height/a"
+      },
+      {
+        "id": "inverted_the_ratio",
+        "transform": "2*a/(height*sqrt(2))"
+      },
+      {
+        "id": "sine_instead_of_tangent",
+        "transform": "height/sqrt(2*a**2+height**2)"
+      },
+      {
+        "id": "cosine_instead_of_tangent",
+        "transform": "a*sqrt(2)/sqrt(2*a**2+height**2)"
+      },
+      {
+        "id": "used_half_the_side",
+        "transform": "2*height/a"
+      },
+      {
+        "id": "forgot_to_rationalise_and_doubled",
+        "transform": "height*sqrt(2)/a"
+      }
+    ],
+    "regular_tetrahedron_height": [
+      {
+        "id": "used_the_face_altitude",
+        "transform": "edge*sqrt(3)/2"
+      },
+      {
+        "id": "used_root_two",
+        "transform": "edge*sqrt(2)/3"
+      },
+      {
+        "id": "used_root_three",
+        "transform": "edge*sqrt(3)/3"
+      },
+      {
+        "id": "halved_instead_of_thirded",
+        "transform": "edge*sqrt(6)/2"
+      },
+      {
+        "id": "edge_taken_as_height",
+        "transform": "edge"
+      },
+      {
+        "id": "used_the_volume_formula",
+        "transform": "edge**3*sqrt(2)/12"
+      }
+    ],
+    "circumscribed_sphere_radius_cuboid": [
+      {
+        "id": "space_diagonal_not_halved",
+        "transform": "sqrt(a**2+b**2+c**2)"
+      },
+      {
+        "id": "half_the_sum_of_edges",
+        "transform": "(a+b+c)/2"
+      },
+      {
+        "id": "used_the_face_diagonal",
+        "transform": "sqrt(a**2+b**2)/2"
+      },
+      {
+        "id": "forgot_the_square_root",
+        "transform": "(a**2+b**2+c**2)/2"
+      },
+      {
+        "id": "used_the_cube_formula_on_the_first_edge",
+        "transform": "a*sqrt(3)/2"
+      },
+      {
+        "id": "quartered_the_diagonal",
+        "transform": "sqrt(a**2+b**2+c**2)/4"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

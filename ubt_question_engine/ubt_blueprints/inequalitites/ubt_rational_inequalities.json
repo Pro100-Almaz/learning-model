@@ -1,0 +1,119 @@
+{
+  "topic": "ubt_rational_inequalities",
+  "parent_topic": "inequalities",
+  "parent_topic_number": 10,
+  "display_name": "Rational inequalities",
+  "curriculum_ref": "KZ 2026 UBT — Inequalities — Topic 10",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 10. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Теңсіздіктер",
+    "slug": "tensizdikter"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "rational_sign_chart"
+      ],
+      "desc": "question structure"
+    },
+    "r1": {
+      "type": "int",
+      "min": -7,
+      "max": 4
+    },
+    "r2": {
+      "type": "int",
+      "min": -3,
+      "max": 8
+    }
+  },
+  "supported_difficulties": [
+    3
+  ],
+  "default_difficulty": 3,
+  "difficulty_overrides": {
+    "3": {
+      "mode": {
+        "values": [
+          "rational_sign_chart"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "rational_sign_chart": {
+      "uses": [
+        "r1",
+        "r2"
+      ],
+      "constraints": [
+        "r1 < r2"
+      ],
+      "derived": {
+        "neg_r1": "-r1",
+        "neg_r2": "-r2"
+      },
+      "question": {
+        "instruction": "Solve the rational inequality",
+        "latex": "\\frac{{x{neg_r1:+d}}}{{x{neg_r2:+d}}}>0"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "rational_sign_chart": "Union(Interval.open(-oo,r1),Interval.open(r2,oo))"
+    }
+  },
+  "answer_render": {
+    "rational_sign_chart": "interval_union"
+  },
+  "distractors": {
+    "rational_sign_chart": [
+      {
+        "id": "between_critical_points",
+        "transform": "Interval.open(r1,r2)"
+      },
+      {
+        "id": "include_numerator_zero",
+        "transform": "Union(Interval(-oo,r1),Interval.open(r2,oo))"
+      },
+      {
+        "id": "include_denominator_zero",
+        "transform": "Union(Interval.open(-oo,r1),Interval(r2,oo))"
+      },
+      {
+        "id": "left_only",
+        "transform": "Interval.open(-oo,r1)"
+      },
+      {
+        "id": "right_only",
+        "transform": "Interval.open(r2,oo)"
+      },
+      {
+        "id": "all_except_denominator",
+        "transform": "Union(Interval.open(-oo,r2),Interval.open(r2,oo))"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "interval_equivalence": true,
+    "respect_open_closed_boundaries": true,
+    "respect_rational_domain": true,
+    "respect_radical_domain": true,
+    "respect_log_domain": true,
+    "trigonometric_interval_check": true,
+    "reject_undefined_choices": true,
+    "exact_answers_only": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

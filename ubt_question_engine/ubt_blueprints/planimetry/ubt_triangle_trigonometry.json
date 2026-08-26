@@ -1,0 +1,302 @@
+{
+  "topic": "ubt_triangle_trigonometry",
+  "parent_topic": "planimetry_metric_relations_vectors_transformations",
+  "parent_topic_number": 15,
+  "display_name": "Triangle trigonometry — ratios, sine and cosine theorems",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 15",
+  "_comment": "Deterministic Topic 15 generator. Python/SymPy owns parameter generation, mathematics, validation and distractor filtering. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Метрикалық қатыстар және векторлар",
+    "slug": "metrikalyk-katystar-vektorlar"
+  },
+  "expression_language": "sympy",
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "right_triangle_sine",
+        "right_triangle_cosine",
+        "law_cosines_side",
+        "law_sines_side",
+        "triangle_area_two_sides_angle"
+      ]
+    },
+    "scale": {
+      "type": "int",
+      "min": 1,
+      "max": 5
+    },
+    "a": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "b": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "angle": {
+      "type": "choice",
+      "values": [
+        30,
+        60,
+        90
+      ]
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "right_triangle_sine",
+          "right_triangle_cosine"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "law_cosines_side",
+          "law_sines_side"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "triangle_area_two_sides_angle"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "right_triangle_sine": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "opp": "3*scale",
+        "adj": "4*scale",
+        "hyp": "5*scale"
+      },
+      "question": {
+        "instruction": "In the right triangle, find sin α.",
+        "latex": "a={opp},\\quad b={adj},\\quad c={hyp},\\quad a\\text{{ is opposite }}\\alpha"
+      }
+    },
+    "right_triangle_cosine": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "opp": "3*scale",
+        "adj": "4*scale",
+        "hyp": "5*scale"
+      },
+      "question": {
+        "instruction": "In the right triangle, find cos α.",
+        "latex": "a={opp},\\quad b={adj},\\quad c={hyp},\\quad b\\text{{ is adjacent to }}\\alpha"
+      }
+    },
+    "law_cosines_side": {
+      "uses": [
+        "a",
+        "b"
+      ],
+      "question": {
+        "instruction": "Two sides and their included 60° angle are given. Find the third side c.",
+        "latex": "a={a},\\qquad b={b},\\qquad C=60^\\circ"
+      }
+    },
+    "law_sines_side": {
+      "uses": [
+        "a"
+      ],
+      "question": {
+        "instruction": "Use the sine theorem to find side b.",
+        "latex": "a={a},\\qquad A=30^\\circ,\\qquad B=90^\\circ"
+      }
+    },
+    "triangle_area_two_sides_angle": {
+      "uses": [
+        "a",
+        "b",
+        "angle"
+      ],
+      "question": {
+        "instruction": "Find the area of the triangle from two sides and the included angle.",
+        "latex": "a={a},\\qquad b={b},\\qquad C={angle}^\\circ"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "right_triangle_sine": "Rational(3,5)",
+      "right_triangle_cosine": "Rational(4,5)",
+      "law_cosines_side": "sqrt(a**2+b**2-a*b)",
+      "law_sines_side": "2*a",
+      "triangle_area_two_sides_angle": "Rational(a*b,2)*sin(angle*pi/180)"
+    }
+  },
+  "answer_render": {
+    "right_triangle_sine": "exact_expression",
+    "right_triangle_cosine": "exact_expression",
+    "law_cosines_side": "exact_expression",
+    "law_sines_side": "exact_expression",
+    "triangle_area_two_sides_angle": "exact_expression"
+  },
+  "distractors": {
+    "right_triangle_sine": [
+      {
+        "id": "cos",
+        "transform": "Rational(4,5)"
+      },
+      {
+        "id": "tan",
+        "transform": "Rational(3,4)"
+      },
+      {
+        "id": "cot",
+        "transform": "Rational(4,3)"
+      },
+      {
+        "id": "inverse",
+        "transform": "Rational(5,3)"
+      },
+      {
+        "id": "opp_adj_sum",
+        "transform": "Rational(3,7)"
+      },
+      {
+        "id": "half",
+        "transform": "Rational(3,10)"
+      }
+    ],
+    "right_triangle_cosine": [
+      {
+        "id": "sin",
+        "transform": "Rational(3,5)"
+      },
+      {
+        "id": "tan",
+        "transform": "Rational(3,4)"
+      },
+      {
+        "id": "cot",
+        "transform": "Rational(4,3)"
+      },
+      {
+        "id": "inverse",
+        "transform": "Rational(5,4)"
+      },
+      {
+        "id": "adj_sum",
+        "transform": "Rational(4,7)"
+      },
+      {
+        "id": "half",
+        "transform": "Rational(2,5)"
+      }
+    ],
+    "law_cosines_side": [
+      {
+        "id": "plus_term",
+        "transform": "sqrt(a**2+b**2+a*b)"
+      },
+      {
+        "id": "pythagorean",
+        "transform": "sqrt(a**2+b**2)"
+      },
+      {
+        "id": "sum",
+        "transform": "a+b"
+      },
+      {
+        "id": "difference",
+        "transform": "abs(a-b)"
+      },
+      {
+        "id": "no_root",
+        "transform": "a**2+b**2-a*b"
+      },
+      {
+        "id": "half_cross",
+        "transform": "sqrt(a**2+b**2-Rational(a*b,2))"
+      }
+    ],
+    "law_sines_side": [
+      {
+        "id": "same",
+        "transform": "a"
+      },
+      {
+        "id": "half",
+        "transform": "Rational(a,2)"
+      },
+      {
+        "id": "sqrt2",
+        "transform": "a*sqrt(2)"
+      },
+      {
+        "id": "sqrt3",
+        "transform": "a*sqrt(3)"
+      },
+      {
+        "id": "three_a",
+        "transform": "3*a"
+      },
+      {
+        "id": "a_plus_two",
+        "transform": "a+2"
+      }
+    ],
+    "triangle_area_two_sides_angle": [
+      {
+        "id": "omit_half",
+        "transform": "a*b*sin(angle*pi/180)"
+      },
+      {
+        "id": "cosine",
+        "transform": "Rational(a*b,2)*cos(angle*pi/180)"
+      },
+      {
+        "id": "rectangle",
+        "transform": "a*b"
+      },
+      {
+        "id": "sum",
+        "transform": "Rational(a+b,2)*sin(angle*pi/180)"
+      },
+      {
+        "id": "omit_trig",
+        "transform": "Rational(a*b,2)"
+      },
+      {
+        "id": "square_sum",
+        "transform": "Rational(a**2+b**2,2)*sin(angle*pi/180)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true,
+    "trigonometric_equivalence": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true
+  },
+  "constraints_template": "ubt_question.j2"
+}

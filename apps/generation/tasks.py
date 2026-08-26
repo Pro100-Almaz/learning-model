@@ -31,6 +31,16 @@ from django.utils import timezone
 from apps.generation import services
 from apps.generation.models import GenerationJob, GenerationStep
 
+# Celery's autodiscovery only imports `<app>.tasks`, so the UBT tasks are
+# re-exported here to get themselves registered. They live in their own module
+# because they share nothing with the MAIQE job above -- no LangGraph, no LLM,
+# no step trail.
+from apps.generation.ubt_tasks import (  # noqa: F401
+    generate_ubt_batch,
+    generate_ubt_topic,
+    top_up_ubt_bank,
+)
+
 logger = logging.getLogger("apps.generation")
 
 

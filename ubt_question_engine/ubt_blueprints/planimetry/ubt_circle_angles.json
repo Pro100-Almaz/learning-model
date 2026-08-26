@@ -1,0 +1,164 @@
+{
+  "topic": "ubt_circle_angles",
+  "parent_topic": "planimetry_geometric_figures",
+  "parent_topic_number": 14,
+  "display_name": "Planimetry — circle angle relations",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 14",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 14. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Планиметрия",
+    "slug": "planimetriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "inscribed_angle",
+        "cyclic_quadrilateral"
+      ],
+      "desc": "question structure"
+    },
+    "central_angle": {
+      "type": "choice",
+      "values": [
+        30,
+        45,
+        60,
+        90,
+        120,
+        135,
+        150,
+        180
+      ]
+    },
+    "angle": {
+      "type": "int",
+      "min": 20,
+      "max": 160
+    }
+  },
+  "supported_difficulties": [
+    2,
+    3
+  ],
+  "default_difficulty": 2,
+  "difficulty_overrides": {
+    "2": {
+      "mode": {
+        "values": [
+          "inscribed_angle"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "cyclic_quadrilateral"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "inscribed_angle": {
+      "uses": [
+        "central_angle"
+      ],
+      "question": {
+        "instruction": "An inscribed angle subtends the given arc. Find the inscribed angle.",
+        "latex": "m\\widehat{{AB}}={central_angle}^\\circ"
+      }
+    },
+    "cyclic_quadrilateral": {
+      "uses": [
+        "angle"
+      ],
+      "constraints": [
+        "angle < 180"
+      ],
+      "question": {
+        "instruction": "A quadrilateral is inscribed in a circle. Find the angle opposite the given angle.",
+        "latex": "\\angle A={angle}^\\circ"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "inscribed_angle": "Rational(central_angle,2)",
+      "cyclic_quadrilateral": "180-angle"
+    }
+  },
+  "answer_render": {
+    "inscribed_angle": "degrees",
+    "cyclic_quadrilateral": "degrees"
+  },
+  "distractors": {
+    "inscribed_angle": [
+      {
+        "id": "same_arc",
+        "transform": "central_angle"
+      },
+      {
+        "id": "double_arc",
+        "transform": "2*central_angle"
+      },
+      {
+        "id": "supplement",
+        "transform": "180-central_angle"
+      },
+      {
+        "id": "quarter",
+        "transform": "Rational(central_angle,4)"
+      },
+      {
+        "id": "half_supplement",
+        "transform": "Rational(180-central_angle,2)"
+      },
+      {
+        "id": "complement",
+        "transform": "90-central_angle"
+      }
+    ],
+    "cyclic_quadrilateral": [
+      {
+        "id": "equal",
+        "transform": "angle"
+      },
+      {
+        "id": "complement",
+        "transform": "90-angle"
+      },
+      {
+        "id": "half_supplement",
+        "transform": "Rational(180-angle,2)"
+      },
+      {
+        "id": "double",
+        "transform": "2*angle"
+      },
+      {
+        "id": "plus_ten",
+        "transform": "190-angle"
+      },
+      {
+        "id": "minus_ten",
+        "transform": "170-angle"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "angle_range_validation": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

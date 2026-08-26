@@ -1,17 +1,21 @@
 """Clerk webhook receiver — keeps local users in sync with Clerk events.
 
 Mounted at ``POST /api/v1/auth/clerk-webhook/``. Clerk POSTs JSON events
-(``user.created``, ``user.updated``, ``user.deleted``, etc.) signed via
-Svix. We currently parse the payload and apply the local-row change; the
-signature verification step is a TODO (set up Svix in a follow-up PR — for
-staging, lock the endpoint by IP or HTTP basic auth at the reverse proxy
-until then).
+(``user.created``, ``user.updated``, ``user.deleted``, etc.) signed via Svix.
+
+The endpoint is unauthenticated by necessity -- Clerk holds no session -- and it
+creates users, rewrites their email, and deactivates accounts. The Svix
+signature IS its authentication; without it, anybody who learns the URL can
+POST ``user.deleted`` and lock a student out, or ``user.updated`` and move an
+account's email to one they control. So a missing secret is refused rather than
+waved through, outside DEBUG.
 """
 
 from __future__ import annotations
 
 import logging
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from drf_spectacular.utils import extend_schema
@@ -20,6 +24,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from apps.accounts.svix import SignatureError, verify
 
 logger = logging.getLogger("apps.accounts")
 
@@ -40,8 +46,10 @@ class ClerkWebhookView(APIView):
 
     @extend_schema(request=ClerkWebhookSerializer, responses={200: None})
     def post(self, request: Request) -> Response:
-        # TODO: verify Svix signature here using settings.CLERK_SECRET_KEY +
-        #       headers svix-id / svix-timestamp / svix-signature.
+        denied = self._authenticate(request)
+        if denied is not None:
+            return denied
+
         serializer = ClerkWebhookSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         event_type = serializer.validated_data["type"]
@@ -55,6 +63,49 @@ class ClerkWebhookView(APIView):
             logger.info("ClerkWebhook: ignoring event type %s", event_type)
 
         return Response(status=status.HTTP_200_OK, data={"received": True})
+
+    @staticmethod
+    def _authenticate(request: Request) -> Response | None:
+        """None to proceed, or the response to return instead.
+
+        Verifies against ``request.body`` -- the raw bytes -- not
+        ``request.data``. The signature covers what was sent, and a
+        re-serialized dict is not that.
+        """
+        secret = getattr(settings, "CLERK_WEBHOOK_SECRET", "")
+        if not secret:
+            if not settings.DEBUG:
+                # 503, not 403: nothing is wrong with the REQUEST. The server is
+                # misconfigured, and saying so is what gets the secret set
+                # instead of someone hunting a signature bug that isn't there.
+                logger.error(
+                    "ClerkWebhook: CLERK_WEBHOOK_SECRET is not set; refusing. "
+                    "Set it from the Clerk dashboard (Webhooks -> Signing Secret)."
+                )
+                return Response(
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    data={"detail": "webhook signing secret is not configured",
+                          "code": "webhook_not_configured"},
+                )
+            logger.warning(
+                "ClerkWebhook: no CLERK_WEBHOOK_SECRET and DEBUG is on; "
+                "accepting an UNVERIFIED webhook. Never run this way in production."
+            )
+            return None
+
+        try:
+            verify(secret, request.headers, request.body)
+        except SignatureError as error:
+            # The reason is logged, not returned. Telling a caller whether the
+            # timestamp or the signature failed helps them iterate towards a
+            # forgery; the sender holding the secret never needs to know.
+            logger.warning("ClerkWebhook: rejected unverified request: %s", error)
+            return Response(
+                status=status.HTTP_401_UNAUTHORIZED,
+                data={"detail": "invalid webhook signature",
+                      "code": "invalid_signature"},
+            )
+        return None
 
     @staticmethod
     def _primary_email(data: dict) -> str:

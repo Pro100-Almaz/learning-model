@@ -1,0 +1,286 @@
+{
+  "topic": "irrational_inequalities_part2",
+  "display_name": "Иррационал теңсіздіктер 2",
+  "curriculum_ref": "Сынып көрсетілмеген — 11-бөлім: Иррационал теңсіздіктер",
+  "constraints_template": "irrational_inequalities_part2.j2",
+  "_comment": "Генеративті blueprint: видеодағы дайын мысалдар сақталмайды. Әр тармақ жауап аймағынан кері құрылады. Екі түбірді салыстыру тармақтарында радикандтардың айырмасы алдын ала таңдалған критикалық нүктелерде нөл болатындай жасалады. sqrt(f(x)) пен сызықтық g(x)-ті салыстыру тармақтарында f(x)-g(x)^2 немесе g(x)^2-f(x) алдын ала белгілі түбірлері бар квадрат үшмүше болады. Осылайша ММЖ, g(x)-тің таңбасы және қатаң/қатаң емес шекаралар кездейсоқ rejection sampling-сіз басқарылады. Екі радикалдың айырмасы тұрақтымен салыстырылатын жоғары деңгейлі тармақ видеодағы екі рет квадраттау әдісін қамтиды.",
+  "tag": {
+    "name": "Иррационал теңсіздік",
+    "slug": "irrational-inequality"
+  },
+  "default_difficulty": 2,
+  "parameters": {
+    "structure": {
+      "type": "string",
+      "options": [
+        "two_linear_radicals",
+        "two_radicals_quadratic_compare",
+        "two_radicals_difference",
+        "sqrt_less_linear",
+        "sqrt_quadratic_less_linear",
+        "nested_radical_difference_constant",
+        "sqrt_greater_linear_union"
+      ],
+      "desc": "Иррационал теңсіздіктің негізгі құрылымы"
+    },
+    "boundary": {
+      "type": "string",
+      "options": [
+        "strict",
+        "non_strict"
+      ],
+      "desc": "Қатаң немесе қатаң емес теңсіздік"
+    },
+    "anchor": {
+      "type": "integer",
+      "options": [
+        -7,
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "Шекараларды және радикандтарды құратын негізгі бүтін сан"
+    },
+    "gap_1": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3
+      ],
+      "desc": "Негізгі оң аралық"
+    },
+    "gap_2": {
+      "type": "integer",
+      "options": [
+        1,
+        2
+      ],
+      "desc": "Екі радикал тармақтарындағы екінші оң аралық"
+    },
+    "constant": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3
+      ],
+      "desc": "Екі радикал айырмасы тұрақтымен салыстырылатын тармақтағы оң тұрақты"
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "structure": {
+        "options": [
+          "two_linear_radicals",
+          "sqrt_less_linear"
+        ]
+      },
+      "boundary": {
+        "options": [
+          "strict",
+          "non_strict"
+        ]
+      },
+      "anchor": {
+        "options": [
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2
+        ]
+      }
+    },
+    "2": {
+      "structure": {
+        "options": [
+          "two_radicals_quadratic_compare",
+          "two_radicals_difference",
+          "sqrt_quadratic_less_linear"
+        ]
+      },
+      "boundary": {
+        "options": [
+          "strict",
+          "non_strict"
+        ]
+      },
+      "anchor": {
+        "options": [
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "gap_2": {
+        "options": [
+          1,
+          2
+        ]
+      }
+    },
+    "3": {
+      "structure": {
+        "options": [
+          "nested_radical_difference_constant",
+          "sqrt_greater_linear_union",
+          "two_radicals_quadratic_compare"
+        ]
+      },
+      "boundary": {
+        "options": [
+          "strict",
+          "non_strict"
+        ]
+      },
+      "anchor": {
+        "options": [
+          -7,
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "gap_2": {
+        "options": [
+          1,
+          2
+        ]
+      },
+      "constant": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      }
+    }
+  },
+  "derived": {
+    "gap_2": "gap_2 if structure in ['two_radicals_quadratic_compare', 'two_radicals_difference'] else 0",
+    "constant": "constant if structure == 'nested_radical_difference_constant' else 0",
+    "relation": "('>' if boundary == 'strict' else '>=') if structure in ['two_radicals_difference', 'nested_radical_difference_constant', 'sqrt_greater_linear_union'] else ('<' if boundary == 'strict' else '<=')",
+    "relation_latex": "'\\\\ge' if relation == '>=' else ('\\\\le' if relation == '<=' else relation)",
+    "lin_left": "anchor",
+    "lin_mid": "anchor + 2*gap_1",
+    "lin_right": "anchor + 4*gap_1",
+    "quad_d": "anchor",
+    "quad_p": "anchor + gap_1",
+    "quad_q": "anchor + gap_1 + gap_2",
+    "quad_g_b": "1 - quad_p - quad_q",
+    "quad_g_c": "quad_p*quad_q - quad_d",
+    "fam_r1": "anchor",
+    "fam_d": "anchor - gap_1",
+    "fam_t": "anchor + gap_1",
+    "fam_r2": "anchor + 3*gap_1",
+    "fam_f_a": "gap_1",
+    "fam_f_b": "-gap_1*fam_d",
+    "sq_p": "anchor",
+    "sq_q": "anchor + 3*gap_1",
+    "sq_t": "anchor + gap_1",
+    "sq_lower": "anchor - gap_1",
+    "sq_b": "-(sq_p + sq_q)",
+    "sq_c": "sq_p*sq_q",
+    "nested_B": "anchor",
+    "nested_t": "gap_1",
+    "nested_c": "constant",
+    "nested_A": "nested_B + nested_c**2 + 2*nested_c*nested_t",
+    "nested_left": "nested_B - nested_t**2"
+  },
+  "constraints": [],
+  "integer_clean": true,
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% set closed = boundary == 'non_strict' %}{% if structure == 'two_linear_radicals' %}$[{{ lin_left }};{{ lin_mid }}{{ ']' if closed else ')' }}${% elif structure == 'two_radicals_quadratic_compare' %}$[{{ quad_d }};{{ quad_p }}{{ ']' if closed else ')' }}\\cup{{ '[' if closed else '(' }}{{ quad_q }};+\\infty)${% elif structure == 'two_radicals_difference' %}${{ '[' if closed else '(' }}{{ quad_p }};{{ quad_q }}{{ ']' if closed else ')' }}${% elif structure == 'sqrt_less_linear' %}${{ '[' if closed else '(' }}{{ fam_r2 }};+\\infty)${% elif structure == 'sqrt_quadratic_less_linear' %}${{ '[' if closed else '(' }}{{ sq_lower }};{{ sq_p }}]${% elif structure == 'nested_radical_difference_constant' %}${{ '[' if closed else '(' }}{{ nested_left }};{{ nested_B }}]${% else %}$[{{ fam_d }};{{ fam_r2 }}{{ ']' if closed else ')' }}${% endif %}",
+    "desc": "Жауап нақты сандар осіндегі аралық немесе аралықтар бірігуі түрінде беріледі; бөлімнің негізгі дағдысы — ММЖ мен квадраттаудан шыққан шарттардың дұрыс қиылысуын табу."
+  },
+  "distractors": [
+    {
+      "id": "powered_inequality_without_full_domain_logic",
+      "desc": "Теңсіздікті квадраттағаннан кейін шыққан шартты ғана алды немесе sqrt(f)>g жағдайында g<0 болатын автоматты тармақты жоғалтты.",
+      "transform": {
+        "correct": "{% set closed = boundary == 'non_strict' %}{% if structure == 'two_linear_radicals' %}$(-\\infty;{{ lin_mid }}{{ ']' if closed else ')' }}${% elif structure == 'two_radicals_quadratic_compare' %}$(-\\infty;{{ quad_p }}{{ ']' if closed else ')' }}\\cup{{ '[' if closed else '(' }}{{ quad_q }};+\\infty)${% elif structure == 'two_radicals_difference' %}$[{{ quad_d }};{{ quad_p }}{{ ']' if closed else ')' }}\\cup{{ '[' if closed else '(' }}{{ quad_q }};+\\infty)${% elif structure == 'sqrt_less_linear' %}$(-\\infty;{{ fam_r1 }}{{ ']' if closed else ')' }}\\cup{{ '[' if closed else '(' }}{{ fam_r2 }};+\\infty)${% elif structure == 'sqrt_quadratic_less_linear' %}${{ '[' if closed else '(' }}{{ sq_lower }};+\\infty)${% elif structure == 'nested_radical_difference_constant' %}${{ '[' if closed else '(' }}{{ nested_left }};+\\infty)${% else %}$[{{ fam_t }};{{ fam_r2 }}{{ ']' if closed else ')' }}${% endif %}"
+      }
+    },
+    {
+      "id": "domain_only",
+      "desc": "Тек радикалдардың ММЖ-сын немесе оң жақ өрнектің таңба шартын жазып, негізгі салыстыру шартын қолданбады.",
+      "transform": {
+        "correct": "{% if structure == 'two_linear_radicals' %}$[{{ lin_left }};{{ lin_right }}]${% elif structure in ['two_radicals_quadratic_compare', 'two_radicals_difference'] %}$[{{ quad_d }};+\\infty)${% elif structure == 'sqrt_less_linear' %}$[{{ fam_t }};+\\infty)${% elif structure == 'sqrt_quadratic_less_linear' %}$(-\\infty;{{ sq_p }}]${% elif structure == 'nested_radical_difference_constant' %}$(-\\infty;{{ nested_B }}]${% else %}$[{{ fam_d }};+\\infty)${% endif %}"
+      }
+    },
+    {
+      "id": "wrong_direction_or_endpoint",
+      "desc": "Таңба бағытын керісінше таңдады немесе қатаң және қатаң емес теңсіздік шекарасын шатастырды.",
+      "transform": {
+        "correct": "{% set closed = boundary == 'non_strict' %}{% if structure == 'two_linear_radicals' %}${{ '[' if closed else '(' }}{{ lin_mid }};{{ lin_right }}]${% elif structure == 'two_radicals_quadratic_compare' %}${{ '[' if closed else '(' }}{{ quad_p }};{{ quad_q }}{{ ']' if closed else ')' }}${% elif structure == 'two_radicals_difference' %}${{ '(' if closed else '[' }}{{ quad_p }};{{ quad_q }}{{ ')' if closed else ']' }}${% elif structure == 'sqrt_less_linear' %}${{ '(' if closed else '[' }}{{ fam_r2 }};+\\infty)${% elif structure == 'sqrt_quadratic_less_linear' %}${{ '(' if closed else '[' }}{{ sq_lower }};{{ sq_p }}]${% elif structure == 'nested_radical_difference_constant' %}$(-\\infty;{{ nested_left }}{{ ')' if closed else ']' }}${% else %}${{ '(' if closed else '[' }}{{ fam_r2 }};+\\infty)${% endif %}"
+      }
+    }
+  ],
+  "_dropped_distractors": [
+    {
+      "id": "squared_once_and_stopped",
+      "why_dropped": "Екі радикалдың айырмасы бар есепте бір рет квадраттап тоқтау бір ғана нақты қате жауапты анықтамайды; бұл determinate емес dead-end қате."
+    },
+    {
+      "id": "wrote_mmx_but_did_not_intersect",
+      "why_dropped": "ММЖ-ны бөлек дұрыс жазып, соңғы қиылысты есептемей тоқтау да нақты бір жауап нұсқасын бермейді."
+    }
+  ],
+  "narrative_settings": [
+    "екі түбірлік шаманың қайсысы үлкен екенін анықтайтын қолданбалы есеп",
+    "геометриялық ұзындықтар түбірлік өрнектермен берілген шарт",
+    "физикалық шаманың түбірлік моделі берілген шектен үлкен немесе кіші болатын параметр аралығы"
+  ]
+}

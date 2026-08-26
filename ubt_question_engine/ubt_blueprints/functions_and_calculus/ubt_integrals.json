@@ -1,0 +1,193 @@
+{
+  "topic": "ubt_integrals",
+  "parent_topic": "functions_calculus_modelling",
+  "parent_topic_number": 13,
+  "display_name": "Integrals — direct and substitution",
+  "curriculum_ref": "KZ 2026 UBT — Mathematical modelling and analysis — Topic 13",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 13. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Функциялар және математикалық анализ",
+    "slug": "funkciyalar-matematikalyk-analiz"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "definite_integral_linear",
+        "substitution_definite_integral"
+      ],
+      "desc": "question structure"
+    },
+    "a": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "b": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "lower": {
+      "type": "int",
+      "min": -3,
+      "max": 2
+    },
+    "upper": {
+      "type": "int",
+      "min": 2,
+      "max": 6
+    },
+    "power": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    }
+  },
+  "supported_difficulties": [
+    1,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "definite_integral_linear"
+        ]
+      },
+      "a": {
+        "max": 4
+      },
+      "power": {
+        "max": 4
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "substitution_definite_integral"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "definite_integral_linear": {
+      "uses": [
+        "a",
+        "b",
+        "lower",
+        "upper"
+      ],
+      "constraints": [
+        "lower < upper"
+      ],
+      "question": {
+        "instruction": "Evaluate the definite integral",
+        "latex": "\\int_{{{lower}}}^{{{upper}}}\\left({a}x{b:+d}\\right)\\,dx"
+      }
+    },
+    "substitution_definite_integral": {
+      "uses": [
+        "a",
+        "b",
+        "power",
+        "lower",
+        "upper"
+      ],
+      "constraints": [
+        "lower < upper"
+      ],
+      "question": {
+        "instruction": "Evaluate the definite integral using substitution",
+        "latex": "\\int_{{{lower}}}^{{{upper}}}{a}\\left({a}x{b:+d}\\right)^{{{power}}}\\,dx"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "definite_integral_linear": "a*(upper**2-lower**2)/2+b*(upper-lower)",
+      "substitution_definite_integral": "((a*upper+b)**(power+1)-(a*lower+b)**(power+1))/(power+1)"
+    }
+  },
+  "answer_render": {
+    "definite_integral_linear": "exact_number",
+    "substitution_definite_integral": "exact_number"
+  },
+  "distractors": {
+    "definite_integral_linear": [
+      {
+        "id": "forget_half",
+        "transform": "a*(upper**2-lower**2)+b*(upper-lower)"
+      },
+      {
+        "id": "endpoint_subtraction_wrong",
+        "transform": "a*(upper**2+lower**2)/2+b*(upper+lower)"
+      },
+      {
+        "id": "function_difference",
+        "transform": "a*(upper-lower)"
+      },
+      {
+        "id": "omit_b",
+        "transform": "a*(upper**2-lower**2)/2"
+      },
+      {
+        "id": "omit_a",
+        "transform": "(upper**2-lower**2)/2+b*(upper-lower)"
+      },
+      {
+        "id": "reverse_bounds",
+        "transform": "-(a*(upper**2-lower**2)/2+b*(upper-lower))"
+      }
+    ],
+    "substitution_definite_integral": [
+      {
+        "id": "forget_power_plus_one_denominator",
+        "transform": "(a*upper+b)**(power+1)-(a*lower+b)**(power+1)"
+      },
+      {
+        "id": "wrong_denominator_power",
+        "transform": "((a*upper+b)**(power+1)-(a*lower+b)**(power+1))/power"
+      },
+      {
+        "id": "forget_substitution",
+        "transform": "a*(upper**(power+1)-lower**(power+1))/(power+1)"
+      },
+      {
+        "id": "reverse_bounds",
+        "transform": "-(((a*upper+b)**(power+1)-(a*lower+b)**(power+1))/(power+1))"
+      },
+      {
+        "id": "endpoint_values_only",
+        "transform": "(a*upper+b)**power-(a*lower+b)**power"
+      },
+      {
+        "id": "divide_by_a_extra",
+        "transform": "((a*upper+b)**(power+1)-(a*lower+b)**(power+1))/(a*(power+1))"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "tuple_equivalence": true,
+    "interval_equivalence": true,
+    "function_equivalence": true,
+    "exact_answers_only": true,
+    "respect_function_domain": true,
+    "validate_derivatives": true,
+    "validate_integrals": true,
+    "validate_tangent_point_and_slope": true,
+    "validate_extrema_and_monotonicity": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

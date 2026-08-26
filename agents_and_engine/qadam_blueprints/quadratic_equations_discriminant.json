@@ -1,0 +1,191 @@
+{
+  "topic": "quadratic_equations_discriminant",
+  "display_name": "Решение квадратных уравнений через дискриминант",
+  "curriculum_ref": "8 класс — Квадратные уравнения (Квадрат теңдеулер)",
+  "constraints_template": "quadratic_equations_discriminant.j2",
+
+  "_comment": "Генеративный blueprint: готовые уравнения не хранятся, коэффициенты a, b, c строятся из параметров. Уровень задаётся движком через difficulty_overrides, а НЕ случайным параметром: каждый уровень закрепляет свою `structure` и `query_type`, а параметры неактивных структур пришпиливаются к одному значению — иначе они продолжали бы крутиться и порождать разные content_hash для одного и того же уравнения. Ответ считает agents_and_engine/quad_disc.py (точная арифметика, без float).",
+
+  "tag": { "name": "Дискриминант квадратного уравнения", "slug": "quad-eq-disc" },
+  "default_difficulty": 2,
+
+  "parameters": {
+    "structure": {
+      "type": "string",
+      "options": ["monic_integer_roots", "non_monic_factors", "controlled_discriminant"],
+      "desc": "Способ построения коэффициентов; закрепляется уровнем сложности"
+    },
+    "query_type": {
+      "type": "string",
+      "options": ["solve", "number_of_real_roots"],
+      "desc": "Найти корни или определить количество действительных корней"
+    },
+    "root_1": {
+      "type": "integer",
+      "options": [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      "desc": "Первый целый корень (structure = monic_integer_roots)"
+    },
+    "root_2": {
+      "type": "integer",
+      "options": [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      "desc": "Второй целый корень (structure = monic_integer_roots)"
+    },
+    "p": {
+      "type": "integer",
+      "options": [1, 2, 3, 4, 5],
+      "desc": "Коэффициент при x в первом линейном множителе p*x+q"
+    },
+    "q": {
+      "type": "integer",
+      "options": [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      "desc": "Свободный член первого линейного множителя"
+    },
+    "r": {
+      "type": "integer",
+      "options": [1, 2, 3, 4, 5],
+      "desc": "Коэффициент при x во втором линейном множителе r*x+s"
+    },
+    "s": {
+      "type": "integer",
+      "options": [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      "desc": "Свободный член второго линейного множителя"
+    },
+    "a_control": {
+      "type": "integer",
+      "options": [1, 2, 3, 4, 5],
+      "desc": "Старший коэффициент для контролируемого дискриминанта"
+    },
+    "axis_shift": {
+      "type": "integer",
+      "options": [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5],
+      "desc": "Сдвиг h в скрытой форме a(x-h)^2+k=0"
+    },
+    "vertical_shift": {
+      "type": "integer",
+      "options": [-12, -10, -8, -6, -5, -3, -2, -1, 0, 1, 2, 3, 5, 6, 8, 10, 12],
+      "desc": "Параметр k в скрытой форме a(x-h)^2+k=0; через D = -4*a*k задаёт знак дискриминанта"
+    },
+    "discriminant_case": {
+      "type": "string",
+      "options": ["zero", "negative", "positive_nonsquare"],
+      "desc": "Требуемый тип дискриминанта (structure = controlled_discriminant)"
+    }
+  },
+
+  "difficulty_overrides": {
+    "1": {
+      "structure": { "options": ["monic_integer_roots"] },
+      "query_type": { "options": ["solve"] },
+      "root_1": { "options": [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6] },
+      "root_2": { "options": [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6] },
+      "p": { "options": [1] }, "q": { "options": [1] },
+      "r": { "options": [1] }, "s": { "options": [1] },
+      "a_control": { "options": [1] }, "axis_shift": { "options": [1] },
+      "vertical_shift": { "options": [0] },
+      "discriminant_case": { "options": ["zero"] }
+    },
+    "2": {
+      "structure": { "options": ["non_monic_factors"] },
+      "query_type": { "options": ["solve"] },
+      "root_1": { "options": [1] }, "root_2": { "options": [2] },
+      "a_control": { "options": [1] }, "axis_shift": { "options": [1] },
+      "vertical_shift": { "options": [0] },
+      "discriminant_case": { "options": ["zero"] }
+    },
+    "3": {
+      "structure": { "options": ["controlled_discriminant"] },
+      "query_type": { "options": ["solve", "number_of_real_roots"] },
+      "root_1": { "options": [1] }, "root_2": { "options": [2] },
+      "p": { "options": [1] }, "q": { "options": [1] },
+      "r": { "options": [1] }, "s": { "options": [1] }
+    }
+  },
+
+  "derived": {
+    "a": "1 if structure == 'monic_integer_roots' else (p * r if structure == 'non_monic_factors' else a_control)",
+    "b": "-(root_1 + root_2) if structure == 'monic_integer_roots' else (p * s + q * r if structure == 'non_monic_factors' else -2 * a_control * axis_shift)",
+    "c": "root_1 * root_2 if structure == 'monic_integer_roots' else (q * s if structure == 'non_monic_factors' else a_control * axis_shift ** 2 + vertical_shift)",
+    "D": "b * b - 4 * a * c"
+  },
+
+  "constraints": [
+    "structure == 'monic_integer_roots' -> root_1 < root_2  // строгий порядок: '!=' пропускал (-5,-2) и (-2,-5) как две разные задачи с одним и тем же уравнением, и content_hash дублировал банк",
+    "structure == 'non_monic_factors' -> p * r != 1          // при p*r==1 уравнение приведённое, это уровень 1",
+    "structure == 'non_monic_factors' -> p * s - q * r != 0   // иначе множители пропорциональны и корень один",
+    "structure == 'non_monic_factors' -> p < r or (p == r and q < s)  // канонический порядок множителей: (p,q)(r,s) и (r,s)(p,q) раскрываются в одно уравнение",
+    "structure == 'non_monic_factors' -> gcd(abs(p), abs(q)) == 1",
+    "structure == 'non_monic_factors' -> gcd(abs(r), abs(s)) == 1",
+    "structure == 'controlled_discriminant' and discriminant_case == 'zero' -> vertical_shift == 0",
+    "structure == 'controlled_discriminant' and discriminant_case == 'zero' -> axis_shift != 0  // иначе вырождается в a*x^2 = 0",
+    "structure == 'controlled_discriminant' and discriminant_case == 'negative' -> a_control * vertical_shift > 0",
+    "structure == 'controlled_discriminant' and discriminant_case == 'positive_nonsquare' -> a_control * vertical_shift < 0",
+    "structure == 'controlled_discriminant' and discriminant_case == 'positive_nonsquare' -> (-a_control * vertical_shift) not in [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]  // D = -4ak: множитель 4 — квадрат, значит D точный квадрат ровно тогда, когда -ak квадрат"
+  ],
+
+  "integer_clean": true,
+
+  "generation_logic": {
+    "monic_integer_roots": {
+      "build": "(x-root_1)*(x-root_2)=0",
+      "expand": "x^2 - (root_1+root_2)*x + root_1*root_2 = 0"
+    },
+    "non_monic_factors": {
+      "build": "(p*x+q)*(r*x+s)=0",
+      "expand": "(p*r)*x^2 + (p*s+q*r)*x + q*s = 0",
+      "note": "Показывать ученику только раскрытый стандартный вид; скрытая факторизация используется генератором."
+    },
+    "controlled_discriminant": {
+      "build_hidden": "a_control*(x-axis_shift)^2 + vertical_shift = 0",
+      "expand": "a_control*x^2 - 2*a_control*axis_shift*x + (a_control*axis_shift^2 + vertical_shift) = 0",
+      "discriminant": "D = -4*a_control*vertical_shift"
+    }
+  },
+
+  "answer": {
+    "type": "quadratic_discriminant",
+    "step_1_coefficients": "Определить коэффициенты a, b, c из стандартного вида a*x^2+b*x+c=0.",
+    "step_2_discriminant": "Вычислить D = b^2 - 4ac.",
+    "step_3_case": "Если D>0 — два действительных корня; если D=0 — один двукратный корень; если D<0 — действительных корней нет.",
+    "step_4_roots": "При D>0: x1=(-b-sqrt(D))/(2a), x2=(-b+sqrt(D))/(2a). При D=0: x=-b/(2a).",
+    "desc": "answer_key: точные корни (или их количество), вычисленные agents_and_engine/quad_disc.py из derived a, b, c. Решение должно идти через дискриминант, даже если генератор построил коэффициенты из скрытых корней, факторизации или формы a(x-h)^2+k."
+  },
+
+  "distractors": [
+    {
+      "id": "discriminant_sign_error",
+      "desc": "Ученик записал D=b^2+4ac вместо D=b^2-4ac.",
+      "transform": { "discriminant": "b**2 + 4*a*c" }
+    },
+    {
+      "id": "forgot_square_on_b",
+      "desc": "Ученик использовал b вместо b^2 в дискриминанте.",
+      "transform": { "discriminant": "b - 4*a*c" }
+    },
+    {
+      "id": "forgot_denominator_2a",
+      "desc": "Ученик разделил на 2 вместо 2a.",
+      "transform": { "denominator": "2" }
+    },
+    {
+      "id": "wrong_minus_b",
+      "desc": "Ученик использовал b вместо -b в числителе формулы корней.",
+      "transform": { "numerator_base": "b" }
+    },
+    {
+      "id": "negative_d_has_roots",
+      "desc": "Ученик извлёк действительный квадратный корень из отрицательного D.",
+      "transform": { "discriminant": "abs(b**2 - 4*a*c)" }
+    },
+    {
+      "id": "d_zero_two_roots",
+      "desc": "При D=0 ученик записал два различных корня вместо одного двукратного.",
+      "transform": { "numerator_base": "-b and b" }
+    }
+  ],
+
+  "narrative_settings": [
+    "вычисление траектории полёта объекта",
+    "определение точек пересечения параболы с осью",
+    "поиск моментов достижения заданного значения"
+  ]
+}

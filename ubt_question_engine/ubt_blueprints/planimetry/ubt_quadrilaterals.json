@@ -1,0 +1,117 @@
+{
+  "topic": "ubt_quadrilaterals",
+  "parent_topic": "planimetry_geometric_figures",
+  "parent_topic_number": 14,
+  "display_name": "Planimetry — quadrilateral properties",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 14",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 14. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Планиметрия",
+    "slug": "planimetriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "tangential_quadrilateral"
+      ],
+      "desc": "question structure"
+    },
+    "side1": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "side2": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "segment_a": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    }
+  },
+  "supported_difficulties": [
+    3
+  ],
+  "default_difficulty": 3,
+  "difficulty_overrides": {
+    "3": {
+      "mode": {
+        "values": [
+          "tangential_quadrilateral"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "tangential_quadrilateral": {
+      "uses": [
+        "side1",
+        "side2",
+        "segment_a"
+      ],
+      "constraints": [
+        "side1 + segment_a > side2"
+      ],
+      "question": {
+        "instruction": "A quadrilateral is circumscribed about a circle. Three side lengths are given. Find the fourth side.",
+        "latex": "AB={side1},\\quad BC={side2},\\quad CD={segment_a},\\quad DA=x"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "tangential_quadrilateral": "side1+segment_a-side2"
+    }
+  },
+  "answer_render": {
+    "tangential_quadrilateral": "exact_number"
+  },
+  "distractors": {
+    "tangential_quadrilateral": [
+      {
+        "id": "wrong_pairing",
+        "transform": "side1+side2-segment_a"
+      },
+      {
+        "id": "sum_all",
+        "transform": "side1+side2+segment_a"
+      },
+      {
+        "id": "difference",
+        "transform": "abs(side1-side2)+segment_a"
+      },
+      {
+        "id": "average",
+        "transform": "Rational(side1+side2+segment_a,2)"
+      },
+      {
+        "id": "first_plus_second",
+        "transform": "side1+side2"
+      },
+      {
+        "id": "segment_only",
+        "transform": "segment_a"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "angle_range_validation": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

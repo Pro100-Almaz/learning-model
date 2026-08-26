@@ -1,0 +1,527 @@
+{
+  "topic": "ubt_algebraic_expressions",
+  "display_name": "Algebraic expressions and transformations",
+  "curriculum_ref": "KZ 2026 UBT — Numbers — Topic 04",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Deterministic topic config. Difficulty is controlled mainly by algebraic structure and number of transformations, not coefficient size. Python/SymPy owns generation, simplification, equivalence checks, answer validation, and distractor selection. Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Алгебралық өрнектер",
+    "slug": "algebralyk-ornekte"
+  },
+  "default_difficulty": 1,
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "expand_square",
+        "factor_difference_squares",
+        "factor_common",
+        "factor_sum_difference_cubes",
+        "factor_grouping",
+        "simplify_rational_expression",
+        "excluded_value",
+        "polynomial_root"
+      ]
+    },
+    "a": {
+      "type": "int",
+      "min": 1,
+      "max": 8
+    },
+    "b": {
+      "type": "int",
+      "min": 1,
+      "max": 8
+    },
+    "c": {
+      "type": "int",
+      "min": 1,
+      "max": 8
+    },
+    "r": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "s": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "sign": {
+      "type": "choice",
+      "values": [
+        1,
+        -1
+      ]
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "expand_square",
+          "factor_difference_squares",
+          "factor_common"
+        ]
+      },
+      "a": {
+        "max": 6
+      },
+      "b": {
+        "max": 6
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "factor_sum_difference_cubes",
+          "factor_grouping",
+          "excluded_value",
+          "polynomial_root"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "factor_grouping",
+          "simplify_rational_expression",
+          "polynomial_root"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "expand_square": {
+      "uses": [
+        "a",
+        "b",
+        "sign"
+      ],
+      "symbols": [
+        "x"
+      ],
+      "constraints": [
+        "a != b"
+      ],
+      "derived": {
+        "signed_b": "sign*b"
+      },
+      "question": {
+        "instruction": "Expand and simplify",
+        "latex": "\\left({a}x{signed_b:+d}\\right)^2"
+      }
+    },
+    "factor_difference_squares": {
+      "uses": [
+        "a",
+        "b"
+      ],
+      "symbols": [
+        "x"
+      ],
+      "constraints": [
+        "a != b"
+      ],
+      "derived": {
+        "a2": "a**2",
+        "b2": "b**2"
+      },
+      "question": {
+        "instruction": "Factor completely",
+        "latex": "{a2}x^2-{b2}"
+      }
+    },
+    "factor_common": {
+      "uses": [
+        "a",
+        "b",
+        "c"
+      ],
+      "symbols": [
+        "x"
+      ],
+      "constraints": [
+        "b != c"
+      ],
+      "derived": {
+        "coef_sq": "a*b",
+        "coef_lin": "a*c"
+      },
+      "question": {
+        "instruction": "Factor completely",
+        "latex": "{coef_sq}x^2+{coef_lin}x"
+      }
+    },
+    "factor_sum_difference_cubes": {
+      "uses": [
+        "a",
+        "b",
+        "sign"
+      ],
+      "symbols": [
+        "x"
+      ],
+      "derived": {
+        "a3": "a**3",
+        "b3": "b**3",
+        "op": "'+' if sign == 1 else '-'"
+      },
+      "question": {
+        "instruction": "Factor completely",
+        "latex": "{a3}x^3{op}{b3}"
+      }
+    },
+    "factor_grouping": {
+      "uses": [
+        "a",
+        "b",
+        "c"
+      ],
+      "symbols": [
+        "x"
+      ],
+      "constraints": [
+        "a != b",
+        "b != c",
+        "a != c"
+      ],
+      "derived": {
+        "ab": "a*b",
+        "ac": "a*c",
+        "bc": "b*c"
+      },
+      "question": {
+        "instruction": "Factor completely",
+        "latex": "{a}x^3+{b}x^2+{ac}x+{bc}"
+      }
+    },
+    "simplify_rational_expression": {
+      "uses": [
+        "r",
+        "s"
+      ],
+      "symbols": [
+        "x"
+      ],
+      "constraints": [
+        "r != s",
+        "r != 0",
+        "s != 0"
+      ],
+      "derived": {
+        "sum_rs": "r+s",
+        "product_rs": "r*s"
+      },
+      "question": {
+        "instruction": "Simplify the expression, taking its domain restrictions into account",
+        "latex": "\\frac{{x^2-{sum_rs}x+{product_rs}}}{{x-{r}}}"
+      }
+    },
+    "excluded_value": {
+      "uses": [
+        "r",
+        "s"
+      ],
+      "symbols": [
+        "x"
+      ],
+      "constraints": [
+        "r != s"
+      ],
+      "derived": {
+        "sum_rs": "r+s",
+        "product_rs": "r*s"
+      },
+      "question": {
+        "instruction": "Which value of x is excluded from the domain?",
+        "latex": "\\frac{{x^2-{sum_rs}x+{product_rs}}}{{x-{r}}}"
+      }
+    },
+    "polynomial_root": {
+      "uses": [
+        "r",
+        "s",
+        "a"
+      ],
+      "symbols": [
+        "x"
+      ],
+      "constraints": [
+        "r != s",
+        "r != 0",
+        "s != 0",
+        "r+s != 0"
+      ],
+      "derived": {
+        "sum_rs": "r+s",
+        "product_rs": "r*s",
+        "bcoef": "-a*(r+s)",
+        "ccoef": "a*r*s"
+      },
+      "question": {
+        "instruction": "Which of the following numbers is a root of the polynomial?",
+        "latex": "{a}x^2{bcoef:+d}x{ccoef:+d}"
+      }
+    }
+  },
+  "constraints": [
+    "a > 0",
+    "b > 0",
+    "c > 0"
+  ],
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "expand_square": "(a*x + sign*b)**2",
+      "factor_difference_squares": "(a*x-b)*(a*x+b)",
+      "factor_common": "a*x*(b*x+c)",
+      "factor_sum_difference_cubes": "(a*x + sign*b) * (a**2*x**2 - sign*a*b*x + b**2)",
+      "factor_grouping": "(x**2+c)*(a*x+b)",
+      "simplify_rational_expression": "x-s",
+      "excluded_value": "r",
+      "polynomial_root": "r"
+    }
+  },
+  "answer_render": {
+    "expand_square": "expanded",
+    "factor_difference_squares": "factored",
+    "factor_common": "factored",
+    "factor_sum_difference_cubes": "factored",
+    "factor_grouping": "factored",
+    "simplify_rational_expression": "simplified_with_exclusion",
+    "excluded_value": "scalar",
+    "polynomial_root": "scalar"
+  },
+  "answer_metadata": {
+    "simplify_rational_expression": {
+      "excluded_values": [
+        "r"
+      ]
+    }
+  },
+  "distractors": {
+    "expand_square": [
+      {
+        "id": "missing_middle_term",
+        "transform": "a**2*x**2+b**2"
+      },
+      {
+        "id": "middle_term_wrong_sign",
+        "transform": "a**2*x**2-sign*2*a*b*x+b**2"
+      },
+      {
+        "id": "middle_term_missing_factor_two",
+        "transform": "a**2*x**2+sign*a*b*x+b**2"
+      },
+      {
+        "id": "square_coefficients_not_variables",
+        "transform": "a**2*x+sign*2*a*b*x+b**2"
+      },
+      {
+        "id": "square_terms_only",
+        "transform": "(a*x)**2+(sign*b)**2"
+      },
+      {
+        "id": "double_constant",
+        "transform": "a**2*x**2+sign*2*a*b*x+2*b**2"
+      }
+    ],
+    "factor_difference_squares": [
+      {
+        "id": "same_sign_positive",
+        "transform": "(a*x+b)*(a*x+b)"
+      },
+      {
+        "id": "same_sign_negative",
+        "transform": "(a*x-b)*(a*x-b)"
+      },
+      {
+        "id": "forget_square_root_coefficients",
+        "transform": "(a**2*x-b**2)*(a**2*x+b**2)"
+      },
+      {
+        "id": "factor_as_linear_difference",
+        "transform": "(a*x-b)"
+      },
+      {
+        "id": "wrong_second_factor",
+        "transform": "(a*x-b)*(a*x-b+1)"
+      },
+      {
+        "id": "sum_instead_difference",
+        "transform": "(a*x+b)*(a*x-b)+2*b**2"
+      }
+    ],
+    "factor_common": [
+      {
+        "id": "forget_common_a",
+        "transform": "x*(b*x+c)"
+      },
+      {
+        "id": "forget_common_x",
+        "transform": "a*(b*x+c)"
+      },
+      {
+        "id": "add_inside",
+        "transform": "a*x*(b+c)*x"
+      },
+      {
+        "id": "wrong_inner_constant",
+        "transform": "a*x*(b*x+a*c)"
+      },
+      {
+        "id": "factor_only_first_term",
+        "transform": "a*b*x*(x+c)"
+      },
+      {
+        "id": "sign_error",
+        "transform": "a*x*(b*x-c)"
+      }
+    ],
+    "factor_sum_difference_cubes": [
+      {
+        "id": "quadratic_middle_wrong_sign",
+        "transform": "(a*x+sign*b)*(a**2*x**2+sign*a*b*x+b**2)"
+      },
+      {
+        "id": "quadratic_last_wrong_sign",
+        "transform": "(a*x+sign*b)*(a**2*x**2-sign*a*b*x-b**2)"
+      },
+      {
+        "id": "use_square_identity",
+        "transform": "(a*x+sign*b)*(a*x+sign*b)"
+      },
+      {
+        "id": "omit_middle_term",
+        "transform": "(a*x+sign*b)*(a**2*x**2+b**2)"
+      },
+      {
+        "id": "wrong_linear_sign",
+        "transform": "(a*x-sign*b)*(a**2*x**2-sign*a*b*x+b**2)"
+      },
+      {
+        "id": "factor_coefficients_only",
+        "transform": "(a+sign*b)*(a**2*x**3+b**2)"
+      }
+    ],
+    "factor_grouping": [
+      {
+        "id": "swap_group_factor",
+        "transform": "(x**2+b)*(a*x+c)"
+      },
+      {
+        "id": "wrong_constant_pair",
+        "transform": "(x**2+c)*(a*x+c)"
+      },
+      {
+        "id": "wrong_linear_pair",
+        "transform": "(x**2+b)*(a*x+b)"
+      },
+      {
+        "id": "sign_error",
+        "transform": "(x**2-c)*(a*x+b)"
+      },
+      {
+        "id": "omit_second_group",
+        "transform": "x**2*(a*x+b)"
+      },
+      {
+        "id": "factor_common_sum_only",
+        "transform": "(a+b)*(x**3+c*x)"
+      }
+    ],
+    "simplify_rational_expression": [
+      {
+        "id": "cancel_wrong_factor",
+        "transform": "x-r"
+      },
+      {
+        "id": "sign_error",
+        "transform": "x+s"
+      },
+      {
+        "id": "keep_original",
+        "transform": "(x**2-(r+s)*x+r*s)/(x-r)"
+      },
+      {
+        "id": "drop_x",
+        "transform": "-s"
+      },
+      {
+        "id": "divide_constant_only",
+        "transform": "x-r*s"
+      },
+      {
+        "id": "wrong_remaining_root",
+        "transform": "x+r"
+      }
+    ],
+    "excluded_value": [
+      {
+        "id": "other_root",
+        "transform": "s"
+      },
+      {
+        "id": "negate_excluded",
+        "transform": "-r"
+      },
+      {
+        "id": "negate_other_root",
+        "transform": "-s"
+      },
+      {
+        "id": "sum_roots",
+        "transform": "r+s"
+      },
+      {
+        "id": "difference_roots",
+        "transform": "r-s"
+      },
+      {
+        "id": "zero",
+        "transform": "0"
+      }
+    ],
+    "polynomial_root": [
+      {
+        "id": "negate_selected_root",
+        "transform": "-r"
+      },
+      {
+        "id": "negate_other_root",
+        "transform": "-s"
+      },
+      {
+        "id": "sum_roots",
+        "transform": "r+s"
+      },
+      {
+        "id": "product_roots",
+        "transform": "r*s"
+      },
+      {
+        "id": "zero",
+        "transform": "0"
+      },
+      {
+        "id": "root_off_by_one",
+        "transform": "r+1"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "equivalence_method": "simplify",
+    "preserve_required_form": true,
+    "respect_domain_restrictions": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "topic": "ubt_exponential_inequality_systems",
+  "parent_topic": "systems_of_inequalities",
+  "parent_topic_number": 11,
+  "display_name": "Systems of exponential inequalities",
+  "curriculum_ref": "KZ 2026 UBT — Systems of inequalities — Topic 11",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 11. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Теңсіздіктер жүйесі",
+    "slug": "tensizdikter-zhuyesi"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "exponential_system",
+        "exponential_substitution_system"
+      ],
+      "desc": "question structure"
+    },
+    "base": {
+      "type": "choice",
+      "values": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "m": {
+      "type": "int",
+      "min": -2,
+      "max": 3
+    },
+    "n": {
+      "type": "int",
+      "min": 1,
+      "max": 5
+    }
+  },
+  "supported_difficulties": [
+    2,
+    3
+  ],
+  "default_difficulty": 2,
+  "difficulty_overrides": {
+    "2": {
+      "mode": {
+        "values": [
+          "exponential_system"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "exponential_substitution_system"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "exponential_system": {
+      "uses": [
+        "base",
+        "m",
+        "n"
+      ],
+      "constraints": [
+        "m < n"
+      ],
+      "question": {
+        "instruction": "Solve the system of exponential inequalities",
+        "latex": "\\begin{{cases}} {base}^x>{base}^{{{m}}} \\\\ {base}^x\\le {base}^{{{n}}} \\end{{cases}}"
+      }
+    },
+    "exponential_substitution_system": {
+      "uses": [
+        "base",
+        "m",
+        "n"
+      ],
+      "constraints": [
+        "m < n"
+      ],
+      "derived": {
+        "sum_t": "base**m+base**n",
+        "product_t": "base**(m+n)"
+      },
+      "question": {
+        "instruction": "Solve the system using the substitution t=a^x",
+        "latex": "\\begin{{cases}} {base}^{{2x}}-{sum_t}\\cdot {base}^x+{product_t}\\le0 \\\\ {base}^x>{base}^{{{m}}} \\end{{cases}}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "exponential_system": "Intersection(Interval.open(m,oo),Interval(-oo,n))",
+      "exponential_substitution_system": "Intersection(Interval.open(m,oo),Interval(m,n))"
+    }
+  },
+  "answer_render": {
+    "exponential_system": "interval",
+    "exponential_substitution_system": "interval"
+  },
+  "distractors": {
+    "exponential_system": [
+      {
+        "id": "closed_left",
+        "transform": "Interval(m,n)"
+      },
+      {
+        "id": "open_both",
+        "transform": "Interval.open(m,n)"
+      },
+      {
+        "id": "outside",
+        "transform": "Union(Interval.open(-oo,m),Interval.open(n,oo))"
+      },
+      {
+        "id": "left_only",
+        "transform": "Interval.open(m,oo)"
+      },
+      {
+        "id": "right_only",
+        "transform": "Interval(-oo,n)"
+      },
+      {
+        "id": "powers_as_bounds",
+        "transform": "Interval.open(base**m,base**n)"
+      }
+    ],
+    "exponential_substitution_system": [
+      {
+        "id": "closed_both",
+        "transform": "Interval(m,n)"
+      },
+      {
+        "id": "open_both",
+        "transform": "Interval.open(m,n)"
+      },
+      {
+        "id": "outside_quadratic",
+        "transform": "Union(Interval.open(-oo,m),Interval.open(n,oo))"
+      },
+      {
+        "id": "t_values_as_x",
+        "transform": "Interval.open(base**m,base**n)"
+      },
+      {
+        "id": "left_only",
+        "transform": "Interval.open(m,oo)"
+      },
+      {
+        "id": "right_only",
+        "transform": "Interval(-oo,n)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "interval_equivalence": true,
+    "tuple_equivalence": true,
+    "ordered_pairs": true,
+    "respect_open_closed_boundaries": true,
+    "respect_rational_domain": true,
+    "respect_log_domain": true,
+    "reject_undefined_choices": true,
+    "exact_answers_only": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}
