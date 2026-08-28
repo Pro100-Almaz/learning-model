@@ -1,0 +1,270 @@
+{
+  "topic": "ubt_triangle_properties",
+  "parent_topic": "planimetry_geometric_figures",
+  "parent_topic_number": 14,
+  "display_name": "Planimetry — triangle properties",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 14",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 14. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Планиметрия",
+    "slug": "planimetriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "triangle_angle_sum",
+        "isosceles_base_angle",
+        "triangle_exterior_angle",
+        "centroid_median_ratio"
+      ],
+      "desc": "question structure"
+    },
+    "angle": {
+      "type": "int",
+      "min": 20,
+      "max": 160
+    },
+    "angle2": {
+      "type": "int",
+      "min": 20,
+      "max": 120
+    },
+    "vertex_angle": {
+      "type": "choice",
+      "values": [
+        20,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        100
+      ]
+    },
+    "median_total": {
+      "type": "choice",
+      "values": [
+        6,
+        9,
+        12,
+        15,
+        18,
+        21
+      ]
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "triangle_angle_sum",
+          "isosceles_base_angle"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "triangle_exterior_angle"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "centroid_median_ratio"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "triangle_angle_sum": {
+      "uses": [
+        "angle",
+        "angle2"
+      ],
+      "constraints": [
+        "angle + angle2 < 180"
+      ],
+      "question": {
+        "instruction": "Find the third angle of the triangle.",
+        "latex": "\\angle A={angle}^\\circ,\\qquad \\angle B={angle2}^\\circ"
+      }
+    },
+    "isosceles_base_angle": {
+      "uses": [
+        "vertex_angle"
+      ],
+      "question": {
+        "instruction": "An isosceles triangle has the given vertex angle. Find each base angle.",
+        "latex": "\\angle A={vertex_angle}^\\circ,\\qquad AB=AC"
+      }
+    },
+    "triangle_exterior_angle": {
+      "uses": [
+        "angle",
+        "angle2"
+      ],
+      "constraints": [
+        "angle + angle2 < 180"
+      ],
+      "question": {
+        "instruction": "Find the exterior angle of the triangle at the third vertex.",
+        "latex": "\\angle A={angle}^\\circ,\\qquad \\angle B={angle2}^\\circ"
+      }
+    },
+    "centroid_median_ratio": {
+      "uses": [
+        "median_total"
+      ],
+      "question": {
+        "instruction": "The centroid divides a median in the ratio 2:1 from the vertex. Find the distance from the vertex to the centroid.",
+        "latex": "m={median_total}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "triangle_angle_sum": "180-angle-angle2",
+      "isosceles_base_angle": "Rational(180-vertex_angle,2)",
+      "triangle_exterior_angle": "angle+angle2",
+      "centroid_median_ratio": "Rational(2*median_total,3)"
+    }
+  },
+  "answer_render": {
+    "triangle_angle_sum": "degrees",
+    "isosceles_base_angle": "degrees",
+    "triangle_exterior_angle": "degrees",
+    "centroid_median_ratio": "exact_number"
+  },
+  "distractors": {
+    "triangle_angle_sum": [
+      {
+        "id": "sum_given",
+        "transform": "angle+angle2"
+      },
+      {
+        "id": "use_90",
+        "transform": "90-angle-angle2"
+      },
+      {
+        "id": "omit_angle2",
+        "transform": "180-angle"
+      },
+      {
+        "id": "omit_angle",
+        "transform": "180-angle2"
+      },
+      {
+        "id": "half_remaining",
+        "transform": "Rational(180-angle-angle2,2)"
+      },
+      {
+        "id": "difference",
+        "transform": "abs(angle-angle2)"
+      }
+    ],
+    "isosceles_base_angle": [
+      {
+        "id": "forget_half",
+        "transform": "180-vertex_angle"
+      },
+      {
+        "id": "same_vertex",
+        "transform": "vertex_angle"
+      },
+      {
+        "id": "half_vertex",
+        "transform": "Rational(vertex_angle,2)"
+      },
+      {
+        "id": "use_90",
+        "transform": "90-vertex_angle"
+      },
+      {
+        "id": "complement_half",
+        "transform": "90-Rational(vertex_angle,2)"
+      },
+      {
+        "id": "double_subtract",
+        "transform": "180-2*vertex_angle"
+      }
+    ],
+    "triangle_exterior_angle": [
+      {
+        "id": "remaining_interior",
+        "transform": "180-angle-angle2"
+      },
+      {
+        "id": "difference",
+        "transform": "abs(angle-angle2)"
+      },
+      {
+        "id": "first_remote",
+        "transform": "angle"
+      },
+      {
+        "id": "second_remote",
+        "transform": "angle2"
+      },
+      {
+        "id": "half_sum",
+        "transform": "Rational(angle+angle2,2)"
+      },
+      {
+        "id": "supplement_first",
+        "transform": "180-angle"
+      }
+    ],
+    "centroid_median_ratio": [
+      {
+        "id": "one_third",
+        "transform": "Rational(median_total,3)"
+      },
+      {
+        "id": "half",
+        "transform": "Rational(median_total,2)"
+      },
+      {
+        "id": "full",
+        "transform": "median_total"
+      },
+      {
+        "id": "three_halves",
+        "transform": "Rational(3*median_total,2)"
+      },
+      {
+        "id": "two_fifths",
+        "transform": "Rational(2*median_total,5)"
+      },
+      {
+        "id": "three_quarters",
+        "transform": "Rational(3*median_total,4)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "angle_range_validation": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

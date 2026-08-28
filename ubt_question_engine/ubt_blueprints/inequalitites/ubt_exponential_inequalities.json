@@ -1,0 +1,194 @@
+{
+  "topic": "ubt_exponential_inequalities",
+  "parent_topic": "inequalities",
+  "parent_topic_number": 10,
+  "display_name": "Exponential inequalities",
+  "curriculum_ref": "KZ 2026 UBT — Inequalities — Topic 10",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 10. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Теңсіздіктер",
+    "slug": "tensizdikter"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "exponential_same_base",
+        "exponential_quadratic_substitution"
+      ],
+      "desc": "question structure"
+    },
+    "base": {
+      "type": "choice",
+      "values": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "solution": {
+      "type": "int",
+      "min": -6,
+      "max": 6
+    },
+    "shift": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    },
+    "u": {
+      "type": "int",
+      "min": -3,
+      "max": 2
+    },
+    "v": {
+      "type": "int",
+      "min": 1,
+      "max": 5
+    }
+  },
+  "supported_difficulties": [
+    1,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "exponential_same_base"
+        ]
+      },
+      "solution": {
+        "min": -4,
+        "max": 4
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "exponential_quadratic_substitution"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "exponential_same_base": {
+      "uses": [
+        "base",
+        "solution",
+        "shift"
+      ],
+      "derived": {
+        "target_power": "solution+shift"
+      },
+      "question": {
+        "instruction": "Solve the exponential inequality",
+        "latex": "{base}^{{x{shift:+d}}}>{base}^{{{target_power}}}"
+      }
+    },
+    "exponential_quadratic_substitution": {
+      "uses": [
+        "base",
+        "u",
+        "v"
+      ],
+      "constraints": [
+        "u < v"
+      ],
+      "derived": {
+        "sum_t": "base**u+base**v",
+        "product_t": "base**(u+v)"
+      },
+      "question": {
+        "instruction": "Solve the exponential inequality using a substitution",
+        "latex": "{base}^{{2x}}-{sum_t}\\cdot {base}^x+{product_t}<0"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "exponential_same_base": "Interval.open(solution,oo)",
+      "exponential_quadratic_substitution": "Interval.open(u,v)"
+    }
+  },
+  "answer_render": {
+    "exponential_same_base": "interval",
+    "exponential_quadratic_substitution": "interval"
+  },
+  "distractors": {
+    "exponential_same_base": [
+      {
+        "id": "reverse_direction",
+        "transform": "Interval.open(-oo,solution)"
+      },
+      {
+        "id": "include_boundary",
+        "transform": "Interval(solution,oo)"
+      },
+      {
+        "id": "ignore_shift",
+        "transform": "Interval.open(solution+shift,oo)"
+      },
+      {
+        "id": "subtract_shift_twice",
+        "transform": "Interval.open(solution-shift,oo)"
+      },
+      {
+        "id": "negate_solution",
+        "transform": "Interval.open(-solution,oo)"
+      },
+      {
+        "id": "plus_one",
+        "transform": "Interval.open(solution+1,oo)"
+      }
+    ],
+    "exponential_quadratic_substitution": [
+      {
+        "id": "outside_exponents",
+        "transform": "Union(Interval.open(-oo,u),Interval.open(v,oo))"
+      },
+      {
+        "id": "include_endpoints",
+        "transform": "Interval(u,v)"
+      },
+      {
+        "id": "t_values_as_x",
+        "transform": "Interval.open(base**u,base**v)"
+      },
+      {
+        "id": "negate_bounds",
+        "transform": "Interval.open(-v,-u)"
+      },
+      {
+        "id": "left_only",
+        "transform": "Interval.open(-oo,u)"
+      },
+      {
+        "id": "right_only",
+        "transform": "Interval.open(v,oo)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "interval_equivalence": true,
+    "respect_open_closed_boundaries": true,
+    "respect_rational_domain": true,
+    "respect_radical_domain": true,
+    "respect_log_domain": true,
+    "trigonometric_interval_check": true,
+    "reject_undefined_choices": true,
+    "exact_answers_only": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

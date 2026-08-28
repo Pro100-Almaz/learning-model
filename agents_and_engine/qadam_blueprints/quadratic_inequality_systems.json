@@ -1,0 +1,337 @@
+{
+  "topic": "quadratic_inequality_systems",
+  "display_name": "Квадрат теңсіздіктер жүйесін шешу",
+  "curriculum_ref": "8 сынып — Квадрат теңсіздіктер жүйесі",
+  "constraints_template": "quadratic_inequality_systems.j2",
+  "_comment": "Генеративті blueprint: видеодағы дайын теңсіздіктер сақталмайды. Жүйе кері бағытта құрылады: алдымен жеке теңсіздіктердің түбірлері және олардың шешім аймақтарының өзара орналасуы таңдалады, содан кейін квадрат үшмүшелердің коэффициенттері есептеледі. Соңғы жауап екі теңсіздік шешімдерінің қиылысуы ретінде беріледі. Жоғары деңгейде x^2<m түріндегі иррационал шекаралары бар жүйе де генерацияланады.",
+  "tag": {
+    "name": "Квадрат теңсіздіктер жүйесі",
+    "slug": "quadratic-inequality-systems"
+  },
+  "default_difficulty": 2,
+  "parameters": {
+    "structure": {
+      "type": "string",
+      "options": [
+        "inside_inside",
+        "outside_inside_right",
+        "inside_outside_left",
+        "outside_outside",
+        "symmetric_surd_band"
+      ],
+      "desc": "Екі жеке теңсіздік шешімдерінің өзара орналасу түрі"
+    },
+    "boundary_1": {
+      "type": "string",
+      "options": [
+        "strict",
+        "non_strict"
+      ],
+      "desc": "Бірінші теңсіздік түбірлерінің жауапқа кіретін-кірмейтінін басқарады"
+    },
+    "boundary_2": {
+      "type": "string",
+      "options": [
+        "strict",
+        "non_strict"
+      ],
+      "desc": "Екінші теңсіздік түбірлерінің жауапқа кіретін-кірмейтінін басқарады"
+    },
+    "a1": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "Бірінші квадрат үшмүшенің оң жетекші коэффициенті"
+    },
+    "a2": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "Екінші квадрат үшмүшенің оң жетекші коэффициенті"
+    },
+    "anchor": {
+      "type": "integer",
+      "options": [
+        -8,
+        -7,
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        0,
+        1,
+        2
+      ],
+      "desc": "Иррационал емес тармақтардағы ең сол жақ шекара p1"
+    },
+    "gap_1": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "p2-p1 оң айырмасы"
+    },
+    "gap_2": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "p3-p2 оң айырмасы"
+    },
+    "gap_3": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "p4-p3 оң айырмасы"
+    },
+    "surd_k": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "Иррационал тармақтағы ішкі симметриялы шекаралар ±k"
+    },
+    "surd_offset": {
+      "type": "integer",
+      "options": [
+        1,
+        2
+      ],
+      "desc": "m=k^2+surd_offset; оң ығысу m-нің квадрат сан болмауын және sqrt(m)>k болуын қамтамасыз етеді"
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "structure": {
+        "options": [
+          "inside_inside"
+        ]
+      },
+      "boundary_1": {
+        "options": [
+          "strict"
+        ]
+      },
+      "boundary_2": {
+        "options": [
+          "strict"
+        ]
+      },
+      "a1": {
+        "options": [
+          1
+        ]
+      },
+      "a2": {
+        "options": [
+          1
+        ]
+      },
+      "anchor": {
+        "options": [
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "gap_2": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "gap_3": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "2": {
+      "structure": {
+        "options": [
+          "inside_inside",
+          "outside_inside_right",
+          "inside_outside_left"
+        ]
+      },
+      "boundary_1": {
+        "options": [
+          "strict",
+          "non_strict"
+        ]
+      },
+      "boundary_2": {
+        "options": [
+          "strict",
+          "non_strict"
+        ]
+      },
+      "a1": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "a2": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "3": {
+      "structure": {
+        "options": [
+          "outside_outside",
+          "symmetric_surd_band",
+          "outside_inside_right",
+          "inside_outside_left"
+        ]
+      },
+      "boundary_1": {
+        "options": [
+          "strict",
+          "non_strict"
+        ]
+      },
+      "boundary_2": {
+        "options": [
+          "strict",
+          "non_strict"
+        ]
+      },
+      "a1": {
+        "options": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "a2": {
+        "options": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "surd_k": {
+        "options": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "surd_offset": {
+        "options": [
+          1,
+          2
+        ]
+      }
+    }
+  },
+  "derived": {
+    "anchor": "anchor if structure != 'symmetric_surd_band' else 0",
+    "gap_1": "gap_1 if structure != 'symmetric_surd_band' else 0",
+    "gap_2": "gap_2 if structure != 'symmetric_surd_band' else 0",
+    "gap_3": "gap_3 if structure != 'symmetric_surd_band' else 0",
+    "surd_k": "surd_k if structure == 'symmetric_surd_band' else 0",
+    "surd_offset": "surd_offset if structure == 'symmetric_surd_band' else 0",
+    "a2": "1 if structure == 'symmetric_surd_band' else a2",
+    "p1": "anchor",
+    "p2": "anchor + gap_1",
+    "p3": "anchor + gap_1 + gap_2",
+    "p4": "anchor + gap_1 + gap_2 + gap_3",
+    "surd_m": "surd_k**2 + surd_offset",
+    "b1": "-a1 * (p1 + p3) if structure != 'symmetric_surd_band' else 0",
+    "c1": "a1 * p1 * p3 if structure != 'symmetric_surd_band' else -a1 * surd_k**2",
+    "b2": "-a2 * (p2 + p4) if structure != 'symmetric_surd_band' else 0",
+    "c2": "a2 * p2 * p4 if structure != 'symmetric_surd_band' else -surd_m",
+    "relation_1": "('<=' if boundary_1 == 'non_strict' else '<') if structure in ['inside_inside', 'inside_outside_left'] else ('>=' if boundary_1 == 'non_strict' else '>')",
+    "relation_2": "('>=' if boundary_2 == 'non_strict' else '>') if structure in ['inside_outside_left', 'outside_outside'] else ('<=' if boundary_2 == 'non_strict' else '<')",
+    "relation_1_latex": "'\\\\le' if relation_1 == '<=' else ('\\\\ge' if relation_1 == '>=' else relation_1)",
+    "relation_2_latex": "'\\\\le' if relation_2 == '<=' else ('\\\\ge' if relation_2 == '>=' else relation_2)"
+  },
+  "constraints": [],
+  "integer_clean": true,
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% if structure == 'inside_inside' %}${% if boundary_2 == 'non_strict' %}[{% else %}({% endif %}{{ p2 }};{{ p3 }}{% if boundary_1 == 'non_strict' %}]{% else %}){% endif %}${% elif structure == 'outside_inside_right' %}${% if boundary_1 == 'non_strict' %}[{% else %}({% endif %}{{ p3 }};{{ p4 }}{% if boundary_2 == 'non_strict' %}]{% else %}){% endif %}${% elif structure == 'inside_outside_left' %}${% if boundary_1 == 'non_strict' %}[{% else %}({% endif %}{{ p1 }};{{ p2 }}{% if boundary_2 == 'non_strict' %}]{% else %}){% endif %}${% elif structure == 'outside_outside' %}$(-\\infty;{{ p1 }}{% if boundary_1 == 'non_strict' %}]{% else %}){% endif %}\\cup{% if boundary_2 == 'non_strict' %}[{% else %}({% endif %}{{ p4 }};+\\infty)${% else %}${% if boundary_2 == 'non_strict' %}[{% else %}({% endif %}-\\sqrt{ {{ surd_m }} };-{{ surd_k }}{% if boundary_1 == 'non_strict' %}]{% else %}){% endif %}\\cup{% if boundary_1 == 'non_strict' %}[{% else %}({% endif %}{{ surd_k }};\\sqrt{ {{ surd_m }} }{% if boundary_2 == 'non_strict' %}]{% else %}){% endif %}${% endif %}",
+    "desc": "Әр квадрат теңсіздік жеке шешіледі; жүйенің жауабы — олардың шешім жиындарының қиылысуы."
+  },
+  "distractors": [
+    {
+      "id": "union_instead_of_intersection",
+      "desc": "Жүйеде екі шешім жиынын қиылыстырудың орнына біріктірді.",
+      "transform": {
+        "correct": "{% if structure == 'inside_inside' %}${% if boundary_1 == 'non_strict' %}[{% else %}({% endif %}{{ p1 }};{{ p4 }}{% if boundary_2 == 'non_strict' %}]{% else %}){% endif %}${% elif structure == 'outside_inside_right' %}$(-\\infty;{{ p1 }}{% if boundary_1 == 'non_strict' %}]{% else %}){% endif %}\\cup{% if boundary_2 == 'non_strict' %}[{% else %}({% endif %}{{ p2 }};+\\infty)${% elif structure == 'inside_outside_left' %}$(-\\infty;{{ p3 }}{% if boundary_1 == 'non_strict' %}]{% else %}){% endif %}\\cup{% if boundary_2 == 'non_strict' %}[{% else %}({% endif %}{{ p4 }};+\\infty)${% elif structure == 'outside_outside' %}$(-\\infty;{{ p2 }}{% if boundary_2 == 'non_strict' %}]{% else %}){% endif %}\\cup{% if boundary_1 == 'non_strict' %}[{% else %}({% endif %}{{ p3 }};+\\infty)${% else %}$(-\\infty;+\\infty)${% endif %}"
+      }
+    },
+    {
+      "id": "used_only_first_inequality",
+      "desc": "Бірінші квадрат теңсіздікті ғана шешіп, екінші шартты елемеді.",
+      "transform": {
+        "correct": "{% if structure == 'symmetric_surd_band' %}$(-\\infty;-{{ surd_k }}{% if boundary_1 == 'non_strict' %}]{% else %}){% endif %}\\cup{% if boundary_1 == 'non_strict' %}[{% else %}({% endif %}{{ surd_k }};+\\infty)${% elif structure in ['inside_inside', 'inside_outside_left'] %}${% if boundary_1 == 'non_strict' %}[{% else %}({% endif %}{{ p1 }};{{ p3 }}{% if boundary_1 == 'non_strict' %}]{% else %}){% endif %}${% else %}$(-\\infty;{{ p1 }}{% if boundary_1 == 'non_strict' %}]{% else %}){% endif %}\\cup{% if boundary_1 == 'non_strict' %}[{% else %}({% endif %}{{ p3 }};+\\infty)${% endif %}"
+      }
+    },
+    {
+      "id": "used_only_second_inequality",
+      "desc": "Екінші квадрат теңсіздікті ғана шешіп, бірінші шартты елемеді.",
+      "transform": {
+        "correct": "{% if structure == 'symmetric_surd_band' %}${% if boundary_2 == 'non_strict' %}[{% else %}({% endif %}-\\sqrt{ {{ surd_m }} };\\sqrt{ {{ surd_m }} }{% if boundary_2 == 'non_strict' %}]{% else %}){% endif %}${% elif structure in ['inside_inside', 'outside_inside_right'] %}${% if boundary_2 == 'non_strict' %}[{% else %}({% endif %}{{ p2 }};{{ p4 }}{% if boundary_2 == 'non_strict' %}]{% else %}){% endif %}${% else %}$(-\\infty;{{ p2 }}{% if boundary_2 == 'non_strict' %}]{% else %}){% endif %}\\cup{% if boundary_2 == 'non_strict' %}[{% else %}({% endif %}{{ p4 }};+\\infty)${% endif %}"
+      }
+    }
+  ],
+  "_dropped_distractors": [
+    {
+      "id": "stopped_after_drawing_two_number_lines",
+      "why_dropped": "Екі жеке шешімді сан түзулерінде белгілеп, бірақ қиылысын таппай тоқтау бір ғана анық қате жауап бермейді; бұл determinate емес dead-end қате."
+    }
+  ],
+  "narrative_settings": [
+    "екі түрлі қауіпсіздік шартын бір уақытта қанағаттандыратын параметр мәндерін табу",
+    "екі экономикалық шектеу қатар орындалатын мәндер аралығын анықтау",
+    "екі геометриялық шарттың ортақ шешімдер жиынын табу"
+  ]
+}

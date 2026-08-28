@@ -1,0 +1,352 @@
+{
+  "topic": "ubt_coordinate_geometry",
+  "parent_topic": "planimetry_metric_relations_vectors_transformations",
+  "parent_topic_number": 15,
+  "display_name": "Coordinate geometry in the plane",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 15",
+  "_comment": "Deterministic Topic 15 generator. Python/SymPy owns parameter generation, mathematics, validation and distractor filtering. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Метрикалық қатыстар және векторлар",
+    "slug": "metrikalyk-katystar-vektorlar"
+  },
+  "expression_language": "sympy",
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "distance_two_points",
+        "midpoint",
+        "section_point",
+        "circle_center_radius",
+        "line_through_two_points"
+      ]
+    },
+    "x1": {
+      "type": "int",
+      "min": -6,
+      "max": 6
+    },
+    "y1": {
+      "type": "int",
+      "min": -6,
+      "max": 6
+    },
+    "scale": {
+      "type": "int",
+      "min": 1,
+      "max": 4
+    },
+    "ratio_m": {
+      "type": "int",
+      "min": 1,
+      "max": 4
+    },
+    "ratio_n": {
+      "type": "int",
+      "min": 1,
+      "max": 4
+    },
+    "cx": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    },
+    "cy": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    },
+    "radius": {
+      "type": "int",
+      "min": 1,
+      "max": 8
+    },
+    "slope": {
+      "type": "int",
+      "min": -4,
+      "max": 4
+    },
+    "dx": {
+      "type": "int",
+      "min": 1,
+      "max": 4
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "distance_two_points",
+          "midpoint"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "section_point",
+          "circle_center_radius"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "line_through_two_points"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "distance_two_points": {
+      "uses": [
+        "x1",
+        "y1",
+        "scale"
+      ],
+      "derived": {
+        "x2": "x1+3*scale",
+        "y2": "y1+4*scale"
+      },
+      "question": {
+        "instruction": "Find the distance between the two points.",
+        "latex": "A({x1},{y1}),\\qquad B({x2},{y2})"
+      }
+    },
+    "midpoint": {
+      "uses": [
+        "x1",
+        "y1",
+        "scale"
+      ],
+      "derived": {
+        "x2": "x1+2*scale",
+        "y2": "y1+4*scale"
+      },
+      "question": {
+        "instruction": "Find the midpoint of the segment.",
+        "latex": "A({x1},{y1}),\\qquad B({x2},{y2})"
+      }
+    },
+    "section_point": {
+      "uses": [
+        "x1",
+        "y1",
+        "ratio_m",
+        "ratio_n"
+      ],
+      "derived": {
+        "x2": "x1+ratio_m+ratio_n",
+        "y2": "y1+2*(ratio_m+ratio_n)"
+      },
+      "question": {
+        "instruction": "Point P divides AB internally in the ratio AP:PB=m:n. Find P.",
+        "latex": "A({x1},{y1}),\\ B({x2},{y2}),\\qquad AP:PB={ratio_m}:{ratio_n}"
+      }
+    },
+    "circle_center_radius": {
+      "uses": [
+        "cx",
+        "cy",
+        "radius"
+      ],
+      "derived": {
+        "neg_cx": "-cx",
+        "neg_cy": "-cy",
+        "r2": "radius**2"
+      },
+      "question": {
+        "instruction": "Find the center and radius of the circle.",
+        "latex": "(x{neg_cx:+d})^2+(y{neg_cy:+d})^2={r2}"
+      }
+    },
+    "line_through_two_points": {
+      "uses": [
+        "x1",
+        "y1",
+        "slope",
+        "dx"
+      ],
+      "constraints": [
+        "slope != 0"
+      ],
+      "derived": {
+        "x2": "x1+dx",
+        "y2": "y1+slope*dx",
+        "intercept": "y1-slope*x1"
+      },
+      "question": {
+        "instruction": "Find the equation of the line through the two points.",
+        "latex": "A({x1},{y1}),\\qquad B({x2},{y2})"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "distance_two_points": "5*scale",
+      "midpoint": "Tuple(x1+scale,y1+2*scale)",
+      "section_point": "Tuple(x1+ratio_m,y1+2*ratio_m)",
+      "circle_center_radius": "Tuple(cx,cy,radius)",
+      "line_through_two_points": "slope*x+(y1-slope*x1)"
+    }
+  },
+  "answer_render": {
+    "distance_two_points": "exact_number",
+    "midpoint": "ordered_pair",
+    "section_point": "ordered_pair",
+    "circle_center_radius": "center_radius",
+    "line_through_two_points": "linear_equation"
+  },
+  "distractors": {
+    "distance_two_points": [
+      {
+        "id": "manhattan",
+        "transform": "7*scale"
+      },
+      {
+        "id": "three",
+        "transform": "3*scale"
+      },
+      {
+        "id": "four",
+        "transform": "4*scale"
+      },
+      {
+        "id": "square",
+        "transform": "25*scale**2"
+      },
+      {
+        "id": "difference",
+        "transform": "scale"
+      },
+      {
+        "id": "six",
+        "transform": "6*scale"
+      }
+    ],
+    "midpoint": [
+      {
+        "id": "first",
+        "transform": "Tuple(x1,y1)"
+      },
+      {
+        "id": "second",
+        "transform": "Tuple(x1+2*scale,y1+4*scale)"
+      },
+      {
+        "id": "swap",
+        "transform": "Tuple(y1+2*scale,x1+scale)"
+      },
+      {
+        "id": "wrong_x",
+        "transform": "Tuple(x1+2*scale,y1+2*scale)"
+      },
+      {
+        "id": "wrong_y",
+        "transform": "Tuple(x1+scale,y1+4*scale)"
+      },
+      {
+        "id": "sum",
+        "transform": "Tuple(2*x1+2*scale,2*y1+4*scale)"
+      }
+    ],
+    "section_point": [
+      {
+        "id": "reverse_ratio",
+        "transform": "Tuple(x1+ratio_n,y1+2*ratio_n)"
+      },
+      {
+        "id": "midpoint",
+        "transform": "Tuple(x1+Rational(ratio_m+ratio_n,2),y1+ratio_m+ratio_n)"
+      },
+      {
+        "id": "first",
+        "transform": "Tuple(x1,y1)"
+      },
+      {
+        "id": "second",
+        "transform": "Tuple(x1+ratio_m+ratio_n,y1+2*(ratio_m+ratio_n))"
+      },
+      {
+        "id": "x_only",
+        "transform": "Tuple(x1+ratio_m,y1)"
+      },
+      {
+        "id": "y_only",
+        "transform": "Tuple(x1,y1+2*ratio_m)"
+      }
+    ],
+    "circle_center_radius": [
+      {
+        "id": "neg_center",
+        "transform": "Tuple(-cx,-cy,radius)"
+      },
+      {
+        "id": "swap",
+        "transform": "Tuple(cy,cx,radius)"
+      },
+      {
+        "id": "radius_squared",
+        "transform": "Tuple(cx,cy,radius**2)"
+      },
+      {
+        "id": "zero_center",
+        "transform": "Tuple(0,0,radius)"
+      },
+      {
+        "id": "neg_x",
+        "transform": "Tuple(-cx,cy,radius)"
+      },
+      {
+        "id": "neg_y",
+        "transform": "Tuple(cx,-cy,radius)"
+      }
+    ],
+    "line_through_two_points": [
+      {
+        "id": "neg_slope",
+        "transform": "-slope*x+(y1+slope*x1)"
+      },
+      {
+        "id": "through_origin",
+        "transform": "slope*x"
+      },
+      {
+        "id": "wrong_intercept",
+        "transform": "slope*x+y1"
+      },
+      {
+        "id": "swap_slope",
+        "transform": "Rational(1,slope)*x+(y1-Rational(x1,slope))"
+      },
+      {
+        "id": "horizontal",
+        "transform": "y1"
+      },
+      {
+        "id": "shifted",
+        "transform": "slope*x+(y1-slope*x1)+1"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true,
+    "tuple_equivalence": true,
+    "coordinate_validation": true
+  },
+  "constraints_template": "ubt_question.j2"
+}

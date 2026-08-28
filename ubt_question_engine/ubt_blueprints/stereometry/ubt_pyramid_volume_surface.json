@@ -1,0 +1,365 @@
+{
+  "topic": "ubt_pyramid_volume_surface",
+  "parent_topic": "stereometry_geometric_figures",
+  "parent_topic_number": 16,
+  "display_name": "Stereometry — pyramids and frustums: volume and surface area",
+  "curriculum_ref": "KZ 2026 UBT — Stereometry — Pyramids",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Replaces the counting-trivia generator that asked how many edges an n-gonal pyramid has. The one-third factor is the mistake this family exists to test, so every mode carries a distractor that omits it. Python/SymPy owns generation, mathematics, validation and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Стереометрия",
+    "slug": "stereometriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "square_pyramid_volume",
+        "pyramid_volume_from_base_area",
+        "regular_pyramid_lateral_area",
+        "square_pyramid_slant_height",
+        "regular_tetrahedron_volume",
+        "pyramid_frustum_volume"
+      ],
+      "desc": "question structure"
+    },
+    "a": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "b": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "height": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "base_area": {
+      "type": "choice",
+      "values": [
+        12,
+        18,
+        24,
+        30,
+        36,
+        45,
+        48,
+        60
+      ]
+    },
+    "apothem": {
+      "type": "int",
+      "min": 3,
+      "max": 12
+    },
+    "edge": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "n": {
+      "type": "choice",
+      "values": [
+        3,
+        4,
+        6
+      ],
+      "desc": "number of sides of the regular base"
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "square_pyramid_volume",
+          "pyramid_volume_from_base_area"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "regular_pyramid_lateral_area",
+          "square_pyramid_slant_height"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "regular_tetrahedron_volume",
+          "pyramid_frustum_volume"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "square_pyramid_volume": {
+      "uses": [
+        "a",
+        "height"
+      ],
+      "question": {
+        "instruction": "A pyramid has a square base with the given side and the given height. Find its volume.",
+        "latex": "a={a},\\qquad h={height}"
+      }
+    },
+    "pyramid_volume_from_base_area": {
+      "uses": [
+        "base_area",
+        "height"
+      ],
+      "question": {
+        "instruction": "A pyramid has the given base area and height. Find its volume.",
+        "latex": "S_{{\\text{{base}}}}={base_area},\\qquad h={height}"
+      }
+    },
+    "regular_pyramid_lateral_area": {
+      "uses": [
+        "n",
+        "a",
+        "apothem"
+      ],
+      "comment": "Apothem here is the slant height of a lateral face, which is what the lateral-area formula needs; the pyramid's own height is deliberately absent so the student cannot substitute it.",
+      "question": {
+        "instruction": "A regular pyramid has a base with n equal sides and the given slant height of a lateral face. Find its lateral surface area.",
+        "latex": "n={n},\\qquad a={a},\\qquad m={apothem}"
+      }
+    },
+    "square_pyramid_slant_height": {
+      "uses": [
+        "a",
+        "height"
+      ],
+      "question": {
+        "instruction": "A regular pyramid has a square base with the given side and the given height. Find the slant height of a lateral face.",
+        "latex": "a={a},\\qquad h={height}"
+      }
+    },
+    "regular_tetrahedron_volume": {
+      "uses": [
+        "edge"
+      ],
+      "question": {
+        "instruction": "Find the volume of the regular tetrahedron with the given edge.",
+        "latex": "a={edge}"
+      }
+    },
+    "pyramid_frustum_volume": {
+      "uses": [
+        "a",
+        "b",
+        "height"
+      ],
+      "comment": "Equal bases would make the frustum a prism and collapse the correct answer onto the prism-formula distractor.",
+      "constraints": [
+        "a != b"
+      ],
+      "question": {
+        "instruction": "A frustum of a pyramid has square bases with the given sides and the given height. Find its volume.",
+        "latex": "a={a},\\qquad b={b},\\qquad h={height}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "square_pyramid_volume": "a**2*height/3",
+      "pyramid_volume_from_base_area": "base_area*height/3",
+      "regular_pyramid_lateral_area": "n*a*apothem/2",
+      "square_pyramid_slant_height": "sqrt(height**2+(a/2)**2)",
+      "regular_tetrahedron_volume": "edge**3*sqrt(2)/12",
+      "pyramid_frustum_volume": "height*(a**2+b**2+a*b)/3"
+    }
+  },
+  "answer_render": {
+    "square_pyramid_volume": "scalar",
+    "pyramid_volume_from_base_area": "scalar",
+    "regular_pyramid_lateral_area": "scalar",
+    "square_pyramid_slant_height": "exact_expression",
+    "regular_tetrahedron_volume": "exact_expression",
+    "pyramid_frustum_volume": "scalar"
+  },
+  "distractors": {
+    "square_pyramid_volume": [
+      {
+        "id": "forgot_the_one_third",
+        "transform": "a**2*height"
+      },
+      {
+        "id": "halved_instead_of_thirded",
+        "transform": "a**2*height/2"
+      },
+      {
+        "id": "base_area_only",
+        "transform": "a**2"
+      },
+      {
+        "id": "edge_instead_of_base_area",
+        "transform": "a*height/3"
+      },
+      {
+        "id": "divided_height_by_three_and_squared_it",
+        "transform": "a**2*height**2/3"
+      },
+      {
+        "id": "sum_instead_of_product",
+        "transform": "(a**2+height)/3"
+      }
+    ],
+    "pyramid_volume_from_base_area": [
+      {
+        "id": "forgot_the_one_third",
+        "transform": "base_area*height"
+      },
+      {
+        "id": "halved_instead_of_thirded",
+        "transform": "base_area*height/2"
+      },
+      {
+        "id": "thirded_twice",
+        "transform": "base_area*height/9"
+      },
+      {
+        "id": "base_area_only",
+        "transform": "base_area"
+      },
+      {
+        "id": "sum_instead_of_product",
+        "transform": "(base_area+height)/3"
+      },
+      {
+        "id": "tripled_instead_of_thirded",
+        "transform": "3*base_area*height"
+      }
+    ],
+    "regular_pyramid_lateral_area": [
+      {
+        "id": "forgot_the_one_half",
+        "transform": "n*a*apothem"
+      },
+      {
+        "id": "single_lateral_face",
+        "transform": "a*apothem/2"
+      },
+      {
+        "id": "base_perimeter_only",
+        "transform": "n*a"
+      },
+      {
+        "id": "used_one_third_as_for_volume",
+        "transform": "n*a*apothem/3"
+      },
+      {
+        "id": "missed_one_face",
+        "transform": "(n-1)*a*apothem/2"
+      },
+      {
+        "id": "apothem_squared",
+        "transform": "n*a*apothem**2/2"
+      }
+    ],
+    "square_pyramid_slant_height": [
+      {
+        "id": "used_full_side_not_half",
+        "transform": "sqrt(height**2+a**2)"
+      },
+      {
+        "id": "subtracted_instead_of_added",
+        "transform": "sqrt(height**2-(a/2)**2)"
+      },
+      {
+        "id": "forgot_the_square_root",
+        "transform": "height**2+(a/2)**2"
+      },
+      {
+        "id": "added_the_lengths",
+        "transform": "height+a/2"
+      },
+      {
+        "id": "height_taken_as_slant_height",
+        "transform": "height"
+      },
+      {
+        "id": "root_of_the_sum",
+        "transform": "sqrt(height+a/2)"
+      }
+    ],
+    "regular_tetrahedron_volume": [
+      {
+        "id": "used_cube_volume",
+        "transform": "edge**3"
+      },
+      {
+        "id": "forgot_root_two",
+        "transform": "edge**3/12"
+      },
+      {
+        "id": "used_six_instead_of_twelve",
+        "transform": "edge**3*sqrt(2)/6"
+      },
+      {
+        "id": "used_root_three",
+        "transform": "edge**3*sqrt(3)/12"
+      },
+      {
+        "id": "squared_instead_of_cubed",
+        "transform": "edge**2*sqrt(2)/12"
+      },
+      {
+        "id": "surface_area_instead_of_volume",
+        "transform": "edge**2*sqrt(3)"
+      }
+    ],
+    "pyramid_frustum_volume": [
+      {
+        "id": "forgot_the_cross_term",
+        "transform": "height*(a**2+b**2)/3"
+      },
+      {
+        "id": "forgot_the_one_third",
+        "transform": "height*(a**2+b**2+a*b)"
+      },
+      {
+        "id": "averaged_the_bases_as_a_prism",
+        "transform": "height*(a**2+b**2)/2"
+      },
+      {
+        "id": "used_the_mean_side_as_a_prism",
+        "transform": "height*((a+b)/2)**2"
+      },
+      {
+        "id": "difference_of_two_pyramids_wrongly",
+        "transform": "height*(a**2-b**2)/3"
+      },
+      {
+        "id": "larger_base_as_full_pyramid",
+        "transform": "height*a**2/3"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "positive_volume_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

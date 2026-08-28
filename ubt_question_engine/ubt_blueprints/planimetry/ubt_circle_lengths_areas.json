@@ -1,0 +1,202 @@
+{
+  "topic": "ubt_circle_lengths_areas",
+  "parent_topic": "planimetry_geometric_figures",
+  "parent_topic_number": 14,
+  "display_name": "Planimetry — circle lengths and areas",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 14",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 14. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Планиметрия",
+    "slug": "planimetriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "arc_length",
+        "sector_area",
+        "circular_segment_area"
+      ],
+      "desc": "question structure"
+    },
+    "radius": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "central_angle": {
+      "type": "choice",
+      "values": [
+        30,
+        45,
+        60,
+        90,
+        120,
+        135,
+        150,
+        180
+      ]
+    }
+  },
+  "supported_difficulties": [
+    2,
+    3
+  ],
+  "default_difficulty": 2,
+  "difficulty_overrides": {
+    "2": {
+      "mode": {
+        "values": [
+          "arc_length",
+          "sector_area"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "circular_segment_area"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "arc_length": {
+      "uses": [
+        "radius",
+        "central_angle"
+      ],
+      "question": {
+        "instruction": "Find the length of the circular arc.",
+        "latex": "r={radius},\\qquad \\theta={central_angle}^\\circ"
+      }
+    },
+    "sector_area": {
+      "uses": [
+        "radius",
+        "central_angle"
+      ],
+      "question": {
+        "instruction": "Find the area of the sector.",
+        "latex": "r={radius},\\qquad \\theta={central_angle}^\\circ"
+      }
+    },
+    "circular_segment_area": {
+      "uses": [
+        "radius"
+      ],
+      "question": {
+        "instruction": "A circular segment is cut off by a chord subtending a 90° central angle. Find the area of the segment.",
+        "latex": "r={radius},\\qquad \\theta=90^\\circ"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "arc_length": "Rational(central_angle,180)*pi*radius",
+      "sector_area": "Rational(central_angle,360)*pi*radius**2",
+      "circular_segment_area": "pi*radius**2/4-radius**2/2"
+    }
+  },
+  "answer_render": {
+    "arc_length": "exact_expression",
+    "sector_area": "exact_expression",
+    "circular_segment_area": "exact_expression"
+  },
+  "distractors": {
+    "arc_length": [
+      {
+        "id": "half_factor",
+        "transform": "Rational(central_angle,360)*pi*radius"
+      },
+      {
+        "id": "sector_formula",
+        "transform": "Rational(central_angle,360)*pi*radius**2"
+      },
+      {
+        "id": "full_circumference",
+        "transform": "2*pi*radius"
+      },
+      {
+        "id": "angle_radius",
+        "transform": "central_angle*radius"
+      },
+      {
+        "id": "omit_pi",
+        "transform": "Rational(central_angle,180)*radius"
+      },
+      {
+        "id": "double_radius",
+        "transform": "Rational(central_angle,90)*pi*radius"
+      }
+    ],
+    "sector_area": [
+      {
+        "id": "arc_formula",
+        "transform": "Rational(central_angle,180)*pi*radius"
+      },
+      {
+        "id": "forget_square",
+        "transform": "Rational(central_angle,360)*pi*radius"
+      },
+      {
+        "id": "full_circle",
+        "transform": "pi*radius**2"
+      },
+      {
+        "id": "double_sector",
+        "transform": "Rational(central_angle,180)*pi*radius**2"
+      },
+      {
+        "id": "omit_pi",
+        "transform": "Rational(central_angle,360)*radius**2"
+      },
+      {
+        "id": "circumference_fraction",
+        "transform": "Rational(central_angle,360)*2*pi*radius"
+      }
+    ],
+    "circular_segment_area": [
+      {
+        "id": "sector_only",
+        "transform": "pi*radius**2/4"
+      },
+      {
+        "id": "triangle_only",
+        "transform": "radius**2/2"
+      },
+      {
+        "id": "add_triangle",
+        "transform": "pi*radius**2/4+radius**2/2"
+      },
+      {
+        "id": "semicircle_minus_triangle",
+        "transform": "pi*radius**2/2-radius**2/2"
+      },
+      {
+        "id": "quarter_circle_half",
+        "transform": "pi*radius**2/8"
+      },
+      {
+        "id": "omit_pi",
+        "transform": "radius**2/4-radius**2/2"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "angle_range_validation": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

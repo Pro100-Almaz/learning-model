@@ -1,0 +1,115 @@
+{
+  "topic": "ubt_irrational_inequalities",
+  "parent_topic": "inequalities",
+  "parent_topic_number": 10,
+  "display_name": "Irrational inequalities",
+  "curriculum_ref": "KZ 2026 UBT — Inequalities — Topic 10",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 10. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Теңсіздіктер",
+    "slug": "tensizdikter"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "irrational_root_bound"
+      ],
+      "desc": "question structure"
+    },
+    "p": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "shift": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    }
+  },
+  "supported_difficulties": [
+    2
+  ],
+  "default_difficulty": 2,
+  "difficulty_overrides": {
+    "2": {
+      "mode": {
+        "values": [
+          "irrational_root_bound"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "irrational_root_bound": {
+      "uses": [
+        "p",
+        "shift"
+      ],
+      "derived": {
+        "threshold_value": "p**2-shift"
+      },
+      "question": {
+        "instruction": "Solve the irrational inequality",
+        "latex": "\\sqrt{{x+{shift}}}\\ge {p}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "irrational_root_bound": "Interval(p**2-shift,oo)"
+    }
+  },
+  "answer_render": {
+    "irrational_root_bound": "interval"
+  },
+  "distractors": {
+    "irrational_root_bound": [
+      {
+        "id": "forget_square",
+        "transform": "Interval(p-shift,oo)"
+      },
+      {
+        "id": "wrong_shift_sign",
+        "transform": "Interval(p**2+shift,oo)"
+      },
+      {
+        "id": "strict_boundary",
+        "transform": "Interval.open(p**2-shift,oo)"
+      },
+      {
+        "id": "domain_only",
+        "transform": "Interval(-shift,oo)"
+      },
+      {
+        "id": "reverse_direction",
+        "transform": "Interval(-shift,p**2-shift)"
+      },
+      {
+        "id": "negative_threshold",
+        "transform": "Interval(-(p**2-shift),oo)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "interval_equivalence": true,
+    "respect_open_closed_boundaries": true,
+    "respect_rational_domain": true,
+    "respect_radical_domain": true,
+    "respect_log_domain": true,
+    "trigonometric_interval_check": true,
+    "reject_undefined_choices": true,
+    "exact_answers_only": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

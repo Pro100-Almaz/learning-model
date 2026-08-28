@@ -1,0 +1,164 @@
+{
+  "topic": "ubt_circle_segment_theorems",
+  "parent_topic": "planimetry_geometric_figures",
+  "parent_topic_number": 14,
+  "display_name": "Planimetry — chord, tangent and secant theorems",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 14",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 14. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Планиметрия",
+    "slug": "planimetriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "intersecting_chords",
+        "tangent_secant"
+      ],
+      "desc": "question structure"
+    },
+    "chord_a": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "chord_b": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "chord_c": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "external": {
+      "type": "int",
+      "min": 1,
+      "max": 8
+    },
+    "inside": {
+      "type": "int",
+      "min": 1,
+      "max": 12
+    }
+  },
+  "supported_difficulties": [
+    3
+  ],
+  "default_difficulty": 3,
+  "difficulty_overrides": {
+    "3": {
+      "mode": {
+        "values": [
+          "intersecting_chords",
+          "tangent_secant"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "intersecting_chords": {
+      "uses": [
+        "chord_a",
+        "chord_b",
+        "chord_c"
+      ],
+      "question": {
+        "instruction": "Two chords intersect inside a circle. Find the unknown segment x.",
+        "latex": "{chord_a}\\cdot {chord_b}={chord_c}\\cdot x"
+      }
+    },
+    "tangent_secant": {
+      "uses": [
+        "external",
+        "inside"
+      ],
+      "question": {
+        "instruction": "From one external point, a tangent and a secant are drawn to a circle. Find the tangent length.",
+        "latex": "PA^2={external}\\left({external}+{inside}\\right)"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "intersecting_chords": "Rational(chord_a*chord_b,chord_c)",
+      "tangent_secant": "sqrt(external*(external+inside))"
+    }
+  },
+  "answer_render": {
+    "intersecting_chords": "exact_number",
+    "tangent_secant": "exact_expression"
+  },
+  "distractors": {
+    "intersecting_chords": [
+      {
+        "id": "add",
+        "transform": "Rational(chord_a+chord_b,chord_c)"
+      },
+      {
+        "id": "reciprocal",
+        "transform": "Rational(chord_c,chord_a*chord_b)"
+      },
+      {
+        "id": "omit_division",
+        "transform": "chord_a*chord_b"
+      },
+      {
+        "id": "wrong_cross_1",
+        "transform": "Rational(chord_a*chord_c,chord_b)"
+      },
+      {
+        "id": "wrong_cross_2",
+        "transform": "Rational(chord_b*chord_c,chord_a)"
+      },
+      {
+        "id": "sum_all",
+        "transform": "chord_a+chord_b+chord_c"
+      }
+    ],
+    "tangent_secant": [
+      {
+        "id": "no_root",
+        "transform": "external*(external+inside)"
+      },
+      {
+        "id": "inside_whole",
+        "transform": "sqrt(inside*(external+inside))"
+      },
+      {
+        "id": "external_inside",
+        "transform": "sqrt(external*inside)"
+      },
+      {
+        "id": "whole_secant",
+        "transform": "external+inside"
+      },
+      {
+        "id": "half_product",
+        "transform": "sqrt(Rational(external*(external+inside),2))"
+      },
+      {
+        "id": "root_sum",
+        "transform": "sqrt(external+inside)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "angle_range_validation": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

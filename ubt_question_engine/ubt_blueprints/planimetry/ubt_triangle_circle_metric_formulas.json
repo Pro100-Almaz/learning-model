@@ -1,0 +1,214 @@
+{
+  "topic": "ubt_triangle_circle_metric_formulas",
+  "parent_topic": "planimetry_metric_relations_vectors_transformations",
+  "parent_topic_number": 15,
+  "display_name": "Triangle area, circumradius and inradius formulas",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 15",
+  "_comment": "Deterministic Topic 15 generator. Python/SymPy owns parameter generation, mathematics, validation and distractor filtering. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Метрикалық қатыстар және векторлар",
+    "slug": "metrikalyk-katystar-vektorlar"
+  },
+  "expression_language": "sympy",
+  "supported_difficulties": [
+    2,
+    3
+  ],
+  "default_difficulty": 2,
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "circumradius_from_abc_area",
+        "area_from_circumradius",
+        "inradius_from_area"
+      ]
+    },
+    "scale": {
+      "type": "int",
+      "min": 1,
+      "max": 5
+    },
+    "semiperimeter": {
+      "type": "int",
+      "min": 5,
+      "max": 20
+    },
+    "inradius": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    }
+  },
+  "difficulty_overrides": {
+    "2": {
+      "mode": {
+        "values": [
+          "inradius_from_area"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "circumradius_from_abc_area",
+          "area_from_circumradius"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "circumradius_from_abc_area": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "a": "3*scale",
+        "b": "4*scale",
+        "c": "5*scale",
+        "area": "6*scale**2"
+      },
+      "question": {
+        "instruction": "Use S=abc/(4R) to find the circumradius R.",
+        "latex": "a={a},\\ b={b},\\ c={c},\\ S={area}"
+      }
+    },
+    "area_from_circumradius": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "a": "3*scale",
+        "b": "4*scale",
+        "c": "5*scale",
+        "R": "Rational(5*scale,2)"
+      },
+      "render_derived": {
+        "R_latex": "latex(R)"
+      },
+      "question": {
+        "instruction": "Use S=abc/(4R) to find the triangle area.",
+        "latex": "a={a},\\ b={b},\\ c={c},\\ R={R_latex}"
+      }
+    },
+    "inradius_from_area": {
+      "uses": [
+        "semiperimeter",
+        "inradius"
+      ],
+      "derived": {
+        "area": "semiperimeter*inradius"
+      },
+      "question": {
+        "instruction": "Use S=pr to find the inradius r.",
+        "latex": "S={area},\\qquad p={semiperimeter}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "circumradius_from_abc_area": "Rational(5*scale,2)",
+      "area_from_circumradius": "6*scale**2",
+      "inradius_from_area": "inradius"
+    }
+  },
+  "answer_render": {
+    "circumradius_from_abc_area": "exact_number",
+    "area_from_circumradius": "exact_number",
+    "inradius_from_area": "exact_number"
+  },
+  "distractors": {
+    "circumradius_from_abc_area": [
+      {
+        "id": "c",
+        "transform": "5*scale"
+      },
+      {
+        "id": "half_c_wrong",
+        "transform": "Rational(5*scale,4)"
+      },
+      {
+        "id": "area",
+        "transform": "6*scale**2"
+      },
+      {
+        "id": "scale",
+        "transform": "scale"
+      },
+      {
+        "id": "four_scale",
+        "transform": "4*scale"
+      },
+      {
+        "id": "three_scale",
+        "transform": "3*scale"
+      }
+    ],
+    "area_from_circumradius": [
+      {
+        "id": "perimeter_like",
+        "transform": "12*scale"
+      },
+      {
+        "id": "product",
+        "transform": "60*scale**3"
+      },
+      {
+        "id": "half_product",
+        "transform": "30*scale**3"
+      },
+      {
+        "id": "scale_area",
+        "transform": "6*scale"
+      },
+      {
+        "id": "circumradius",
+        "transform": "Rational(5*scale,2)"
+      },
+      {
+        "id": "square_hyp",
+        "transform": "25*scale**2"
+      }
+    ],
+    "inradius_from_area": [
+      {
+        "id": "area",
+        "transform": "semiperimeter*inradius"
+      },
+      {
+        "id": "semiperimeter",
+        "transform": "semiperimeter"
+      },
+      {
+        "id": "double_r",
+        "transform": "2*inradius"
+      },
+      {
+        "id": "half_r",
+        "transform": "Rational(inradius,2)"
+      },
+      {
+        "id": "sum",
+        "transform": "semiperimeter+inradius"
+      },
+      {
+        "id": "square",
+        "transform": "inradius**2"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true
+  },
+  "constraints_template": "ubt_question.j2"
+}

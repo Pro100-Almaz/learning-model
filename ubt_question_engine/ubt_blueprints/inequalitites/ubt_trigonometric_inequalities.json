@@ -1,0 +1,109 @@
+{
+  "topic": "ubt_trigonometric_inequalities",
+  "parent_topic": "inequalities",
+  "parent_topic_number": 10,
+  "display_name": "Trigonometric inequalities",
+  "curriculum_ref": "KZ 2026 UBT — Inequalities — Topic 10",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 10. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Теңсіздіктер",
+    "slug": "tensizdikter"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "trig_sine_interval"
+      ],
+      "desc": "question structure"
+    },
+    "alpha": {
+      "type": "choice",
+      "values": [
+        30,
+        45,
+        60
+      ]
+    }
+  },
+  "supported_difficulties": [
+    2
+  ],
+  "default_difficulty": 2,
+  "difficulty_overrides": {
+    "2": {
+      "mode": {
+        "values": [
+          "trig_sine_interval"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "trig_sine_interval": {
+      "uses": [
+        "alpha"
+      ],
+      "question": {
+        "instruction": "Solve the trigonometric inequality on the given interval",
+        "latex": "\\sin x\\ge\\sin {alpha}^\\circ,\\qquad 0^\\circ\\le x\\le180^\\circ"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "trig_sine_interval": "Interval(alpha,180-alpha)"
+    }
+  },
+  "answer_render": {
+    "trig_sine_interval": "degree_interval"
+  },
+  "distractors": {
+    "trig_sine_interval": [
+      {
+        "id": "outside_interval",
+        "transform": "Union(Interval(0,alpha),Interval(180-alpha,180))"
+      },
+      {
+        "id": "open_boundaries",
+        "transform": "Interval.open(alpha,180-alpha)"
+      },
+      {
+        "id": "cosine_style",
+        "transform": "Interval(0,alpha)"
+      },
+      {
+        "id": "complementary",
+        "transform": "Interval(90-alpha,90+alpha)"
+      },
+      {
+        "id": "left_half_only",
+        "transform": "Interval(alpha,90)"
+      },
+      {
+        "id": "right_half_only",
+        "transform": "Interval(90,180-alpha)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "interval_equivalence": true,
+    "respect_open_closed_boundaries": true,
+    "respect_rational_domain": true,
+    "respect_radical_domain": true,
+    "respect_log_domain": true,
+    "trigonometric_interval_check": true,
+    "reject_undefined_choices": true,
+    "exact_answers_only": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

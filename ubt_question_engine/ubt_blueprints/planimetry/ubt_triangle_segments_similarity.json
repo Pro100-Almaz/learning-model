@@ -1,0 +1,277 @@
+{
+  "topic": "ubt_triangle_segments_similarity",
+  "parent_topic": "planimetry_metric_relations_vectors_transformations",
+  "parent_topic_number": 15,
+  "display_name": "Triangle special segments and similarity",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 15",
+  "_comment": "Deterministic Topic 15 generator. Python/SymPy owns parameter generation, mathematics, validation and distractor filtering. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Метрикалық қатыстар және векторлар",
+    "slug": "metrikalyk-katystar-vektorlar"
+  },
+  "expression_language": "sympy",
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "angle_bisector_segment",
+        "similarity_scale_side",
+        "similar_figures_area_ratio",
+        "right_triangle_similarity_altitude"
+      ]
+    },
+    "m": {
+      "type": "int",
+      "min": 1,
+      "max": 5
+    },
+    "n": {
+      "type": "int",
+      "min": 1,
+      "max": 5
+    },
+    "unit": {
+      "type": "int",
+      "min": 1,
+      "max": 5
+    },
+    "scale": {
+      "type": "int",
+      "min": 2,
+      "max": 5
+    },
+    "side": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "proj_u": {
+      "type": "int",
+      "min": 2,
+      "max": 6
+    },
+    "proj_v": {
+      "type": "int",
+      "min": 2,
+      "max": 6
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "similarity_scale_side"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "angle_bisector_segment",
+          "similar_figures_area_ratio"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "right_triangle_similarity_altitude"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "angle_bisector_segment": {
+      "uses": [
+        "m",
+        "n",
+        "unit"
+      ],
+      "constraints": [
+        "m != n"
+      ],
+      "derived": {
+        "AB": "m*unit",
+        "AC": "n*unit",
+        "BC": "m+n"
+      },
+      "question": {
+        "instruction": "AD is the angle bisector of ∠A. Find BD.",
+        "latex": "AB={AB},\\quad AC={AC},\\quad BC={BC}"
+      }
+    },
+    "similarity_scale_side": {
+      "uses": [
+        "scale",
+        "side"
+      ],
+      "question": {
+        "instruction": "Two similar triangles have similarity coefficient k. Find the corresponding side in the larger triangle.",
+        "latex": "k={scale},\\qquad a={side}"
+      }
+    },
+    "similar_figures_area_ratio": {
+      "uses": [
+        "scale"
+      ],
+      "question": {
+        "instruction": "Two similar figures have similarity coefficient k. Find the ratio of their areas S_2/S_1.",
+        "latex": "k={scale}"
+      }
+    },
+    "right_triangle_similarity_altitude": {
+      "uses": [
+        "proj_u",
+        "proj_v"
+      ],
+      "derived": {
+        "p": "proj_u**2",
+        "q": "proj_v**2"
+      },
+      "question": {
+        "instruction": "The altitude to the hypotenuse creates two similar right triangles. Find h.",
+        "latex": "p={p},\\qquad q={q}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "angle_bisector_segment": "m",
+      "similarity_scale_side": "scale*side",
+      "similar_figures_area_ratio": "scale**2",
+      "right_triangle_similarity_altitude": "proj_u*proj_v"
+    }
+  },
+  "answer_render": {
+    "angle_bisector_segment": "exact_number",
+    "similarity_scale_side": "exact_number",
+    "similar_figures_area_ratio": "exact_number",
+    "right_triangle_similarity_altitude": "exact_number"
+  },
+  "distractors": {
+    "angle_bisector_segment": [
+      {
+        "id": "dc",
+        "transform": "n"
+      },
+      {
+        "id": "half_bc",
+        "transform": "Rational(m+n,2)"
+      },
+      {
+        "id": "ab",
+        "transform": "m*unit"
+      },
+      {
+        "id": "ac",
+        "transform": "n*unit"
+      },
+      {
+        "id": "ratio",
+        "transform": "Rational(m,n)"
+      },
+      {
+        "id": "sum",
+        "transform": "m+n"
+      }
+    ],
+    "similarity_scale_side": [
+      {
+        "id": "divide",
+        "transform": "Rational(side,scale)"
+      },
+      {
+        "id": "square_scale",
+        "transform": "scale**2*side"
+      },
+      {
+        "id": "add",
+        "transform": "side+scale"
+      },
+      {
+        "id": "same",
+        "transform": "side"
+      },
+      {
+        "id": "scale_only",
+        "transform": "scale"
+      },
+      {
+        "id": "side_squared",
+        "transform": "side**2"
+      }
+    ],
+    "similar_figures_area_ratio": [
+      {
+        "id": "linear",
+        "transform": "scale"
+      },
+      {
+        "id": "cube",
+        "transform": "scale**3"
+      },
+      {
+        "id": "inverse",
+        "transform": "Rational(1,scale**2)"
+      },
+      {
+        "id": "double",
+        "transform": "2*scale"
+      },
+      {
+        "id": "plus_one",
+        "transform": "scale+1"
+      },
+      {
+        "id": "square_plus_one",
+        "transform": "scale**2+1"
+      }
+    ],
+    "right_triangle_similarity_altitude": [
+      {
+        "id": "sum_sq",
+        "transform": "proj_u**2+proj_v**2"
+      },
+      {
+        "id": "root_sum",
+        "transform": "sqrt(proj_u**2+proj_v**2)"
+      },
+      {
+        "id": "u",
+        "transform": "proj_u"
+      },
+      {
+        "id": "v",
+        "transform": "proj_v"
+      },
+      {
+        "id": "square_product",
+        "transform": "proj_u**2*proj_v**2"
+      },
+      {
+        "id": "average",
+        "transform": "Rational(proj_u**2+proj_v**2,2)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true,
+    "positive_length_validation": true,
+    "similarity_relation_validation": true
+  },
+  "constraints_template": "ubt_question.j2"
+}

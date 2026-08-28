@@ -1,0 +1,416 @@
+{
+  "topic": "ubt_plane_vectors",
+  "parent_topic": "planimetry_metric_relations_vectors_transformations",
+  "parent_topic_number": 15,
+  "display_name": "Vectors in the plane",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 15",
+  "_comment": "Deterministic Topic 15 generator. Python/SymPy owns parameter generation, mathematics, validation and distractor filtering. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Метрикалық қатыстар және векторлар",
+    "slug": "metrikalyk-katystar-vektorlar"
+  },
+  "expression_language": "sympy",
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "vector_from_points",
+        "vector_length",
+        "vector_addition",
+        "scalar_multiplication",
+        "dot_product",
+        "collinearity_scalar",
+        "vector_decomposition"
+      ]
+    },
+    "x": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    },
+    "y": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    },
+    "u": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    },
+    "v": {
+      "type": "int",
+      "min": -5,
+      "max": 5
+    },
+    "scale": {
+      "type": "int",
+      "min": 1,
+      "max": 5
+    },
+    "k": {
+      "type": "int",
+      "min": -4,
+      "max": 4
+    },
+    "coef_a": {
+      "type": "int",
+      "min": -4,
+      "max": 4
+    },
+    "coef_b": {
+      "type": "int",
+      "min": -4,
+      "max": 4
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "vector_from_points",
+          "vector_length",
+          "vector_addition",
+          "scalar_multiplication"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "dot_product",
+          "collinearity_scalar"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "vector_decomposition"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "vector_from_points": {
+      "uses": [
+        "x",
+        "y",
+        "u",
+        "v"
+      ],
+      "question": {
+        "instruction": "Find vector AB.",
+        "latex": "A({x},{y}),\\qquad B({u},{v})"
+      }
+    },
+    "vector_length": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "vx": "3*scale",
+        "vy": "4*scale"
+      },
+      "question": {
+        "instruction": "Find the length of the vector.",
+        "latex": "\\vec a=({vx},{vy})"
+      }
+    },
+    "vector_addition": {
+      "uses": [
+        "x",
+        "y",
+        "u",
+        "v"
+      ],
+      "question": {
+        "instruction": "Find \\vec a+\\vec b.",
+        "latex": "\\vec a=({x},{y}),\\qquad \\vec b=({u},{v})"
+      }
+    },
+    "scalar_multiplication": {
+      "uses": [
+        "x",
+        "y",
+        "k"
+      ],
+      "constraints": [
+        "k != 0"
+      ],
+      "question": {
+        "instruction": "Find k\\vec a.",
+        "latex": "\\vec a=({x},{y}),\\qquad k={k}"
+      }
+    },
+    "dot_product": {
+      "uses": [
+        "x",
+        "y",
+        "u",
+        "v"
+      ],
+      "question": {
+        "instruction": "Find the scalar product \\vec a\\cdot\\vec b.",
+        "latex": "\\vec a=({x},{y}),\\qquad \\vec b=({u},{v})"
+      }
+    },
+    "collinearity_scalar": {
+      "uses": [
+        "x",
+        "y",
+        "k"
+      ],
+      "constraints": [
+        "k != 0",
+        "x != 0 or y != 0"
+      ],
+      "derived": {
+        "u": "k*x",
+        "v": "k*y"
+      },
+      "question": {
+        "instruction": "The vectors are collinear. Find the scalar k such that \\vec b=k\\vec a.",
+        "latex": "\\vec a=({x},{y}),\\qquad \\vec b=({u},{v})"
+      }
+    },
+    "vector_decomposition": {
+      "uses": [
+        "coef_a",
+        "coef_b"
+      ],
+      "derived": {
+        "vx": "coef_a+coef_b",
+        "vy": "coef_a-coef_b"
+      },
+      "question": {
+        "instruction": "Given \\vec e_1=(1,1) and \\vec e_2=(1,-1), find (m,n) if \\vec v=m\\vec e_1+n\\vec e_2.",
+        "latex": "\\vec v=({vx},{vy})"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "vector_from_points": "Tuple(u-x,v-y)",
+      "vector_length": "5*scale",
+      "vector_addition": "Tuple(x+u,y+v)",
+      "scalar_multiplication": "Tuple(k*x,k*y)",
+      "dot_product": "x*u+y*v",
+      "collinearity_scalar": "k",
+      "vector_decomposition": "Tuple(coef_a,coef_b)"
+    }
+  },
+  "answer_render": {
+    "vector_from_points": "ordered_pair",
+    "vector_length": "exact_number",
+    "vector_addition": "ordered_pair",
+    "scalar_multiplication": "ordered_pair",
+    "dot_product": "exact_number",
+    "collinearity_scalar": "exact_number",
+    "vector_decomposition": "ordered_pair"
+  },
+  "distractors": {
+    "vector_from_points": [
+      {
+        "id": "reverse",
+        "transform": "Tuple(x-u,y-v)"
+      },
+      {
+        "id": "sum",
+        "transform": "Tuple(x+u,y+v)"
+      },
+      {
+        "id": "swap",
+        "transform": "Tuple(v-y,u-x)"
+      },
+      {
+        "id": "x_only",
+        "transform": "Tuple(u-x,0)"
+      },
+      {
+        "id": "y_only",
+        "transform": "Tuple(0,v-y)"
+      },
+      {
+        "id": "point_b",
+        "transform": "Tuple(u,v)"
+      }
+    ],
+    "vector_length": [
+      {
+        "id": "sum",
+        "transform": "7*scale"
+      },
+      {
+        "id": "square",
+        "transform": "25*scale**2"
+      },
+      {
+        "id": "x",
+        "transform": "3*scale"
+      },
+      {
+        "id": "y",
+        "transform": "4*scale"
+      },
+      {
+        "id": "difference",
+        "transform": "scale"
+      },
+      {
+        "id": "six",
+        "transform": "6*scale"
+      }
+    ],
+    "vector_addition": [
+      {
+        "id": "subtract",
+        "transform": "Tuple(x-u,y-v)"
+      },
+      {
+        "id": "reverse_subtract",
+        "transform": "Tuple(u-x,v-y)"
+      },
+      {
+        "id": "swap_second",
+        "transform": "Tuple(x+v,y+u)"
+      },
+      {
+        "id": "first",
+        "transform": "Tuple(x,y)"
+      },
+      {
+        "id": "second",
+        "transform": "Tuple(u,v)"
+      },
+      {
+        "id": "component_product",
+        "transform": "Tuple(x*u,y*v)"
+      }
+    ],
+    "scalar_multiplication": [
+      {
+        "id": "add_k",
+        "transform": "Tuple(x+k,y+k)"
+      },
+      {
+        "id": "divide_k",
+        "transform": "Tuple(Rational(x,k),Rational(y,k))"
+      },
+      {
+        "id": "neg_k",
+        "transform": "Tuple(-k*x,-k*y)"
+      },
+      {
+        "id": "first_only",
+        "transform": "Tuple(k*x,y)"
+      },
+      {
+        "id": "second_only",
+        "transform": "Tuple(x,k*y)"
+      },
+      {
+        "id": "unchanged",
+        "transform": "Tuple(x,y)"
+      }
+    ],
+    "dot_product": [
+      {
+        "id": "cross_sum",
+        "transform": "x*v+y*u"
+      },
+      {
+        "id": "component_sum",
+        "transform": "x+y+u+v"
+      },
+      {
+        "id": "product_all",
+        "transform": "x*y*u*v"
+      },
+      {
+        "id": "difference",
+        "transform": "x*u-y*v"
+      },
+      {
+        "id": "normlike",
+        "transform": "sqrt((x**2+y**2)*(u**2+v**2))"
+      },
+      {
+        "id": "zero",
+        "transform": "0"
+      }
+    ],
+    "collinearity_scalar": [
+      {
+        "id": "neg",
+        "transform": "-k"
+      },
+      {
+        "id": "plus_one",
+        "transform": "k+1"
+      },
+      {
+        "id": "minus_one",
+        "transform": "k-1"
+      },
+      {
+        "id": "square",
+        "transform": "k**2"
+      },
+      {
+        "id": "reciprocal",
+        "transform": "Rational(1,k)"
+      },
+      {
+        "id": "zero",
+        "transform": "0"
+      }
+    ],
+    "vector_decomposition": [
+      {
+        "id": "swap",
+        "transform": "Tuple(coef_b,coef_a)"
+      },
+      {
+        "id": "neg",
+        "transform": "Tuple(-coef_a,-coef_b)"
+      },
+      {
+        "id": "sumdiff",
+        "transform": "Tuple(coef_a+coef_b,coef_a-coef_b)"
+      },
+      {
+        "id": "first_only",
+        "transform": "Tuple(coef_a,0)"
+      },
+      {
+        "id": "second_only",
+        "transform": "Tuple(0,coef_b)"
+      },
+      {
+        "id": "shift",
+        "transform": "Tuple(coef_a+1,coef_b-1)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true,
+    "tuple_equivalence": true,
+    "vector_equivalence": true
+  },
+  "constraints_template": "ubt_question.j2"
+}

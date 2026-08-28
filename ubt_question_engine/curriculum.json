@@ -1,0 +1,603 @@
+{
+  "_comment": "Chapter/lesson structure for the 65 UBT blueprints, in three languages. Chapter order and grouping follow UBT_Mathematics_Simplified_Study_Checklist.md; `folder` must match a directory under ubt_blueprints/ and `topics` must list every blueprint in it. Consumed by `manage.py seed_ubt_curriculum`, which cross-checks both and refuses to run if they drift.",
+  "subject": {
+    "slug": "math",
+    "name": {
+      "kk": "Математика",
+      "ru": "Математика",
+      "en": "Mathematics"
+    }
+  },
+  "grade": 11,
+  "tags": {
+    "tubirler-zhane-ornekte": {
+      "kk": "Түбірлер және өрнектер",
+      "ru": "Корни и выражения",
+      "en": "Roots and expressions"
+    },
+    "darezheler": {
+      "kk": "Дәрежелер",
+      "ru": "Степени",
+      "en": "Powers"
+    },
+    "trigonometriya": {
+      "kk": "Тригонометрия",
+      "ru": "Тригонометрия",
+      "en": "Trigonometry"
+    },
+    "algebralyk-ornekte": {
+      "kk": "Алгебралық өрнектер",
+      "ru": "Алгебраические выражения",
+      "en": "Algebraic expressions"
+    },
+    "tendeuler": {
+      "kk": "Теңдеулер",
+      "ru": "Уравнения",
+      "en": "Equations"
+    },
+    "trigonometriyalyk-irracional-tendeuler": {
+      "kk": "Тригонометриялық және иррационал теңдеулер",
+      "ru": "Тригонометрические и иррациональные уравнения",
+      "en": "Trigonometric and irrational equations"
+    },
+    "korsetkishtik-logarifmdik-tendeuler": {
+      "kk": "Көрсеткіштік және логарифмдік теңдеулер",
+      "ru": "Показательные и логарифмические уравнения",
+      "en": "Exponential and logarithmic equations"
+    },
+    "tendeuler-zhuyesi": {
+      "kk": "Теңдеулер жүйесі",
+      "ru": "Системы уравнений",
+      "en": "Systems of equations"
+    },
+    "arnayi-tendeuler-zhuyeleri": {
+      "kk": "Арнайы теңдеулер жүйелері",
+      "ru": "Специальные системы уравнений",
+      "en": "Special systems of equations"
+    },
+    "tensizdikter": {
+      "kk": "Теңсіздіктер",
+      "ru": "Неравенства",
+      "en": "Inequalities"
+    },
+    "tensizdikter-zhuyesi": {
+      "kk": "Теңсіздіктер жүйесі",
+      "ru": "Системы неравенств",
+      "en": "Systems of inequalities"
+    },
+    "progressiyalar": {
+      "kk": "Прогрессиялар",
+      "ru": "Прогрессии",
+      "en": "Progressions"
+    },
+    "funkciyalar-matematikalyk-analiz": {
+      "kk": "Функциялар және математикалық талдау",
+      "ru": "Функции и математический анализ",
+      "en": "Functions and calculus"
+    },
+    "planimetriya": {
+      "kk": "Планиметрия",
+      "ru": "Планиметрия",
+      "en": "Planimetry"
+    },
+    "stereometriya": {
+      "kk": "Стереометрия",
+      "ru": "Стереометрия",
+      "en": "Stereometry"
+    },
+    "kenistik-vektorlar-koordinatalar": {
+      "kk": "Кеңістіктегі векторлар және координаталар",
+      "ru": "Векторы и координаты в пространстве",
+      "en": "Vectors and coordinates in space"
+    },
+    "metrikalyk-katystar-vektorlar": {
+      "kk": "Метрикалық қатынастар және векторлар",
+      "ru": "Метрические соотношения и векторы",
+      "en": "Metric relations and vectors"
+    }
+  },
+  "chapters": [
+    {
+      "slug": "ubt-numbers-and-algebra",
+      "folder": "numbers_and_algebra",
+      "title": {
+        "kk": "Сандар және алгебра",
+        "ru": "Числа и алгебра",
+        "en": "Numbers and algebra"
+      },
+      "topics": [
+        "ubt_roots_expressions",
+        "ubt_powers",
+        "ubt_trigonometry",
+        "ubt_algebraic_expressions"
+      ]
+    },
+    {
+      "slug": "ubt-equations",
+      "folder": "equations",
+      "title": {
+        "kk": "Теңдеулер",
+        "ru": "Уравнения",
+        "en": "Equations"
+      },
+      "topics": [
+        "ubt_linear_quadratic_rational_equations",
+        "ubt_trigonometric_irrational_equations",
+        "ubt_exponential_logarithmic_equations"
+      ]
+    },
+    {
+      "slug": "ubt-systems-of-equations",
+      "folder": "systems_of_equations",
+      "title": {
+        "kk": "Теңдеулер жүйелері",
+        "ru": "Системы уравнений",
+        "en": "Systems of equations"
+      },
+      "topics": [
+        "ubt_systems_linear_nonlinear_equations",
+        "ubt_special_equation_systems"
+      ]
+    },
+    {
+      "slug": "ubt-inequalities",
+      "folder": "inequalitites",
+      "title": {
+        "kk": "Теңсіздіктер",
+        "ru": "Неравенства",
+        "en": "Inequalities"
+      },
+      "topics": [
+        "ubt_linear_inequalities",
+        "ubt_quadratic_inequalities",
+        "ubt_rational_inequalities",
+        "ubt_trigonometric_inequalities",
+        "ubt_irrational_inequalities",
+        "ubt_exponential_inequalities",
+        "ubt_logarithmic_inequalities"
+      ]
+    },
+    {
+      "slug": "ubt-systems-of-inequalities",
+      "folder": "systems_of_inequalitites",
+      "title": {
+        "kk": "Теңсіздіктер жүйелері",
+        "ru": "Системы неравенств",
+        "en": "Systems of inequalities"
+      },
+      "topics": [
+        "ubt_linear_inequality_systems",
+        "ubt_quadratic_inequality_systems",
+        "ubt_rational_inequality_systems",
+        "ubt_nonlinear_inequality_systems",
+        "ubt_exponential_inequality_systems",
+        "ubt_logarithmic_inequality_systems"
+      ]
+    },
+    {
+      "slug": "ubt-progressions",
+      "folder": "progressions",
+      "title": {
+        "kk": "Прогрессиялар",
+        "ru": "Прогрессии",
+        "en": "Progressions"
+      },
+      "topics": [
+        "ubt_arithmetic_progression",
+        "ubt_geometric_progression",
+        "ubt_infinite_geometric_progression",
+        "ubt_repeating_decimals",
+        "ubt_progression_word_problems"
+      ]
+    },
+    {
+      "slug": "ubt-functions-and-calculus",
+      "folder": "functions_and_calculus",
+      "title": {
+        "kk": "Функциялар және математикалық талдау",
+        "ru": "Функции и математический анализ",
+        "en": "Functions and calculus"
+      },
+      "topics": [
+        "ubt_function_basics",
+        "ubt_function_properties",
+        "ubt_inverse_composite_functions",
+        "ubt_exponential_log_functions",
+        "ubt_derivatives",
+        "ubt_derivative_applications",
+        "ubt_integrals",
+        "ubt_integral_areas",
+        "ubt_mathematical_modelling"
+      ]
+    },
+    {
+      "slug": "ubt-planimetry",
+      "folder": "planimetry",
+      "title": {
+        "kk": "Планиметрия",
+        "ru": "Планиметрия",
+        "en": "Planimetry"
+      },
+      "topics": [
+        "ubt_angle_relations",
+        "ubt_triangle_properties",
+        "ubt_midlines_proportions",
+        "ubt_quadrilaterals",
+        "ubt_circle_angles",
+        "ubt_circle_segment_theorems",
+        "ubt_circle_lengths_areas",
+        "ubt_regular_polygons",
+        "ubt_plane_vectors",
+        "ubt_coordinate_geometry",
+        "ubt_plane_figure_areas",
+        "ubt_triangle_trigonometry",
+        "ubt_triangle_metric_relations",
+        "ubt_triangle_segments_similarity",
+        "ubt_triangle_circle_metric_formulas"
+      ]
+    },
+    {
+      "slug": "ubt-stereometry",
+      "folder": "stereometry",
+      "title": {
+        "kk": "Стереометрия",
+        "ru": "Стереометрия",
+        "en": "Stereometry"
+      },
+      "topics": [
+        "ubt_prism_volume_surface",
+        "ubt_pyramid_volume_surface",
+        "ubt_cylinder_volume_surface",
+        "ubt_cone_volume_surface",
+        "ubt_sphere_volume_surface",
+        "ubt_spatial_angles_distances",
+        "ubt_polyhedron_sections_metric"
+      ]
+    },
+    {
+      "slug": "ubt-metric-relations-and-vectors",
+      "folder": "3d_vectors_and_coordinate_geometry",
+      "title": {
+        "kk": "Метрикалық қатынастар және векторлар",
+        "ru": "Метрические соотношения и векторы",
+        "en": "Metric relations and vectors"
+      },
+      "topics": [
+        "ubt_space_coordinates",
+        "ubt_space_vectors_operations",
+        "ubt_space_scalar_product",
+        "ubt_space_collinearity_coplanarity",
+        "ubt_plane_equation",
+        "ubt_line_equation_space",
+        "ubt_space_distances_angles"
+      ]
+    }
+  ],
+  "lessons": {
+    "ubt_roots_expressions": {
+      "kk": "Түбірлер және алгебралық өрнектер",
+      "ru": "Корни и алгебраические выражения",
+      "en": "Roots and algebraic expressions"
+    },
+    "ubt_powers": {
+      "kk": "Дәрежелер және санның стандарт түрі",
+      "ru": "Степени и стандартный вид числа",
+      "en": "Powers and scientific notation"
+    },
+    "ubt_trigonometry": {
+      "kk": "Тригонометрия",
+      "ru": "Тригонометрия",
+      "en": "Trigonometry"
+    },
+    "ubt_algebraic_expressions": {
+      "kk": "Алгебралық өрнектерді түрлендіру",
+      "ru": "Преобразование алгебраических выражений",
+      "en": "Algebraic expressions and transformations"
+    },
+    "ubt_linear_quadratic_rational_equations": {
+      "kk": "Сызықтық, квадрат және рационал теңдеулер",
+      "ru": "Линейные, квадратные и рациональные уравнения",
+      "en": "Linear, quadratic and rational equations"
+    },
+    "ubt_trigonometric_irrational_equations": {
+      "kk": "Тригонометриялық және иррационал теңдеулер",
+      "ru": "Тригонометрические и иррациональные уравнения",
+      "en": "Trigonometric and irrational equations"
+    },
+    "ubt_exponential_logarithmic_equations": {
+      "kk": "Көрсеткіштік және логарифмдік теңдеулер",
+      "ru": "Показательные и логарифмические уравнения",
+      "en": "Exponential and logarithmic equations"
+    },
+    "ubt_systems_linear_nonlinear_equations": {
+      "kk": "Екі айнымалысы бар сызықтық және сызықтық емес теңдеулер жүйелері",
+      "ru": "Системы линейных и нелинейных уравнений с двумя переменными",
+      "en": "Systems of linear and nonlinear equations in two variables"
+    },
+    "ubt_special_equation_systems": {
+      "kk": "Тригонометриялық, иррационал, көрсеткіштік және логарифмдік теңдеулер жүйелері",
+      "ru": "Системы тригонометрических, иррациональных, показательных и логарифмических уравнений",
+      "en": "Systems of trigonometric, irrational, exponential and logarithmic equations"
+    },
+    "ubt_linear_inequalities": {
+      "kk": "Сызықтық теңсіздіктер",
+      "ru": "Линейные неравенства",
+      "en": "Linear inequalities"
+    },
+    "ubt_quadratic_inequalities": {
+      "kk": "Квадрат теңсіздіктер",
+      "ru": "Квадратные неравенства",
+      "en": "Quadratic inequalities"
+    },
+    "ubt_rational_inequalities": {
+      "kk": "Рационал теңсіздіктер",
+      "ru": "Рациональные неравенства",
+      "en": "Rational inequalities"
+    },
+    "ubt_trigonometric_inequalities": {
+      "kk": "Тригонометриялық теңсіздіктер",
+      "ru": "Тригонометрические неравенства",
+      "en": "Trigonometric inequalities"
+    },
+    "ubt_irrational_inequalities": {
+      "kk": "Иррационал теңсіздіктер",
+      "ru": "Иррациональные неравенства",
+      "en": "Irrational inequalities"
+    },
+    "ubt_exponential_inequalities": {
+      "kk": "Көрсеткіштік теңсіздіктер",
+      "ru": "Показательные неравенства",
+      "en": "Exponential inequalities"
+    },
+    "ubt_logarithmic_inequalities": {
+      "kk": "Логарифмдік теңсіздіктер",
+      "ru": "Логарифмические неравенства",
+      "en": "Logarithmic inequalities"
+    },
+    "ubt_linear_inequality_systems": {
+      "kk": "Сызықтық теңсіздіктер жүйелері",
+      "ru": "Системы линейных неравенств",
+      "en": "Systems of linear inequalities"
+    },
+    "ubt_quadratic_inequality_systems": {
+      "kk": "Квадрат теңсіздіктердің жүйелері мен жиынтықтары",
+      "ru": "Системы и совокупности квадратных неравенств",
+      "en": "Systems and unions of quadratic inequalities"
+    },
+    "ubt_rational_inequality_systems": {
+      "kk": "Рационал теңсіздіктері бар жүйелер",
+      "ru": "Системы, содержащие рациональные неравенства",
+      "en": "Systems containing rational inequalities"
+    },
+    "ubt_nonlinear_inequality_systems": {
+      "kk": "Екі айнымалысы бар сызықтық емес теңсіздіктер жүйелері",
+      "ru": "Системы нелинейных неравенств с двумя переменными",
+      "en": "Nonlinear inequality systems in two variables"
+    },
+    "ubt_exponential_inequality_systems": {
+      "kk": "Көрсеткіштік теңсіздіктер жүйелері",
+      "ru": "Системы показательных неравенств",
+      "en": "Systems of exponential inequalities"
+    },
+    "ubt_logarithmic_inequality_systems": {
+      "kk": "Логарифмдік теңсіздіктер жүйелері",
+      "ru": "Системы логарифмических неравенств",
+      "en": "Systems of logarithmic inequalities"
+    },
+    "ubt_arithmetic_progression": {
+      "kk": "Арифметикалық прогрессия",
+      "ru": "Арифметическая прогрессия",
+      "en": "Arithmetic progression"
+    },
+    "ubt_geometric_progression": {
+      "kk": "Геометриялық прогрессия",
+      "ru": "Геометрическая прогрессия",
+      "en": "Geometric progression"
+    },
+    "ubt_infinite_geometric_progression": {
+      "kk": "Шексіз кемімелі геометриялық прогрессия",
+      "ru": "Бесконечно убывающая геометрическая прогрессия",
+      "en": "Infinite decreasing geometric progression"
+    },
+    "ubt_repeating_decimals": {
+      "kk": "Периодты ондық бөлшектерді жай бөлшекке айналдыру",
+      "ru": "Перевод периодических десятичных дробей в обыкновенные",
+      "en": "Repeating decimals as fractions"
+    },
+    "ubt_progression_word_problems": {
+      "kk": "Прогрессияларға берілген мәтінді есептер",
+      "ru": "Текстовые задачи на прогрессии",
+      "en": "Progression word problems"
+    },
+    "ubt_function_basics": {
+      "kk": "Функциялар: мәндері, қиылысу нүктелері және анықталу облысы",
+      "ru": "Функции: значения, точки пересечения и область определения",
+      "en": "Functions — values, intercepts and domains"
+    },
+    "ubt_function_properties": {
+      "kk": "Функция қасиеттері: асимптоталар және монотондық",
+      "ru": "Свойства функции: асимптоты и монотонность",
+      "en": "Function properties — asymptotes and monotonicity"
+    },
+    "ubt_inverse_composite_functions": {
+      "kk": "Кері және күрделі функциялар",
+      "ru": "Обратные и сложные функции",
+      "en": "Inverse and composite functions"
+    },
+    "ubt_exponential_log_functions": {
+      "kk": "Көрсеткіштік және логарифмдік функциялар",
+      "ru": "Показательные и логарифмические функции",
+      "en": "Exponential and logarithmic functions"
+    },
+    "ubt_derivatives": {
+      "kk": "Туынды: дәреже, тригонометрия және күрделі функция",
+      "ru": "Производная: степень, тригонометрия и сложная функция",
+      "en": "Derivatives — power, trigonometric and chain rule"
+    },
+    "ubt_derivative_applications": {
+      "kk": "Туындының қолданылуы: жанама және иілу нүктелері",
+      "ru": "Применение производной: касательная и точки перегиба",
+      "en": "Derivative applications — tangents and inflection points"
+    },
+    "ubt_integrals": {
+      "kk": "Интегралдар: тікелей интегралдау және айнымалыны алмастыру",
+      "ru": "Интегралы: непосредственное интегрирование и замена переменной",
+      "en": "Integrals — direct and substitution"
+    },
+    "ubt_integral_areas": {
+      "kk": "Анықталған интеграл көмегімен аудан табу",
+      "ru": "Вычисление площади с помощью определённого интеграла",
+      "en": "Area using definite integrals"
+    },
+    "ubt_mathematical_modelling": {
+      "kk": "Математикалық модельдеу және оңтайландыру",
+      "ru": "Математическое моделирование и оптимизация",
+      "en": "Mathematical modelling and optimization"
+    },
+    "ubt_angle_relations": {
+      "kk": "Бұрыштар және параллель түзулер",
+      "ru": "Углы и параллельные прямые",
+      "en": "Angle and parallel-line relations"
+    },
+    "ubt_triangle_properties": {
+      "kk": "Үшбұрыштың қасиеттері",
+      "ru": "Свойства треугольника",
+      "en": "Triangle properties"
+    },
+    "ubt_midlines_proportions": {
+      "kk": "Орта сызықтар және пропорционал кесінділер",
+      "ru": "Средние линии и пропорциональные отрезки",
+      "en": "Midlines and proportional segments"
+    },
+    "ubt_quadrilaterals": {
+      "kk": "Төртбұрыштардың қасиеттері",
+      "ru": "Свойства четырёхугольников",
+      "en": "Quadrilateral properties"
+    },
+    "ubt_circle_angles": {
+      "kk": "Шеңбердегі бұрыштар",
+      "ru": "Углы в окружности",
+      "en": "Circle angle relations"
+    },
+    "ubt_circle_segment_theorems": {
+      "kk": "Хорда, жанама және қиюшы туралы теоремалар",
+      "ru": "Теоремы о хордах, касательных и секущих",
+      "en": "Chord, tangent and secant theorems"
+    },
+    "ubt_circle_lengths_areas": {
+      "kk": "Шеңбердің ұзындығы және дөңгелектің ауданы",
+      "ru": "Длина окружности и площадь круга",
+      "en": "Circle lengths and areas"
+    },
+    "ubt_regular_polygons": {
+      "kk": "Дұрыс көпбұрыштар",
+      "ru": "Правильные многоугольники",
+      "en": "Regular polygons"
+    },
+    "ubt_triangle_metric_relations": {
+      "kk": "Үшбұрыштағы метрикалық қатынастар және тікбұрышты үшбұрыш",
+      "ru": "Метрические соотношения в треугольнике и прямоугольный треугольник",
+      "en": "Triangle metric relations and right triangles"
+    },
+    "ubt_triangle_trigonometry": {
+      "kk": "Үшбұрыш тригонометриясы: синустар және косинустар теоремалары",
+      "ru": "Тригонометрия треугольника: теоремы синусов и косинусов",
+      "en": "Triangle trigonometry — sine and cosine theorems"
+    },
+    "ubt_triangle_segments_similarity": {
+      "kk": "Үшбұрыштың арнайы кесінділері және ұқсастық",
+      "ru": "Особые отрезки треугольника и подобие",
+      "en": "Triangle special segments and similarity"
+    },
+    "ubt_triangle_circle_metric_formulas": {
+      "kk": "Үшбұрыштың ауданы, сырттай және іштей сызылған шеңбер радиустары",
+      "ru": "Площадь треугольника, радиусы описанной и вписанной окружностей",
+      "en": "Triangle area, circumradius and inradius formulas"
+    },
+    "ubt_plane_figure_areas": {
+      "kk": "Үшбұрыштар мен төртбұрыштардың аудандары",
+      "ru": "Площади треугольников и четырёхугольников",
+      "en": "Areas of triangles and quadrilaterals"
+    },
+    "ubt_plane_vectors": {
+      "kk": "Жазықтықтағы векторлар",
+      "ru": "Векторы на плоскости",
+      "en": "Vectors in the plane"
+    },
+    "ubt_coordinate_geometry": {
+      "kk": "Жазықтықтағы координаталар әдісі",
+      "ru": "Метод координат на плоскости",
+      "en": "Coordinate geometry in the plane"
+    },
+    "ubt_space_coordinates": {
+      "kk": "Кеңістіктегі координаталар",
+      "ru": "Координаты в пространстве",
+      "en": "Coordinates in space"
+    },
+    "ubt_space_vectors_operations": {
+      "kk": "Кеңістіктегі векторларға амалдар",
+      "ru": "Операции над векторами в пространстве",
+      "en": "Vector operations in space"
+    },
+    "ubt_space_scalar_product": {
+      "kk": "Кеңістіктегі векторлардың скаляр көбейтіндісі",
+      "ru": "Скалярное произведение векторов в пространстве",
+      "en": "Scalar product of vectors in space"
+    },
+    "ubt_space_collinearity_coplanarity": {
+      "kk": "Кеңістіктегі векторлардың коллинеарлығы және компланарлығы",
+      "ru": "Коллинеарность и компланарность векторов в пространстве",
+      "en": "Collinearity and coplanarity of vectors in space"
+    },
+    "ubt_plane_equation": {
+      "kk": "Кеңістіктегі жазықтық теңдеуі",
+      "ru": "Уравнение плоскости в пространстве",
+      "en": "Equation of a plane in space"
+    },
+    "ubt_line_equation_space": {
+      "kk": "Кеңістіктегі түзу теңдеуі",
+      "ru": "Уравнение прямой в пространстве",
+      "en": "Equation of a line in space"
+    },
+    "ubt_space_distances_angles": {
+      "kk": "Кеңістіктегі қашықтықтар мен бұрыштар",
+      "ru": "Расстояния и углы в пространстве",
+      "en": "Distances and angles in space"
+    },
+    "ubt_prism_volume_surface": {
+      "kk": "Призма және параллелепипед: көлемі мен беті",
+      "ru": "Призма и параллелепипед: объём и площадь поверхности",
+      "en": "Prisms and parallelepipeds: volume and surface area"
+    },
+    "ubt_pyramid_volume_surface": {
+      "kk": "Пирамида және кесік пирамида: көлемі мен беті",
+      "ru": "Пирамида и усечённая пирамида: объём и площадь поверхности",
+      "en": "Pyramids and frustums: volume and surface area"
+    },
+    "ubt_cylinder_volume_surface": {
+      "kk": "Цилиндр: көлемі мен беті",
+      "ru": "Цилиндр: объём и площадь поверхности",
+      "en": "Cylinders: volume and surface area"
+    },
+    "ubt_cone_volume_surface": {
+      "kk": "Конус және кесік конус: көлемі мен беті",
+      "ru": "Конус и усечённый конус: объём и площадь поверхности",
+      "en": "Cones and cone frustums: volume and surface area"
+    },
+    "ubt_sphere_volume_surface": {
+      "kk": "Сфера мен шар: көлемі, беті және қималары",
+      "ru": "Сфера и шар: объём, площадь поверхности и сечения",
+      "en": "Spheres: volume, surface area and plane sections"
+    },
+    "ubt_spatial_angles_distances": {
+      "kk": "Кеңістіктегі бұрыштар мен қашықтықтар",
+      "ru": "Углы и расстояния в пространстве",
+      "en": "Angles and distances in space"
+    },
+    "ubt_polyhedron_sections_metric": {
+      "kk": "Денелердің жазық қималарының аудандары",
+      "ru": "Площади плоских сечений тел",
+      "en": "Areas of plane sections of solids"
+    }
+  }
+}

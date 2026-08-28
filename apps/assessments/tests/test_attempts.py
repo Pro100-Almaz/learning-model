@@ -133,7 +133,7 @@ def test_start_attempt_returns_questions_without_correct_flags(auth_client, micr
     assert body["test"]["id"] == micro_test["test"].pk
     assert len(body["questions"]) == 2
     for q in body["questions"]:
-        assert set(q.keys()) == {"id", "text", "image", "options"}
+        assert set(q.keys()) == {"id", "text", "image", "figure", "options"}
         for opt in q["options"]:
             assert set(opt.keys()) == {"id", "text"}
             assert "is_correct" not in opt

@@ -1,0 +1,203 @@
+{
+  "topic": "ubt_angle_relations",
+  "parent_topic": "planimetry_geometric_figures",
+  "parent_topic_number": 14,
+  "display_name": "Planimetry — angle and parallel-line relations",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 14",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 14. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Планиметрия",
+    "slug": "planimetriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "vertical_angles",
+        "supplementary_angles",
+        "parallel_corresponding_angle"
+      ],
+      "desc": "question structure"
+    },
+    "angle": {
+      "type": "int",
+      "min": 20,
+      "max": 160
+    },
+    "parallel_angle": {
+      "type": "choice",
+      "values": [
+        30,
+        40,
+        45,
+        50,
+        60,
+        70,
+        75,
+        80,
+        110,
+        120,
+        130,
+        135
+      ]
+    }
+  },
+  "supported_difficulties": [
+    1
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "vertical_angles",
+          "supplementary_angles",
+          "parallel_corresponding_angle"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "vertical_angles": {
+      "uses": [
+        "angle"
+      ],
+      "constraints": [
+        "angle < 180"
+      ],
+      "question": {
+        "instruction": "Two lines intersect. One angle is given. Find its vertical angle.",
+        "latex": "\\angle 1={angle}^\\circ"
+      }
+    },
+    "supplementary_angles": {
+      "uses": [
+        "angle"
+      ],
+      "constraints": [
+        "angle < 180"
+      ],
+      "question": {
+        "instruction": "Two adjacent angles form a straight line. Find the second angle.",
+        "latex": "\\angle 1={angle}^\\circ"
+      }
+    },
+    "parallel_corresponding_angle": {
+      "uses": [
+        "parallel_angle"
+      ],
+      "question": {
+        "instruction": "Two parallel lines are cut by a transversal. Find the corresponding angle.",
+        "latex": "\\alpha={parallel_angle}^\\circ"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "vertical_angles": "angle",
+      "supplementary_angles": "180-angle",
+      "parallel_corresponding_angle": "parallel_angle"
+    }
+  },
+  "answer_render": {
+    "vertical_angles": "degrees",
+    "supplementary_angles": "degrees",
+    "parallel_corresponding_angle": "degrees"
+  },
+  "distractors": {
+    "vertical_angles": [
+      {
+        "id": "supplement",
+        "transform": "180-angle"
+      },
+      {
+        "id": "complement",
+        "transform": "90-angle"
+      },
+      {
+        "id": "double",
+        "transform": "2*angle"
+      },
+      {
+        "id": "half",
+        "transform": "Rational(angle,2)"
+      },
+      {
+        "id": "plus_ten",
+        "transform": "angle+10"
+      },
+      {
+        "id": "minus_ten",
+        "transform": "angle-10"
+      }
+    ],
+    "supplementary_angles": [
+      {
+        "id": "same",
+        "transform": "angle"
+      },
+      {
+        "id": "complement",
+        "transform": "90-angle"
+      },
+      {
+        "id": "half",
+        "transform": "Rational(180-angle,2)"
+      },
+      {
+        "id": "negative",
+        "transform": "angle-180"
+      },
+      {
+        "id": "plus_ten",
+        "transform": "190-angle"
+      },
+      {
+        "id": "minus_ten",
+        "transform": "170-angle"
+      }
+    ],
+    "parallel_corresponding_angle": [
+      {
+        "id": "supplement",
+        "transform": "180-parallel_angle"
+      },
+      {
+        "id": "complement",
+        "transform": "90-parallel_angle"
+      },
+      {
+        "id": "half",
+        "transform": "Rational(parallel_angle,2)"
+      },
+      {
+        "id": "double",
+        "transform": "2*parallel_angle"
+      },
+      {
+        "id": "plus_ten",
+        "transform": "parallel_angle+10"
+      },
+      {
+        "id": "minus_ten",
+        "transform": "parallel_angle-10"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "angle_range_validation": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

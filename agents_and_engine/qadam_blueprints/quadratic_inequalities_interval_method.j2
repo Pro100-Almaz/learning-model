@@ -1,0 +1,38 @@
+{% macro poly(a, b, c) -%}
+{%- if a == 1 -%}x^2
+{%- elif a == -1 -%}-x^2
+{%- else -%}{{ a }}x^2
+{%- endif -%}
+{%- if b > 0 %} + {% if b != 1 %}{{ b }}{% endif %}x
+{%- elif b < 0 %} - {% if b != -1 %}{{ -b }}{% endif %}x
+{%- endif -%}
+{%- if c > 0 %} + {{ c }}
+{%- elif c < 0 %} - {{ -c }}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro linear(b, c) -%}
+{%- if b == 1 -%}x
+{%- elif b == -1 -%}-x
+{%- else -%}{{ b }}x
+{%- endif -%}
+{%- if c > 0 %} + {{ c }}
+{%- elif c < 0 %} - {{ -c }}
+{%- endif -%}
+{%- endmacro %}
+
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
+{% if structure == 'two_roots_both_sides' -%}
+- ${{ poly(a, lhs_b, lhs_c) }} {{ relation_latex }} {{ linear(rhs_b, rhs_c) }}$
+{% else -%}
+- ${{ poly(a, b, c) }} {{ relation_latex }} 0$
+{% endif -%}
+- Теңсіздікті шешіп, жауапты аралықтар түрінде жазыңыз.
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
+- Reduce the inequality to standard quadratic form before doing any sign analysis.
+- For the two-real-root branch, locate the two zeros on a number line and use the sign of the leading coefficient to determine the signs on the three intervals.
+- For the no-real-roots branch, use the negative discriminant and the sign of the leading coefficient; there are no zero crossings.
+- For strict inequalities exclude zeros; for non-strict inequalities include zeros when real zeros exist.
+- Render all math as LaTeX inside $...$.
+- Do NOT state or hint at the answer: do not reveal the roots, discriminant value, sign-chart pattern, selected interval(s), or whether the final answer is all real numbers or the empty set.

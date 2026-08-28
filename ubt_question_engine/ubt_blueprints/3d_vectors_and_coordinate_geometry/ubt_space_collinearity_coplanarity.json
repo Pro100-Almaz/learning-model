@@ -1,0 +1,357 @@
+{
+  "topic": "ubt_space_collinearity_coplanarity",
+  "parent_topic": "3d_vectors_and_coordinate_geometry",
+  "parent_topic_number": 10,
+  "display_name": "Collinearity and coplanarity in space",
+  "curriculum_ref": "KZ 2026 UBT - 3D vectors and coordinate geometry - Collinearity and coplanarity",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Proportional-vector and expanded determinant calculations without Matrix or determinant helper names.",
+  "tag": {
+    "name": "Векторы и координаты в пространстве",
+    "slug": "kenistik-vektorlar-koordinatalar"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "collinear_scalar",
+        "collinear_missing_coordinate",
+        "coplanarity_determinant",
+        "basis_decomposition",
+        "normal_without_cross_product",
+        "coplanar_missing_coordinate"
+      ]
+    },
+    "p": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "q": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "r": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "k": {
+      "type": "int",
+      "min": 2,
+      "max": 6
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "collinear_scalar",
+          "collinear_missing_coordinate"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "coplanarity_determinant",
+          "basis_decomposition"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "normal_without_cross_product",
+          "coplanar_missing_coordinate"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "collinear_scalar": {
+      "uses": [
+        "p",
+        "q",
+        "r",
+        "k"
+      ],
+      "derived": {
+        "bx": "k*p",
+        "by": "k*q",
+        "bz": "k*r"
+      },
+      "question": {
+        "instruction": "The vectors are collinear and b equals k times a. Find k.",
+        "latex": "\\vec{{a}}=({p};{q};{r}),\\qquad\\vec{{b}}=({bx};{by};{bz})"
+      }
+    },
+    "collinear_missing_coordinate": {
+      "uses": [
+        "k"
+      ],
+      "derived": {
+        "bx": "2*k",
+        "by": "3*k"
+      },
+      "question": {
+        "instruction": "Find t so that the two vectors are collinear.",
+        "latex": "\\vec{{a}}=(2;3;6),\\qquad\\vec{{b}}=({bx};{by};t)"
+      }
+    },
+    "coplanarity_determinant": {
+      "uses": [
+        "p",
+        "q",
+        "r"
+      ],
+      "derived": {
+        "cx": "p+1",
+        "cy": "q+2",
+        "cz": "r+3"
+      },
+      "question": {
+        "instruction": "Calculate the scalar triple-product determinant to test the vectors for coplanarity.",
+        "latex": "\\vec{{a}}=({p};{q};{r}),\\quad\\vec{{b}}=(1;2;3),\\quad\\vec{{c}}=({cx};{cy};{cz})"
+      }
+    },
+    "basis_decomposition": {
+      "uses": [
+        "p",
+        "q",
+        "r"
+      ],
+      "constraints": [
+        "p != q",
+        "q != r",
+        "p != r"
+      ],
+      "question": {
+        "instruction": "Find the coefficients of v in the ordered basis i, j, k.",
+        "latex": "\\vec{{v}}={p}\\vec{{i}}+{q}\\vec{{j}}+{r}\\vec{{k}}"
+      }
+    },
+    "normal_without_cross_product": {
+      "uses": [
+        "p",
+        "q"
+      ],
+      "derived": {
+        "up": "-p",
+        "vq": "-q"
+      },
+      "question": {
+        "instruction": "Find t so that n is perpendicular to both direction vectors and is therefore a normal vector.",
+        "latex": "\\vec{{u}}=(1;0;{up}),\\quad\\vec{{v}}=(0;1;{vq}),\\quad\\vec{{n}}=({p};{q};t)"
+      }
+    },
+    "coplanar_missing_coordinate": {
+      "uses": [
+        "p",
+        "q"
+      ],
+      "question": {
+        "instruction": "Find t so that the three vectors are coplanar.",
+        "latex": "\\vec{{a}}=(1;2;0),\\quad\\vec{{b}}=(0;1;3),\\quad\\vec{{c}}=({p};{q};t)"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "collinear_scalar": "k",
+      "collinear_missing_coordinate": "6*k",
+      "coplanarity_determinant": "p*(2*(r+3)-3*(q+2))-q*(r+3-3*(p+1))+r*(q+2-2*(p+1))",
+      "basis_decomposition": "Tuple(p,q,r)",
+      "normal_without_cross_product": "1",
+      "coplanar_missing_coordinate": "3*q-6*p"
+    }
+  },
+  "answer_render": {
+    "collinear_scalar": "scalar",
+    "collinear_missing_coordinate": "scalar",
+    "coplanarity_determinant": "scalar",
+    "basis_decomposition": "exact_expression",
+    "normal_without_cross_product": "scalar",
+    "coplanar_missing_coordinate": "scalar"
+  },
+  "distractors": {
+    "collinear_scalar": [
+      {
+        "id": "inverted_the_scale_factor",
+        "transform": "1/k"
+      },
+      {
+        "id": "used_coordinate_sum_ratio",
+        "transform": "3*k"
+      },
+      {
+        "id": "used_coordinate_product_ratio",
+        "transform": "k**3"
+      },
+      {
+        "id": "changed_the_sign",
+        "transform": "-k"
+      },
+      {
+        "id": "added_one_to_scale_factor",
+        "transform": "k+1"
+      },
+      {
+        "id": "subtracted_one_from_scale_factor",
+        "transform": "k-1"
+      }
+    ],
+    "collinear_missing_coordinate": [
+      {
+        "id": "used_first_component_multiplier",
+        "transform": "2*k"
+      },
+      {
+        "id": "used_second_component_multiplier",
+        "transform": "3*k"
+      },
+      {
+        "id": "inverted_the_scale_factor",
+        "transform": "6/k"
+      },
+      {
+        "id": "added_one_after_scaling",
+        "transform": "6*k+1"
+      },
+      {
+        "id": "changed_the_sign",
+        "transform": "-6*k"
+      },
+      {
+        "id": "squared_the_scale_factor",
+        "transform": "6*k**2"
+      }
+    ],
+    "coplanarity_determinant": [
+      {
+        "id": "assumed_positive_unit_determinant",
+        "transform": "1"
+      },
+      {
+        "id": "assumed_negative_unit_determinant",
+        "transform": "-1"
+      },
+      {
+        "id": "used_coordinate_sum",
+        "transform": "p+q+r"
+      },
+      {
+        "id": "changed_coordinate_sum_sign",
+        "transform": "-(p+q+r)"
+      },
+      {
+        "id": "doubled_the_coordinate_sum",
+        "transform": "2*(p+q+r)"
+      },
+      {
+        "id": "doubled_sum_with_wrong_sign",
+        "transform": "-2*(p+q+r)"
+      }
+    ],
+    "basis_decomposition": [
+      {
+        "id": "reversed_basis_order",
+        "transform": "Tuple(r,q,p)"
+      },
+      {
+        "id": "swapped_first_two_coefficients",
+        "transform": "Tuple(q,p,r)"
+      },
+      {
+        "id": "used_negative_coefficients",
+        "transform": "Tuple(-p,-q,-r)"
+      },
+      {
+        "id": "summed_coefficients",
+        "transform": "p+q+r"
+      },
+      {
+        "id": "squared_coefficients",
+        "transform": "Tuple(p**2,q**2,r**2)"
+      },
+      {
+        "id": "normalized_by_coefficient_sum",
+        "transform": "Tuple(p/(p+q+r),q/(p+q+r),r/(p+q+r))"
+      }
+    ],
+    "normal_without_cross_product": [
+      {
+        "id": "forgot_the_third_component",
+        "transform": "0"
+      },
+      {
+        "id": "changed_the_normal_direction",
+        "transform": "-1"
+      },
+      {
+        "id": "added_one_to_required_component",
+        "transform": "2"
+      },
+      {
+        "id": "added_two_to_required_component",
+        "transform": "3"
+      },
+      {
+        "id": "doubled_twice_instead_of_once",
+        "transform": "4"
+      },
+      {
+        "id": "used_sum_of_unit_coefficients",
+        "transform": "5"
+      }
+    ],
+    "coplanar_missing_coordinate": [
+      {
+        "id": "added_one_after_expanding_determinant",
+        "transform": "3*q-6*p+1"
+      },
+      {
+        "id": "added_two_after_expanding_determinant",
+        "transform": "3*q-6*p+2"
+      },
+      {
+        "id": "subtracted_one_after_expanding_determinant",
+        "transform": "3*q-6*p-1"
+      },
+      {
+        "id": "subtracted_two_after_expanding_determinant",
+        "transform": "3*q-6*p-2"
+      },
+      {
+        "id": "forgot_factor_two_and_added_half",
+        "transform": "3*q-6*p+Rational(1,2)"
+      },
+      {
+        "id": "forgot_factor_two_and_subtracted_half",
+        "transform": "3*q-6*p-Rational(1,2)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "positive_volume_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}
