@@ -46,4 +46,27 @@ RUN chown -R appuser:appuser /app
 
 USER appuser
 
-EXPOSE 8000
+# Build the hashed static manifest into STATIC_ROOT. CompressedManifestStatic-
+# FilesStorage refuses to resolve {% static %} without it, so skipping this makes
+# every template-rendering view 500 in production. Importing settings requires
+# these three vars to exist; the values are throwaway and never reach the running
+# container, which gets the real ones from the environment.
+RUN DJANGO_SECRET_KEY=build-only-not-a-real-secret \
+    DATABASE_URL=postgres://u:p@localhost:5432/db \
+    ALLOWED_HOSTS=localhost \
+    python manage.py collectstatic --noinput
+
+# Cloud Run injects PORT and requires the server to listen on it; the default
+# keeps `docker run` working locally.
+ENV PORT=8080
+EXPOSE 8080
+
+# `exec` hands PID 1 to gunicorn so it receives the platform's SIGTERM directly
+# and can drain in-flight requests instead of being killed with the shell.
+CMD exec gunicorn conf.wsgi:application \
+    --bind 0.0.0.0:$PORT \
+    --workers 2 \
+    --threads 8 \
+    --timeout 120 \
+    --access-logfile - \
+    --error-logfile -
