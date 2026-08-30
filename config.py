@@ -54,4 +54,6 @@ SOLID_MIN = 75
 #called "near_miss_within" since within this score, the profession is reachable
 NEAR_MISS_WITHIN = 5
 
+TEST_PASS_THRESHOLD = 85
+
 config = Config()

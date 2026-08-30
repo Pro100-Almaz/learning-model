@@ -1,4 +1,8 @@
 from django.db import models
+from django.utils import timezone
+
+from apps.content.services import calculate_student_progress, invalidate_cache_for_student_and_lesson
+from apps.users.models import CustomUser
 
 
 class Subject(models.Model):
@@ -11,6 +15,11 @@ class Subject(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    def student_progress(self, student: CustomUser) -> int:
+        lessons = Lesson.objects.filter(module__class_grade__subject=self)
+        cache_key = f"student_{student.id}:subject_{self.id}"
+        return calculate_student_progress(lessons, student, cache_key)
+
 
 class ClassGrade(models.Model):
     grade = models.PositiveIntegerField()
@@ -18,6 +27,12 @@ class ClassGrade(models.Model):
 
     def __str__(self) -> str:
         return str(self.grade)
+
+    def student_progress(self, student: CustomUser) -> int:
+        lessons = Lesson.objects.filter(module__class_grade=self)
+        cache_key = f"student_{student.id}:class_grade_{self.id}"
+        result = calculate_student_progress(lessons, student, cache_key)
+        return result
 
 
 class Module(models.Model):
@@ -36,6 +51,11 @@ class Module(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+    def student_progress(self, student: CustomUser) -> int:
+        lessons = Lesson.objects.filter(module=self)
+        cache_key = f"student_{student.id}:module_{self.id}"
+        return calculate_student_progress(lessons, student, cache_key)
 
 
 class Lesson(models.Model):
@@ -84,6 +104,10 @@ class Lesson(models.Model):
     def __str__(self) -> str:
         return self.title
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        invalidate_cache_for_student_and_lesson(self.id)
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=80, unique=True)
@@ -95,3 +119,30 @@ class Tag(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class NextLesson(models.Model):
+    STATUS_CHOICES = [
+        ("todo", "ToDo"),
+        ("done", "Done"),
+    ]
+
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="next_lessons")
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="next_lessons")
+    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="next_lessons")
+    date = models.DateField(default=timezone.localdate)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="todo")
+
+    class Meta:
+        ordering = ["student_id", "date"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["student", "subject", "date"],
+                name="uniq_next_lesson_per_student_subject_day",
+            ),
+        ]
+        indexes = [models.Index(fields=["student", "date"])]
+
+    def __str__(self) -> str:
+        return f"NextLesson<{self.pk}> student={self.student_id} lesson={self.lesson_id} {self.date}"
+

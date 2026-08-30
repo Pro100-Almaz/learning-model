@@ -21,7 +21,7 @@ from django.core.management.base import BaseCommand
 # reference them; careers stands alone.
 FIXTURES: tuple[str, ...] = (
     "content.json",
-    "lessons.json",
+    # "lessons.json",
     "careers_sample.json",
 )
 
