@@ -7,6 +7,8 @@ CACHES = {
     }
 }
 
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
+
 # Match production middleware ordering — insert at position 0
 MIDDLEWARE.insert(0, "conf.test_utils.RequestIDMiddleware")  # noqa
 
