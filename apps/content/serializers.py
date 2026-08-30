@@ -12,7 +12,7 @@ from django.db.models import Max
 from rest_framework import serializers
 
 from apps.assessments.models import TestAttempt
-from apps.content.models import Lesson, Module, Tag, Subject, ClassGrade
+from apps.content.models import Lesson, Module, NextLesson, Tag, Subject, ClassGrade
 from apps.content.services import get_passed_lesson_count
 from apps.roadmap.models import StudentTopicMastery
 
@@ -282,4 +282,25 @@ class ClassGradeSerializer(serializers.ModelSerializer):
 
 
 class NextLessonsSerializer(serializers.ModelSerializer):
-    pass
+    """One entry of the student's daily plan: subject + the lesson to take.
+
+    `status` is the stored row status, already refreshed by
+    services.sync_next_lessons before serialization; the nested lesson carries
+    its own live status/progress so the card can show both.
+    """
+
+    subject = SubjectSerializer(read_only=True)
+    lesson = serializers.SerializerMethodField()
+
+    class Meta:
+        model = NextLesson
+        fields = [
+            "id",
+            "date",
+            "status",
+            "subject",
+            "lesson",
+        ]
+
+    def get_lesson(self, obj: NextLesson) -> dict:
+        return LessonSerializer(obj.lesson, context=self.context).data

@@ -23,7 +23,11 @@ from apps.content.serializers import (
     LessonSerializer,
     ModuleSerializer, SubjectSerializer, ClassGradeSerializer, LessonBaseSerializer, NextLessonsSerializer,
 )
-from apps.content.services import get_micro_test_id_for_lesson, find_next_lesson
+from apps.content.services import (
+    get_micro_test_id_for_lesson,
+    get_micro_test_ids_for_lessons,
+    sync_next_lessons,
+)
 
 
 class ModuleListView(ListAPIView):
@@ -109,27 +113,33 @@ class LessonDetailView(RetrieveAPIView):
 
 
 class NextLessonsView(APIView):
-    """
-    GET /api/v1/lessons/next-lessons
-    Returns the next lessons list (or empty) for the student.
+    """GET /api/v1/lessons/next_lessons/
+
+    The student's plan for today: one entry per enrolled subject, pointing at
+    the first lesson of that subject whose test they have not passed yet.
+
+    The plan is rebuilt on every fetch (services.sync_next_lessons): rows from
+    past days are dropped, today's are re-checked and flipped to "done" when
+    the lesson has since been passed, and any subject still missing a row gets
+    one. Subjects the student has finished are omitted, so an empty array means
+    nothing is left to do today.
     """
 
     serializer_class = NextLessonsSerializer
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = self.request.user
-        subjects = user.profile.subjects.all()
-        lessons = []
-        for subject in subjects:
-            if subject.student_progress(user) < 100:
-                # find and add lesson
-                lessons.append(find_next_lesson(subject))
+        next_lessons = sync_next_lessons(request.user)
 
         data = NextLessonsSerializer(
-            lessons,
+            next_lessons,
             many=True,
-            context={"request": request}
+            context={
+                "request": request,
+                "micro_test_map": get_micro_test_ids_for_lessons(
+                    [row.lesson_id for row in next_lessons]
+                ),
+            },
         ).data
         return Response(data)
 

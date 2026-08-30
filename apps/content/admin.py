@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.content.models import ClassGrade, Lesson, Module, Subject, Tag
+from apps.content.models import ClassGrade, Lesson, Module, NextLesson, Subject, Tag
 
 
 @admin.register(Subject)
@@ -44,6 +44,16 @@ class LessonAdmin(admin.ModelAdmin):
     ordering = ("module", "order", "id")
     list_select_related = ("module",)
     autocomplete_fields = ("module",)
+
+
+@admin.register(NextLesson)
+class NextLessonAdmin(admin.ModelAdmin):
+    list_display = ("id", "student", "subject", "lesson", "date", "status")
+    list_filter = ("status", "date", "subject")
+    search_fields = ("student__email", "lesson__title")
+    ordering = ("-date", "student")
+    list_select_related = ("student", "subject", "lesson")
+    autocomplete_fields = ("lesson", "subject")
 
 
 @admin.register(Tag)
