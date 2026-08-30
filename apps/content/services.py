@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 
 from django.apps import apps
 from django.core.cache import cache
+from django.db import transaction
 from django.db.models import Model, Max, QuerySet, OuterRef, Exists, Q
 from django.utils import timezone
 
@@ -21,7 +22,7 @@ from apps.roadmap.models import StudentTopicMastery
 from apps.users.models import CustomUser
 
 if TYPE_CHECKING:
-    from apps.content.models import Lesson, Subject, ClassGrade
+    from apps.content.models import Lesson, NextLesson, Subject, ClassGrade
 
 
 def compute_lesson_completion(user, lesson_ids: Iterable[int]) -> dict[int, bool]:
@@ -92,14 +93,19 @@ def calculate_student_progress(lessons: QuerySet[Lesson], student: CustomUser, c
     return progress
 
 
-def get_passed_lesson_count(lessons: QuerySet[Lesson], student: CustomUser) -> int:
+def get_passed_lesson_ids(lessons: QuerySet[Lesson], student: CustomUser) -> set[int]:
+    """Ids of the lessons among `lessons` the student has already passed.
+
+    Passed == the best completed attempt on the lesson's test scored at least
+    config.TEST_PASS_THRESHOLD, or the lesson's tag is already mastered.
+    """
     mastery_exists = StudentTopicMastery.objects.filter(
         student=student,
         tag_id=OuterRef("test__lesson__tag_id"),
         theta__gte=1,
     )
 
-    passed = (
+    return set(
         TestAttempt.objects
         .filter(
             student=student,
@@ -116,13 +122,18 @@ def get_passed_lesson_count(lessons: QuerySet[Lesson], student: CustomUser) -> i
             Q(best_score__gte=config.TEST_PASS_THRESHOLD) |
             Q(has_mastery=True)
         )
-        .count()
+        .values_list("test__lesson", flat=True)
     )
-    return passed
 
 
-def invalidate_cache_for_student_and_lesson(lesson_id: int, student_id: int | None = None):
+def get_passed_lesson_count(lessons: QuerySet[Lesson], student: CustomUser) -> int:
+    return len(get_passed_lesson_ids(lessons, student))
+
+
+def invalidate_cache_for_student_and_lesson(lesson_id: int | None, student_id: int | None = None):
     from apps.content.models import Lesson
+    if lesson_id is None:
+        return
     lesson = Lesson.objects.select_related("module__class_grade__subject").get(id=lesson_id)
     module = lesson.module
     class_grade = module.class_grade
@@ -152,7 +163,149 @@ def seconds_until_midnight() -> int:
     return int((midnight - now).total_seconds())
 
 
-def find_next_lesson(subject: Subject) -> Lesson:
-    lessons = Lesson.objects.filter(module__class_grade__subject=subject).select_related("module__class_grade__subject")
+def get_micro_test_ids_for_lessons(lesson_ids: Iterable[int]) -> dict[int, int]:
+    """Batched version of get_micro_test_id_for_lesson: {lesson_id: test_id}.
 
-    pass
+    Lessons without a micro test are simply absent from the mapping. When a
+    lesson has several (legacy data) the lowest pk wins, same as the single
+    lookup — the reverse iteration below lets the lowest pk overwrite.
+    """
+    lesson_ids = list(lesson_ids)
+    if not lesson_ids:
+        return {}
+
+    Test = apps.get_model("assessments", "Test")
+    pairs = (
+        Test.objects.filter(lesson_id__in=lesson_ids, type="micro")
+        .order_by("-pk")
+        .values_list("lesson_id", "pk")
+    )
+    return {lesson_id: test_id for lesson_id, test_id in pairs}
+
+
+def find_next_lessons(
+    student: CustomUser,
+    subjects: Iterable[Subject],
+) -> dict[int, Lesson]:
+    """{subject_id: first lesson the student has not passed yet}.
+
+    Curriculum order is class grade -> module order -> lesson order, so "the
+    next lesson" is simply the first un-passed lesson in that walk. Subjects
+    the student has fully finished are absent from the mapping.
+
+    Two queries total (one for the lessons, one for the passed ids); the
+    per-subject pick is done in Python so it stays portable across backends.
+    """
+    from apps.content.models import Lesson
+
+    subject_ids = [subject.pk for subject in subjects]
+    if not subject_ids:
+        return {}
+
+    lessons = (
+        Lesson.objects
+        .filter(module__class_grade__subject_id__in=subject_ids)
+        .select_related("module__class_grade")
+        .order_by(
+            "module__class_grade__subject_id",
+            "module__class_grade__grade",
+            "module__order",
+            "module_id",
+            "order",
+            "id",
+        )
+    )
+    passed_ids = get_passed_lesson_ids(lessons, student)
+
+    next_by_subject: dict[int, Lesson] = {}
+    for lesson in lessons:
+        subject_id = lesson.module.class_grade.subject_id
+        if subject_id in next_by_subject or lesson.pk in passed_ids:
+            continue
+        next_by_subject[subject_id] = lesson
+    return next_by_subject
+
+
+def sync_next_lessons(student: CustomUser) -> list[NextLesson]:
+    """Rebuild and return today's next-lesson plan for `student`.
+
+    Called on every fetch, so it is also where the plan is kept honest:
+
+    1. rows whose date has passed — and rows for subjects the student has
+       since dropped — are deleted, leaving only today's plan behind;
+    2. today's surviving rows are re-checked against the student's attempts
+       and flipped to "done" when the lesson has since been passed;
+    3. subjects with no row for today get one, pointing at their first
+       un-passed lesson.
+
+    A subject the student has fully completed gets no row at all.
+    """
+    from apps.content.models import NextLesson
+
+    profile = getattr(student, "profile", None)
+    if profile is None:
+        return []
+
+    today = timezone.localdate()
+    subjects = list(profile.subjects.all())
+    subject_ids = [subject.pk for subject in subjects]
+
+    with transaction.atomic():
+        (
+            NextLesson.objects
+            .filter(student=student)
+            .filter(Q(date__lt=today) | ~Q(subject_id__in=subject_ids))
+            .delete()
+        )
+
+        rows = list(NextLesson.objects.filter(student=student, date=today))
+        _refresh_next_lesson_statuses(student, rows)
+
+        covered = {row.subject_id for row in rows}
+        missing = [subject for subject in subjects if subject.pk not in covered]
+        if missing:
+            NextLesson.objects.bulk_create(
+                [
+                    NextLesson(
+                        student=student,
+                        subject_id=subject_id,
+                        lesson=lesson,
+                        date=today,
+                        status="todo",
+                    )
+                    for subject_id, lesson in find_next_lessons(student, missing).items()
+                ],
+                # Two parallel fetches can race here; the unique constraint on
+                # (student, subject, date) decides and the loser is dropped.
+                ignore_conflicts=True,
+            )
+
+    return list(
+        NextLesson.objects
+        .filter(student=student, date=today)
+        .select_related("subject", "lesson__module__class_grade__subject", "lesson__tag")
+        .order_by("subject__name", "id")
+    )
+
+
+def _refresh_next_lesson_statuses(student: CustomUser, rows: list[NextLesson]) -> None:
+    """Flip today's rows to "done" for lessons the student has since passed."""
+    from apps.content.models import Lesson, NextLesson
+
+    if not rows:
+        return
+
+    passed_ids = get_passed_lesson_ids(
+        Lesson.objects.filter(id__in=[row.lesson_id for row in rows]),
+        student,
+    )
+
+    changed = []
+    for row in rows:
+        status = "done" if row.lesson_id in passed_ids else "todo"
+        if row.status != status:
+            row.status = status
+            changed.append(row)
+
+    if changed:
+        NextLesson.objects.bulk_update(changed, ["status"])
