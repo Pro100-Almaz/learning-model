@@ -1,0 +1,379 @@
+{
+  "topic": "ubt_line_equation_space",
+  "parent_topic": "3d_vectors_and_coordinate_geometry",
+  "parent_topic_number": 10,
+  "display_name": "Equations of lines in space",
+  "curriculum_ref": "KZ 2026 UBT - 3D vectors and coordinate geometry - Equation of a line",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Canonical and parametric line data, point membership, direction relations, and exact angle cosines.",
+  "tag": {
+    "name": "Векторы и координаты в пространстве",
+    "slug": "kenistik-vektorlar-koordinatalar"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "canonical_line_direction",
+        "direction_from_points",
+        "point_on_line",
+        "parameter_at_point",
+        "cosine_between_lines",
+        "parallel_lines"
+      ]
+    },
+    "p": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "q": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "r": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "scale": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "k": {
+      "type": "int",
+      "min": 2,
+      "max": 6
+    },
+    "offset": {
+      "type": "choice",
+      "values": [
+        0,
+        1
+      ]
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "canonical_line_direction",
+          "direction_from_points"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "point_on_line",
+          "parameter_at_point"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "cosine_between_lines",
+          "parallel_lines"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "canonical_line_direction": {
+      "uses": [
+        "p",
+        "q",
+        "r"
+      ],
+      "constraints": [
+        "p != 2",
+        "p != 6"
+      ],
+      "question": {
+        "instruction": "Find the ordered triple of denominators in the canonical equation of the line through the point with the given direction vector.",
+        "latex": "P({p};{q};{r}),\\qquad\\vec{{v}}=(2;3;6)"
+      }
+    },
+    "direction_from_points": {
+      "uses": [
+        "p",
+        "q",
+        "r",
+        "scale"
+      ],
+      "constraints": [
+        "p != 2*scale",
+        "p != scale"
+      ],
+      "derived": {
+        "bx": "p+2*scale",
+        "by": "q+3*scale",
+        "bz": "r+6*scale"
+      },
+      "question": {
+        "instruction": "Find vector AB to use as a direction vector for the line through the two points.",
+        "latex": "A({p};{q};{r}),\\qquad B({bx};{by};{bz})"
+      }
+    },
+    "point_on_line": {
+      "uses": [
+        "p",
+        "q",
+        "r",
+        "k",
+        "offset"
+      ],
+      "derived": {
+        "px": "p+offset",
+        "py": "q+2*k",
+        "pz": "r+3*k"
+      },
+      "question": {
+        "instruction": "Return 1 if the point lies on the line and 0 if it does not.",
+        "latex": "\\ell:\\ (x;y;z)=({p};{q};{r})+t(0;2;3),\\qquad P({px};{py};{pz})"
+      }
+    },
+    "parameter_at_point": {
+      "uses": [
+        "p",
+        "q",
+        "r",
+        "k"
+      ],
+      "derived": {
+        "px": "p+2*k",
+        "py": "q+3*k",
+        "pz": "r+6*k"
+      },
+      "question": {
+        "instruction": "Find the parameter t at the given point on the line.",
+        "latex": "(x;y;z)=({p};{q};{r})+t(2;3;6),\\qquad P({px};{py};{pz})"
+      }
+    },
+    "cosine_between_lines": {
+      "uses": [
+        "p",
+        "q"
+      ],
+      "question": {
+        "instruction": "Find the cosine of the acute angle between the two lines from their direction vectors.",
+        "latex": "\\vec{{u}}=({p};0;0),\\qquad\\vec{{v}}=({q};{q};0)"
+      }
+    },
+    "parallel_lines": {
+      "uses": [
+        "k",
+        "offset"
+      ],
+      "derived": {
+        "vx": "2*k",
+        "vy": "3*k",
+        "vz": "6*k+offset"
+      },
+      "question": {
+        "instruction": "Return 1 if the lines are parallel and 0 if they are not.",
+        "latex": "\\vec{{u}}=(2;3;6),\\qquad\\vec{{v}}=({vx};{vy};{vz})"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "canonical_line_direction": "Tuple(2,3,6)",
+      "direction_from_points": "Tuple(2*scale,3*scale,6*scale)",
+      "point_on_line": "1-offset",
+      "parameter_at_point": "k",
+      "cosine_between_lines": "sqrt(2)/2",
+      "parallel_lines": "1-offset"
+    }
+  },
+  "answer_render": {
+    "canonical_line_direction": "exact_expression",
+    "direction_from_points": "exact_expression",
+    "point_on_line": "scalar",
+    "parameter_at_point": "scalar",
+    "cosine_between_lines": "exact_expression",
+    "parallel_lines": "scalar"
+  },
+  "distractors": {
+    "canonical_line_direction": [
+      {
+        "id": "used_point_coordinates",
+        "transform": "Tuple(p,q,r)"
+      },
+      {
+        "id": "used_negative_direction",
+        "transform": "Tuple(-2,-3,-6)"
+      },
+      {
+        "id": "reversed_direction_components",
+        "transform": "Tuple(6,3,2)"
+      },
+      {
+        "id": "used_reciprocal_denominators",
+        "transform": "Tuple(Rational(1,2),Rational(1,3),Rational(1,6))"
+      },
+      {
+        "id": "added_point_and_direction",
+        "transform": "Tuple(p+2,q+3,r+6)"
+      },
+      {
+        "id": "used_direction_length",
+        "transform": "7"
+      }
+    ],
+    "direction_from_points": [
+      {
+        "id": "reversed_endpoint_order",
+        "transform": "Tuple(-2*scale,-3*scale,-6*scale)"
+      },
+      {
+        "id": "added_endpoint_coordinates",
+        "transform": "Tuple(2*p+2*scale,2*q+3*scale,2*r+6*scale)"
+      },
+      {
+        "id": "doubled_the_direction",
+        "transform": "Tuple(4*scale,6*scale,12*scale)"
+      },
+      {
+        "id": "swapped_second_and_third_components",
+        "transform": "Tuple(2*scale,6*scale,3*scale)"
+      },
+      {
+        "id": "used_endpoint_b_as_direction",
+        "transform": "Tuple(p+2*scale,q+3*scale,r+6*scale)"
+      },
+      {
+        "id": "used_direction_length",
+        "transform": "7*scale"
+      }
+    ],
+    "point_on_line": [
+      {
+        "id": "returned_the_line_parameter",
+        "transform": "k"
+      },
+      {
+        "id": "returned_the_y_coordinate_difference",
+        "transform": "2*k"
+      },
+      {
+        "id": "returned_the_z_coordinate_difference",
+        "transform": "3*k"
+      },
+      {
+        "id": "added_the_coordinate_differences",
+        "transform": "4*k"
+      },
+      {
+        "id": "multiplied_parameter_by_five",
+        "transform": "5*k"
+      },
+      {
+        "id": "multiplied_parameter_by_six",
+        "transform": "6*k"
+      }
+    ],
+    "parameter_at_point": [
+      {
+        "id": "changed_the_parameter_sign",
+        "transform": "-k"
+      },
+      {
+        "id": "halved_the_parameter",
+        "transform": "k/2"
+      },
+      {
+        "id": "doubled_the_parameter",
+        "transform": "2*k"
+      },
+      {
+        "id": "tripled_the_parameter",
+        "transform": "3*k"
+      },
+      {
+        "id": "multiplied_parameter_by_four",
+        "transform": "4*k"
+      },
+      {
+        "id": "multiplied_parameter_by_five",
+        "transform": "5*k"
+      }
+    ],
+    "cosine_between_lines": [
+      {
+        "id": "forgot_to_normalize_directions",
+        "transform": "1"
+      },
+      {
+        "id": "inverted_the_cosine_ratio",
+        "transform": "sqrt(2)"
+      },
+      {
+        "id": "forgot_the_square_root",
+        "transform": "Rational(1,2)"
+      },
+      {
+        "id": "halved_the_cosine",
+        "transform": "sqrt(2)/4"
+      },
+      {
+        "id": "changed_the_sign",
+        "transform": "-sqrt(2)/2"
+      },
+      {
+        "id": "used_sum_of_direction_lengths",
+        "transform": "1/(1+sqrt(2))"
+      }
+    ],
+    "parallel_lines": [
+      {
+        "id": "returned_the_component_scale",
+        "transform": "k"
+      },
+      {
+        "id": "doubled_the_component_scale",
+        "transform": "2*k"
+      },
+      {
+        "id": "tripled_the_component_scale",
+        "transform": "3*k"
+      },
+      {
+        "id": "summed_two_component_scales",
+        "transform": "4*k"
+      },
+      {
+        "id": "multiplied_scale_by_five",
+        "transform": "5*k"
+      },
+      {
+        "id": "multiplied_scale_by_six",
+        "transform": "6*k"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "positive_volume_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

@@ -1,0 +1,68 @@
+{% macro lin_minus(v) -%}
+{%- if v == 0 -%}x
+{%- elif v > 0 -%}x-{{ v }}
+{%- else -%}x+{{ -v }}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro poly2(a, b, c) -%}
+{%- if a == 1 -%}x^2
+{%- elif a == -1 -%}-x^2
+{%- else -%}{{ a }}x^2
+{%- endif -%}
+{%- if b > 0 %}+{% if b != 1 %}{{ b }}{% endif %}x
+{%- elif b < 0 %}-{% if b != -1 %}{{ -b }}{% endif %}x
+{%- endif -%}
+{%- if c > 0 %}+{{ c }}
+{%- elif c < 0 %}-{{ -c }}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro poly3(a, b, c, d) -%}
+{%- if a == 1 -%}x^3
+{%- elif a == -1 -%}-x^3
+{%- else -%}{{ a }}x^3
+{%- endif -%}
+{%- if b > 0 %}+{% if b != 1 %}{{ b }}{% endif %}x^2
+{%- elif b < 0 %}-{% if b != -1 %}{{ -b }}{% endif %}x^2
+{%- endif -%}
+{%- if c > 0 %}+{% if c != 1 %}{{ c }}{% endif %}x
+{%- elif c < 0 %}-{% if c != -1 %}{{ -c }}{% endif %}x
+{%- endif -%}
+{%- if d > 0 %}+{{ d }}
+{%- elif d < 0 %}-{{ -d }}
+{%- endif -%}
+{%- endmacro %}
+
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
+{% if structure == 'quadratic_over_linear' -%}
+- $\dfrac{ {{ poly2(1, qol_num_b, qol_num_c) }} }{ {{ lin_minus(p1) }} } {{ relation_latex }} 0$
+{% elif structure == 'quadratic_over_quadratic' -%}
+- $\dfrac{ {{ poly2(1, qq_num_b, qq_num_c) }} }{ {{ poly2(1, qq_den_b, qq_den_c) }} } {{ relation_latex }} 0$
+{% elif structure == 'two_fractions_compare' -%}
+- $\dfrac{ {{ compare_left_coeff }} }{ {{ lin_minus(p1) }} } {{ relation_latex }} \dfrac{ {{ compare_right_coeff }} }{ {{ lin_minus(p2) }} }$
+{% elif structure == 'repeated_denominator_square' -%}
+- $\dfrac{ {{ poly2(1, rep_num_b, rep_num_c) }} }{ ({{ lin_minus(p3) }})^2 } {{ relation_latex }} 0$
+{% elif structure == 'cubic_over_quadratic' -%}
+- $\dfrac{ {{ poly3(1, cub_num_b, cub_num_c, cub_num_d) }} }{ {{ poly2(1, cub_den_b, cub_den_c) }} } {{ relation_latex }} 0$
+{% else -%}
+- $\dfrac{ {{ poly2(1, shared_num_b, shared_num_c) }} }{ {{ poly2(1, shared_den_b, shared_den_c) }} } {{ relation_latex }} 0$
+{% endif -%}
+{% if task_mode == 'integer_summary' -%}
+- Теңсіздікті шешіңіз. Ең кіші бүтін шешімін, ең үлкен бүтін шешімін және барлық бүтін шешімдерінің қосындысын табыңыз.
+- Жауапты $(ең\ кіші;\ ең\ үлкен;\ қосынды)$ ретімен жазыңыз.
+{% else -%}
+- Теңсіздікті шешіп, жауапты аралықтар түрінде жазыңыз.
+{% endif %}
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
+- Move every rational expression to one side when the inequality is written as a comparison of two fractions.
+- Factor numerator and denominator completely enough to identify every real critical point.
+- Values that make any original denominator zero are always excluded, even if a common factor later cancels.
+- Place all numerator zeros and forbidden denominator zeros on one number line in increasing order.
+- Determine the sign on each interval. Crossing an odd-multiplicity factor changes the sign; crossing an even-multiplicity factor does not.
+- For non-strict inequalities, include numerator zeros that satisfy the inequality, but never include denominator zeros.
+- In the shared-factor branch, preserve the hole from the original denominator after cancellation.
+- In the integer-summary branch, solve the inequality first, list the integer solutions in the bounded interval, then compute the requested minimum, maximum, and sum.
+- Render all math as LaTeX inside $...$.
+- Do NOT state or hint at the answer: do not reveal factorization, critical points, sign-chart signs, excluded values, interval endpoints, integer solutions, or the final answer.

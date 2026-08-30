@@ -1,0 +1,64 @@
+{% macro lin_minus(v) -%}
+{%- if v == 0 -%}x
+{%- elif v > 0 -%}x-{{ v }}
+{%- else -%}x+{{ -v }}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro linear(a,b) -%}
+{%- if a == 0 -%}{{ b }}
+{%- elif a == 1 -%}x
+{%- elif a == -1 -%}-x
+{%- else -%}{{ a }}x
+{%- endif -%}
+{%- if a != 0 and b > 0 %}+{{ b }}
+{%- elif a != 0 and b < 0 %}-{{ -b }}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro poly2(a,b,c) -%}
+{%- if a == 1 -%}x^2
+{%- elif a == -1 -%}-x^2
+{%- else -%}{{ a }}x^2
+{%- endif -%}
+{%- if b > 0 %}+{% if b != 1 %}{{ b }}{% endif %}x
+{%- elif b < 0 %}-{% if b != -1 %}{{ -b }}{% endif %}x
+{%- endif -%}
+{%- if c > 0 %}+{{ c }}
+{%- elif c < 0 %}-{{ -c }}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro nthroot(n,body) -%}
+{%- if n == 2 -%}\sqrt{ {{ body }} }
+{%- else -%}\sqrt[{{ n }}]{ {{ body }} }
+{%- endif -%}
+{%- endmacro %}
+
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
+{% if structure == 'even_linear_compare' -%}
+- ${{ nthroot(even_index, lin_minus(p1)) }} {{ relation_latex }} {{ even_bound }}$
+{% elif structure == 'even_quadratic_compare' -%}
+- $\sqrt{ {{ poly2(1, even_quad_b, even_quad_c) }} } {{ relation_latex }} {{ even_bound }}$
+{% elif structure == 'even_domain_only_polynomial' -%}
+- $\sqrt{ {{ poly2(1, domain_poly_b, domain_poly_c) }} } {{ relation_latex }} -{{ even_bound }}$
+{% elif structure == 'even_domain_only_rational' -%}
+- $\sqrt{\dfrac{ {{ lin_minus(p2) }} }{ {{ poly2(-1, domain_rat_den_b, domain_rat_den_c) }} }} {{ relation_latex }} -{{ even_bound }}$
+{% elif structure == 'odd_linear_power' -%}
+- ${{ nthroot(odd_index, lin_minus(odd_linear_shift)) }} {{ relation_latex }} {{ odd_bound }}$
+{% elif structure == 'odd_quadratic_power' -%}
+- ${{ nthroot(odd_index, poly2(lead_sign, odd_quad_b, odd_quad_c)) }} {{ relation_latex }} {{ odd_bound }}$
+{% else -%}
+- ${{ nthroot(odd_index, '\\dfrac{' ~ linear(odd_rat_num_a, odd_rat_num_b) ~ '}{' ~ lin_minus(p2) ~ '}') }} {{ relation_latex }} {{ odd_bound }}$
+{% endif -%}
+- Теңсіздікті шешіп, жауапты аралықтар түрінде жазыңыз.
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
+- For every even-index radical, first determine the real domain by requiring the radicand to be nonnegative and excluding any zero denominator.
+- If an even-index radical is compared with a positive number, raise both sides to the even power and intersect that inequality with the domain.
+- If a nonnegative even-index radical is greater than or equal to a negative number, the comparison itself is automatic; solve only the domain condition.
+- For an odd-index radical, use monotonicity: raise both sides to the odd power without changing the inequality sign. There is no square-root-style radicand restriction, but rational denominators must still be nonzero.
+- After removing the radical, solve the resulting linear, quadratic, or rational inequality using its critical points and sign chart.
+- For non-strict inequalities include numerator/zero points that satisfy the inequality, but never include a forbidden denominator point.
+- Render all math as LaTeX inside $...$.
+- Do NOT state or hint at the answer: do not reveal the domain, powered inequality, critical points, sign-chart pattern, excluded points, or final interval(s).

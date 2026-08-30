@@ -1,0 +1,389 @@
+{
+  "topic": "ubt_space_coordinates",
+  "parent_topic": "3d_vectors_and_coordinate_geometry",
+  "parent_topic_number": 10,
+  "display_name": "Coordinates in three-dimensional space",
+  "curriculum_ref": "KZ 2026 UBT - 3D vectors and coordinate geometry - Space coordinates",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Computational coordinate problems in three-dimensional space with exact answers and nondegenerate constructed points.",
+  "tag": {
+    "name": "Векторы и координаты в пространстве",
+    "slug": "kenistik-vektorlar-koordinatalar"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "distance_between_points",
+        "midpoint",
+        "segment_division_ratio",
+        "triangle_centroid",
+        "distance_to_coordinate_plane",
+        "distance_to_origin"
+      ]
+    },
+    "a": {
+      "type": "int",
+      "min": 1,
+      "max": 8
+    },
+    "b": {
+      "type": "int",
+      "min": 1,
+      "max": 8
+    },
+    "c": {
+      "type": "int",
+      "min": 1,
+      "max": 8
+    },
+    "scale": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "m": {
+      "type": "int",
+      "min": 1,
+      "max": 4
+    },
+    "n": {
+      "type": "int",
+      "min": 1,
+      "max": 4
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "distance_between_points",
+          "midpoint"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "segment_division_ratio",
+          "triangle_centroid"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "distance_to_coordinate_plane",
+          "distance_to_origin"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "distance_between_points": {
+      "uses": [
+        "a",
+        "b",
+        "c",
+        "scale"
+      ],
+      "derived": {
+        "x2": "a+2*scale",
+        "y2": "b+3*scale",
+        "z2": "c+6*scale"
+      },
+      "question": {
+        "instruction": "Find the distance between the two points.",
+        "latex": "A({a};{b};{c}),\\qquad B({x2};{y2};{z2})"
+      }
+    },
+    "midpoint": {
+      "uses": [
+        "a",
+        "b",
+        "c"
+      ],
+      "constraints": [
+        "b+2 != c+3"
+      ],
+      "derived": {
+        "x2": "a+2",
+        "y2": "b+4",
+        "z2": "c+6"
+      },
+      "question": {
+        "instruction": "Find the midpoint of the segment with the given endpoints.",
+        "latex": "A({a};{b};{c}),\\qquad B({x2};{y2};{z2})"
+      }
+    },
+    "segment_division_ratio": {
+      "uses": [
+        "a",
+        "b",
+        "c",
+        "m",
+        "n"
+      ],
+      "constraints": [
+        "m != n"
+      ],
+      "derived": {
+        "x2": "a+m+n",
+        "y2": "b+2*(m+n)",
+        "z2": "c+3*(m+n)"
+      },
+      "question": {
+        "instruction": "Point P divides segment AB internally in the given ratio. Find the coordinates of P.",
+        "latex": "A({a};{b};{c}),\\quad B({x2};{y2};{z2}),\\quad AP:PB={m}:{n}"
+      }
+    },
+    "triangle_centroid": {
+      "uses": [
+        "a",
+        "b",
+        "c"
+      ],
+      "constraints": [
+        "b+1 != c+2"
+      ],
+      "derived": {
+        "bx": "a+3",
+        "cy": "b+3",
+        "cz": "c+6"
+      },
+      "question": {
+        "instruction": "Find the centroid of the triangle.",
+        "latex": "A({a};{b};{c}),\\quad B({bx};{b};{c}),\\quad C({a};{cy};{cz})"
+      }
+    },
+    "distance_to_coordinate_plane": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "px": "2*scale",
+        "py": "3*scale",
+        "pz": "6*scale"
+      },
+      "question": {
+        "instruction": "Find the distance from the point to the yz-coordinate plane.",
+        "latex": "P({px};{py};{pz})"
+      }
+    },
+    "distance_to_origin": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "px": "scale",
+        "py": "4*scale",
+        "pz": "8*scale"
+      },
+      "question": {
+        "instruction": "Find the distance from the point to the origin.",
+        "latex": "P({px};{py};{pz})"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "distance_between_points": "7*scale",
+      "midpoint": "Tuple(a+1,b+2,c+3)",
+      "segment_division_ratio": "Tuple(a+m,b+2*m,c+3*m)",
+      "triangle_centroid": "Tuple(a+1,b+1,c+2)",
+      "distance_to_coordinate_plane": "2*scale",
+      "distance_to_origin": "9*scale"
+    }
+  },
+  "answer_render": {
+    "distance_between_points": "scalar",
+    "midpoint": "exact_expression",
+    "segment_division_ratio": "exact_expression",
+    "triangle_centroid": "exact_expression",
+    "distance_to_coordinate_plane": "scalar",
+    "distance_to_origin": "scalar"
+  },
+  "distractors": {
+    "distance_between_points": [
+      {
+        "id": "forgot_the_square_root",
+        "transform": "49*scale**2"
+      },
+      {
+        "id": "took_root_of_unsquared_differences",
+        "transform": "sqrt(11)*scale"
+      },
+      {
+        "id": "used_two_coordinates_only",
+        "transform": "sqrt(13)*scale"
+      },
+      {
+        "id": "used_manhattan_distance",
+        "transform": "11*scale"
+      },
+      {
+        "id": "halved_the_distance",
+        "transform": "7*scale/2"
+      },
+      {
+        "id": "added_one_to_each_difference",
+        "transform": "sqrt(74)*scale"
+      },
+      {
+        "id": "omitted_the_largest_difference",
+        "transform": "sqrt(13)*scale/2"
+      }
+    ],
+    "midpoint": [
+      {
+        "id": "added_endpoints_without_halving",
+        "transform": "Tuple(2*a+2,2*b+4,2*c+6)"
+      },
+      {
+        "id": "added_one_to_first_average",
+        "transform": "Tuple(a+2,b+2,c+3)"
+      },
+      {
+        "id": "halved_only_the_second_endpoint",
+        "transform": "Tuple((a+2)/2,(b+4)/2,(c+6)/2)"
+      },
+      {
+        "id": "averaged_only_the_first_coordinate",
+        "transform": "Tuple(a+1,b+4,c+6)"
+      },
+      {
+        "id": "subtracted_the_half_difference",
+        "transform": "Tuple(a-1,b-2,c-3)"
+      },
+      {
+        "id": "swapped_second_and_third_coordinates",
+        "transform": "Tuple(a+1,c+3,b+2)"
+      }
+    ],
+    "segment_division_ratio": [
+      {
+        "id": "included_one_extra_x_step",
+        "transform": "Tuple(a+m+1,b+2*m,c+3*m)"
+      },
+      {
+        "id": "included_one_extra_y_step",
+        "transform": "Tuple(a+m,b+2*m+1,c+3*m)"
+      },
+      {
+        "id": "included_one_extra_z_step",
+        "transform": "Tuple(a+m,b+2*m,c+3*m+1)"
+      },
+      {
+        "id": "omitted_one_x_step",
+        "transform": "Tuple(a+m-1,b+2*m,c+3*m)"
+      },
+      {
+        "id": "omitted_one_y_step",
+        "transform": "Tuple(a+m,b+2*m-1,c+3*m)"
+      },
+      {
+        "id": "omitted_one_z_step",
+        "transform": "Tuple(a+m,b+2*m,c+3*m-1)"
+      }
+    ],
+    "triangle_centroid": [
+      {
+        "id": "added_vertices_without_dividing",
+        "transform": "Tuple(3*a+3,3*b+3,3*c+6)"
+      },
+      {
+        "id": "divided_by_two_instead_of_three",
+        "transform": "Tuple((3*a+3)/2,(3*b+3)/2,(3*c+6)/2)"
+      },
+      {
+        "id": "used_midpoint_of_ab",
+        "transform": "Tuple(a+Rational(3,2),b,c)"
+      },
+      {
+        "id": "used_midpoint_of_ac",
+        "transform": "Tuple(a,b+Rational(3,2),c+3)"
+      },
+      {
+        "id": "omitted_vertex_a",
+        "transform": "Tuple(a+Rational(3,2),b+Rational(3,2),c+3)"
+      },
+      {
+        "id": "swapped_second_and_third_coordinates",
+        "transform": "Tuple(a+1,c+2,b+1)"
+      }
+    ],
+    "distance_to_coordinate_plane": [
+      {
+        "id": "used_distance_to_xy_plane",
+        "transform": "6*scale"
+      },
+      {
+        "id": "used_distance_to_xz_plane",
+        "transform": "3*scale"
+      },
+      {
+        "id": "used_distance_to_origin",
+        "transform": "7*scale"
+      },
+      {
+        "id": "squared_the_coordinate",
+        "transform": "4*scale**2"
+      },
+      {
+        "id": "summed_all_coordinates",
+        "transform": "11*scale"
+      },
+      {
+        "id": "halved_the_coordinate",
+        "transform": "scale"
+      }
+    ],
+    "distance_to_origin": [
+      {
+        "id": "forgot_the_square_root",
+        "transform": "81*scale**2"
+      },
+      {
+        "id": "used_manhattan_distance",
+        "transform": "13*scale"
+      },
+      {
+        "id": "omitted_the_third_coordinate",
+        "transform": "sqrt(17)*scale"
+      },
+      {
+        "id": "omitted_the_second_coordinate",
+        "transform": "sqrt(65)*scale"
+      },
+      {
+        "id": "used_largest_coordinate_only",
+        "transform": "8*scale"
+      },
+      {
+        "id": "halved_the_distance",
+        "transform": "9*scale/2"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "positive_volume_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

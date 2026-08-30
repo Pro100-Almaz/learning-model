@@ -1,0 +1,115 @@
+{
+  "topic": "ubt_mathematical_modelling",
+  "parent_topic": "functions_calculus_modelling",
+  "parent_topic_number": 13,
+  "display_name": "Mathematical modelling and optimization",
+  "curriculum_ref": "KZ 2026 UBT — Mathematical modelling and analysis — Topic 13",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 13. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Функциялар және математикалық анализ",
+    "slug": "funkciyalar-matematikalyk-analiz"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "optimization_rectangle"
+      ],
+      "desc": "question structure"
+    },
+    "half_perimeter": {
+      "type": "choice",
+      "values": [
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20
+      ]
+    }
+  },
+  "supported_difficulties": [
+    3
+  ],
+  "default_difficulty": 3,
+  "difficulty_overrides": {
+    "3": {
+      "mode": {
+        "values": [
+          "optimization_rectangle"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "optimization_rectangle": {
+      "uses": [
+        "half_perimeter"
+      ],
+      "question": {
+        "instruction": "A rectangle has x+y equal to the given value. Find x for which the area xy is maximal.",
+        "latex": "x+y={half_perimeter},\\qquad x>0,\\ y>0"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "optimization_rectangle": "Rational(half_perimeter,2)"
+    }
+  },
+  "answer_render": {
+    "optimization_rectangle": "exact_number"
+  },
+  "distractors": {
+    "optimization_rectangle": [
+      {
+        "id": "use_full_sum",
+        "transform": "half_perimeter"
+      },
+      {
+        "id": "quarter",
+        "transform": "Rational(half_perimeter,4)"
+      },
+      {
+        "id": "minus_one",
+        "transform": "Rational(half_perimeter,2)-1"
+      },
+      {
+        "id": "plus_one",
+        "transform": "Rational(half_perimeter,2)+1"
+      },
+      {
+        "id": "square_half",
+        "transform": "Rational(half_perimeter**2,4)"
+      },
+      {
+        "id": "one",
+        "transform": "1"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "tuple_equivalence": true,
+    "interval_equivalence": true,
+    "function_equivalence": true,
+    "exact_answers_only": true,
+    "respect_function_domain": true,
+    "validate_derivatives": true,
+    "validate_integrals": true,
+    "validate_tangent_point_and_slope": true,
+    "validate_extrema_and_monotonicity": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "topic": "ubt_linear_inequality_systems",
+  "parent_topic": "systems_of_inequalities",
+  "parent_topic_number": 11,
+  "display_name": "Systems of linear inequalities",
+  "curriculum_ref": "KZ 2026 UBT — Systems of inequalities — Topic 11",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 11. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Теңсіздіктер жүйесі",
+    "slug": "tensizdikter-zhuyesi"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "linear_interval_system"
+      ],
+      "desc": "question structure"
+    },
+    "lower": {
+      "type": "int",
+      "min": -8,
+      "max": 3
+    },
+    "upper": {
+      "type": "int",
+      "min": -2,
+      "max": 9
+    },
+    "a": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "b": {
+      "type": "int",
+      "min": -7,
+      "max": 7
+    }
+  },
+  "supported_difficulties": [
+    1
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "linear_interval_system"
+        ]
+      },
+      "lower": {
+        "min": -5,
+        "max": 2
+      },
+      "upper": {
+        "min": 0,
+        "max": 7
+      },
+      "a": {
+        "max": 4
+      }
+    }
+  },
+  "modes": {
+    "linear_interval_system": {
+      "uses": [
+        "lower",
+        "upper",
+        "a",
+        "b"
+      ],
+      "constraints": [
+        "lower < upper"
+      ],
+      "derived": {
+        "rhs": "a*upper+b"
+      },
+      "question": {
+        "instruction": "Solve the system of inequalities",
+        "latex": "\\begin{{cases}} x>{lower} \\\\ {a}x{b:+d}\\le {rhs} \\end{{cases}}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "linear_interval_system": "Intersection(Interval.open(lower,oo),Interval(-oo,upper))"
+    }
+  },
+  "answer_render": {
+    "linear_interval_system": "interval"
+  },
+  "distractors": {
+    "linear_interval_system": [
+      {
+        "id": "reverse_intersection",
+        "transform": "Interval.open(-oo,lower)"
+      },
+      {
+        "id": "include_lower",
+        "transform": "Interval(lower,upper)"
+      },
+      {
+        "id": "open_upper",
+        "transform": "Interval.open(lower,upper)"
+      },
+      {
+        "id": "upper_only",
+        "transform": "Interval(-oo,upper)"
+      },
+      {
+        "id": "lower_only",
+        "transform": "Interval.open(lower,oo)"
+      },
+      {
+        "id": "outside_bounds",
+        "transform": "Union(Interval.open(-oo,lower),Interval.open(upper,oo))"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "interval_equivalence": true,
+    "tuple_equivalence": true,
+    "ordered_pairs": true,
+    "respect_open_closed_boundaries": true,
+    "respect_rational_domain": true,
+    "respect_log_domain": true,
+    "reject_undefined_choices": true,
+    "exact_answers_only": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

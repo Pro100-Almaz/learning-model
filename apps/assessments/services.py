@@ -9,20 +9,37 @@ from __future__ import annotations
 
 import datetime
 import logging
+import random
 from dataclasses import dataclass
 from datetime import timedelta
 from typing import Optional
 
 from config import TUTOR_MODEL
 from agents_and_engine.llm import chat_anthropic
+# The UBT blueprint engine's Tutor. Django-free: it takes dicts and strings, and
+# the model mapping plus the TutorNote cache stay here. Imported eagerly because
+# the line above has already pulled the LLM stack into startup.
+from ubt_question_engine import tutor as ubt_tutor
 
 from django.conf import settings
+from django.core.cache import cache
 from django.db import IntegrityError, transaction
-from django.db.models import Prefetch, ExpressionWrapper, F, Q, DateTimeField
+from django.db.models import (
+    Case,
+    DateTimeField,
+    ExpressionWrapper,
+    F,
+    IntegerField,
+    Max,
+    Prefetch,
+    Q,
+    When,
+)
 from django.shortcuts import get_object_or_404
 from django.utils import timezone, translation
 from rest_framework.exceptions import NotFound, ValidationError
 
+from apps.assessments import figures
 from apps.content.models import Lesson, Tag
 
 from apps.assessments.models import (
@@ -68,9 +85,103 @@ class AnswerResult:
 # ---------------------------------------------------------------------------
 
 
+UBT_TOP_UP_DEBOUNCE_SECONDS = 10 * 60
+
+
+def _micro_pool_state(user, test: Test) -> tuple[list[int], dict[int, datetime.datetime]]:
+    """Return the current-language pool and each answered row's last use."""
+    pool_ids = list(
+        Question.objects.filter(tests=test, language=_current_language())
+        .order_by("testquestion__order", "testquestion__id")
+        .values_list("pk", flat=True)
+    )
+    if not pool_ids:
+        return pool_ids, {}
+
+    last_answered = dict(
+        AttemptAnswer.objects.filter(
+            attempt__student=user,
+            question_id__in=pool_ids,
+        )
+        .values("question_id")
+        .annotate(last_attempt_at=Max("attempt__started_at"))
+        .values_list("question_id", "last_attempt_at")
+    )
+    return pool_ids, last_answered
+
+
+def _sample_micro_question_ids(
+    pool_ids: list[int],
+    last_answered: dict[int, datetime.datetime],
+) -> list[int]:
+    sample_size = settings.MICRO_TEST_QUESTION_COUNT
+    if len(pool_ids) <= sample_size:
+        return []
+
+    unseen_ids = [
+        question_id for question_id in pool_ids if question_id not in last_answered
+    ]
+    random.shuffle(unseen_ids)
+    selected = unseen_ids[:sample_size]
+    if len(selected) < sample_size:
+        # Stable PK ordering only breaks equal-timestamp ties; the primary
+        # ordering keeps the questions least recently practiced at the front.
+        seen_ids = sorted(
+            last_answered,
+            key=lambda question_id: (last_answered[question_id], question_id),
+        )
+        selected.extend(seen_ids[: sample_size - len(selected)])
+    return selected
+
+
+def _enqueue_micro_top_up(test: Test, unseen_count: int) -> None:
+    """Best-effort bank refill; attempt creation must never depend on Celery."""
+    topic = test.lesson.topic if test.lesson_id and test.lesson else ""
+    shortfall = settings.MICRO_TEST_QUESTION_COUNT - unseen_count
+    if not topic or shortfall <= 0:
+        return
+
+    cache_key = f"ubt-bank-top-up:{topic}"
+    try:
+        acquired = cache.add(cache_key, True, timeout=UBT_TOP_UP_DEBOUNCE_SECONDS)
+    except Exception:
+        # Without the lock, enqueueing anyway would turn a Redis outage into a
+        # thundering herd precisely when the system is already degraded.
+        logger.exception("UBT top-up debounce unavailable for topic %s", topic)
+        return
+    if not acquired:
+        return
+
+    try:
+        # Lazy import avoids making every assessment service import initialize
+        # the generation task module and its blueprint engine dependencies.
+        from apps.generation.ubt_tasks import generate_ubt_topic
+
+        generate_ubt_topic.delay(topic, count=shortfall)
+    except Exception:
+        # A failed publish to the broker did not queue work, so release the key
+        # and let the next attempt retry instead of suppressing refills for 10m.
+        try:
+            cache.delete(cache_key)
+        except Exception:
+            logger.exception(
+                "Could not clear failed UBT top-up debounce for %s", topic
+            )
+        logger.exception("Could not enqueue UBT top-up for topic %s", topic)
+
+
 def start_attempt(user, test: Test) -> TestAttempt:
-    """Create a fresh attempt for the student on a given test."""
-    return TestAttempt.objects.create(student=user, test=test)
+    """Create a fresh attempt, freezing a bounded micro-question selection."""
+    question_ids: list[int] = []
+    if test.type == "micro":
+        pool_ids, last_answered = _micro_pool_state(user, test)
+        question_ids = _sample_micro_question_ids(pool_ids, last_answered)
+        _enqueue_micro_top_up(test, len(pool_ids) - len(last_answered))
+    return TestAttempt.objects.create(
+        student=user,
+        test=test,
+        question_ids=question_ids,
+    )
 
 
 def _award_correct_answer_xp(user) -> int:
@@ -100,6 +211,11 @@ def record_answer(
     """
     if attempt.is_completed:
         raise ValidationError({"detail": "attempt already finished", "code": "attempt_finished"})
+
+    if attempt.question_ids and question_id not in attempt.question_ids:
+        raise NotFound(
+            {"detail": "question not in test", "code": "question_not_in_test"}
+        )
 
     # Ensure the question belongs to this test.
     try:
@@ -162,7 +278,7 @@ def finish_attempt(attempt: TestAttempt) -> TestAttempt:
 
     # Ladder attempts have no Test; score off the answers actually recorded.
     if attempt.test_id is not None:
-        total_count = attempt.test.questions.count()
+        total_count = get_attempt_questions(attempt).count()
     else:
         total_count = attempt.answers.count()
     correct_count = attempt.answers.filter(is_correct=True).count()
@@ -202,8 +318,13 @@ def enforce_mock_timeout(attempt: TestAttempt) -> bool:
 # Publishing generated questions (the MAIQE graph's Publisher node calls this)
 # ---------------------------------------------------------------------------
 
-# Every generated question carries exactly this many options (1 correct + 3
-# distractors). The Architect builds them; publishing enforces the count.
+# How many options a MAIQE-generated question carries (1 correct + 3 distractors).
+# The Architect builds them; publishing enforces the count.
+#
+# It is the DEFAULT, not a bank-wide rule: the UBT blueprint engine publishes
+# five-option items (A-E, as the real ҰБТ paper does) and passes its own count.
+# Nothing else in the bank depends on this number -- grading and the serializers
+# read whatever options a question actually has.
 N_ANSWER_OPTIONS = 4
 
 
@@ -241,6 +362,25 @@ def _resolve_lesson_for_tag(tag: Tag) -> Optional[Lesson]:
     return Lesson.objects.filter(tag=tag).order_by("order").first()
 
 
+def _resolve_lesson(tag: Tag, topic: Optional[str]) -> Optional[Lesson]:
+    """The Lesson a generated question belongs to: by topic, else by tag.
+
+    Topic first, because tag is too coarse to land a question accurately. The
+    UBT engine gives 58 topics only 16 tags — all eight planimetry topics share
+    ``planimetriya`` — so tag-only matching would file "regular polygons" and
+    "chord and tangent theorems" questions under the same lesson.
+
+    Tag stays as the fallback for questions with no topic in their solution:
+    every MAIQE question, and anything hand-authored. Those keep the behaviour
+    they have always had.
+    """
+    if topic:
+        lesson = Lesson.objects.filter(topic=topic).order_by("order").first()
+        if lesson is not None:
+            return lesson
+    return _resolve_lesson_for_tag(tag)
+
+
 def _link_to_micro_test(question: Question, lesson: Lesson) -> Test:
     """Add ``question`` to its lesson's micro Test, creating the Test if needed.
 
@@ -274,6 +414,7 @@ def publish_generated_question(
     tag_slug: str,
     tag_name: str,
     content_hash: Optional[str] = None,
+    expected_options: int = N_ANSWER_OPTIONS,
 ) -> dict:
     """Persist one generated question, its options, and its content links.
 
@@ -302,13 +443,13 @@ def publish_generated_question(
         if existing is not None:
             return _dup(existing)
 
-    _assert_publishable(text, options)
+    _assert_publishable(text, options, expected_options=expected_options)
 
     lesson = None
     try:
         with transaction.atomic():
             tag, _ = Tag.objects.get_or_create(slug=tag_slug, defaults={"name": tag_name})
-            lesson = _resolve_lesson_for_tag(tag)
+            lesson = _resolve_lesson(tag, (solution or {}).get("topic"))
             question = Question.objects.create(
                 text=text,
                 explanation=explanation,
@@ -432,6 +573,55 @@ def _build_explanation_prompt(question: Question) -> str:
     )
 
 
+def _ubt_tutor_feedback(
+    question: Question,
+    answer: Optional[AttemptAnswer],
+    language: str,
+) -> str:
+    """Tutor review for a question generated by the UBT blueprint engine.
+
+    One prompt covers all three outcomes, so unlike the MAIQE path below this is
+    a single code path rather than three. The cache semantics are identical:
+    keyed on (question, selected_option), with the skipped-question note living
+    on the NULL-option row under the partial unique constraint.
+    """
+    option = answer.selected_option if answer is not None else None
+    outcome = ubt_tutor.outcome_for(
+        answered=option is not None,
+        is_correct=bool(answer is not None and answer.is_correct),
+    )
+
+    # The note depends on the question and the chosen option, never on the
+    # student, so every student who picks that option shares one row -- and one
+    # bill. Read with IS NULL for the skipped case.
+    cached = (
+        TutorNote.objects.filter(question=question, selected_option__isnull=True)
+        if option is None
+        else TutorNote.objects.filter(question=question, selected_option=option)
+    ).values_list("note", flat=True).first()
+    if cached is not None:
+        return cached
+
+    request = ubt_tutor.build_request(
+        solution=question.solution or {},
+        text=question.text,
+        language=language,
+        outcome=outcome,
+        student_answer_latex=option.text if option is not None else "",
+        chosen_distractor_id=option.misconception if option is not None else "",
+    )
+    note = ubt_tutor.explain(request)
+
+    # get_or_create so a concurrent request that generated first wins, rather
+    # than colliding with the uniqueness constraint.
+    row, _ = TutorNote.objects.get_or_create(
+        question=question,
+        selected_option=option,
+        defaults={"note": note},
+    )
+    return row.note
+
+
 def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
     """Return on-demand Tutor feedback for one question in a finished attempt.
 
@@ -469,6 +659,15 @@ def get_tutor_feedback(attempt: TestAttempt, question_id: int) -> str:
         )
     except AttemptAnswer.DoesNotExist:
         answer = None
+
+    # Questions from the UBT blueprint engine store a different `solution` shape:
+    # a reproduction record (topic/mode/seed/parameters/answer_latex), not MAIQE's
+    # worked steps. Feeding one to the builders below would report its answer as
+    # "(unknown)" while solution["answer_latex"] holds it exactly, and would throw
+    # away `mode` -- the name of the method the item tests. Route it to its own
+    # Tutor, which reads that shape and covers all three outcomes in one prompt.
+    if ubt_tutor.owns(question.solution):
+        return _ubt_tutor_feedback(question, answer, language)
 
     # Decision tree. All three modes share the same LLM plumbing; they differ only
     # in the cache key (which option, if any), the system prompt, and the builder.
@@ -606,9 +805,39 @@ def get_test_questions_ordered(test: Test):
     )
 
 
+def get_attempt_questions(attempt: TestAttempt):
+    """Return the exact ordered rows assigned to an attempt.
+
+    Stored IDs intentionally bypass the active locale: changing language in the
+    middle of an attempt must not replace the questions used for scoring and
+    review. Empty remains the backwards-compatible whole-test path.
+    """
+    if not attempt.question_ids:
+        return get_test_questions_ordered(attempt.test)
+
+    preserved_order = Case(
+        *[
+            When(pk=question_id, then=position)
+            for position, question_id in enumerate(attempt.question_ids)
+        ],
+        output_field=IntegerField(),
+    )
+    return (
+        Question.objects.filter(pk__in=attempt.question_ids)
+        .annotate(_attempt_order=preserved_order)
+        .prefetch_related(
+            Prefetch(
+                "options",
+                queryset=AnswerOption.objects.order_by("id"),
+            )
+        )
+        .order_by("_attempt_order")
+    )
+
+
 def build_attempt_start_payload(attempt: TestAttempt) -> dict:
     """Serializer-friendly payload for AttemptStart."""
-    questions = list(get_test_questions_ordered(attempt.test))
+    questions = list(get_attempt_questions(attempt))
     return {
         "attempt_id": attempt.pk,
         "test": attempt.test,
@@ -620,7 +849,7 @@ def build_attempt_start_payload(attempt: TestAttempt) -> dict:
 def build_attempt_result_payload(attempt: TestAttempt) -> dict:
     # Denominator is the current-language question set — the same rows the
     # student was served — so the score fraction matches what they saw.
-    total_count = attempt.test.questions.filter(language=_current_language()).count()
+    total_count = get_attempt_questions(attempt).count()
     correct_count = attempt.answers.filter(is_correct=True).count()
     return {
         "attempt_id": attempt.pk,
@@ -641,16 +870,7 @@ def build_attempt_review_payload(attempt: TestAttempt) -> dict:
         for ans in attempt.answers.select_related("selected_option").all()
     }
 
-    questions = list(
-        Question.objects.filter(tests=attempt.test, language=_current_language())
-        .prefetch_related(
-            Prefetch(
-                "options",
-                queryset=AnswerOption.objects.order_by("id"),
-            )
-        )
-        .order_by("testquestion__order", "testquestion__id")
-    )
+    questions = list(get_attempt_questions(attempt))
 
     items: list[dict] = []
     for question in questions:
@@ -675,6 +895,7 @@ def build_attempt_review_payload(attempt: TestAttempt) -> dict:
                 "is_correct": bool(ans.is_correct) if ans else False,
                 "explanation": question.explanation or "",
                 "mistake_reason": mistake_reason,
+                "figure": figures.figure_for(question.solution, language=question.language),
                 "options": options,
             }
         )

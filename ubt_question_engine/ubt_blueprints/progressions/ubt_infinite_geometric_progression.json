@@ -1,0 +1,121 @@
+{
+  "topic": "ubt_infinite_geometric_progression",
+  "parent_topic": "arithmetic_geometric_progressions",
+  "parent_topic_number": 12,
+  "display_name": "Infinite decreasing geometric progression",
+  "curriculum_ref": "KZ 2026 UBT — Sequences — Topic 12",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 12. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Прогрессиялар",
+    "slug": "progressiyalar"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "infinite_geometric_sum"
+      ],
+      "desc": "question structure"
+    },
+    "g1": {
+      "type": "int",
+      "min": 1,
+      "max": 8
+    },
+    "ratio_num": {
+      "type": "int",
+      "min": 1,
+      "max": 4
+    },
+    "ratio_den": {
+      "type": "choice",
+      "values": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  },
+  "supported_difficulties": [
+    3
+  ],
+  "default_difficulty": 3,
+  "difficulty_overrides": {
+    "3": {
+      "mode": {
+        "values": [
+          "infinite_geometric_sum"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "infinite_geometric_sum": {
+      "uses": [
+        "g1",
+        "ratio_num",
+        "ratio_den"
+      ],
+      "constraints": [
+        "ratio_num < ratio_den"
+      ],
+      "question": {
+        "instruction": "Find the sum of the infinite decreasing geometric progression",
+        "latex": "b_1={g1},\\quad q=\\frac{{{ratio_num}}}{{{ratio_den}}}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "infinite_geometric_sum": "g1/(1-Rational(ratio_num,ratio_den))"
+    }
+  },
+  "answer_render": {
+    "infinite_geometric_sum": "exact_fraction"
+  },
+  "distractors": {
+    "infinite_geometric_sum": [
+      {
+        "id": "finite_two_terms",
+        "transform": "g1*(1+Rational(ratio_num,ratio_den))"
+      },
+      {
+        "id": "wrong_plus_denominator",
+        "transform": "g1/(1+Rational(ratio_num,ratio_den))"
+      },
+      {
+        "id": "omit_first_term",
+        "transform": "1/(1-Rational(ratio_num,ratio_den))"
+      },
+      {
+        "id": "multiply_by_one_minus_q",
+        "transform": "g1*(1-Rational(ratio_num,ratio_den))"
+      },
+      {
+        "id": "use_ratio_inverse",
+        "transform": "g1/(1-Rational(ratio_den,ratio_num))"
+      },
+      {
+        "id": "first_term_only",
+        "transform": "g1"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "rational_simplification": true,
+    "positive_ratio_when_required": true,
+    "infinite_series_requires_abs_ratio_lt_one": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

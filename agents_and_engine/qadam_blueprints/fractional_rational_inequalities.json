@@ -1,0 +1,363 @@
+{
+  "topic": "fractional_rational_inequalities",
+  "display_name": "Бөлшек-рационал теңсіздіктерді шешу",
+  "curriculum_ref": "Сынып көрсетілмеген — 9-бөлім: Бөлшек-рационал теңсіздіктер",
+  "constraints_template": "fractional_rational_inequalities.j2",
+  "_comment": "Генеративті blueprint: видеодағы дайын теңсіздіктер сақталмайды. Алдымен сан түзудегі реттелген критикалық нүктелер p1<p2<p3(<p4) таңдалып, содан кейін алым мен бөлім көпмүшелері сол нүктелерден кері бағытта құрылады. Осылайша таңба кестесі, бөлімнің тыйым салынған нүктелері, еселі түбір және ортақ көбейткіштен кейін сақталатын ММЖ нүктесі басқарылатын болады. Ең жоғары деңгейде видеодағыдай ең кіші/ең үлкен бүтін шешім және бүтін шешімдер қосындысы сұралатын тармақ бар.",
+  "tag": {
+    "name": "Бөлшек-рационал теңсіздік",
+    "slug": "fractional-rational-inequality"
+  },
+  "default_difficulty": 2,
+  "parameters": {
+    "structure": {
+      "type": "string",
+      "options": [
+        "quadratic_over_linear",
+        "quadratic_over_quadratic",
+        "two_fractions_compare",
+        "repeated_denominator_square",
+        "cubic_over_quadratic",
+        "shared_factor_hole"
+      ],
+      "desc": "Теңсіздіктің алгебралық құрылымы"
+    },
+    "relation": {
+      "type": "string",
+      "options": [
+        ">",
+        "<",
+        ">=",
+        "<="
+      ],
+      "desc": "Теңсіздік белгісі"
+    },
+    "task_mode": {
+      "type": "string",
+      "options": [
+        "interval",
+        "integer_summary"
+      ],
+      "desc": "Негізгі аралық жауабы немесе бүтін шешімдер бойынша қорытынды сұрағы"
+    },
+    "anchor": {
+      "type": "integer",
+      "options": [
+        -8,
+        -7,
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        0,
+        1,
+        2
+      ],
+      "desc": "Жалпы тармақтардағы ең сол жақ критикалық нүкте p1"
+    },
+    "gap_1": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "p2-p1 оң айырмасы"
+    },
+    "gap_2": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "p3-p2 оң айырмасы"
+    },
+    "gap_3": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "Төрт критикалық нүктелі тармақта p4-p3 оң айырмасы"
+    },
+    "summary_n": {
+      "type": "integer",
+      "options": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "desc": "Бүтін шешімдер қорытындысы тармағында шектелген аралықты құратын оң параметр"
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "structure": {
+        "options": [
+          "quadratic_over_linear",
+          "repeated_denominator_square"
+        ]
+      },
+      "relation": {
+        "options": [
+          ">",
+          "<"
+        ]
+      },
+      "task_mode": {
+        "options": [
+          "interval"
+        ]
+      },
+      "anchor": {
+        "options": [
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "gap_2": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    "2": {
+      "structure": {
+        "options": [
+          "quadratic_over_quadratic",
+          "two_fractions_compare",
+          "repeated_denominator_square"
+        ]
+      },
+      "relation": {
+        "options": [
+          ">",
+          "<",
+          ">=",
+          "<="
+        ]
+      },
+      "task_mode": {
+        "options": [
+          "interval"
+        ]
+      },
+      "anchor": {
+        "options": [
+          -7,
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "gap_2": {
+        "options": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "gap_3": {
+        "options": [
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    "3": {
+      "structure": {
+        "options": [
+          "cubic_over_quadratic",
+          "shared_factor_hole",
+          "quadratic_over_quadratic"
+        ]
+      },
+      "relation": {
+        "options": [
+          ">",
+          "<",
+          ">=",
+          "<="
+        ]
+      },
+      "task_mode": {
+        "options": [
+          "interval",
+          "integer_summary"
+        ]
+      },
+      "anchor": {
+        "options": [
+          -8,
+          -7,
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "gap_2": {
+        "options": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "gap_3": {
+        "options": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "summary_n": {
+        "options": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      }
+    }
+  },
+  "derived": {
+    "task_mode": "'integer_summary' if structure == 'shared_factor_hole' and task_mode == 'integer_summary' else 'interval'",
+    "relation": "'<' if task_mode == 'integer_summary' else relation",
+    "summary_n": "summary_n if task_mode == 'integer_summary' else 0",
+    "anchor": "0 if task_mode == 'integer_summary' else anchor",
+    "gap_1": "0 if task_mode == 'integer_summary' else gap_1",
+    "gap_3": "gap_3 if structure == 'quadratic_over_quadratic' else 0",
+    "p1": "-summary_n if task_mode == 'integer_summary' else anchor",
+    "p2": "summary_n + 2 if task_mode == 'integer_summary' else anchor + gap_1",
+    "p3": "p2 + gap_2",
+    "p4": "p3 + gap_3",
+    "qol_num_b": "-(p2 + p3)",
+    "qol_num_c": "p2 * p3",
+    "qq_num_b": "-(p2 + p4)",
+    "qq_num_c": "p2 * p4",
+    "qq_den_b": "-(p1 + p3)",
+    "qq_den_c": "p1 * p3",
+    "compare_left_coeff": "p3 - p1",
+    "compare_right_coeff": "p3 - p2",
+    "rep_num_b": "-(p1 + p2)",
+    "rep_num_c": "p1 * p2",
+    "cub_num_b": "-3 * p2",
+    "cub_num_c": "3 * p2**2",
+    "cub_num_d": "-p2**3",
+    "cub_den_b": "-(p1 + p3)",
+    "cub_den_c": "p1 * p3",
+    "shared_num_b": "-(p1 + p3)",
+    "shared_num_c": "p1 * p3",
+    "shared_den_b": "-(p2 + p3)",
+    "shared_den_c": "p2 * p3",
+    "summary_min": "1 - summary_n",
+    "summary_max": "summary_n + 1",
+    "summary_sum": "2 * summary_n + 1",
+    "relation_latex": "'\\\\ge' if relation == '>=' else ('\\\\le' if relation == '<=' else relation)"
+  },
+  "constraints": [],
+  "integer_clean": true,
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% set positive = relation in ['>', '>='] %}{% set closed = relation in ['>=', '<='] %}{% if task_mode == 'integer_summary' %}$({{ summary_min }};{{ summary_max }};{{ summary_sum }})${% elif structure == 'quadratic_over_linear' %}{% if positive %}$({{ p1 }};{{ p2 }}{{ ']' if closed else ')' }}\\cup{{ '[' if closed else '(' }}{{ p3 }};+\\infty)${% else %}$(-\\infty;{{ p1 }})\\cup{{ '[' if closed else '(' }}{{ p2 }};{{ p3 }}{{ ']' if closed else ')' }}${% endif %}{% elif structure == 'quadratic_over_quadratic' %}{% if positive %}$(-\\infty;{{ p1 }})\\cup{{ '[' if closed else '(' }}{{ p2 }};{{ p3 }})\\cup{{ '[' if closed else '(' }}{{ p4 }};+\\infty)${% else %}$({{ p1 }};{{ p2 }}{{ ']' if closed else ')' }}\\cup({{ p3 }};{{ p4 }}{{ ']' if closed else ')' }}${% endif %}{% elif structure == 'two_fractions_compare' %}{% if positive %}$({{ p1 }};{{ p2 }})\\cup{{ '[' if closed else '(' }}{{ p3 }};+\\infty)${% else %}$(-\\infty;{{ p1 }})\\cup({{ p2 }};{{ p3 }}{{ ']' if closed else ')' }}${% endif %}{% elif structure == 'repeated_denominator_square' %}{% if positive %}$(-\\infty;{{ p1 }}{{ ']' if closed else ')' }}\\cup{{ '[' if closed else '(' }}{{ p2 }};{{ p3 }})\\cup({{ p3 }};+\\infty)${% else %}${{ '[' if closed else '(' }}{{ p1 }};{{ p2 }}{{ ']' if closed else ')' }}${% endif %}{% elif structure == 'cubic_over_quadratic' %}{% if positive %}$({{ p1 }};{{ p2 }}{{ ']' if closed else ')' }}\\cup({{ p3 }};+\\infty)${% else %}$(-\\infty;{{ p1 }})\\cup{{ '[' if closed else '(' }}{{ p2 }};{{ p3 }})${% endif %}{% else %}{% if positive %}$(-\\infty;{{ p1 }}{{ ']' if closed else ')' }}\\cup({{ p2 }};{{ p3 }})\\cup({{ p3 }};+\\infty)${% else %}${{ '[' if closed else '(' }}{{ p1 }};{{ p2 }})${% endif %}{% endif %}",
+    "desc": "Негізгі тармақтарда жауап аралықтар жиыны ретінде беріледі. integer_summary тармағында жауап реті: (ең кіші бүтін шешім; ең үлкен бүтін шешім; бүтін шешімдер қосындысы)."
+  },
+  "distractors": [
+    {
+      "id": "opposite_sign_intervals",
+      "desc": "Таңба кестесінде қажетті таңбалы аралықтардың орнына қарама-қарсы таңбалы аралықтарды таңдады; бүтін қорытынды тармағында аралық шекараларын бүтін экстремумдар деп алды.",
+      "transform": {
+        "correct": "{% set positive = relation in ['>', '>='] %}{% set closed = relation in ['>=', '<='] %}{% if task_mode == 'integer_summary' %}$({{ p1 }};{{ p2 }};{{ summary_sum }})${% elif structure == 'quadratic_over_linear' %}{% if positive %}$(-\\infty;{{ p1 }})\\cup{{ '[' if closed else '(' }}{{ p2 }};{{ p3 }}{{ ']' if closed else ')' }}${% else %}$({{ p1 }};{{ p2 }}{{ ']' if closed else ')' }}\\cup{{ '[' if closed else '(' }}{{ p3 }};+\\infty)${% endif %}{% elif structure == 'quadratic_over_quadratic' %}{% if positive %}$({{ p1 }};{{ p2 }}{{ ']' if closed else ')' }}\\cup({{ p3 }};{{ p4 }}{{ ']' if closed else ')' }}${% else %}$(-\\infty;{{ p1 }})\\cup{{ '[' if closed else '(' }}{{ p2 }};{{ p3 }})\\cup{{ '[' if closed else '(' }}{{ p4 }};+\\infty)${% endif %}{% elif structure == 'two_fractions_compare' %}{% if positive %}$(-\\infty;{{ p1 }})\\cup({{ p2 }};{{ p3 }}{{ ']' if closed else ')' }}${% else %}$({{ p1 }};{{ p2 }})\\cup{{ '[' if closed else '(' }}{{ p3 }};+\\infty)${% endif %}{% elif structure == 'repeated_denominator_square' %}{% if positive %}${{ '[' if closed else '(' }}{{ p1 }};{{ p2 }}{{ ']' if closed else ')' }}${% else %}$(-\\infty;{{ p1 }}{{ ']' if closed else ')' }}\\cup{{ '[' if closed else '(' }}{{ p2 }};{{ p3 }})\\cup({{ p3 }};+\\infty)${% endif %}{% elif structure == 'cubic_over_quadratic' %}{% if positive %}$(-\\infty;{{ p1 }})\\cup{{ '[' if closed else '(' }}{{ p2 }};{{ p3 }})${% else %}$({{ p1 }};{{ p2 }}{{ ']' if closed else ')' }}\\cup({{ p3 }};+\\infty)${% endif %}{% else %}{% if positive %}${{ '[' if closed else '(' }}{{ p1 }};{{ p2 }})${% else %}$(-\\infty;{{ p1 }}{{ ']' if closed else ')' }}\\cup({{ p2 }};{{ p3 }})\\cup({{ p3 }};+\\infty)${% endif %}{% endif %}"
+      }
+    },
+    {
+      "id": "denominator_roots_as_solutions",
+      "desc": "Бөлімді нөлге айналдыратын мәндерді шешім деп қабылдады; бүтін қорытынды тармағында аралықтың ашық шеттерін қате қосып, қосындыны соған сәйкес өзгертті.",
+      "transform": {
+        "correct": "{% if task_mode == 'integer_summary' %}$({{ p1 }};{{ p2 }};{{ summary_sum + 2 }})${% elif structure == 'quadratic_over_linear' %}$\\{ {{ p1 }} \\}${% elif structure == 'quadratic_over_quadratic' %}$\\{ {{ p1 }};{{ p3 }} \\}${% elif structure == 'two_fractions_compare' %}$\\{ {{ p1 }};{{ p2 }} \\}${% elif structure == 'repeated_denominator_square' %}$\\{ {{ p3 }} \\}${% elif structure == 'cubic_over_quadratic' %}$\\{ {{ p1 }};{{ p3 }} \\}${% else %}$\\{ {{ p2 }};{{ p3 }} \\}${% endif %}"
+      }
+    },
+    {
+      "id": "numerator_zeros_only",
+      "desc": "Тек алымның нөлдерін жауап деп жазды; бүтін қорытынды тармағында аралықты симметриялы деп қате қабылдап, қосындыны нөлге теңеді.",
+      "transform": {
+        "correct": "{% if task_mode == 'integer_summary' %}$({{ summary_min }};{{ summary_max }};0)${% elif structure == 'quadratic_over_linear' %}$\\{ {{ p2 }};{{ p3 }} \\}${% elif structure == 'quadratic_over_quadratic' %}$\\{ {{ p2 }};{{ p4 }} \\}${% elif structure == 'two_fractions_compare' %}$\\{ {{ p3 }} \\}${% elif structure == 'repeated_denominator_square' %}$\\{ {{ p1 }};{{ p2 }} \\}${% elif structure == 'cubic_over_quadratic' %}$\\{ {{ p2 }} \\}${% else %}$\\{ {{ p1 }};{{ p3 }} \\}${% endif %}"
+      }
+    }
+  ],
+  "_dropped_distractors": [
+    {
+      "id": "stopped_after_factoring",
+      "why_dropped": "Алым мен бөлімді жіктеп, таңба кестесін құрмай тоқтау бір ғана анық қате жауап бермейді; бұл determinate емес dead-end қате."
+    },
+    {
+      "id": "cancelled_factor_and_forgot_domain_without_effect",
+      "why_dropped": "Ортақ көбейткішті қысқартқаннан кейін тыйым салынған нүкте кейбір есептерде соңғы шешім аралығына кірмеуі мүмкін. Мұндай жағдайда қате соңғы жауапты өзгертпейді, сондықтан ол жеке тұрақты distractor ретінде қолданылмайды."
+    }
+  ],
+  "narrative_settings": [
+    "екі шаманың қатынасы берілген шектен үлкен немесе кіші болатын параметр аралығын табу",
+    "жылдамдық пен уақыт қатынасы арқылы алынған бөлшек-рационал теңсіздіктің шешімін табу",
+    "экономикалық көрсеткіштің рационал функциясы берілген шартты қанағаттандыратын мәндер аралығын анықтау"
+  ]
+}

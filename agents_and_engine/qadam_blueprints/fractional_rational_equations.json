@@ -1,0 +1,292 @@
+{
+  "topic": "fractional_rational_equations",
+  "display_name": "Бөлшек-рационал теңдеулерді шешу",
+  "curriculum_ref": "Сынып көрсетілмеген — 9-бөлім: Бөлшек-рационал теңдеулер",
+  "constraints_template": "fractional_rational_equations.j2",
+  "_comment": "Генеративті blueprint: видеодағы дайын теңдеулер сақталмайды. Әр тармақ кері бағытта құрылады: алдымен рұқсат етілген бүтін шешімдер, бөлімнің тыйым салынған мәндері немесе алмастырудан шығатын мақсатты мәндер таңдалып, содан кейін бөлшек-рационал теңдеудің коэффициенттері есептеледі. Құрылымдар ММЖ, ортақ бөлім, квадрат/куб бөлімді жіктеу және екі түрлі алмастыру әдісін қамтиды.",
+  "tag": {
+    "name": "Бөлшек-рационал теңдеу",
+    "slug": "fractional-rational-equation"
+  },
+  "default_difficulty": 2,
+  "parameters": {
+    "structure": {
+      "type": "string",
+      "options": [
+        "common_linear_pair",
+        "factor_quadratic_denominator",
+        "domain_filters_candidate",
+        "cubic_sum_factorization",
+        "quadratic_expression_substitution",
+        "reciprocal_ratio_substitution"
+      ],
+      "desc": "Есептің негізгі шешу құрылымы"
+    },
+    "base": {
+      "type": "integer",
+      "options": [
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "Бөлім түбірлерін немесе алмастыру центрін құратын негізгі бүтін сан"
+    },
+    "gap_1": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "Бірінші оң аралық/ығысу"
+    },
+    "gap_2": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "Екінші оң аралық/ығысу"
+    },
+    "k": {
+      "type": "integer",
+      "options": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "Қосымша коэффициент немесе алмастыру теңдеуінің оң параметрі"
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "structure": {
+        "options": [
+          "common_linear_pair",
+          "domain_filters_candidate"
+        ]
+      },
+      "base": {
+        "options": [
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "gap_2": {
+        "options": [
+          1,
+          2,
+          3
+        ]
+      },
+      "k": {
+        "options": [
+          2,
+          3
+        ]
+      }
+    },
+    "2": {
+      "structure": {
+        "options": [
+          "factor_quadratic_denominator",
+          "domain_filters_candidate",
+          "cubic_sum_factorization"
+        ]
+      },
+      "base": {
+        "options": [
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "gap_2": {
+        "options": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "k": {
+        "options": [
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    "3": {
+      "structure": {
+        "options": [
+          "quadratic_expression_substitution",
+          "reciprocal_ratio_substitution",
+          "cubic_sum_factorization",
+          "factor_quadratic_denominator"
+        ]
+      },
+      "base": {
+        "options": [
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "gap_1": {
+        "options": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "gap_2": {
+        "options": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "k": {
+        "options": [
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    }
+  },
+  "derived": {
+    "base": "abs(base) if structure == 'quadratic_expression_substitution' else (abs(base) + 1 if structure == 'cubic_sum_factorization' else base)",
+    "p": "base",
+    "q": "base + 2*gap_1 if structure == 'common_linear_pair' else (base + (k-1)*gap_1 if structure == 'reciprocal_ratio_substitution' else base + gap_1)",
+    "mid": "base + gap_1 if structure == 'common_linear_pair' else (q + gap_2 if structure == 'factor_quadratic_denominator' else 0)",
+    "r": "q + gap_2 if structure == 'common_linear_pair' else (mid + k if structure == 'factor_quadratic_denominator' else (q + gap_2 + k if structure == 'domain_filters_candidate' else (base + gap_1 + gap_2 + k if structure == 'cubic_sum_factorization' else (base + k*gap_1 if structure == 'reciprocal_ratio_substitution' else 0))))",
+    "quad_den_b": "-(p + q)",
+    "quad_den_c": "p*q",
+    "domain_num_b": "-(p + r)",
+    "domain_num_c": "p*r + k",
+    "cubic_s": "base if structure == 'cubic_sum_factorization' else 0",
+    "cubic_s2": "cubic_s**2",
+    "cubic_s3": "cubic_s**3",
+    "cubic_u": "gap_1",
+    "cubic_v": "k",
+    "cubic_q_b": "-cubic_s",
+    "cubic_q_c": "cubic_s2",
+    "cubic_num_a": "cubic_v + 1",
+    "cubic_num_b": "cubic_u - cubic_v*cubic_s + cubic_s - r",
+    "cubic_num_c": "cubic_u*cubic_s + cubic_v*cubic_s2 - cubic_s*r",
+    "sub_d1": "gap_1",
+    "sub_d2": "gap_1 + gap_2",
+    "sub_h": "base + sub_d2 + 1 if structure == 'quadratic_expression_substitution' else 0",
+    "sub_s": "2*sub_h",
+    "sub_x1": "sub_h - sub_d2",
+    "sub_x2": "sub_h - sub_d1",
+    "sub_x3": "sub_h + sub_d1",
+    "sub_x4": "sub_h + sub_d2",
+    "sub_y1": "sub_d1**2 - sub_h**2",
+    "sub_y2": "sub_d2**2 - sub_h**2",
+    "sub_A": "-k*(sub_y1 + sub_y2)",
+    "sub_B": "-k*sub_y1*sub_y2",
+    "ratio_scale": "gap_2",
+    "ratio_a": "k",
+    "ratio_left_coeff": "ratio_scale",
+    "ratio_recip_coeff": "ratio_scale*ratio_a",
+    "ratio_rhs": "ratio_scale*(ratio_a + 1)",
+    "ratio_solution": "base + ratio_a*gap_1"
+  },
+  "constraints": [],
+  "integer_clean": true,
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% if structure in ['common_linear_pair', 'factor_quadratic_denominator'] %}$\\{ {{ mid }}; {{ r }} \\}${% elif structure in ['domain_filters_candidate', 'cubic_sum_factorization'] %}$\\{ {{ r }} \\}${% elif structure == 'quadratic_expression_substitution' %}$\\{ {{ sub_x1 }}; {{ sub_x2 }}; {{ sub_x3 }}; {{ sub_x4 }} \\}${% else %}$\\{ {{ ratio_solution }} \\}${% endif %}",
+    "desc": "Теңдеудің ММЖ-ға сай нақты бүтін шешімдер жиыны; алмастыру тармақтарында барлық кері алмастырулар алдын ала таза бүтін шешімдер беретіндей етіп құрылады."
+  },
+  "distractors": [
+    {
+      "id": "domain_or_branch_confusion",
+      "desc": "Бөлімнің нөлдерін шешім деп алды немесе алмастырудан шыққан шешімдердің бір жұбын ғана қалдырды.",
+      "transform": {
+        "correct": "{% if structure in ['common_linear_pair', 'factor_quadratic_denominator'] %}$\\{ {{ p }}; {{ q }} \\}${% elif structure == 'domain_filters_candidate' %}$\\{ {{ p }}; {{ r }} \\}${% elif structure == 'cubic_sum_factorization' %}$\\{ {{ -cubic_s }}; {{ r }} \\}${% elif structure == 'quadratic_expression_substitution' %}$\\{ {{ sub_x2 }}; {{ sub_x3 }} \\}${% else %}$\\{ {{ p }}; {{ q }} \\}${% endif %}"
+      }
+    },
+    {
+      "id": "kept_wrong_candidate_or_one_factor",
+      "desc": "Ортақ бөлімнен кейін бір көбейткішті жоғалтты, ММЖ-ға кірмейтін кандидатты қалдырды немесе алмастыру теңдеуінің мәндерін x деп қабылдады.",
+      "transform": {
+        "correct": "{% if structure in ['common_linear_pair', 'factor_quadratic_denominator'] %}$\\{ {{ r }} \\}${% elif structure == 'domain_filters_candidate' %}$\\{ {{ p }} \\}${% elif structure == 'cubic_sum_factorization' %}$\\{ {{ -cubic_s }} \\}${% elif structure == 'quadratic_expression_substitution' %}$\\{ {{ sub_x1 }}; {{ sub_x4 }} \\}${% else %}$\\{ {{ p }} \\}${% endif %}"
+      }
+    },
+    {
+      "id": "second_common_algebra_error",
+      "desc": "Екінші көбейткішті ғана қалдырды, бөлімнің екі тыйым салынған мәнін жауап деп алды, таңбаны қате жіктеді немесе ± тармақтарының жартысын жоғалтты.",
+      "transform": {
+        "correct": "{% if structure in ['common_linear_pair', 'factor_quadratic_denominator'] %}$\\{ {{ mid }} \\}${% elif structure == 'domain_filters_candidate' %}$\\{ {{ p }}; {{ q }} \\}${% elif structure == 'cubic_sum_factorization' %}$\\{ {{ cubic_s }}; {{ r }} \\}${% elif structure == 'quadratic_expression_substitution' %}$\\{ {{ sub_x3 }}; {{ sub_x4 }} \\}${% else %}$\\{ {{ q }} \\}${% endif %}"
+      }
+    }
+  ],
+  "_dropped_distractors": [
+    {
+      "id": "stopped_after_common_denominator",
+      "why_dropped": "Ортақ бөлімге келтіріп немесе бөлімді жіктеп, ары қарай шешпей тоқтау нақты бір қате жауапты анықтамайды; бұл determinate емес dead-end қате."
+    },
+    {
+      "id": "forgot_to_write_domain_only",
+      "why_dropped": "ММЖ-ны мүлде жазбау өздігінен сандық жауапты өзгертпейді, егер алынған түбірлердің ешқайсысы бөлімді нөлге айналдырмаса; сондықтан жеке distractor ретінде тұрақты қате жауап бермейді."
+    }
+  ],
+  "narrative_settings": [
+    "бірлескен жұмыс немесе өнімділік жылдамдықтары арқылы алынатын бөлшек-рационал теңдеу",
+    "жол, уақыт және жылдамдық қатынастары арқылы алынатын бөлшек-рационал теңдеу",
+    "екі шаманың кері пропорционал қатынастары бар қолданбалы есеп"
+  ]
+}

@@ -1,0 +1,408 @@
+{
+  "topic": "quadratic_inequalities_interval_method",
+  "display_name": "Квадрат теңсіздіктерді интервалдар әдісімен шешу",
+  "curriculum_ref": "8 сынып — Квадрат теңсіздіктер",
+  "constraints_template": "quadratic_inequalities_interval_method.j2",
+  "_comment": "Генеративті blueprint: видеодағы дайын мысалдар сақталмайды. Екі нақты түбірі бар жағдайларда алдымен түбірлер мен жетекші коэффициент таңдалып, содан кейін a*x^2+b*x+c өрнегі құрылады. D<0 тармағында төбе абсциссасы h және оң gap арқылы a*((x-h)^2+gap) түрі құрылады. 3-деңгейде теңсіздік бірден стандарт түрде емес, екі жақта да мүшелері бар түрде берілуі мүмкін.",
+  "tag": {
+    "name": "Квадрат теңсіздік",
+    "slug": "quadratic-inequality"
+  },
+  "default_difficulty": 2,
+  "parameters": {
+    "structure": {
+      "type": "string",
+      "options": [
+        "two_roots_standard",
+        "two_roots_both_sides",
+        "no_real_roots"
+      ],
+      "desc": "Теңсіздіктің құрылымы: стандарт түр, екі жақты түр немесе нақты түбірі жоқ квадрат үшмүше"
+    },
+    "relation": {
+      "type": "string",
+      "options": [
+        ">",
+        "<",
+        ">=",
+        "<="
+      ],
+      "desc": "Теңсіздік белгісі"
+    },
+    "a": {
+      "type": "integer",
+      "options": [
+        -4,
+        -3,
+        -2,
+        -1,
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "x^2 алдындағы нөлден өзге жетекші коэффициент"
+    },
+    "left_root": {
+      "type": "integer",
+      "options": [
+        -8,
+        -7,
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "Екі нақты түбір тармағындағы кіші түбір"
+    },
+    "root_gap": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "desc": "Екі түбірдің оң айырмасы; r2=r1+root_gap"
+    },
+    "h": {
+      "type": "integer",
+      "options": [
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "desc": "D<0 тармағындағы парабола төбесінің абсциссасы"
+    },
+    "gap": {
+      "type": "integer",
+      "options": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "desc": "D<0 болуын кепілдейтін a*((x-h)^2+gap) өрнегіндегі оң сан"
+    },
+    "shift_b": {
+      "type": "integer",
+      "options": [
+        -8,
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8
+      ],
+      "desc": "Екі жақты түрде x мүшесіне екі жақтан қосылатын коэффициент"
+    },
+    "shift_c": {
+      "type": "integer",
+      "options": [
+        -12,
+        -10,
+        -8,
+        -6,
+        -4,
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "desc": "Екі жақты түрде екі жақтан қосылатын тұрақты мүше"
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "structure": {
+        "options": [
+          "two_roots_standard"
+        ]
+      },
+      "relation": {
+        "options": [
+          ">",
+          "<"
+        ]
+      },
+      "a": {
+        "options": [
+          1
+        ]
+      },
+      "left_root": {
+        "options": [
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2
+        ]
+      },
+      "root_gap": {
+        "options": [
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    "2": {
+      "structure": {
+        "options": [
+          "two_roots_standard"
+        ]
+      },
+      "relation": {
+        "options": [
+          ">",
+          "<",
+          ">=",
+          "<="
+        ]
+      },
+      "a": {
+        "options": [
+          -3,
+          -2,
+          -1,
+          1,
+          2,
+          3
+        ]
+      },
+      "left_root": {
+        "options": [
+          -7,
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "root_gap": {
+        "options": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    },
+    "3": {
+      "structure": {
+        "options": [
+          "two_roots_both_sides",
+          "no_real_roots"
+        ]
+      },
+      "relation": {
+        "options": [
+          ">",
+          "<",
+          ">=",
+          "<="
+        ]
+      },
+      "a": {
+        "options": [
+          -4,
+          -3,
+          -2,
+          -1,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "left_root": {
+        "options": [
+          -8,
+          -7,
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "root_gap": {
+        "options": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "h": {
+        "options": [
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "gap": {
+        "options": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "shift_b": {
+        "options": [
+          -8,
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          2,
+          3,
+          4,
+          5,
+          6,
+          8
+        ]
+      },
+      "shift_c": {
+        "options": [
+          -12,
+          -10,
+          -8,
+          -6,
+          -4,
+          4,
+          6,
+          8,
+          10,
+          12
+        ]
+      }
+    }
+  },
+  "derived": {
+    "left_root": "left_root if structure != 'no_real_roots' else 0",
+    "root_gap": "root_gap if structure != 'no_real_roots' else 0",
+    "h": "h if structure == 'no_real_roots' else 0",
+    "gap": "gap if structure == 'no_real_roots' else 0",
+    "shift_b": "shift_b if structure == 'two_roots_both_sides' else 0",
+    "shift_c": "shift_c if structure == 'two_roots_both_sides' else 0",
+    "r1": "left_root",
+    "r2": "left_root + root_gap",
+    "b": "-a * (r1 + r2) if structure != 'no_real_roots' else -2 * a * h",
+    "c": "a * r1 * r2 if structure != 'no_real_roots' else a * (h**2 + gap)",
+    "lhs_b": "b + shift_b",
+    "lhs_c": "c + shift_c",
+    "rhs_b": "shift_b",
+    "rhs_c": "shift_c",
+    "discriminant": "b**2 - 4*a*c",
+    "relation_latex": "'\\\\ge' if relation == '>=' else ('\\\\le' if relation == '<=' else relation)"
+  },
+  "constraints": [
+    "structure != 'no_real_roots' -> discriminant > 0",
+    "structure == 'no_real_roots' -> discriminant < 0"
+  ],
+  "integer_clean": true,
+  "answer": {
+    "type": "static_choice",
+    "correct": "{% set wants_positive = relation in ['>', '>='] %}{% set outside = (a > 0 and wants_positive) or (a < 0 and not wants_positive) %}{% set closed = relation in ['>=', '<='] %}{% if structure == 'no_real_roots' %}{% if outside %}$(-\\infty;+\\infty)${% else %}$\\varnothing${% endif %}{% elif outside %}{% if closed %}$(-\\infty;{{ r1 }}]\\cup[{{ r2 }};+\\infty)${% else %}$(-\\infty;{{ r1 }})\\cup({{ r2 }};+\\infty)${% endif %}{% else %}{% if closed %}$[{{ r1 }};{{ r2 }}]${% else %}$({{ r1 }};{{ r2 }})${% endif %}{% endif %}",
+    "desc": "Жауап аралықтар түрінде беріледі. Екі нақты түбірде таңба a коэффициентінің таңбасына және теңсіздік бағытына тәуелді; D<0 кезінде квадрат үшмүшенің таңбасы барлық x үшін a таңбасымен бірдей."
+  },
+  "distractors": [
+    {
+      "id": "opposite_sign_intervals",
+      "desc": "Таңба кестесінде оң және теріс аралықтарды керісінше таңдады.",
+      "transform": {
+        "correct": "{% set wants_positive = relation in ['>', '>='] %}{% set outside = (a > 0 and wants_positive) or (a < 0 and not wants_positive) %}{% set closed = relation in ['>=', '<='] %}{% if structure == 'no_real_roots' %}{% if outside %}$\\varnothing${% else %}$(-\\infty;+\\infty)${% endif %}{% elif outside %}{% if closed %}$[{{ r1 }};{{ r2 }}]${% else %}$({{ r1 }};{{ r2 }})${% endif %}{% else %}{% if closed %}$(-\\infty;{{ r1 }}]\\cup[{{ r2 }};+\\infty)${% else %}$(-\\infty;{{ r1 }})\\cup({{ r2 }};+\\infty)${% endif %}{% endif %}"
+      }
+    },
+    {
+      "id": "wrong_endpoint_inclusion",
+      "desc": "Қатаң және қатаң емес теңсіздікте түбірлерді жауапқа қосу ережесін шатастырды; D<0 кезінде төбе абсциссасын жалғыз түбір деп қате қабылдады.",
+      "transform": {
+        "correct": "{% set wants_positive = relation in ['>', '>='] %}{% set outside = (a > 0 and wants_positive) or (a < 0 and not wants_positive) %}{% set closed = relation in ['>=', '<='] %}{% if structure == 'no_real_roots' %}$\\{ {{ h }} \\}${% elif outside %}{% if closed %}$(-\\infty;{{ r1 }})\\cup({{ r2 }};+\\infty)${% else %}$(-\\infty;{{ r1 }}]\\cup[{{ r2 }};+\\infty)${% endif %}{% else %}{% if closed %}$({{ r1 }};{{ r2 }})${% else %}$[{{ r1 }};{{ r2 }}]${% endif %}{% endif %}"
+      }
+    },
+    {
+      "id": "kept_only_left_interval",
+      "desc": "Таңба кестесінен тек сол жақ аралықты ғана алды; D<0 кезінде төбе нүктесін жалған шекара ретінде қолданды.",
+      "transform": {
+        "correct": "{% set closed = relation in ['>=', '<='] %}{% if structure == 'no_real_roots' %}{% if closed %}$(-\\infty;{{ h }}]${% else %}$(-\\infty;{{ h }})${% endif %}{% else %}{% if closed %}$(-\\infty;{{ r1 }}]${% else %}$(-\\infty;{{ r1 }})${% endif %}{% endif %}"
+      }
+    }
+  ],
+  "_dropped_distractors": [
+    {
+      "id": "did_not_reduce_to_standard_form",
+      "why_dropped": "Мүшелерді бір жаққа көшірмеу немесе стандарт түрге келтірмей тоқтап қалу бір ғана анық қате жауапты тудырмайды; бұл dead-end қате."
+    }
+  ],
+  "narrative_settings": [
+    "дененің биіктігі берілген деңгейден жоғары немесе төмен болатын уақыт аралығын табу",
+    "пайда немесе шығын функциясы оң не теріс болатын параметр аралығын анықтау",
+    "геометриялық шаманың берілген шартты қанағаттандыратын мәндер аралығын табу"
+  ]
+}

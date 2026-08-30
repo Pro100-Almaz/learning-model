@@ -1,0 +1,352 @@
+{
+  "topic": "ubt_cone_volume_surface",
+  "parent_topic": "stereometry_geometric_figures",
+  "parent_topic_number": 16,
+  "display_name": "Stereometry — cones and cone frustums: volume and surface area",
+  "curriculum_ref": "KZ 2026 UBT — Stereometry — Cones",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Replaces the trivia generator that asked how many circles appear in the net of a cone. The lateral-area modes derive the radius and height from a 3-4-5 triple so the slant height is an integer and the answer stays a clean multiple of pi. Python/SymPy owns generation, mathematics, validation and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Стереометрия",
+    "slug": "stereometriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "cone_volume",
+        "cone_axial_section_area",
+        "cone_slant_height",
+        "cone_lateral_area",
+        "cone_total_surface_area",
+        "cone_frustum_volume"
+      ],
+      "desc": "question structure"
+    },
+    "r": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "height": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "scale": {
+      "type": "int",
+      "min": 1,
+      "max": 5,
+      "desc": "multiplier on the 3-4-5 triple, so the slant height is an integer"
+    },
+    "radius_big": {
+      "type": "int",
+      "min": 3,
+      "max": 12
+    },
+    "radius_small": {
+      "type": "int",
+      "min": 1,
+      "max": 10
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "cone_volume",
+          "cone_axial_section_area"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "cone_slant_height",
+          "cone_lateral_area"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "cone_total_surface_area",
+          "cone_frustum_volume"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "cone_volume": {
+      "uses": [
+        "r",
+        "height"
+      ],
+      "question": {
+        "instruction": "Find the volume of the cone with the given base radius and height.",
+        "latex": "r={r},\\qquad h={height}"
+      }
+    },
+    "cone_axial_section_area": {
+      "uses": [
+        "r",
+        "height"
+      ],
+      "comment": "The axial section is a triangle of base 2r and height h, so its area is r*h and carries no pi.",
+      "question": {
+        "instruction": "A plane through the axis of the cone cuts it in a triangle. Find the area of this axial section.",
+        "latex": "r={r},\\qquad h={height}"
+      }
+    },
+    "cone_slant_height": {
+      "uses": [
+        "r",
+        "height"
+      ],
+      "question": {
+        "instruction": "Find the slant height of the cone with the given base radius and height.",
+        "latex": "r={r},\\qquad h={height}"
+      }
+    },
+    "cone_lateral_area": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "cone_radius": "3*scale",
+        "cone_height": "4*scale",
+        "slant": "5*scale"
+      },
+      "question": {
+        "instruction": "Find the lateral surface area of the cone with the given base radius and height.",
+        "latex": "r={cone_radius},\\qquad h={cone_height}"
+      }
+    },
+    "cone_total_surface_area": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "cone_radius": "3*scale",
+        "cone_height": "4*scale",
+        "slant": "5*scale"
+      },
+      "question": {
+        "instruction": "Find the total surface area of the cone with the given base radius and height.",
+        "latex": "r={cone_radius},\\qquad h={cone_height}"
+      }
+    },
+    "cone_frustum_volume": {
+      "uses": [
+        "radius_big",
+        "radius_small",
+        "height"
+      ],
+      "comment": "Equal radii would make the frustum a cylinder and collapse the correct answer onto the cylinder-formula distractor.",
+      "constraints": [
+        "radius_big > radius_small"
+      ],
+      "question": {
+        "instruction": "A frustum of a cone has the given base radii and height. Find its volume.",
+        "latex": "R={radius_big},\\qquad r={radius_small},\\qquad h={height}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "cone_volume": "pi*r**2*height/3",
+      "cone_axial_section_area": "r*height",
+      "cone_slant_height": "sqrt(r**2+height**2)",
+      "cone_lateral_area": "pi*cone_radius*slant",
+      "cone_total_surface_area": "pi*cone_radius*(cone_radius+slant)",
+      "cone_frustum_volume": "pi*height*(radius_big**2+radius_small**2+radius_big*radius_small)/3"
+    }
+  },
+  "answer_render": {
+    "cone_volume": "exact_expression",
+    "cone_axial_section_area": "scalar",
+    "cone_slant_height": "exact_expression",
+    "cone_lateral_area": "exact_expression",
+    "cone_total_surface_area": "exact_expression",
+    "cone_frustum_volume": "exact_expression"
+  },
+  "distractors": {
+    "cone_volume": [
+      {
+        "id": "forgot_the_one_third",
+        "transform": "pi*r**2*height"
+      },
+      {
+        "id": "halved_instead_of_thirded",
+        "transform": "pi*r**2*height/2"
+      },
+      {
+        "id": "forgot_to_square_the_radius",
+        "transform": "pi*r*height/3"
+      },
+      {
+        "id": "base_area_only",
+        "transform": "pi*r**2"
+      },
+      {
+        "id": "lateral_style_two_pi_r_h",
+        "transform": "2*pi*r*height/3"
+      },
+      {
+        "id": "omitted_pi",
+        "transform": "r**2*height/3"
+      }
+    ],
+    "cone_axial_section_area": [
+      {
+        "id": "forgot_to_halve_the_triangle",
+        "transform": "2*r*height"
+      },
+      {
+        "id": "added_pi_although_section_is_a_triangle",
+        "transform": "pi*r*height"
+      },
+      {
+        "id": "base_area_instead_of_section",
+        "transform": "pi*r**2"
+      },
+      {
+        "id": "halved_again",
+        "transform": "r*height/2"
+      },
+      {
+        "id": "volume_instead_of_area",
+        "transform": "pi*r**2*height/3"
+      },
+      {
+        "id": "section_perimeter_instead_of_area",
+        "transform": "2*r+2*sqrt(r**2+height**2)"
+      }
+    ],
+    "cone_slant_height": [
+      {
+        "id": "subtracted_instead_of_added",
+        "transform": "sqrt(height**2-r**2)"
+      },
+      {
+        "id": "added_the_lengths",
+        "transform": "r+height"
+      },
+      {
+        "id": "forgot_the_square_root",
+        "transform": "r**2+height**2"
+      },
+      {
+        "id": "root_of_the_sum",
+        "transform": "sqrt(r+height)"
+      },
+      {
+        "id": "used_diameter_not_radius",
+        "transform": "sqrt(4*r**2+height**2)"
+      },
+      {
+        "id": "height_taken_as_slant_height",
+        "transform": "height"
+      }
+    ],
+    "cone_lateral_area": [
+      {
+        "id": "used_height_instead_of_slant_height",
+        "transform": "pi*cone_radius*cone_height"
+      },
+      {
+        "id": "doubled_as_for_a_cylinder",
+        "transform": "2*pi*cone_radius*slant"
+      },
+      {
+        "id": "total_area_instead_of_lateral",
+        "transform": "pi*cone_radius*(cone_radius+slant)"
+      },
+      {
+        "id": "base_area_only",
+        "transform": "pi*cone_radius**2"
+      },
+      {
+        "id": "used_one_third_as_for_volume",
+        "transform": "pi*cone_radius*slant/3"
+      },
+      {
+        "id": "omitted_pi",
+        "transform": "cone_radius*slant"
+      }
+    ],
+    "cone_total_surface_area": [
+      {
+        "id": "lateral_area_only",
+        "transform": "pi*cone_radius*slant"
+      },
+      {
+        "id": "used_height_instead_of_slant_height",
+        "transform": "pi*cone_radius*(cone_radius+cone_height)"
+      },
+      {
+        "id": "counted_two_bases_as_for_a_cylinder",
+        "transform": "pi*cone_radius*(2*cone_radius+slant)"
+      },
+      {
+        "id": "doubled_the_whole_surface",
+        "transform": "2*pi*cone_radius*(cone_radius+slant)"
+      },
+      {
+        "id": "base_area_only",
+        "transform": "pi*cone_radius**2"
+      },
+      {
+        "id": "omitted_pi",
+        "transform": "cone_radius*(cone_radius+slant)"
+      }
+    ],
+    "cone_frustum_volume": [
+      {
+        "id": "forgot_the_cross_term",
+        "transform": "pi*height*(radius_big**2+radius_small**2)/3"
+      },
+      {
+        "id": "forgot_the_one_third",
+        "transform": "pi*height*(radius_big**2+radius_small**2+radius_big*radius_small)"
+      },
+      {
+        "id": "averaged_the_bases_as_a_cylinder",
+        "transform": "pi*height*(radius_big**2+radius_small**2)/2"
+      },
+      {
+        "id": "used_the_mean_radius_as_a_cylinder",
+        "transform": "pi*height*((radius_big+radius_small)/2)**2"
+      },
+      {
+        "id": "difference_of_two_cones_wrongly",
+        "transform": "pi*height*(radius_big**2-radius_small**2)/3"
+      },
+      {
+        "id": "larger_base_as_full_cone",
+        "transform": "pi*height*radius_big**2/3"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "positive_volume_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

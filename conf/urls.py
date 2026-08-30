@@ -42,6 +42,10 @@ urlpatterns = [
                     path("gamification/", include("apps.gamification.urls")),
                     path("roadmap/", include("apps.roadmap.urls")),
                     path("generation/", include("apps.generation.urls")),
+                    # The deterministic UBT blueprint engine. Separate from
+                    # generation/ because it has no jobs: generation is
+                    # synchronous, so there is nothing to poll or stream.
+                    path("ubt/", include("apps.generation.urls_ubt")),
                     path("friendships/", include("apps.friendships.urls"))
                 ],
                 "v1",

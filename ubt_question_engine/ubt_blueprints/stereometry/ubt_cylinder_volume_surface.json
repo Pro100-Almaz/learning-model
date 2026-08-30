@@ -1,0 +1,340 @@
+{
+  "topic": "ubt_cylinder_volume_surface",
+  "parent_topic": "stereometry_geometric_figures",
+  "parent_topic_number": 16,
+  "display_name": "Stereometry — cylinders: volume and surface area",
+  "curriculum_ref": "KZ 2026 UBT — Stereometry — Cylinders",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Replaces the trivia generator that asked how many bases a cylinder has. Answers stay exact multiples of pi -- never a decimal approximation -- so symbolic equivalence can decide correctness. Python/SymPy owns generation, mathematics, validation and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Стереометрия",
+    "slug": "stereometriya"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "cylinder_volume",
+        "cylinder_lateral_area",
+        "cylinder_total_surface_area",
+        "cylinder_axial_section_area",
+        "cylinder_volume_from_diameter",
+        "cylinder_height_from_volume"
+      ],
+      "desc": "question structure"
+    },
+    "r": {
+      "type": "int",
+      "min": 2,
+      "max": 10
+    },
+    "height": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "diameter": {
+      "type": "choice",
+      "values": [
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16
+      ],
+      "desc": "even, so the radius stays an integer"
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "cylinder_volume",
+          "cylinder_lateral_area"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "cylinder_total_surface_area",
+          "cylinder_axial_section_area"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "cylinder_volume_from_diameter",
+          "cylinder_height_from_volume"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "cylinder_volume": {
+      "uses": [
+        "r",
+        "height"
+      ],
+      "question": {
+        "instruction": "Find the volume of the cylinder with the given radius and height.",
+        "latex": "r={r},\\qquad h={height}"
+      }
+    },
+    "cylinder_lateral_area": {
+      "uses": [
+        "r",
+        "height"
+      ],
+      "question": {
+        "instruction": "Find the lateral surface area of the cylinder with the given radius and height.",
+        "latex": "r={r},\\qquad h={height}"
+      }
+    },
+    "cylinder_total_surface_area": {
+      "uses": [
+        "r",
+        "height"
+      ],
+      "question": {
+        "instruction": "Find the total surface area of the cylinder with the given radius and height.",
+        "latex": "r={r},\\qquad h={height}"
+      }
+    },
+    "cylinder_axial_section_area": {
+      "uses": [
+        "r",
+        "height"
+      ],
+      "comment": "The axial section is a rectangle 2r by h, so the answer carries no pi at all. That is the point of the mode: a student who reaches for pi has not pictured the section.",
+      "question": {
+        "instruction": "A plane through the axis of the cylinder cuts it in a rectangle. Find the area of this axial section.",
+        "latex": "r={r},\\qquad h={height}"
+      }
+    },
+    "cylinder_volume_from_diameter": {
+      "uses": [
+        "diameter",
+        "height"
+      ],
+      "question": {
+        "instruction": "Find the volume of the cylinder with the given base diameter and height.",
+        "latex": "d={diameter},\\qquad h={height}"
+      }
+    },
+    "cylinder_height_from_volume": {
+      "uses": [
+        "r",
+        "height"
+      ],
+      "comment": "The height is rolled and the volume derived from it, so the answer is always an exact integer rather than a fraction the student cannot check.",
+      "derived": {
+        "volume_coefficient": "r**2*height"
+      },
+      "question": {
+        "instruction": "The volume and the base radius of a cylinder are given. Find its height.",
+        "latex": "V={volume_coefficient}\\pi,\\qquad r={r}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "cylinder_volume": "pi*r**2*height",
+      "cylinder_lateral_area": "2*pi*r*height",
+      "cylinder_total_surface_area": "2*pi*r*(r+height)",
+      "cylinder_axial_section_area": "2*r*height",
+      "cylinder_volume_from_diameter": "pi*(diameter/2)**2*height",
+      "cylinder_height_from_volume": "height"
+    }
+  },
+  "answer_render": {
+    "cylinder_volume": "exact_expression",
+    "cylinder_lateral_area": "exact_expression",
+    "cylinder_total_surface_area": "exact_expression",
+    "cylinder_axial_section_area": "scalar",
+    "cylinder_volume_from_diameter": "exact_expression",
+    "cylinder_height_from_volume": "scalar"
+  },
+  "distractors": {
+    "cylinder_volume": [
+      {
+        "id": "forgot_to_square_the_radius",
+        "transform": "pi*r*height"
+      },
+      {
+        "id": "lateral_area_instead_of_volume",
+        "transform": "2*pi*r*height"
+      },
+      {
+        "id": "base_area_only",
+        "transform": "pi*r**2"
+      },
+      {
+        "id": "used_cone_one_third",
+        "transform": "pi*r**2*height/3"
+      },
+      {
+        "id": "doubled_as_if_two_bases",
+        "transform": "2*pi*r**2*height"
+      },
+      {
+        "id": "omitted_pi",
+        "transform": "r**2*height"
+      }
+    ],
+    "cylinder_lateral_area": [
+      {
+        "id": "forgot_to_double",
+        "transform": "pi*r*height"
+      },
+      {
+        "id": "squared_the_radius_as_for_volume",
+        "transform": "pi*r**2*height"
+      },
+      {
+        "id": "total_area_instead_of_lateral",
+        "transform": "2*pi*r*(r+height)"
+      },
+      {
+        "id": "base_circumference_only",
+        "transform": "2*pi*r"
+      },
+      {
+        "id": "base_area_only",
+        "transform": "pi*r**2"
+      },
+      {
+        "id": "omitted_pi",
+        "transform": "2*r*height"
+      }
+    ],
+    "cylinder_total_surface_area": [
+      {
+        "id": "lateral_area_only",
+        "transform": "2*pi*r*height"
+      },
+      {
+        "id": "counted_one_base_only",
+        "transform": "pi*r*(2*height+r)"
+      },
+      {
+        "id": "forgot_to_double_the_bases",
+        "transform": "2*pi*r*height+pi*r**2"
+      },
+      {
+        "id": "volume_instead_of_area",
+        "transform": "pi*r**2*height"
+      },
+      {
+        "id": "added_radius_and_height_without_doubling",
+        "transform": "pi*r*(r+height)"
+      },
+      {
+        "id": "omitted_pi",
+        "transform": "2*r*(r+height)"
+      }
+    ],
+    "cylinder_axial_section_area": [
+      {
+        "id": "used_radius_not_diameter",
+        "transform": "r*height"
+      },
+      {
+        "id": "added_pi_although_section_is_a_rectangle",
+        "transform": "2*pi*r*height"
+      },
+      {
+        "id": "base_area_instead_of_section",
+        "transform": "pi*r**2"
+      },
+      {
+        "id": "halved_as_if_triangle",
+        "transform": "r*height/2"
+      },
+      {
+        "id": "section_perimeter_instead_of_area",
+        "transform": "4*r+2*height"
+      },
+      {
+        "id": "volume_instead_of_area",
+        "transform": "pi*r**2*height"
+      }
+    ],
+    "cylinder_volume_from_diameter": [
+      {
+        "id": "used_diameter_as_radius",
+        "transform": "pi*diameter**2*height"
+      },
+      {
+        "id": "halved_the_whole_volume_instead_of_the_diameter",
+        "transform": "pi*diameter**2*height/2"
+      },
+      {
+        "id": "forgot_to_square",
+        "transform": "pi*diameter*height/2"
+      },
+      {
+        "id": "lateral_area_instead_of_volume",
+        "transform": "pi*diameter*height"
+      },
+      {
+        "id": "used_cone_one_third",
+        "transform": "pi*(diameter/2)**2*height/3"
+      },
+      {
+        "id": "omitted_pi",
+        "transform": "(diameter/2)**2*height"
+      }
+    ],
+    "cylinder_height_from_volume": [
+      {
+        "id": "forgot_to_square_the_radius",
+        "transform": "volume_coefficient/r"
+      },
+      {
+        "id": "multiplied_instead_of_divided",
+        "transform": "volume_coefficient*r**2"
+      },
+      {
+        "id": "used_cone_one_third",
+        "transform": "3*volume_coefficient/r**2"
+      },
+      {
+        "id": "divided_by_the_lateral_area",
+        "transform": "volume_coefficient/(2*r)"
+      },
+      {
+        "id": "halved_the_result",
+        "transform": "volume_coefficient/(2*r**2)"
+      },
+      {
+        "id": "volume_coefficient_taken_as_height",
+        "transform": "volume_coefficient"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "positive_volume_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

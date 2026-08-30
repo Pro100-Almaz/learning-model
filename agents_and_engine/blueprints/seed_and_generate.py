@@ -53,6 +53,7 @@ django.setup()
 from django.db import connection, transaction  # noqa: E402
 from django.utils.text import slugify  # noqa: E402
 
+from agents_and_engine import math_engine  # noqa: E402
 from apps.content.models import ClassGrade, Lesson, Module, Subject, Tag  # noqa: E402
 from apps.generation.models import GenerationJob  # noqa: E402
 from apps.generation.tasks import run_generation_job  # noqa: E402
@@ -98,12 +99,15 @@ def parse_curriculum_ref(ref: str) -> tuple[int, str]:
     return grade, module_title
 
 
+# Both delegate to the engine so this script and the pipeline resolve a topic
+# the same way. The engine searches every blueprint directory (blueprints/ and
+# qadam_blueprints/), so a topic seeded here is one the Architect can also load.
 def load_blueprint(topic: str) -> dict:
-    return json.loads((BLUEPRINT_DIR / f"{topic}.json").read_text("utf-8"))
+    return math_engine.load_blueprint(topic)
 
 
 def discover_topics() -> list[str]:
-    return sorted(p.stem for p in BLUEPRINT_DIR.glob("*.json"))
+    return math_engine.available_topics()
 
 
 # --------------------------------------------------------------------------- #
@@ -304,7 +308,7 @@ def main(argv: Optional[list[str]] = None) -> int:
 
     all_topics = discover_topics()
     topics = args.topics or all_topics
-    unknown = [t for t in topics if not (BLUEPRINT_DIR / f"{t}.json").exists()]
+    unknown = [t for t in topics if t not in all_topics]
     if unknown:
         parser.error(f"unknown topic(s): {', '.join(unknown)}. Available: {', '.join(all_topics)}")
 

@@ -1,0 +1,109 @@
+{#- Vieta's theorem, in both directions.
+
+    `task_type` selects one of five asks, each drawing on its own slice of the
+    parameters. The blueprint's `derived` block has already canonicalised every
+    parameter the active task does NOT use, and computed a, b, c for the tasks
+    that pose an equation — so this template reads one source of truth and can
+    never show an equation different from the one quad_eq.py solves.
+
+      sum_product                   equation from (a_scale, S, P); report x1+x2 and x1·x2
+      root_expression               same equation; evaluate a symmetric expression
+                                    in the roots WITHOUT solving it
+      find_second_root              equation from (p x + q)(r x + s); one root is
+                                    given, the other is asked for
+      construct_equation            the roots are given (integer / rational /
+                                    conjugate-radical); build the equation
+      construct_from_sum_difference the sum and the difference of the roots are
+                                    given; build the equation
+
+    `frac` reduces a fraction to lowest terms — the gcd loop is safe because every
+    numerator and denominator the parameters can roll is small. -#}
+{%- macro frac(num, den) -%}
+{%- set n = num if num >= 0 else -num -%}
+{%- set d = den if den >= 0 else -den -%}
+{%- set ns = namespace(g = 1) -%}
+{%- for i in range(1, (n if n < d else d) + 1) -%}
+{%- if n % i == 0 and d % i == 0 %}{% set ns.g = i %}{% endif -%}
+{%- endfor -%}
+{%- if (num < 0) != (den < 0) %}-{% endif %}{{ n // ns.g }}{% if d // ns.g != 1 %}/{{ d // ns.g }}{% endif %}
+{%- endmacro -%}
+{%- macro quad(a, b, c) -%}
+{{ '' if a == 1 else a }}x^2
+{%- if b != 0 %} {{ '+' if b > 0 else '-' }} {{ '' if b in (1, -1) else (b if b > 0 else -b) }}x{% endif %}
+{%- if c != 0 %} {{ '+' if c > 0 else '-' }} {{ c if c > 0 else -c }}{% endif %} = 0
+{%- endmacro -%}
+{%- macro surd(centre, coeff, base, sign) -%}
+{{ centre }} {{ sign }} {{ '' if coeff == 1 else coeff }}sqrt({{ base }})
+{%- endmacro -%}
+{%- set expr_text = {
+     'x1_sq_x2_plus_x1_x2_sq': 'x1^2·x2 + x1·x2^2',
+     'reciprocal_sum':         '1/x1 + 1/x2',
+     'sum_squares':            'x1^2 + x2^2',
+     'ratio_sum':              'x1/x2 + x2/x1'
+   } -%}
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
+{% if task_type == 'sum_product' -%}
+- Equation: {{ quad(a, b, c) }}
+- Ask the student for the SUM and the PRODUCT of its roots, found from Vieta's theorem
+  without solving the equation.
+{%- elif task_type == 'root_expression' -%}
+- Equation: {{ quad(a, b, c) }}
+- Let x1 and x2 be its roots. Ask the student for the value of {{ expr_text[expression_type] }},
+  found from Vieta's theorem without solving the equation.
+{%- elif task_type == 'find_second_root' -%}
+- Equation: {{ quad(a, b, c) }}
+- One of its roots is x = {{ frac(-q, p) if known_root_index == 1 else frac(-s, r) }}.
+- Ask the student for the OTHER root, found from Vieta's theorem.
+{%- elif task_type == 'construct_equation' -%}
+{%- if root_family == 'integer' -%}
+- Two numbers are given: {{ root_int_1 }} and {{ root_int_2 }}.
+{%- elif root_family == 'rational' -%}
+- Two numbers are given: {{ frac(num_1, den_1) }} and {{ frac(num_2, den_2) }}.
+{%- else -%}
+- Two numbers are given: {{ surd(rad_center, rad_coeff, rad_base, '-') }} and {{ surd(rad_center, rad_coeff, rad_base, '+') }}.
+{%- endif %}
+- Ask the student to construct a quadratic equation with integer coefficients whose roots
+  are exactly these two numbers.
+{%- else -%}
+- The two roots of an unknown quadratic equation have sum {{ roots_sum }} and difference {{ roots_difference }}.
+- Ask the student to construct a quadratic equation with integer coefficients having those
+  two roots.
+{%- endif %}
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
+- Vieta for a x^2 + b x + c = 0: x1 + x2 = -b/a and x1·x2 = c/a. Both formulas divide by
+  the LEADING coefficient — dropping that division when a != 1, or losing the minus sign in
+  the sum, are the two standard errors.
+{% if task_type == 'sum_product' -%}
+- Nothing has to be solved: both values follow straight from the coefficients.
+{%- elif task_type == 'root_expression' -%}
+- The expression is symmetric in x1 and x2, so it can be rewritten in terms of S = x1 + x2
+  and P = x1·x2 alone: x1^2·x2 + x1·x2^2 = P·S; 1/x1 + 1/x2 = S/P; x1^2 + x2^2 = S^2 - 2P;
+  x1/x2 + x2/x1 = (S^2 - 2P)/P. The student must NOT compute the individual roots.
+{%- elif task_type == 'find_second_root' -%}
+- With one root known, the second follows from the product rule: x2 = (c/a) / x1. Dividing is
+  the operation here — subtracting the known root from the product is the classic error.
+- The given root is exact; keep it as the fraction it is and do not round it.
+{%- elif task_type == 'construct_equation' -%}
+- Inverse Vieta: compute S and P of the two given numbers, then write x^2 - S·x + P = 0. The
+  middle coefficient carries a MINUS sign in front of S.
+{% if root_family == 'rational' -%}
+- S and P come out fractional here, so the monic equation must then be multiplied through by
+  the common denominator to reach integer coefficients, and the result reduced.
+{%- elif root_family == 'conjugate_radical' -%}
+- The two numbers are conjugates, so both S and P come out rational and the radical cancels —
+  the product is a difference of squares, not a sum.
+{%- else -%}
+- S and P are already integers, so the monic equation needs no rescaling.
+{%- endif %}
+{%- else -%}
+- From the sum S and the difference d: x1 = (S + d)/2 and x2 = (S - d)/2 — both halved. Then
+  apply inverse Vieta, x^2 - S·x + P = 0, clearing denominators if the roots are half-integers.
+{%- endif %}
+{% if task_type in ('construct_equation', 'construct_from_sum_difference') -%}
+- Any equation with these roots is correct only up to a common factor; the expected answer is
+  the one with the SMALLEST integer coefficients, so the student should reduce at the end.
+{%- endif %}
+- Render all math as LaTeX inside $...$ (subscripts as $x_1$, $x_2$; radicals as $\sqrt{...}$).
+- Do NOT state or hint at the answer: the sum, the product, the value of the expression, the
+  missing root, or the constructed equation must NOT appear in the problem text.

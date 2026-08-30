@@ -1,0 +1,353 @@
+{
+  "topic": "ubt_space_distances_angles",
+  "parent_topic": "3d_vectors_and_coordinate_geometry",
+  "parent_topic_number": 10,
+  "display_name": "Distances and angles in space",
+  "curriculum_ref": "KZ 2026 UBT - 3D vectors and coordinate geometry - Distances and angles in space",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Exact point-plane, parallel-plane, line-plane, plane-plane, and normal-direction distance calculations.",
+  "tag": {
+    "name": "Векторы и координаты в пространстве",
+    "slug": "kenistik-vektorlar-koordinatalar"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "point_to_plane_distance",
+        "parallel_planes_distance",
+        "sine_line_plane_angle",
+        "cosine_plane_plane_angle",
+        "normal_points_distance",
+        "origin_to_plane_distance"
+      ]
+    },
+    "p": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "q": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "r": {
+      "type": "int",
+      "min": 1,
+      "max": 7
+    },
+    "d": {
+      "type": "int",
+      "min": 1,
+      "max": 8
+    },
+    "scale": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "point_to_plane_distance",
+          "origin_to_plane_distance"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "parallel_planes_distance",
+          "normal_points_distance"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "sine_line_plane_angle",
+          "cosine_plane_plane_angle"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "point_to_plane_distance": {
+      "uses": [
+        "p",
+        "q",
+        "r",
+        "d"
+      ],
+      "derived": {
+        "plane_d": "2*p+3*q+6*r-7*d"
+      },
+      "question": {
+        "instruction": "Find the distance from the point to the plane.",
+        "latex": "P({p};{q};{r}),\\qquad2x+3y+6z-{plane_d}=0"
+      }
+    },
+    "parallel_planes_distance": {
+      "uses": [
+        "d",
+        "scale"
+      ],
+      "derived": {
+        "d2": "d+7*scale"
+      },
+      "question": {
+        "instruction": "Find the distance between the two parallel planes.",
+        "latex": "2x+3y+6z+{d}=0,\\qquad2x+3y+6z+{d2}=0"
+      }
+    },
+    "sine_line_plane_angle": {
+      "uses": [
+        "p"
+      ],
+      "question": {
+        "instruction": "Find the sine of the acute angle between the line and the plane.",
+        "latex": "\\vec{{v}}=({p};0;0),\\qquad\\vec{{n}}=({p};{p};0)"
+      }
+    },
+    "cosine_plane_plane_angle": {
+      "uses": [
+        "q"
+      ],
+      "question": {
+        "instruction": "Find the cosine of the acute angle between the two planes.",
+        "latex": "\\vec{{n}}_{{1}}=({q};0;0),\\qquad\\vec{{n}}_{{2}}=({q};{q};0)"
+      }
+    },
+    "normal_points_distance": {
+      "uses": [
+        "p",
+        "q",
+        "r",
+        "scale"
+      ],
+      "derived": {
+        "qx": "p+2*scale",
+        "qy": "q+3*scale",
+        "qz": "r+6*scale",
+        "d1": "-(2*p+3*q+6*r)",
+        "d2": "-(2*qx+3*qy+6*qz)"
+      },
+      "question": {
+        "instruction": "The points lie on parallel planes with the given normal, and segment PQ follows the normal direction. Find the distance PQ.",
+        "latex": "P({p};{q};{r}),\\quad Q({qx};{qy};{qz}),\\quad\\vec{{n}}=(2;3;6)"
+      }
+    },
+    "origin_to_plane_distance": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "constant": "7*scale"
+      },
+      "question": {
+        "instruction": "Find the distance from the origin to the plane.",
+        "latex": "2x+3y+6z-{constant}=0"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "point_to_plane_distance": "d",
+      "parallel_planes_distance": "scale",
+      "sine_line_plane_angle": "sqrt(2)/2",
+      "cosine_plane_plane_angle": "sqrt(2)/2",
+      "normal_points_distance": "7*scale",
+      "origin_to_plane_distance": "scale"
+    }
+  },
+  "answer_render": {
+    "point_to_plane_distance": "scalar",
+    "parallel_planes_distance": "scalar",
+    "sine_line_plane_angle": "exact_expression",
+    "cosine_plane_plane_angle": "exact_expression",
+    "normal_points_distance": "scalar",
+    "origin_to_plane_distance": "scalar"
+  },
+  "distractors": {
+    "point_to_plane_distance": [
+      {
+        "id": "changed_the_distance_sign",
+        "transform": "-d"
+      },
+      {
+        "id": "halved_the_distance",
+        "transform": "d/2"
+      },
+      {
+        "id": "doubled_the_distance",
+        "transform": "2*d"
+      },
+      {
+        "id": "tripled_the_distance",
+        "transform": "3*d"
+      },
+      {
+        "id": "multiplied_distance_by_four",
+        "transform": "4*d"
+      },
+      {
+        "id": "multiplied_distance_by_five",
+        "transform": "5*d"
+      }
+    ],
+    "parallel_planes_distance": [
+      {
+        "id": "changed_the_distance_sign",
+        "transform": "-scale"
+      },
+      {
+        "id": "halved_the_distance",
+        "transform": "scale/2"
+      },
+      {
+        "id": "doubled_the_distance",
+        "transform": "2*scale"
+      },
+      {
+        "id": "tripled_the_distance",
+        "transform": "3*scale"
+      },
+      {
+        "id": "multiplied_distance_by_four",
+        "transform": "4*scale"
+      },
+      {
+        "id": "multiplied_distance_by_five",
+        "transform": "5*scale"
+      }
+    ],
+    "sine_line_plane_angle": [
+      {
+        "id": "forgot_to_normalize_vectors",
+        "transform": "1"
+      },
+      {
+        "id": "inverted_the_sine_ratio",
+        "transform": "sqrt(2)"
+      },
+      {
+        "id": "forgot_the_square_root",
+        "transform": "Rational(1,2)"
+      },
+      {
+        "id": "halved_the_sine",
+        "transform": "sqrt(2)/4"
+      },
+      {
+        "id": "changed_the_sign",
+        "transform": "-sqrt(2)/2"
+      },
+      {
+        "id": "used_sum_of_lengths",
+        "transform": "1/(1+sqrt(2))"
+      }
+    ],
+    "cosine_plane_plane_angle": [
+      {
+        "id": "forgot_to_normalize_normals",
+        "transform": "1"
+      },
+      {
+        "id": "inverted_the_cosine_ratio",
+        "transform": "sqrt(2)"
+      },
+      {
+        "id": "forgot_the_square_root",
+        "transform": "Rational(1,2)"
+      },
+      {
+        "id": "halved_the_cosine",
+        "transform": "sqrt(2)/4"
+      },
+      {
+        "id": "changed_the_sign",
+        "transform": "-sqrt(2)/2"
+      },
+      {
+        "id": "used_sum_of_normal_lengths",
+        "transform": "1/(1+sqrt(2))"
+      }
+    ],
+    "normal_points_distance": [
+      {
+        "id": "changed_the_distance_sign",
+        "transform": "-7*scale"
+      },
+      {
+        "id": "halved_the_distance",
+        "transform": "7*scale/2"
+      },
+      {
+        "id": "doubled_the_distance",
+        "transform": "14*scale"
+      },
+      {
+        "id": "tripled_the_distance",
+        "transform": "21*scale"
+      },
+      {
+        "id": "multiplied_distance_by_four",
+        "transform": "28*scale"
+      },
+      {
+        "id": "multiplied_distance_by_five",
+        "transform": "35*scale"
+      }
+    ],
+    "origin_to_plane_distance": [
+      {
+        "id": "changed_the_distance_sign",
+        "transform": "-scale"
+      },
+      {
+        "id": "halved_the_distance",
+        "transform": "scale/2"
+      },
+      {
+        "id": "doubled_the_distance",
+        "transform": "2*scale"
+      },
+      {
+        "id": "tripled_the_distance",
+        "transform": "3*scale"
+      },
+      {
+        "id": "multiplied_distance_by_four",
+        "transform": "4*scale"
+      },
+      {
+        "id": "multiplied_distance_by_five",
+        "transform": "5*scale"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "positive_length_validation": true,
+    "positive_area_validation": true,
+    "positive_volume_validation": true,
+    "geometry_relation_validation": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

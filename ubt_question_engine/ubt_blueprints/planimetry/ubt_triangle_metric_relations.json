@@ -1,0 +1,347 @@
+{
+  "topic": "ubt_triangle_metric_relations",
+  "parent_topic": "planimetry_metric_relations_vectors_transformations",
+  "parent_topic_number": 15,
+  "display_name": "Triangle metric relations and right triangles",
+  "curriculum_ref": "KZ 2026 UBT — Planimetry — Topic 15",
+  "_comment": "Deterministic Topic 15 generator. Python/SymPy owns parameter generation, mathematics, validation and distractor filtering. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Метрикалық қатыстар және векторлар",
+    "slug": "metrikalyk-katystar-vektorlar"
+  },
+  "expression_language": "sympy",
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "triangle_inequality_max_integer",
+        "pythagorean_hypotenuse",
+        "special_45_triangle",
+        "altitude_to_hypotenuse",
+        "special_30_60_triangle",
+        "pythagorean_missing_leg"
+      ]
+    },
+    "side_a": {
+      "type": "int",
+      "min": 3,
+      "max": 15
+    },
+    "side_b": {
+      "type": "int",
+      "min": 3,
+      "max": 15
+    },
+    "scale": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "leg": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "proj_u": {
+      "type": "int",
+      "min": 2,
+      "max": 6
+    },
+    "proj_v": {
+      "type": "int",
+      "min": 2,
+      "max": 6
+    }
+  },
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "triangle_inequality_max_integer",
+          "pythagorean_hypotenuse",
+          "special_45_triangle"
+        ]
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "altitude_to_hypotenuse",
+          "special_30_60_triangle"
+        ]
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "pythagorean_missing_leg"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "triangle_inequality_max_integer": {
+      "uses": [
+        "side_a",
+        "side_b"
+      ],
+      "question": {
+        "instruction": "Two sides of a triangle are given. Find the greatest possible integer length of the third side.",
+        "latex": "a={side_a},\\qquad b={side_b},\\qquad c\\in\\mathbb{{Z}}"
+      }
+    },
+    "pythagorean_hypotenuse": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "leg_a": "3*scale",
+        "leg_b": "4*scale"
+      },
+      "question": {
+        "instruction": "Find the hypotenuse of the right triangle.",
+        "latex": "a={leg_a},\\qquad b={leg_b}"
+      }
+    },
+    "special_45_triangle": {
+      "uses": [
+        "leg"
+      ],
+      "question": {
+        "instruction": "An isosceles right triangle has a leg of the given length. Find its hypotenuse.",
+        "latex": "a={leg},\\qquad \\angle C=90^\\circ"
+      }
+    },
+    "altitude_to_hypotenuse": {
+      "uses": [
+        "proj_u",
+        "proj_v"
+      ],
+      "derived": {
+        "p": "proj_u**2",
+        "q": "proj_v**2"
+      },
+      "question": {
+        "instruction": "The altitude from the right angle divides the hypotenuse into segments p and q. Find the altitude h.",
+        "latex": "p={p},\\qquad q={q}"
+      }
+    },
+    "special_30_60_triangle": {
+      "uses": [
+        "leg"
+      ],
+      "question": {
+        "instruction": "In a 30°–60°–90° triangle, the side opposite 30° is given. Find the side opposite 60°.",
+        "latex": "a={leg}"
+      }
+    },
+    "pythagorean_missing_leg": {
+      "uses": [
+        "scale"
+      ],
+      "derived": {
+        "known_leg": "3*scale",
+        "hyp": "5*scale"
+      },
+      "question": {
+        "instruction": "A right triangle has the given hypotenuse and one leg. Find the other leg.",
+        "latex": "c={hyp},\\qquad a={known_leg}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "triangle_inequality_max_integer": "side_a+side_b-1",
+      "pythagorean_hypotenuse": "5*scale",
+      "special_45_triangle": "leg*sqrt(2)",
+      "altitude_to_hypotenuse": "proj_u*proj_v",
+      "special_30_60_triangle": "leg*sqrt(3)",
+      "pythagorean_missing_leg": "4*scale"
+    }
+  },
+  "answer_render": {
+    "triangle_inequality_max_integer": "exact_expression",
+    "pythagorean_hypotenuse": "exact_expression",
+    "special_45_triangle": "exact_expression",
+    "altitude_to_hypotenuse": "exact_expression",
+    "special_30_60_triangle": "exact_expression",
+    "pythagorean_missing_leg": "exact_expression"
+  },
+  "distractors": {
+    "triangle_inequality_max_integer": [
+      {
+        "id": "sum",
+        "transform": "side_a+side_b"
+      },
+      {
+        "id": "difference",
+        "transform": "abs(side_a-side_b)"
+      },
+      {
+        "id": "difference_plus_one",
+        "transform": "abs(side_a-side_b)+1"
+      },
+      {
+        "id": "sum_minus_two",
+        "transform": "side_a+side_b-2"
+      },
+      {
+        "id": "larger_side",
+        "transform": "Max(side_a,side_b)"
+      },
+      {
+        "id": "average",
+        "transform": "Rational(side_a+side_b,2)"
+      }
+    ],
+    "pythagorean_hypotenuse": [
+      {
+        "id": "sum_legs",
+        "transform": "7*scale"
+      },
+      {
+        "id": "difference",
+        "transform": "scale"
+      },
+      {
+        "id": "square_sum",
+        "transform": "25*scale**2"
+      },
+      {
+        "id": "short_leg",
+        "transform": "3*scale"
+      },
+      {
+        "id": "long_leg",
+        "transform": "4*scale"
+      },
+      {
+        "id": "six_scale",
+        "transform": "6*scale"
+      }
+    ],
+    "special_45_triangle": [
+      {
+        "id": "double",
+        "transform": "2*leg"
+      },
+      {
+        "id": "same",
+        "transform": "leg"
+      },
+      {
+        "id": "sqrt3",
+        "transform": "leg*sqrt(3)"
+      },
+      {
+        "id": "half_sqrt2",
+        "transform": "leg/sqrt(2)"
+      },
+      {
+        "id": "square",
+        "transform": "leg**2"
+      },
+      {
+        "id": "plus_leg",
+        "transform": "leg+sqrt(2)"
+      }
+    ],
+    "altitude_to_hypotenuse": [
+      {
+        "id": "sum",
+        "transform": "proj_u**2+proj_v**2"
+      },
+      {
+        "id": "root_sum",
+        "transform": "sqrt(proj_u**2+proj_v**2)"
+      },
+      {
+        "id": "half_sum",
+        "transform": "Rational(proj_u**2+proj_v**2,2)"
+      },
+      {
+        "id": "u_only",
+        "transform": "proj_u"
+      },
+      {
+        "id": "v_only",
+        "transform": "proj_v"
+      },
+      {
+        "id": "product_squared",
+        "transform": "proj_u**2*proj_v**2"
+      }
+    ],
+    "special_30_60_triangle": [
+      {
+        "id": "hypotenuse",
+        "transform": "2*leg"
+      },
+      {
+        "id": "same",
+        "transform": "leg"
+      },
+      {
+        "id": "sqrt2",
+        "transform": "leg*sqrt(2)"
+      },
+      {
+        "id": "half_sqrt3",
+        "transform": "leg*sqrt(3)/2"
+      },
+      {
+        "id": "double_sqrt3",
+        "transform": "2*leg*sqrt(3)"
+      },
+      {
+        "id": "square",
+        "transform": "leg**2"
+      }
+    ],
+    "pythagorean_missing_leg": [
+      {
+        "id": "known_leg",
+        "transform": "3*scale"
+      },
+      {
+        "id": "hypotenuse",
+        "transform": "5*scale"
+      },
+      {
+        "id": "difference",
+        "transform": "2*scale"
+      },
+      {
+        "id": "sum",
+        "transform": "8*scale"
+      },
+      {
+        "id": "square_difference",
+        "transform": "16*scale**2"
+      },
+      {
+        "id": "six_scale",
+        "transform": "6*scale"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true,
+    "positive_length_validation": true
+  },
+  "constraints_template": "ubt_question.j2"
+}

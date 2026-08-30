@@ -1,0 +1,160 @@
+{
+  "topic": "ubt_inverse_composite_functions",
+  "parent_topic": "functions_calculus_modelling",
+  "parent_topic_number": 13,
+  "display_name": "Inverse and composite functions",
+  "curriculum_ref": "KZ 2026 UBT — Mathematical modelling and analysis — Topic 13",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from parent Topic 13. This file contains one coherent mathematical family. Python/SymPy owns generation, mathematics, validation, and distractor filtering; Jinja only renders prepared question data.",
+  "tag": {
+    "name": "Функциялар және математикалық анализ",
+    "slug": "funkciyalar-matematikalyk-analiz"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "inverse_linear",
+        "function_composition"
+      ],
+      "desc": "question structure"
+    },
+    "a": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    },
+    "b": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    },
+    "c": {
+      "type": "int",
+      "min": -8,
+      "max": 8
+    }
+  },
+  "supported_difficulties": [
+    2
+  ],
+  "default_difficulty": 2,
+  "difficulty_overrides": {
+    "2": {
+      "mode": {
+        "values": [
+          "inverse_linear",
+          "function_composition"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "inverse_linear": {
+      "uses": [
+        "a",
+        "b"
+      ],
+      "question": {
+        "instruction": "Find the inverse function f^{-1}(x)",
+        "latex": "f(x)={a}x{b:+d}"
+      }
+    },
+    "function_composition": {
+      "uses": [
+        "a",
+        "b",
+        "c"
+      ],
+      "question": {
+        "instruction": "Find (g\\circ f)(x)",
+        "latex": "f(x)={a}x{b:+d},\\qquad g(x)=x^2{c:+d}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "inverse_linear": "(x-b)/a",
+      "function_composition": "(a*x+b)**2+c"
+    }
+  },
+  "answer_render": {
+    "inverse_linear": "expression",
+    "function_composition": "expression"
+  },
+  "distractors": {
+    "inverse_linear": [
+      {
+        "id": "wrong_sign_b",
+        "transform": "(x+b)/a"
+      },
+      {
+        "id": "multiply_by_a",
+        "transform": "a*(x-b)"
+      },
+      {
+        "id": "reciprocal_wrong",
+        "transform": "a/(x-b)"
+      },
+      {
+        "id": "negate",
+        "transform": "-(x-b)/a"
+      },
+      {
+        "id": "swap_a_b",
+        "transform": "(x-a)/b"
+      },
+      {
+        "id": "original_function",
+        "transform": "a*x+b"
+      }
+    ],
+    "function_composition": [
+      {
+        "id": "reverse_composition",
+        "transform": "a*(x**2+c)+b"
+      },
+      {
+        "id": "omit_square",
+        "transform": "a*x+b+c"
+      },
+      {
+        "id": "square_only_x",
+        "transform": "a*x**2+b+c"
+      },
+      {
+        "id": "omit_c",
+        "transform": "(a*x+b)**2"
+      },
+      {
+        "id": "add_functions",
+        "transform": "a*x+b+x**2+c"
+      },
+      {
+        "id": "multiply_functions",
+        "transform": "(a*x+b)*(x**2+c)"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "set_equivalence": true,
+    "tuple_equivalence": true,
+    "interval_equivalence": true,
+    "function_equivalence": true,
+    "exact_answers_only": true,
+    "respect_function_domain": true,
+    "validate_derivatives": true,
+    "validate_integrals": true,
+    "validate_tangent_point_and_slope": true,
+    "validate_extrema_and_monotonicity": true,
+    "reject_undefined_choices": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

@@ -69,10 +69,10 @@ class Lesson(models.Model):
         on_delete=models.CASCADE,
         related_name="lessons",
     )
-    # The topic this lesson teaches. Generated questions are linked to a lesson
-    # by matching their tag to this field (see assessments.services), and it
-    # gives the roadmap an explicit lesson<->topic link. Nullable so existing
-    # lessons keep working until they're tagged.
+    # The subject area this lesson belongs to. Coarse on purpose: analytics and
+    # the roadmap ladder group by tag, and the UBT engine ships 16 tags across
+    # 58 topics ("planimetriya" covers eight of them). Used for grouping and as
+    # the question<->lesson fallback for MAIQE questions, which carry no topic.
     tag = models.ForeignKey(
         "content.Tag",
         null=True,
@@ -80,6 +80,13 @@ class Lesson(models.Model):
         on_delete=models.SET_NULL,
         related_name="lessons",
     )
+    # The generator topic this lesson teaches, e.g. "ubt_triangle_properties".
+    # This is the precise question<->lesson link and it is what the UBT publisher
+    # matches on (see assessments.services._resolve_lesson). Tag alone cannot do
+    # the job: eight planimetry topics share one tag, so matching on tag would
+    # pile all eight topics' questions onto whichever lesson sorted first.
+    # Blank for hand-authored lessons and for MAIQE, which fall back to tag.
+    topic = models.CharField(max_length=100, blank=True, db_index=True)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     video_url = models.URLField()

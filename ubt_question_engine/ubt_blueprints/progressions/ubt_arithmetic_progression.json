@@ -1,0 +1,321 @@
+{
+  "topic": "ubt_arithmetic_progression",
+  "parent_topic": "arithmetic_geometric_progressions",
+  "parent_topic_number": 12,
+  "display_name": "Arithmetic progression",
+  "curriculum_ref": "KZ 2026 UBT — Sequences — Topic 12",
+  "constraints_template": "ubt_question.j2",
+  "_comment": "Split deterministic generator from UBT Topic 12. This config contains one coherent mathematical subtopic. Python/SymPy owns parameter generation, mathematics, validation, distractor filtering, and seeded reproducibility. JSON owns configuration. Jinja only renders.",
+  "tag": {
+    "name": "Прогрессиялар",
+    "slug": "progressiyalar"
+  },
+  "expression_language": "sympy",
+  "parameters": {
+    "mode": {
+      "type": "choice",
+      "values": [
+        "arithmetic_nth_term",
+        "arithmetic_sum_n",
+        "arithmetic_missing_term",
+        "arithmetic_find_difference",
+        "arithmetic_characteristic_property"
+      ],
+      "desc": "question structure"
+    },
+    "a1": {
+      "type": "int",
+      "min": -10,
+      "max": 20
+    },
+    "d": {
+      "type": "int",
+      "min": 1,
+      "max": 9
+    },
+    "n": {
+      "type": "int",
+      "min": 4,
+      "max": 20
+    },
+    "middle": {
+      "type": "int",
+      "min": 2,
+      "max": 12
+    },
+    "step": {
+      "type": "int",
+      "min": 1,
+      "max": 6
+    }
+  },
+  "supported_difficulties": [
+    1,
+    2,
+    3
+  ],
+  "default_difficulty": 1,
+  "difficulty_overrides": {
+    "1": {
+      "mode": {
+        "values": [
+          "arithmetic_nth_term",
+          "arithmetic_sum_n",
+          "arithmetic_missing_term"
+        ]
+      },
+      "n": {
+        "min": 4,
+        "max": 10
+      },
+      "d": {
+        "max": 6
+      }
+    },
+    "2": {
+      "mode": {
+        "values": [
+          "arithmetic_find_difference"
+        ]
+      },
+      "n": {
+        "min": 5,
+        "max": 14
+      }
+    },
+    "3": {
+      "mode": {
+        "values": [
+          "arithmetic_characteristic_property"
+        ]
+      }
+    }
+  },
+  "modes": {
+    "arithmetic_nth_term": {
+      "uses": [
+        "a1",
+        "d",
+        "n"
+      ],
+      "question": {
+        "instruction": "Find the n-th term of the arithmetic progression",
+        "latex": "a_1={a1},\\quad d={d},\\quad n={n}"
+      }
+    },
+    "arithmetic_sum_n": {
+      "uses": [
+        "a1",
+        "d",
+        "n"
+      ],
+      "question": {
+        "instruction": "Find the sum of the first n terms of the arithmetic progression",
+        "latex": "a_1={a1},\\quad d={d},\\quad n={n}"
+      }
+    },
+    "arithmetic_missing_term": {
+      "uses": [
+        "middle",
+        "step"
+      ],
+      "derived": {
+        "left": "middle-step",
+        "right": "middle+step"
+      },
+      "question": {
+        "instruction": "Find the missing term so that the three numbers form an arithmetic progression",
+        "latex": "{left},\\quad x,\\quad {right}"
+      }
+    },
+    "arithmetic_find_difference": {
+      "uses": [
+        "a1",
+        "d",
+        "n"
+      ],
+      "derived": {
+        "an": "a1+(n-1)*d"
+      },
+      "question": {
+        "instruction": "Find the common difference of the arithmetic progression",
+        "latex": "a_1={a1},\\quad a_{{{n}}}={an}"
+      }
+    },
+    "arithmetic_characteristic_property": {
+      "uses": [
+        "middle",
+        "step"
+      ],
+      "derived": {
+        "left": "middle-step",
+        "right": "middle+step"
+      },
+      "question": {
+        "instruction": "Use the characteristic property of an arithmetic progression to find x",
+        "latex": "{left},\\quad x,\\quad {right}"
+      }
+    }
+  },
+  "answer": {
+    "type": "symbolic_by_mode",
+    "expression": {
+      "arithmetic_nth_term": "a1+(n-1)*d",
+      "arithmetic_sum_n": "n*(2*a1+(n-1)*d)/2",
+      "arithmetic_missing_term": "middle",
+      "arithmetic_find_difference": "d",
+      "arithmetic_characteristic_property": "middle"
+    }
+  },
+  "answer_render": {
+    "arithmetic_nth_term": "scalar",
+    "arithmetic_sum_n": "scalar",
+    "arithmetic_missing_term": "scalar",
+    "arithmetic_find_difference": "scalar",
+    "arithmetic_characteristic_property": "scalar"
+  },
+  "distractors": {
+    "arithmetic_nth_term": [
+      {
+        "id": "use_n_instead_n_minus_1",
+        "transform": "a1+n*d"
+      },
+      {
+        "id": "subtract_difference",
+        "transform": "a1-(n-1)*d"
+      },
+      {
+        "id": "multiply_first_term",
+        "transform": "a1*n+d"
+      },
+      {
+        "id": "omit_first_term",
+        "transform": "(n-1)*d"
+      },
+      {
+        "id": "off_by_one_low",
+        "transform": "a1+(n-2)*d"
+      },
+      {
+        "id": "off_by_one_high",
+        "transform": "a1+(n+1)*d"
+      }
+    ],
+    "arithmetic_sum_n": [
+      {
+        "id": "forget_divide_two",
+        "transform": "n*(2*a1+(n-1)*d)"
+      },
+      {
+        "id": "use_n_d",
+        "transform": "n*(2*a1+n*d)/2"
+      },
+      {
+        "id": "last_term_times_n",
+        "transform": "n*(a1+(n-1)*d)"
+      },
+      {
+        "id": "first_plus_last_without_n",
+        "transform": "2*a1+(n-1)*d"
+      },
+      {
+        "id": "omit_first_term_double",
+        "transform": "n*(a1+(n-1)*d)/2"
+      },
+      {
+        "id": "use_n_minus_one_count",
+        "transform": "(n-1)*(2*a1+(n-2)*d)/2"
+      }
+    ],
+    "arithmetic_missing_term": [
+      {
+        "id": "left_term",
+        "transform": "middle-step"
+      },
+      {
+        "id": "right_term",
+        "transform": "middle+step"
+      },
+      {
+        "id": "sum_neighbors",
+        "transform": "2*middle"
+      },
+      {
+        "id": "difference_neighbors",
+        "transform": "2*step"
+      },
+      {
+        "id": "middle_plus_one",
+        "transform": "middle+1"
+      },
+      {
+        "id": "middle_minus_one",
+        "transform": "middle-1"
+      }
+    ],
+    "arithmetic_find_difference": [
+      {
+        "id": "divide_by_n",
+        "transform": "(a1+(n-1)*d-a1)/n"
+      },
+      {
+        "id": "forget_a1",
+        "transform": "(a1+(n-1)*d)/(n-1)"
+      },
+      {
+        "id": "negate_difference",
+        "transform": "-d"
+      },
+      {
+        "id": "plus_one",
+        "transform": "d+1"
+      },
+      {
+        "id": "minus_one",
+        "transform": "d-1"
+      },
+      {
+        "id": "term_difference",
+        "transform": "a1+(n-1)*d-a1"
+      }
+    ],
+    "arithmetic_characteristic_property": [
+      {
+        "id": "sum_neighbors",
+        "transform": "2*middle"
+      },
+      {
+        "id": "difference_neighbors",
+        "transform": "2*step"
+      },
+      {
+        "id": "left_neighbor",
+        "transform": "middle-step"
+      },
+      {
+        "id": "right_neighbor",
+        "transform": "middle+step"
+      },
+      {
+        "id": "middle_plus_step",
+        "transform": "middle+2*step"
+      },
+      {
+        "id": "middle_minus_step",
+        "transform": "middle-2*step"
+      }
+    ]
+  },
+  "validation": {
+    "choice_count": 5,
+    "distractor_pool_min": 6,
+    "single_correct_answer": true,
+    "unique_choices": true,
+    "symbolic_equivalence": true,
+    "exact_answers_only": true,
+    "rational_simplification": true,
+    "positive_ratio_when_required": true,
+    "infinite_series_requires_abs_ratio_lt_one": true,
+    "regenerate_if_fewer_than_four_valid_distractors": true
+  }
+}

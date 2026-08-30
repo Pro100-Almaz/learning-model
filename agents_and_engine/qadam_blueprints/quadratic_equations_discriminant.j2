@@ -1,0 +1,52 @@
+{#- Quadratic equation solved through the discriminant.
+
+    The coefficients arrive already reduced to standard form: the blueprint's
+    `derived` block computes a, b, c for whichever `structure` was rolled, so
+    this template — like quad_disc.py — never needs to know whether they came
+    from a hidden root pair, a factorisation, or a vertex form. One source of
+    truth for the numbers, so the equation shown and the equation solved can
+    never drift apart.
+
+    Only the EXPANDED standard form is ever shown; the construction stays on
+    this side of the wall. `a` is normalised positive by every branch of the
+    `derived` block, so the macro only folds signs on b and c. -#}
+{%- macro quad(a, b, c) -%}
+{{ '' if a == 1 else a }}x^2
+{%- if b != 0 %} {{ '+' if b > 0 else '-' }} {{ '' if b in (1, -1) else (b if b > 0 else -b) }}x{% endif %}
+{%- if c != 0 %} {{ '+' if c > 0 else '-' }} {{ c if c > 0 else -c }}{% endif %} = 0
+{%- endmacro -%}
+{%- set counting = query_type == 'number_of_real_roots' -%}
+PROBLEM TO POSE (turn ONLY this into the word problem; keep every number exactly as written):
+- Equation: {{ quad(a, b, c) }}
+{% if counting -%}
+- Ask the student HOW MANY distinct real roots this equation has (сколько действительных корней).
+{%- else -%}
+- Ask the student to find every real root of this equation.
+{%- endif %}
+
+=== INTERNAL (guidance for you only — never show, restate, paraphrase, number, or hint any of this to the student) ===
+- Method to recall: read off a, b, c from the standard form a x^2 + b x + c = 0, then
+  compute the discriminant D = b^2 - 4ac and branch on its sign.
+- D > 0 -> two distinct real roots; D = 0 -> one repeated root; D < 0 -> no real roots.
+{% if not counting -%}
+- Root formula: x = (-b ± sqrt(D)) / (2a). The denominator is 2a, NOT 2, and the
+  numerator starts from -b, NOT b.
+{% if structure == 'controlled_discriminant' -%}
+- The discriminant here is deliberately controlled, so the roots may be irrational or
+  may not exist at all. If they are irrational, the answer stays in exact radical form —
+  do not ask for a decimal approximation. If D < 0 the honest answer is "нет действительных
+  корней"; the problem must still read as a sensible question in that case.
+{%- else -%}
+- The coefficients were built so the roots come out clean; the student should still be
+  routed through the discriminant, not through guessing a factorisation.
+{%- endif %}
+{%- else -%}
+- Only the COUNT is asked for; the student needs the sign of D and nothing else, so the
+  problem must not invite computing the roots themselves.
+{%- endif %}
+- The equation must be posed in the expanded standard form exactly as given above. Never
+  present it factored, never mention that it was built from roots or linear factors, and
+  never restate the vertex form.
+- Render all math as LaTeX inside $...$ (e.g. ${{ quad(a, b, c) }}$).
+- Do NOT state or hint at the answer: the value of the discriminant, the number of roots,
+  and the roots themselves must NOT appear in the problem text.
