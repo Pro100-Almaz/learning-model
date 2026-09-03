@@ -66,6 +66,7 @@ logs/
 
 # Docker
 Dockerfile
+Dockerfile.local
 docker-compose.yml
 docker-compose.*.yml
 .dockerignore

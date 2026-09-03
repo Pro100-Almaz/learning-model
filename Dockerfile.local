@@ -1,3 +1,7 @@
+# Local development image, used by docker-compose.yml. Kept as a verbatim copy of
+# the pre-deployment Dockerfile so local builds keep behaving exactly as before.
+# The deployed image is built from ./Dockerfile, which differs only in not leaking
+# /root/.cargo/bin into the runtime PATH (see the comment there).
 FROM python:3.13-slim
 
 ENV PYTHONUNBUFFERED=1 \
@@ -25,13 +29,9 @@ RUN useradd --create-home --shell /bin/bash appuser
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-# Install Rust (needed to build cryptography from source - see below).
-# Cargo's bin dir is put on PATH per-RUN instead of with ENV: /root is mode 0700,
-# so once the image drops to appuser a leading /root/.cargo/bin makes PATH lookup
-# fail with EACCES. Cloud Run's exec resolution aborts on that instead of falling
-# through to /usr/local/bin the way execvp does, so a bare `python` in a Cloud Run
-# `command:` override never starts and the task dies before producing any output.
+# Install Rust (needed to build cryptography from source - see below)
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable
+ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Copy ONLY dependency files first (better caching - changes infrequently)
 COPY pyproject.toml uv.lock ./
@@ -40,8 +40,7 @@ COPY pyproject.toml uv.lock ./
 # `cryptography` is forced to build from source: its prebuilt aarch64 wheel uses
 # ARMv8.x CPU instructions that some Docker Desktop VMs don't expose, producing
 # SIGILL ("Illegal instruction") at runtime during google/jwt auth init.
-RUN export PATH="/root/.cargo/bin:${PATH}" && \
-    uv export --no-hashes --all-extras --no-emit-project > requirements.txt && \
+RUN uv export --no-hashes --all-extras --no-emit-project > requirements.txt && \
     uv pip install --system --no-cache --no-binary cryptography -r requirements.txt
 
 # Copy application code (changes frequently - separate layer)
