@@ -45,7 +45,12 @@ MODELTRANSLATION_FALLBACK_LANGUAGES = ("kk", "ru", "en")
 # Security and Users
 # -----------------------------------------------------------------------------
 SECRET_KEY = env("DJANGO_SECRET_KEY")
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+# Origins Django accepts for unsafe (POST/PUT/DELETE) requests. Required once
+# the site is served over HTTPS behind a proxy that terminates TLS — without
+# the deployed origin listed here every admin login POST is rejected as CSRF.
+# Entries must carry a scheme: "https://api.example.kz", not "api.example.kz".
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 AUTH_USER_MODEL = "users.CustomUser"
 MIN_PASSWORD_LENGTH = env.int("MIN_PASSWORD_LENGTH", default=8)
 PASSWORD_HASHERS = [
@@ -85,6 +90,13 @@ if not DEBUG:
 # -----------------------------------------------------------------------------
 DJANGO_DATABASE_URL = env.db("DATABASE_URL")
 DATABASES = {"default": DJANGO_DATABASE_URL}
+# Reuse connections across requests. Opening a fresh Postgres connection per
+# request costs a round trip plus a TLS/socket handshake, which dominates the
+# latency of the small reads most endpoints do. CONN_HEALTH_CHECKS makes Django
+# probe a pooled connection before handing it over, so a connection dropped by
+# the server (restart, idle timeout) surfaces as a reconnect, not a 500.
+DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)
+DATABASES["default"]["CONN_HEALTH_CHECKS"] = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
@@ -371,10 +383,27 @@ if not DEBUG:
 # -----------------------------------------------------------------------------
 # Static & Media Files
 # -----------------------------------------------------------------------------
+# Uploaded media (Question.image) goes to Google Cloud Storage when a bucket is
+# configured. The local filesystem is not a viable target on Cloud Run: its disk
+# is per-instance and ephemeral, so an upload served by one instance is invisible
+# to every other one and is lost on the next restart. Leaving GS_BUCKET_NAME
+# empty keeps the filesystem backend, which is what local dev and tests want.
+GS_BUCKET_NAME = env("GS_BUCKET_NAME", default="")
+
 STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
+    "default": (
+        {
+            "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+            "OPTIONS": {
+                "bucket_name": GS_BUCKET_NAME,
+                # None => defer to the bucket's uniform access policy rather
+                # than setting a per-object ACL, which such buckets reject.
+                "default_acl": None,
+            },
+        }
+        if GS_BUCKET_NAME
+        else {"BACKEND": "django.core.files.storage.FileSystemStorage"}
+    ),
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },

@@ -216,3 +216,9 @@ __marimo__/
 .streamlit/secrets.toml
 
 .idea/
+
+# Django build artifacts — collectstatic output and local uploads. Both are
+# generated (the image builds static_root at build time) and must not be
+# committed; .dockerignore already keeps them out of the build context.
+static_root/
+media_root/
