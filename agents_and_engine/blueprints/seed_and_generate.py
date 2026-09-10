@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Seed the «Математика» curriculum from the blueprints, then bulk-generate questions.
 
-For every ``blueprints/<topic>.json`` this script:
+For every ``qadam_blueprints/<topic>.json`` this script:
 
 1. Ensures the subject **Математика** exists.
 2. Parses the blueprint's ``curriculum_ref`` to derive a grade + module name and
@@ -20,7 +20,7 @@ Usage (run from anywhere)::
 
     python agents_and_engine/blueprints/seed_and_generate.py
     python agents_and_engine/blueprints/seed_and_generate.py --seed-only
-    python agents_and_engine/blueprints/seed_and_generate.py --topics quadratic_equations trig_sin
+    python agents_and_engine/blueprints/seed_and_generate.py --topics quadratic_equations_vieta
     python agents_and_engine/blueprints/seed_and_generate.py --per-difficulty 4 --workers 8
     python agents_and_engine/blueprints/seed_and_generate.py --difficulties 2 3 --dry-run
 """
@@ -99,15 +99,18 @@ def parse_curriculum_ref(ref: str) -> tuple[int, str]:
     return grade, module_title
 
 
-# Both delegate to the engine so this script and the pipeline resolve a topic
-# the same way. The engine searches every blueprint directory (blueprints/ and
-# qadam_blueprints/), so a topic seeded here is one the Architect can also load.
+# Loading delegates to the engine so this script and the pipeline resolve a topic
+# the same way (the engine searches every blueprint directory), but discovery is
+# deliberately narrower: only qadam_blueprints/ is seeded. The original MAIQE set
+# in blueprints/ already has its curriculum rows from `manage.py seed_curriculum`,
+# and re-seeding it here would file those topics under a second, auto-derived set
+# of modules. Pass --topics to work on a specific subset of the qadam topics.
 def load_blueprint(topic: str) -> dict:
     return math_engine.load_blueprint(topic)
 
 
 def discover_topics() -> list[str]:
-    return math_engine.available_topics()
+    return sorted(p.stem for p in math_engine.QADAM_BLUEPRINT_DIR.glob("*.json"))
 
 
 # --------------------------------------------------------------------------- #
