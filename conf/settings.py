@@ -4,6 +4,9 @@ from pathlib import Path
 
 import environ
 import sentry_sdk
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
 from celery.schedules import crontab
 
 env = environ.Env()
@@ -374,10 +377,22 @@ LOGGING = {
 if not DEBUG:
     sentry_dsn = env("SENTRY_DSN", default=None)
     if sentry_dsn:
+        # Auto-enabling integrations are off because discovering them imports
+        # every library Sentry knows how to instrument -- including langchain,
+        # langgraph and openai, which nothing in the request path touches. That
+        # pulled ~3k modules into every gunicorn worker at boot and was the bulk
+        # of the cold start. Django/Celery/Redis are in that same auto list, so
+        # they have to be named explicitly to survive the switch.
         sentry_sdk.init(
             dsn=sentry_dsn,
             traces_sample_rate=0.1,
             profiles_sample_rate=0.1,
+            auto_enabling_integrations=False,
+            integrations=[
+                DjangoIntegration(),
+                CeleryIntegration(),
+                RedisIntegration(),
+            ],
         )
 
 # -----------------------------------------------------------------------------

@@ -68,7 +68,14 @@ EXPOSE 8080
 
 # `exec` hands PID 1 to gunicorn so it receives the platform's SIGTERM directly
 # and can drain in-flight requests instead of being killed with the shell.
+#
+# --preload imports the app in the master before the listening socket exists, so
+# the two workers share one import instead of racing each other for the single
+# vCPU. It also gates Cloud Run's default TCP startup probe on the real thing:
+# without it the master binds the port in ~1s, the probe passes, and requests sit
+# in the listen backlog for the ~18s the workers spend importing Django.
 CMD exec gunicorn conf.wsgi:application \
+    --preload \
     --bind 0.0.0.0:$PORT \
     --workers 2 \
     --threads 8 \
