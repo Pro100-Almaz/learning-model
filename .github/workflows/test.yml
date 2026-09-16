@@ -100,6 +100,10 @@ jobs:
       IMAGE: europe-west1-docker.pkg.dev/qadam-learning-platform/qadam-containers/backend
       SERVICE: qadam-api
       JOBS: qadam-migrate qadam-create-admin
+      # Worker pools are their own resource kind -- `gcloud run services list`
+      # does not show them, which is how this one sat on an Aug-30 image while
+      # the service rolled forward. It ships in the same image as the service.
+      WORKER: qadam-celery-worker
 
     steps:
       - uses: actions/checkout@v6
@@ -144,8 +148,20 @@ jobs:
       - name: Migrate before the new code serves traffic
         run: gcloud run jobs execute qadam-migrate --region="$REGION" --wait
 
+      # --min-instances keeps one instance resident so a request arriving after
+      # an idle period does not pay for container start plus the Django import
+      # tree. It is per-revision, so it has to be set on every rollout.
       - name: Roll out the service
         run: |
           gcloud run deploy "$SERVICE" \
+            --region="$REGION" \
+            --image="$IMAGE:${{ steps.vars.outputs.sha }}" \
+            --min-instances=1
+
+      # After the service, so a task enqueued by the new web code is never
+      # picked up by a worker still running the old image.
+      - name: Roll out the Celery worker pool
+        run: |
+          gcloud run worker-pools update "$WORKER" \
             --region="$REGION" \
             --image="$IMAGE:${{ steps.vars.outputs.sha }}"

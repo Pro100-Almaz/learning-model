@@ -139,6 +139,10 @@ CR_REPO := europe-west1-docker.pkg.dev/qadam-learning-platform/qadam-containers/
 CR_REGION := europe-west1
 CR_SERVICE := qadam-api
 CR_JOBS := qadam-migrate qadam-create-admin
+# Worker pools are their own resource kind -- `gcloud run services list` does
+# not show them, which is how this one sat on an Aug-30 image while the service
+# rolled forward. It ships in the same image as the service.
+CR_WORKER := qadam-celery-worker
 # Deferred (`=`, not `:=`) so git only runs for the deploy targets, not on every
 # `make help`.
 CR_SHA = $(shell git rev-parse --short HEAD)
@@ -161,7 +165,14 @@ deploy:
 	@echo "==> Migrating before the new code serves traffic"
 	gcloud run jobs execute qadam-migrate --region=$(CR_REGION) --wait
 	@echo "==> Rolling out $(CR_SERVICE)"
-	gcloud run deploy $(CR_SERVICE) --region=$(CR_REGION) --image=$(CR_REPO):$(CR_SHA)
+	@# Keep one instance resident so a request arriving after an idle period does
+	@# not pay for container start plus the Django import tree.
+	gcloud run deploy $(CR_SERVICE) --region=$(CR_REGION) --image=$(CR_REPO):$(CR_SHA) \
+		--min-instances=1
+	@echo "==> Rolling out $(CR_WORKER)"
+	@# After the service, so a task enqueued by the new web code is never picked
+	@# up by a worker still running the old image.
+	gcloud run worker-pools update $(CR_WORKER) --region=$(CR_REGION) --image=$(CR_REPO):$(CR_SHA)
 	@echo "==> Deployed $(CR_SHA)"
 
 # Jobs resolve their tag per execution while the service pins a digest at
@@ -175,6 +186,9 @@ deploy-status:
 		gcloud run jobs describe $$job --region=$(CR_REGION) \
 			--format="value(spec.template.spec.template.spec.containers[0].image)"; \
 	done
+	@echo "worker $(CR_WORKER):"
+	@gcloud run worker-pools describe $(CR_WORKER) --region=$(CR_REGION) \
+		--format="value(spec.template.spec.containers[0].image)"
 
 # Version Management
 bump:
