@@ -15,6 +15,7 @@ from apps.content.blueprint_curriculum import (
 )
 from apps.content.management.commands.seed_curriculum import CHAPTERS
 from apps.content.models import Lesson, Module, Tag
+from apps.generation.models import HiddenBlueprintTopic
 
 
 class Command(BaseCommand):
@@ -121,10 +122,15 @@ class Command(BaseCommand):
             if options["dry_run"]:
                 self.stdout.write(
                     f"dry run: would remove up to {len(doomed_ids)} question(s) "
-                    "and then unused curriculum; nothing written"
+                    "and then unused curriculum, and hide the selected topics "
+                    "from admin generation; nothing written"
                 )
                 return
 
+            HiddenBlueprintTopic.objects.bulk_create(
+                [HiddenBlueprintTopic(topic=bp.topic) for bp in blueprints],
+                ignore_conflicts=True,
+            )
             removed_questions = len(doomed_ids)
             Question.objects.filter(pk__in=doomed_ids).delete()
 
@@ -172,6 +178,6 @@ class Command(BaseCommand):
             self.style.SUCCESS(
                 f"removed questions={removed_questions}, micro_tests={removed_tests}, "
                 f"lessons={removed_lessons}, tags={removed_tags}, "
-                f"modules={removed_modules}"
+                f"modules={removed_modules}; hidden admin topics={len(blueprints)}"
             )
         )

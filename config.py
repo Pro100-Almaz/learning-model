@@ -1,7 +1,11 @@
 import os
+from pathlib import Path
+
 from dotenv import load_dotenv
 
-load_dotenv()
+env_file = Path(os.environ.get("APP_ENV_FILE", Path(__file__).resolve().parent / ".env"))
+load_dotenv(env_file)
+
 
 class Config:
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -10,7 +14,8 @@ class Config:
     # the key never lands in source. Swap the env name if you use SerpAPI/Bing.
     SEARCH_API_KEY = os.getenv("TAVILY_API_KEY")
 
-#The models used for both agents_and_engine & web_harvester systems
+
+# The models used for both agents_and_engine & web_harvester systems
 STORYTELLER_MODEL = "gpt-5-mini"
 CRITIC_MODEL = "o3"
 TUTOR_MODEL = "claude-sonnet-4-6"
@@ -31,7 +36,7 @@ DRIFT_ABORT_PCT = 10.0
 # value limp forward forever.
 MAX_CARRY_CYCLES = 2
 
-#Language configuration for agents_and_engine system.
+# Language configuration for agents_and_engine system.
 # ISO 639-1 codes (ru = Russian, kk = Kazakh, en = English) — the same vocabulary
 # the request i18n layer negotiates from Accept-Language.
 #
@@ -43,15 +48,17 @@ MAX_CARRY_CYCLES = 2
 # choices, so it takes a migration.
 SUPPORTED_LANGUAGES = ("kk", "ru", "en")
 DEFAULT_LANGUAGE = SUPPORTED_LANGUAGES[0]  # kk
-assert DEFAULT_LANGUAGE in SUPPORTED_LANGUAGES, f"Default language '{DEFAULT_LANGUAGE}' must be in SUPPORTED_LANGUAGES"
+assert DEFAULT_LANGUAGE in SUPPORTED_LANGUAGES, (
+    f"Default language '{DEFAULT_LANGUAGE}' must be in SUPPORTED_LANGUAGES"
+)
 
-#the thresholds for the analytics part
-#on scale 0-100
+# the thresholds for the analytics part
+# on scale 0-100
 WEAK_BELOW = 50
 SOLID_MIN = 75
 
-#the amount of score which is a cut-off between the profession's score and the score of the student
-#called "near_miss_within" since within this score, the profession is reachable
+# the score difference used as a cutoff between the profession and the student
+# called "near_miss_within" since within this score, the profession is reachable
 NEAR_MISS_WITHIN = 5
 
 TEST_PASS_THRESHOLD = 85

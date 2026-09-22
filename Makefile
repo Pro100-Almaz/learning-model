@@ -138,7 +138,7 @@ docs-deploy:
 CR_REPO := europe-west1-docker.pkg.dev/qadam-learning-platform/qadam-containers/backend
 CR_REGION := europe-west1
 CR_SERVICE := qadam-api
-CR_JOBS := qadam-migrate qadam-create-admin
+CR_JOBS := qadam-migrate qadam-create-admin qadam-blueprint-maintenance
 # Worker pools are their own resource kind -- `gcloud run services list` does
 # not show them, which is how this one sat on an Aug-30 image while the service
 # rolled forward. It ships in the same image as the service.

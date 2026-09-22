@@ -1,0 +1,71 @@
+apiVersion: run.googleapis.com/v1
+kind: Job
+metadata:
+  annotations:
+    run.googleapis.com/creator: bekzannurakyn@gmail.com
+    run.googleapis.com/lastModifier: github-deployer@qadam-learning-platform.iam.gserviceaccount.com
+  labels:
+    cloud.googleapis.com/location: europe-west1
+    run.googleapis.com/lastUpdatedTime: '2026-09-22T09:50:29.503509Z'
+  name: qadam-blueprint-maintenance
+  namespace: '938833319095'
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/client-name: gcloud
+        run.googleapis.com/client-version: 568.0.0
+        run.googleapis.com/cloudsql-instances: qadam-learning-platform:europe-west1:qadam-postgres
+        run.googleapis.com/execution-environment: gen2
+        run.googleapis.com/secrets: qadam-blueprint-env:projects/938833319095/secrets/qadam-blueprint-env
+      labels:
+        client.knative.dev/nonce: qef_wes_yek
+    spec:
+      taskCount: 1
+      template:
+        spec:
+          containers:
+          - args:
+            - manage.py
+            - ingest_blueprints
+            - agents_and_engine/qadam_blueprints
+            command:
+            - /usr/local/bin/python
+            env:
+            - name: DEBUG
+              value: 'False'
+            - name: ALLOWED_HOSTS
+              value: localhost
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: latest
+                  name: django-secret-key
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: latest
+                  name: database-url
+            - name: CONN_MAX_AGE
+              value: '0'
+            - name: APP_ENV_FILE
+              value: /etc/qadam/.env
+            # Replace this tag with the image built from the new code before using jobs replace.
+            image: europe-west1-docker.pkg.dev/qadam-learning-platform/qadam-containers/backend:65b366a
+            resources:
+              limits:
+                cpu: 1000m
+                memory: 512Mi
+            volumeMounts:
+            - mountPath: /etc/qadam
+              name: blueprint-env
+          volumes:
+          - name: blueprint-env
+            secret:
+              items:
+              - key: latest
+                path: .env
+              secretName: qadam-blueprint-env
+          maxRetries: 0
+          serviceAccountName: qadam-learning-runtime@qadam-learning-platform.iam.gserviceaccount.com
+          timeoutSeconds: '3600'
