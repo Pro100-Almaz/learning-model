@@ -74,13 +74,6 @@ class BlueprintCommandTests(TestCase):
         self.assertEqual(Lesson.objects.get().topic, "sample_topic")
         self.assertEqual(Question.objects.count(), 0)
 
-    def test_ingest_requires_openai_key_before_seeding(self):
-        self.write_blueprint()
-        with patch.object(config.config, "OPENAI_API_KEY", None):
-            with self.assertRaisesMessage(CommandError, "OPENAI_API_KEY is missing"):
-                self.run_command("ingest_blueprints")
-        self.assertFalse(Lesson.objects.exists())
-
     @patch("apps.content.management.commands.ingest_blueprints.generate_one")
     def test_ingest_generates_one_per_missing_difficulty(self, generate_one):
         self.write_blueprint()

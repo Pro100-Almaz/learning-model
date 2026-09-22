@@ -73,11 +73,6 @@ class Command(BaseCommand):
             )
             if uses_redis and not os.environ.get("REDIS_URL"):
                 raise CommandError("REDIS_URL is missing from the environment or .env")
-            if not options["seed_only"] and not config.config.OPENAI_API_KEY:
-                raise CommandError(
-                    "OPENAI_API_KEY is missing from the environment or .env"
-                )
-
         totals = dict.fromkeys(("subject", "grade", "module", "tag", "lesson"), 0)
         generated = already_present = 0
         failures: list[str] = []
