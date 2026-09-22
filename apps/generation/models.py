@@ -22,6 +22,15 @@ import config
 LANGUAGE_CHOICES = [(lang, lang.capitalize()) for lang in config.SUPPORTED_LANGUAGES]
 
 
+class HiddenBlueprintTopic(models.Model):
+    """Topics removed from the admin generation choices by maintenance jobs."""
+
+    topic = models.CharField(max_length=100, unique=True)
+
+    def __str__(self) -> str:
+        return self.topic
+
+
 class GenerationJob(models.Model):
     STATUS_PENDING = "pending"
     STATUS_RUNNING = "running"

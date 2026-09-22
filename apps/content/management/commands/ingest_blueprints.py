@@ -1,5 +1,8 @@
 """Seed blueprint curricula and one generated question per difficulty."""
 
+import os
+
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
 import config
@@ -9,6 +12,7 @@ from apps.content.blueprint_curriculum import (
     resolve_folder,
     seed_blueprint,
 )
+from apps.generation.models import HiddenBlueprintTopic
 
 TARGET_SCORES = {1: 10, 2: 22, 3: 34}
 MAX_GENERATION_ATTEMPTS = 3
@@ -63,6 +67,12 @@ class Command(BaseCommand):
             )
             return
 
+        if not options["dry_run"]:
+            uses_redis = (
+                settings.CACHES["default"]["BACKEND"] == "django_redis.cache.RedisCache"
+            )
+            if uses_redis and not os.environ.get("REDIS_URL"):
+                raise CommandError("REDIS_URL is missing from the environment or .env")
         totals = dict.fromkeys(("subject", "grade", "module", "tag", "lesson"), 0)
         generated = already_present = 0
         failures: list[str] = []
@@ -81,6 +91,7 @@ class Command(BaseCommand):
                 )
                 continue
             created = seed_blueprint(blueprint)
+            HiddenBlueprintTopic.objects.filter(topic=blueprint.topic).delete()
             for name, was_created in created.items():
                 totals[name] += int(was_created)
             self.stdout.write(f"ingested {blueprint.topic}")

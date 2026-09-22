@@ -21,6 +21,8 @@ from apps.assessments.models import (
     Test as AssessmentTest,
 )
 from apps.content.models import ClassGrade, Lesson, Module, Subject, Tag
+from apps.generation.admin import GenerationJobAdminForm
+from apps.generation.models import HiddenBlueprintTopic
 
 
 class BlueprintCommandTests(TestCase):
@@ -194,6 +196,34 @@ class BlueprintCommandTests(TestCase):
         self.assertFalse(Tag.objects.exists())
         self.assertFalse(Module.objects.exists())
 
+    def test_remove_hides_admin_topic_and_ingest_restores_it(self):
+        self.write_blueprint(topic="quadratic_equations")
+
+        def admin_topics():
+            return {
+                value
+                for value, _label in GenerationJobAdminForm().fields["topic"].choices
+            }
+
+        self.assertIn("quadratic_equations", admin_topics())
+        self.assertIn("quadratic_equations_vieta", admin_topics())
+
+        self.run_command("remove_blueprints", "--dry-run")
+        self.assertFalse(HiddenBlueprintTopic.objects.exists())
+
+        self.run_command("remove_blueprints")
+        self.run_command("remove_blueprints")
+        self.assertIn(
+            "quadratic_equations",
+            set(HiddenBlueprintTopic.objects.values_list("topic", flat=True)),
+        )
+        self.assertNotIn("quadratic_equations", admin_topics())
+        self.assertIn("quadratic_equations_vieta", admin_topics())
+
+        self.run_command("ingest_blueprints", "--seed-only")
+        self.assertFalse(HiddenBlueprintTopic.objects.exists())
+        self.assertIn("quadratic_equations", admin_topics())
+
     def test_remove_keeps_answered_question_and_linked_curriculum(self):
         self.write_blueprint()
         self.run_command("ingest_blueprints", "--seed-only")
@@ -219,6 +249,9 @@ class BlueprintCommandTests(TestCase):
 
         self.assertTrue(Question.objects.filter(pk=answered.pk).exists())
         self.assertFalse(Question.objects.filter(pk=unanswered.pk).exists())
+        self.assertTrue(
+            HiddenBlueprintTopic.objects.filter(topic="sample_topic").exists()
+        )
         self.assertTrue(Lesson.objects.filter(pk=lesson.pk).exists())
         self.assertTrue(TestAttempt.objects.filter(pk=attempt.pk).exists())
         self.assertTrue(AttemptAnswer.objects.filter(question=answered).exists())

@@ -1,17 +1,18 @@
+import os
 import re
 import tempfile
 from pathlib import Path
 
 import environ
 import sentry_sdk
+from celery.schedules import crontab
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
-from celery.schedules import crontab
 
 env = environ.Env()
 root_path = environ.Path(__file__) - 2
-env_file = Path(root_path(".env"))
+env_file = Path(os.environ.get("APP_ENV_FILE", root_path(".env")))
 if env_file.is_file():
     env.read_env(str(env_file))
 BASE_DIR = Path(__file__).resolve().parent.parent

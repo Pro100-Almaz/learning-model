@@ -6,7 +6,7 @@ from agents_and_engine.math_engine import (
     PROFILE_SUBJECT_MAX_SCORE,
     available_topics,
 )
-from apps.generation.models import GenerationJob, GenerationStep
+from apps.generation.models import GenerationJob, GenerationStep, HiddenBlueprintTopic
 
 _DIFF_LABELS = {1: "easy", 2: "medium", 3: "hard"}
 
@@ -44,8 +44,9 @@ class GenerationJobAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if "topic" in self.fields:
+            hidden = set(HiddenBlueprintTopic.objects.values_list("topic", flat=True))
             self.fields["topic"] = forms.ChoiceField(
-                choices=[(t, t) for t in available_topics()],
+                choices=[(t, t) for t in available_topics() if t not in hidden],
                 help_text="Math topic to generate. Each maps to a blueprint spec.",
             )
         if "count" in self.fields:
@@ -62,9 +63,9 @@ class GenerationJobAdminForm(forms.ModelForm):
                 help_text=_target_score_help(),
             )
         if "language" in self.fields:
-            self.fields["language"].help_text = (
-                "Output language for every question in this batch."
-            )
+            self.fields[
+                "language"
+            ].help_text = "Output language for every question in this batch."
 
 
 class GenerationStepInline(admin.TabularInline):
@@ -165,7 +166,7 @@ class GenerationJobAdmin(admin.ModelAdmin):
             obj.user = request.user
         super().save_model(request, obj, form, change)
         if not change:
-            # Lazy import --> apps.generation.tasks pulls in the heavy LangGraph stack, which
+            # Lazy import: generation.tasks pulls in the heavy LangGraph stack,
             # the admin process shouldn't pay for until a job is actually run.
             from apps.generation import tasks
 
